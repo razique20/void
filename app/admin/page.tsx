@@ -108,9 +108,9 @@ export default function AdminDashboard() {
           <div className="glass rounded-[32px] border border-white/5 p-8 space-y-6">
             <h3 className="text-lg font-bold">System Insights</h3>
             <div className="space-y-4">
-              <InsightItem label="API Connectivity" status="Optimal" color="text-emerald-500" />
-              <InsightItem label="Database Latency" status="12ms" color="text-zinc-400" />
-              <InsightItem label="Neural Load" status="Stable" color="text-emerald-500" />
+              <InsightItem label="API Connectivity" status={data?.system?.apiConnectivity || 'Checking...'} color={data?.system?.apiConnectivity === 'Optimal' ? 'text-emerald-500' : 'text-amber-500'} />
+              <InsightItem label="Database Latency" status={data?.system?.dbLatency || '...'} color="text-zinc-400" />
+              <InsightItem label="Neural Load" status={data?.system?.neuralLoad || '...'} color={data?.system?.neuralLoad === 'Stable' ? 'text-emerald-500' : 'text-blue-500'} />
             </div>
           </div>
         </div>

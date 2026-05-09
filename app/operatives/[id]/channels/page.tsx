@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
-import { MessageSquare, Zap, ShieldCheck, CheckCircle2, Loader2, Smartphone, Send, Phone, Mail } from 'lucide-react';
+import { MessageSquare, Zap, ShieldCheck, CheckCircle2, Loader2, Smartphone, Send, Phone, Mail, Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useParams } from 'next/navigation';
 
@@ -12,6 +12,7 @@ export default function ChannelsPage() {
   const operativeId = params.id as string;
 
   const [operative, setOperative] = useState<any>(null);
+  const [actions, setActions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -21,9 +22,24 @@ export default function ChannelsPage() {
       .then(res => res.json())
       .then(data => {
         setOperative(data);
+        setActions(data.actions || []);
         setLoading(false);
       });
   }, [operativeId]);
+
+  const addAction = () => {
+    setActions([...actions, { name: '', description: '', webhookUrl: '', isActive: true }]);
+  };
+
+  const removeAction = (index: number) => {
+    setActions(actions.filter((_, i) => i !== index));
+  };
+
+  const updateAction = (index: number, field: string, value: string) => {
+    const newActions = [...actions];
+    newActions[index][field] = value;
+    setActions(newActions);
+  };
 
   const saveChannels = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -56,7 +72,13 @@ export default function ChannelsPage() {
           user: formData.get('tool_email_user'),
           pass: formData.get('tool_email_pass')
         }
-      }
+      },
+      voice: {
+        isActive: formData.get('voice_active') === 'on',
+        provider: formData.get('voice_provider'),
+        voiceId: formData.get('voice_id')
+      },
+      actions: actions // Use the dynamic actions from state
     };
 
     try {

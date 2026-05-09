@@ -14,25 +14,32 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // 1. Measure DB Latency
+    const start = Date.now();
     await connectDB();
+    const dbLatency = Date.now() - start;
 
-    // 1. Total Workers
+    // 2. Total Workers
     const totalWorkers = await Worker.countDocuments();
 
-    // 2. Total Users (Distinct)
+    // 3. Total Users (Distinct)
     const distinctUsers = await Worker.distinct('userId');
     const totalUsers = distinctUsers.length;
 
-    // 3. Total Training Data
+    // 4. Total Training Data
     const totalTrainingEntries = await TrainingData.countDocuments();
 
-    // 4. Total Conversations
+    // 5. Total Conversations
     const totalConversations = await Conversation.countDocuments();
 
-    // 5. Recent Workers
+    // 6. Recent Workers
     const recentWorkers = await Worker.find()
       .sort({ createdAt: -1 })
       .limit(5);
+
+    // 7. System Health
+    const apiConnectivity = process.env.GROQ_API_KEY ? 'Optimal' : 'Degraded';
+    const neuralLoad = totalConversations > 100 ? 'High' : (totalConversations > 20 ? 'Moderate' : 'Stable');
 
     return NextResponse.json({
       stats: {
@@ -40,6 +47,11 @@ export async function GET() {
         totalWorkers,
         totalTrainingEntries,
         totalConversations,
+      },
+      system: {
+        dbLatency: `${dbLatency}ms`,
+        apiConnectivity,
+        neuralLoad
       },
       recentWorkers
     });

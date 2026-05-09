@@ -15,6 +15,8 @@ export default function CreateWorkerPage() {
     tone: 'professional',
   });
 
+  const [error, setError] = useState<string | null>(null);
+
   const tones = [
     { id: 'professional', label: 'Professional', desc: 'Formal & Polished', icon: Shield },
     { id: 'friendly', label: 'Friendly', desc: 'Warm & Accessible', icon: Sparkles },
@@ -25,6 +27,7 @@ export default function CreateWorkerPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       const res = await fetch('/api/workers', {
@@ -35,9 +38,13 @@ export default function CreateWorkerPage() {
 
       if (res.ok) {
         router.push('/dashboard');
+      } else {
+        const data = await res.json();
+        setError(data.error || 'Failed to synthesize operative.');
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setError('An unexpected error occurred.');
     } finally {
       setLoading(false);
     }
@@ -112,6 +119,15 @@ export default function CreateWorkerPage() {
                       onChange={(e) => setFormData({ ...formData, personality: e.target.value })}
                     />
                   </div>
+
+                  {error && (
+                    <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-[16px] flex items-start gap-3">
+                      <div className="mt-0.5">
+                        <Shield className="w-5 h-5 text-red-500" />
+                      </div>
+                      <p className="text-sm text-red-500 font-medium leading-relaxed">{error}</p>
+                    </div>
+                  )}
 
                   <button 
                     disabled={loading || !formData.name || !formData.personality}

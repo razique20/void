@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VOID: The Autonomous Neural Agency 🌌
 
-## Getting Started
+**VOID** is a high-fidelity AI operative platform designed for businesses that require an invisible, infallible, and infinite workforce. Built on the **Groq LPU architecture**, VOID agents achieve sub-100ms response times across WhatsApp, Telegram, and Web.
 
-First, run the development server:
+## 🚀 Core Capabilities
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Neural Memory**: Persistent longitudinal context across multi-day conversations and channels.
+- **Mission Control**: Real-time Human-in-the-Loop takeover for high-stakes business environments.
+- **Rapid Ingestion**: Train operatives in seconds using URLs, PDFs, DOCX, or CSVs.
+- **System Guard**: Autonomous monitoring that alerts you via WhatsApp when errors or anomalies are detected.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠 Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework**: Next.js 15+ (App Router)
+- **Inference**: Groq LPU (Llama 3.3 70B / Mixtral)
+- **Intelligence**: RAG-enhanced Knowledge Core
+- **Database**: MongoDB with Neural Indexing
+- **Auth**: Clerk (Enterprise Grade)
+- **Channels**: WhatsApp Business API, Telegram Bot API, Secure Web Uplink
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📦 Getting Started
 
-## Learn More
+1. **Initialize Environment**:
+   ```bash
+   cp .env.example .env
+   # Add your GROQ_API_KEY, MONGODB_URI, and CLERK keys
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Deploy the Fleet**:
+   ```bash
+   npm install
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Synthesis**:
+   - Create your first operative in the **Neural Lab**.
+   - Upload your knowledge base.
+   - Connect your WhatsApp/Telegram uplink.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📊 Analytics & ROI
+Track your "Revenue Recouped" and "Human Hours Saved" in real-time directly from the **VOID Console**.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*VOID: Engineered in the shadows. Operated by Intelligence.*

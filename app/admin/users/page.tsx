@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Users, Bot, Calendar, Search, MoreHorizontal, ShieldAlert } from 'lucide-react';
+import { Users, Bot, Calendar, Search, MoreHorizontal, ShieldAlert, CreditCard, Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function UserDirectoryPage() {
@@ -43,6 +43,8 @@ export default function UserDirectoryPage() {
               <th className="px-8 py-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Architect ID</th>
               <th className="px-8 py-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Active Workers</th>
               <th className="px-8 py-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Last Deployment</th>
+              <th className="px-8 py-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Plan</th>
+              <th className="px-8 py-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Status</th>
               <th className="px-8 py-6 text-xs font-bold text-zinc-500 uppercase tracking-widest text-right">Actions</th>
             </tr>
           </thead>
@@ -79,8 +81,32 @@ export default function UserDirectoryPage() {
                       {new Date(user.lastActive).toLocaleDateString()}
                     </div>
                   </td>
+                  <td className="px-8 py-6">
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-zinc-500" />
+                      <span className={cn(
+                        "text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-md",
+                        user.plan === 'elite' ? "bg-emerald-500/10 text-emerald-500" :
+                        user.plan === 'enterprise' ? "bg-purple-500/10 text-purple-500" :
+                        user.plan === 'pro' ? "bg-blue-500/10 text-blue-500" : "bg-white/5 text-zinc-400"
+                      )}>{user.plan}</span>
+                    </div>
+                  </td>
+                  <td className="px-8 py-6">
+                    <div className="flex items-center gap-2">
+                      <Activity className={cn("w-4 h-4", user.subStatus === 'active' ? "text-emerald-500" : "text-amber-500")} />
+                      <span className="text-xs text-zinc-400 capitalize">{user.subStatus}</span>
+                    </div>
+                  </td>
                   <td className="px-8 py-6 text-right">
-                    <button className="p-2 hover:bg-white/5 rounded-lg transition-colors">
+                    <button 
+                      onClick={() => {
+                        navigator.clipboard.writeText(user.clerkId);
+                        alert(`Copied Architect ID: ${user.clerkId}`);
+                      }}
+                      className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+                      title="Copy ID"
+                    >
                       <MoreHorizontal className="w-5 h-5 text-zinc-500" />
                     </button>
                   </td>

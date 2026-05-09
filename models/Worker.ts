@@ -8,6 +8,22 @@ const WorkerSchema = new Schema({
   personality: { type: String, required: true },
   tone: { type: String, enum: ['friendly', 'professional', 'witty', 'concise'], default: 'professional' },
   isTemplate: { type: Boolean, default: false },
+  isPublic: { type: Boolean, default: false }, // For marketplace listing
+  price: { type: Number, default: 0 }, // Future subscription price
+  voice: {
+    provider: { type: String, enum: ['elevenlabs', 'openai', 'deepgram'], default: 'openai' },
+    voiceId: { type: String },
+    isActive: { type: Boolean, default: false }
+  },
+  actions: [
+    {
+      name: { type: String },
+      description: { type: String }, // Used for LLM function calling
+      webhookUrl: { type: String },
+      method: { type: String, enum: ['GET', 'POST'], default: 'POST' },
+      isActive: { type: Boolean, default: true }
+    }
+  ],
   channels: {
     whatsapp: {
       apiKey: { type: String },

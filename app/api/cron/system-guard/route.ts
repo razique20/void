@@ -86,12 +86,6 @@ export async function GET(req: Request) {
       alerts_sent: alertsSent
     });
 
-    return NextResponse.json({ 
-      status: 'alert_sent',
-      errors_count: recentErrors.length,
-      message: alertMessage
-    });
-
   } catch (error: any) {
     console.error('[SYSTEM_GUARD_CRON_ERROR]', error);
     return NextResponse.json({ error: error.message }, { status: 500 });

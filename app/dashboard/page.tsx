@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { 
   Plus, 
   Bot, 
@@ -14,26 +15,65 @@ import {
   Activity,
   Zap,
   TrendingUp,
-  ChevronRight
+  ChevronRight,
+  Trash2
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [workers, setWorkers] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [shareWorker, setShareWorker] = useState<any>(null);
 
   useEffect(() => {
-    fetch('/api/workers')
-      .then(res => res.json())
-      .then(data => {
-        setWorkers(data);
+    const fetchData = async () => {
+      try {
+        const [workersRes, statsRes] = await Promise.all([
+          fetch('/api/workers'),
+          fetch('/api/analytics')
+        ]);
+        
+        const workersData = await workersRes.json();
+        const statsData = await statsRes.json();
+        
+        if (workersData.length === 0) {
+          router.push('/onboarding');
+          return;
+        }
+
+        setWorkers(workersData);
+        setStats(statsData);
+      } catch (err) {
+        console.error('Failed to fetch data', err);
+      } finally {
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+
+    fetchData();
+  }, [router]);
 
   const copyText = (text: string) => {
     navigator.clipboard.writeText(text);
     alert('Copied to clipboard!');
+  };
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to terminate ${name}? This action is irreversible.`)) return;
+    
+    try {
+      const res = await fetch(`/api/workers/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setWorkers(workers.filter(w => w._id !== id));
+      } else {
+        alert('Failed to terminate operative.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting operative.');
+    }
   };
 
   return (
@@ -60,25 +100,31 @@ export default function DashboardPage() {
           </div>
           <div>
             <p className="text-[12px] font-bold text-[#86868b] uppercase tracking-widest">Active Ingress</p>
-            <h3 className="text-2xl font-bold mt-1">{workers.length} Operatives</h3>
+            <h3 className="text-2xl font-bold mt-1">
+              {loading ? '...' : `${stats?.totalMessages || 0} Interactions`}
+            </h3>
           </div>
         </div>
         <div className="bg-[#111112] border border-white/5 p-6 rounded-[28px] space-y-4">
           <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center">
-            <Activity className="w-5 h-5 text-emerald-500" />
+            <TrendingUp className="w-5 h-5 text-emerald-500" />
           </div>
           <div>
-            <p className="text-[12px] font-bold text-[#86868b] uppercase tracking-widest">System Pulse</p>
-            <h3 className="text-2xl font-bold mt-1">Operational</h3>
+            <p className="text-[12px] font-bold text-[#86868b] uppercase tracking-widest">Revenue Recouped</p>
+            <h3 className="text-2xl font-bold mt-1">
+              {loading ? '...' : `$${stats?.estimatedSavings || '0.00'}`}
+            </h3>
           </div>
         </div>
         <div className="bg-[#111112] border border-white/5 p-6 rounded-[28px] space-y-4">
           <div className="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center">
-            <TrendingUp className="w-5 h-5 text-purple-500" />
+            <Activity className="w-5 h-5 text-purple-500" />
           </div>
           <div>
-            <p className="text-[12px] font-bold text-[#86868b] uppercase tracking-widest">Neural Load</p>
-            <h3 className="text-2xl font-bold mt-1">Optimized</h3>
+            <p className="text-[12px] font-bold text-[#86868b] uppercase tracking-widest">Human Hours Saved</p>
+            <h3 className="text-2xl font-bold mt-1">
+              {loading ? '...' : `${stats?.estimatedTimeSaved || '0.0'} Hours`}
+            </h3>
           </div>
         </div>
       </div>
@@ -107,10 +153,28 @@ export default function DashboardPage() {
               <div key={worker._id} className="group bg-[#111112] border border-white/5 rounded-[28px] p-6 hover:border-white/10 transition-all relative overflow-hidden shadow-2xl">
                 {/* Status & Share Area */}
                 <div className="absolute top-0 right-0 p-6 flex items-center gap-2">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full backdrop-blur-md border border-white/5">
-                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                    <span className="text-[9px] font-bold text-white/60 uppercase tracking-widest">Live</span>
+                  <div className={cn(
+                    "flex items-center gap-1.5 px-2.5 py-1 rounded-full backdrop-blur-md border",
+                    worker.status === 'online' ? "bg-emerald-500/10 border-emerald-500/20" : "bg-zinc-500/10 border-zinc-500/20"
+                  )}>
+                    <div className={cn(
+                      "w-1.5 h-1.5 rounded-full animate-pulse",
+                      worker.status === 'online' ? "bg-emerald-500" : "bg-zinc-500"
+                    )} />
+                    <span className={cn(
+                      "text-[9px] font-bold uppercase tracking-widest",
+                      worker.status === 'online' ? "text-emerald-500" : "text-zinc-500"
+                    )}>
+                      {worker.status}
+                    </span>
                   </div>
+                  <button 
+                    onClick={() => handleDelete(worker._id, worker.name)}
+                    className="p-1.5 bg-red-500/5 rounded-full hover:bg-red-500/20 transition-colors border border-red-500/10 group/delete"
+                    title="Terminate Operative"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-red-500/70 group-hover/delete:text-red-400 transition-colors" />
+                  </button>
                   <button 
                     onClick={() => setShareWorker(worker)}
                     className="p-1.5 bg-white/5 rounded-full hover:bg-white/10 transition-colors border border-white/5 group/share"
@@ -130,7 +194,11 @@ export default function DashboardPage() {
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">{worker.tone}</span>
                         <span className="text-zinc-800">•</span>
-                        <span className="text-[12px] font-medium text-[#86868b] line-clamp-1">{worker.personality}</span>
+                        <div className="flex items-center gap-1">
+                          {worker.channels?.whatsapp?.isActive && <div className="w-1 h-1 bg-[#25D366] rounded-full" />}
+                          {worker.channels?.telegram?.isActive && <div className="w-1 h-1 bg-sky-500 rounded-full" />}
+                          <span className="text-[12px] font-medium text-[#86868b] line-clamp-1">{worker.personality}</span>
+                        </div>
                       </div>
                     </div>
                   </div>

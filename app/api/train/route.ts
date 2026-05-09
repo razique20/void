@@ -3,7 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import TrainingData from '@/models/TrainingData';
 import Worker from '@/models/Worker';
-import pdf from 'pdf-parse';
+import { PDFParse as pdf } from 'pdf-parse';
 import mammoth from 'mammoth';
 import { parse } from 'csv-parse/sync';
 
@@ -37,6 +37,17 @@ async function extractTextFromFile(file: File): Promise<string> {
   }
 }
 
+// RAG Utility: Chunking
+function chunkText(text: string, size = 1000, overlap = 200): string[] {
+  const chunks = [];
+  let i = 0;
+  while (i < text.length) {
+    chunks.push(text.slice(i, i + size));
+    i += (size - overlap);
+  }
+  return chunks;
+}
+
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
@@ -48,6 +59,7 @@ export async function POST(req: Request) {
     let workerId: string;
     let content: string;
     let source: string;
+    let fileName = 'manual_input';
 
     if (contentType.includes('multipart/form-data')) {
       const formData = await req.formData();
@@ -59,6 +71,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'No file provided' }, { status: 400 });
       }
 
+      fileName = file.name;
       content = await extractTextFromFile(file);
     } else {
       const body = await req.json();
@@ -79,13 +92,29 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Worker not found' }, { status: 404 });
     }
 
-    const trainingData = await TrainingData.create({
-      workerId,
-      content,
-      source,
-    });
+    // Perform Chunking for RAG
+    const chunks = chunkText(content);
+    console.log(`[RAG_INGESTION] Splitting into ${chunks.length} chunks.`);
 
-    return NextResponse.json(trainingData);
+    const trainingDataEntries = chunks.map((chunk, index) => ({
+      workerId,
+      content: chunk,
+      source,
+      isChunked: true,
+      metadata: {
+        fileName,
+        chunkIndex: index,
+        totalChunks: chunks.length
+      }
+    }));
+
+    await TrainingData.insertMany(trainingDataEntries);
+
+    return NextResponse.json({ 
+      success: true, 
+      chunksIngested: chunks.length,
+      source 
+    });
   } catch (error: any) {
     console.error('[TRAIN_POST]', error);
     return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });

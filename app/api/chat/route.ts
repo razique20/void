@@ -34,9 +34,33 @@ export async function POST(req: Request) {
       return new NextResponse('Worker not found', { status: 404 });
     }
 
-    // 2. Fetch Training Data
+    // 2. RAG Retrieval Logic
     const trainingDocs = await TrainingData.find({ workerId });
-    const contextText = trainingDocs.map(doc => doc.content).join('\n\n');
+    
+    // Simple Keyword-based Retrieval (Semantic search simulator)
+    const keywords = message.toLowerCase().split(' ').filter((w: string) => w.length > 3);
+    
+    let contextText = '';
+    if (trainingDocs.length > 0) {
+      // Rank chunks based on keyword matches
+      const rankedChunks = trainingDocs.map(doc => {
+        let score = 0;
+        keywords.forEach((word: string) => {
+          if (doc.content.toLowerCase().includes(word)) score++;
+        });
+        return { content: doc.content, score };
+      })
+      .filter(chunk => chunk.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5); // Take top 5 most relevant chunks
+
+      contextText = rankedChunks.map(c => c.content).join('\n\n');
+      
+      // If no relevant chunks found, fallback to most recent training data
+      if (!contextText) {
+        contextText = trainingDocs.slice(-2).map(doc => doc.content).join('\n\n');
+      }
+    }
 
     // 3. Longitudinal Memory — retrieve persistent context for this user
     const contactMemory = await getContactMemory(
@@ -64,6 +88,19 @@ If the user asks you to send an email, YOU MUST execute it by including this exa
 [SEND_EMAIL: recipient@example.com, Subject Line, The message body here]
 You can continue your conversation after the tag.
       `;
+    }
+
+    // NEW: Option B Foundation - Custom Action Agents
+    if (worker.actions && worker.actions.length > 0) {
+      const activeActions = worker.actions.filter((a: any) => a.isActive);
+      if (activeActions.length > 0) {
+        systemPrompt += `\n\nACTION CAPABILITIES: You have access to custom business tools. 
+When a user asks for a task matching these descriptions, you MUST include the [ACTION: name, data] tag.`;
+        
+        activeActions.forEach((action: any) => {
+          systemPrompt += `\n- TOOL: ${action.name}. USE CASE: ${action.description}. FORMAT: [ACTION: ${action.name}, JSON_DATA_HERE]`;
+        });
+      }
     }
 
     // 5. Fetch/Create Conversation
@@ -136,11 +173,67 @@ You can continue your conversation after the tag.
             metadata: { operativeId: worker._id, subject }
           });
 
-          // Clean up the tag from the response so the user doesn't see the "code"
           aiResponse = aiResponse.replace(/\[SEND_EMAIL:.*?\]/, `(Success: I've sent that email for you.)`);
         } catch (emailErr: any) {
           console.error('[EMAIL_TOOL_ERROR]', emailErr);
           aiResponse = aiResponse.replace(/\[SEND_EMAIL:.*?\]/, `(Error: I tried to send the email but my connection failed: ${emailErr.message})`);
+        }
+      }
+    }
+
+    // NEW: Generic Webhook Action Execution (Option B Live)
+    if (aiResponse.includes('[ACTION:')) {
+      const actionMatches = aiResponse.match(/\[ACTION:\s*([^,]+),\s*([^\]]+)\]/g);
+      
+      if (actionMatches) {
+        for (const fullTag of actionMatches) {
+          const match = fullTag.match(/\[ACTION:\s*([^,]+),\s*([^\]]+)\]/);
+          if (!match) continue;
+
+          const actionName = match[1].trim();
+          const actionDataRaw = match[2].trim();
+          
+          // Find the configured webhook for this action
+          const configuredAction = worker.actions?.find((a: any) => a.name === actionName);
+          
+          if (configuredAction && configuredAction.webhookUrl) {
+            try {
+              console.log(`[ACTION_TRIGGER] Firing ${actionName} to ${configuredAction.webhookUrl}`);
+              
+              // Parse data if possible, else send as string
+              let payload;
+              try { payload = JSON.parse(actionDataRaw); } catch { payload = { data: actionDataRaw }; }
+
+              const webhookResponse = await fetch(configuredAction.webhookUrl, {
+                method: configuredAction.method || 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  action: actionName,
+                  workerId: worker._id,
+                  workerName: worker.name,
+                  timestamp: new Date().toISOString(),
+                  payload
+                })
+              });
+
+              await SystemLog.create({
+                type: 'handshake',
+                source: 'ACTION_AGENT',
+                message: `Action ${actionName} executed successfully`,
+                userId: worker.userId,
+                metadata: { 
+                  webhook: configuredAction.webhookUrl,
+                  status: webhookResponse.status
+                }
+              });
+
+              // Clean up the tag
+              aiResponse = aiResponse.replace(fullTag, `(Action: ${actionName} executed)`);
+            } catch (err: any) {
+              console.error('[ACTION_EXECUTION_ERROR]', err);
+              aiResponse = aiResponse.replace(fullTag, `(Action: ${actionName} failed to connect)`);
+            }
+          }
         }
       }
     }

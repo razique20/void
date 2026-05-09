@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, PlusCircle, BookOpen, MessageSquare, ShoppingBag, Bot } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { LayoutDashboard, PlusCircle, BookOpen, MessageSquare, ShoppingBag, Bot, CreditCard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const routes = [
@@ -27,6 +28,11 @@ const routes = [
     href: '/marketplace',
   },
   {
+    label: 'Billing',
+    icon: CreditCard,
+    href: '/billing',
+  },
+  {
     label: 'Mission Control',
     icon: MessageSquare,
     href: '/dashboard/live',
@@ -40,6 +46,14 @@ const routes = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [sub, setSub] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/subscription')
+      .then(res => res.json())
+      .then(data => setSub(data))
+      .catch(console.error);
+  }, []);
 
   return (
     <div className="flex flex-col h-full bg-[#161617]/50 backdrop-blur-xl border-r border-white/5 w-64 pt-6">
@@ -67,8 +81,12 @@ export default function Sidebar() {
       
       <div className="p-4 border-t border-white/5">
         <div className="bg-white/5 rounded-2xl p-4">
-          <p className="text-[11px] font-semibold text-white mb-1 uppercase tracking-wider">Pro Plan</p>
-          <p className="text-[11px] text-[#86868b]">You have 4 Operatives remaining this month.</p>
+          <p className="text-[11px] font-semibold text-white mb-1 uppercase tracking-wider">
+            {sub ? `${sub.plan} Plan` : 'Loading...'}
+          </p>
+          <p className="text-[11px] text-[#86868b]">
+            {sub ? `${sub.usedWorkers} / ${sub.maxWorkers} Operatives active.` : 'Checking limits...'}
+          </p>
         </div>
       </div>
     </div>

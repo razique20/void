@@ -47,10 +47,15 @@ export async function GET(req: Request) {
         try {
           // Find UNSEEN messages (returns array of sequence numbers)
           const messages = await client.search({ seen: false });
-          console.log(`[EMAIL_CHECKER] Found ${messages.length} unread messages for ${user}`);
           
-          for (const seq of messages) {
-            const { source } = await client.fetchOne(seq, { source: true });
+          if (messages && Array.isArray(messages)) {
+            console.log(`[EMAIL_CHECKER] Found ${messages.length} unread messages for ${user}`);
+            
+            for (const seq of messages) {
+              const msg = await client.fetchOne(seq, { source: true });
+              if (!msg || !msg.source) continue;
+              
+              const { source } = msg;
             const parsed = await simpleParser(source);
             const sender = parsed.from?.value[0]?.address || parsed.from?.text || 'Unknown Sender';
             const subject = parsed.subject || 'No Subject';
@@ -114,6 +119,7 @@ export async function GET(req: Request) {
             
             totalProcessed++;
           }
+        }
           
           if (totalProcessed === 0) {
             console.log(`[EMAIL_CHECKER] No unread messages found for ${user}`);

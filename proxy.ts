@@ -7,6 +7,7 @@ const isPublicRoute = createRouteMatcher([
   "/share/(.*)",
   "/api/public/(.*)",
   "/api/webhooks/(.*)",
+  "/api/stripe/(.*)",
   "/api/cron/(.*)",
   "/api/test/(.*)"
 ]);
