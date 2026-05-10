@@ -57,8 +57,8 @@ export default function CreateWorkerPage() {
         <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40 overflow-y-auto">
           <Sidebar />
         </div>
-        <main className="flex-1 overflow-y-auto pt-8 pb-24 px-8">
-          <div className="max-w-5xl mx-auto">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+          <div className="max-w-6xl mx-auto">
             {/* Header */}
             <div className="mb-8">
               <h1 className="text-[36px] font-bold tracking-tight leading-none mb-2">Synthesize.</h1>

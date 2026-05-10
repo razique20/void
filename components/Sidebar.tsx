@@ -64,13 +64,13 @@ export default function Sidebar() {
               key={route.href}
               href={route.href}
               className={cn(
-                "group flex items-center p-3 w-full text-[13px] font-medium transition-all rounded-xl",
+                "group flex items-center p-3 w-full text-[12px] font-medium transition-all rounded-xl",
                 pathname === route.href 
                   ? "bg-white/10 text-white" 
                   : "text-[#86868b] hover:text-white hover:bg-white/5"
               )}
             >
-              <route.icon className={cn("h-5 w-5 mr-3 transition-colors", 
+              <route.icon className={cn("h-4 w-4 mr-3 transition-colors", 
                 pathname === route.href ? "text-white" : "text-[#86868b] group-hover:text-white"
               )} />
               {route.label}
@@ -81,10 +81,10 @@ export default function Sidebar() {
       
       <div className="p-4 border-t border-white/5">
         <div className="bg-white/5 rounded-2xl p-4">
-          <p className="text-[11px] font-semibold text-white mb-1 uppercase tracking-wider">
+          <p className="text-[10px] font-semibold text-white mb-1 uppercase tracking-wider">
             {sub ? `${sub.plan} Plan` : 'Loading...'}
           </p>
-          <p className="text-[11px] text-[#86868b]">
+          <p className="text-[10px] text-[#86868b]">
             {sub ? `${sub.usedWorkers} / ${sub.maxWorkers} Operatives active.` : 'Checking limits...'}
           </p>
         </div>

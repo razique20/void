@@ -11,19 +11,19 @@ export const PLANS = {
   pro: {
     name: 'Pro',
     maxWorkers: 3,
-    features: ['basic_rag', 'priority_support', 'web_chat'],
+    features: ['basic_rag', 'memory_short', 'priority_support', 'web_chat'],
     price: 199
   },
   enterprise: {
     name: 'Enterprise',
     maxWorkers: 10,
-    features: ['basic_rag', 'whatsapp', 'telegram', 'actions', 'web_chat'],
+    features: ['advanced_rag', 'memory_long', 'whatsapp', 'telegram', 'actions_webhooks', 'web_chat'],
     price: 699
   },
   elite: {
     name: 'Elite',
-    maxWorkers: 999, // unlimited essentially
-    features: ['basic_rag', 'whatsapp', 'telegram', 'actions', 'voice', 'sovereign', 'web_chat'],
+    maxWorkers: 999,
+    features: ['advanced_rag', 'memory_long', 'whatsapp', 'telegram', 'actions_full', 'sovereign_setup', 'web_chat'],
     price: 2599
   }
 };

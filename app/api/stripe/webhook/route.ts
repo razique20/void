@@ -4,9 +4,7 @@ import Stripe from 'stripe';
 import connectDB from '@/lib/mongodb';
 import Subscription from '@/models/Subscription';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-01-27.acacia' as any,
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: Request) {
   const body = await req.text();
@@ -28,7 +26,7 @@ export async function POST(req: Request) {
 
   // Handle Initial Purchase
   if (event.type === 'checkout.session.completed') {
-    const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
+    const subscription = await stripe.subscriptions.retrieve(session.subscription as string) as Stripe.Subscription;
 
     if (!session?.metadata?.userId) {
       return new NextResponse('User ID missing in metadata', { status: 400 });
@@ -50,7 +48,7 @@ export async function POST(req: Request) {
 
   // Handle Renewals & Updates
   if (event.type === 'invoice.payment_succeeded') {
-    const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
+    const subscription = await stripe.subscriptions.retrieve(session.subscription as string) as Stripe.Subscription;
 
     await connectDB();
     await Subscription.findOneAndUpdate(

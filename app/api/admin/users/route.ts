@@ -58,3 +58,35 @@ export async function GET() {
     return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
   }
 }
+
+export async function PATCH(req: Request) {
+  try {
+    const { userId: currentUserId } = await auth();
+    if (currentUserId !== process.env.ADMIN_USER_ID) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { clerkId, plan, status } = await req.json();
+
+    if (!clerkId) {
+      return NextResponse.json({ error: 'Missing Architect ID' }, { status: 400 });
+    }
+
+    await connectDB();
+
+    const update: any = {};
+    if (plan) update.plan = plan;
+    if (status) update.status = status;
+
+    const sub = await Subscription.findOneAndUpdate(
+      { userId: clerkId },
+      { $set: update },
+      { new: true, upsert: true }
+    );
+
+    return NextResponse.json(sub);
+  } catch (error) {
+    console.error('[ADMIN_USER_PATCH]', error);
+    return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
+  }
+}

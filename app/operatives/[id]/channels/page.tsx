@@ -112,8 +112,8 @@ export default function ChannelsPage() {
           <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40 overflow-y-auto">
             <Sidebar />
           </div>
-          <main className="flex-1 overflow-y-auto pt-4 pb-32 px-6">
-            <div className="max-w-2xl mx-auto">
+          <main className="flex-1 overflow-y-auto p-4 md:p-8">
+            <div className="max-w-6xl mx-auto">
               <div className="mb-8">
                 <div className="h-10 w-64 bg-[#111112] rounded-2xl animate-pulse" />
                 <div className="h-5 w-48 bg-[#111112] rounded-xl animate-pulse mt-3" />
@@ -133,8 +133,8 @@ export default function ChannelsPage() {
         <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40 overflow-y-auto">
           <Sidebar />
         </div>
-        <main className="flex-1 overflow-y-auto pt-4 pb-32 px-6">
-          <div className="max-w-2xl mx-auto">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+          <div className="max-w-6xl mx-auto">
             {/* Header */}
             <div className="mb-8">
               <h1 className="text-[40px] font-bold tracking-tight mb-2">Integrations.</h1>

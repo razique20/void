@@ -4,9 +4,7 @@ import Stripe from 'stripe';
 import connectDB from '@/lib/mongodb';
 import Subscription from '@/models/Subscription';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-01-27.acacia' as any,
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 const PLAN_PRICES: Record<string, string | undefined> = {
   pro: process.env.STRIPE_PRO_PRICE_ID,

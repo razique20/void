@@ -57,8 +57,8 @@ export default function MarketplacePage() {
         <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40 overflow-y-auto">
           <Sidebar />
         </div>
-        <main className="flex-1 overflow-y-auto pt-4 pb-32 px-8">
-          <div className="max-w-5xl mx-auto">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+          <div className="max-w-6xl mx-auto">
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pt-8">
               <div>
@@ -67,8 +67,8 @@ export default function MarketplacePage() {
                   <div className="w-1 h-1 bg-white/20 rounded-full" />
                   <div className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Monetization Active</div>
                 </div>
-                <h1 className="text-[56px] font-bold tracking-tight leading-none mb-4">Marketplace.</h1>
-                <p className="text-[#86868b] text-[21px] font-medium max-w-xl">
+                <h1 className="text-[44px] font-bold tracking-tight leading-none mb-4">Marketplace.</h1>
+                <p className="text-[#86868b] text-[18px] font-medium max-w-xl">
                   Expand your agency's capabilities with specialized neural modules and action tools.
                 </p>
               </div>
@@ -90,16 +90,16 @@ export default function MarketplacePage() {
                   <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-8 border border-blue-500/20 shadow-[0_0_40px_-10px_rgba(59,130,246,0.3)] group-hover:scale-110 transition-transform duration-700">
                     <Zap className="w-8 h-8 text-blue-500" />
                   </div>
-                  <p className="text-[11px] font-bold text-blue-500 uppercase tracking-[0.3em] mb-3">Enterprise Workforce</p>
-                  <h3 className="text-[44px] font-bold leading-tight mb-6 max-w-md">Action Agent<br />Workflows.</h3>
-                  <p className="text-[#86868b] text-[19px] font-medium max-w-lg leading-relaxed">
+                  <p className="text-[10px] font-bold text-blue-500 uppercase tracking-[0.3em] mb-3">Enterprise Workforce</p>
+                  <h3 className="text-[36px] font-bold leading-tight mb-6 max-w-md">Action Agent<br />Workflows.</h3>
+                  <p className="text-[#86868b] text-[16px] font-medium max-w-lg leading-relaxed">
                     Transform operatives into autonomous workers that can execute refunds, book meetings, and update your CRM directly from chat.
                   </p>
                 </div>
 
                 <div className="relative z-10 flex items-center gap-6 mt-12">
                    <button 
-                    className="bg-white/10 text-white cursor-not-allowed px-8 py-4 rounded-full text-[14px] font-bold transition-all flex items-center gap-2"
+                    className="bg-white/10 text-white cursor-not-allowed px-8 py-4 rounded-full text-[13px] font-bold transition-all flex items-center gap-2"
                    >
                       Coming Soon
                    </button>
@@ -122,8 +122,8 @@ export default function MarketplacePage() {
                   <Mic className="w-6 h-6 text-purple-500" />
                 </div>
                 <div>
-                  <h4 className="text-xl font-bold mb-2">Neural Voice</h4>
-                  <p className="text-[#86868b] text-[13px] leading-relaxed">
+                  <h4 className="text-lg font-bold mb-2">Neural Voice</h4>
+                  <p className="text-[#86868b] text-xs leading-relaxed">
                     High-fidelity STT/TTS transformation for WhatsApp voice notes.
                   </p>
                 </div>
@@ -143,8 +143,8 @@ export default function MarketplacePage() {
                   <ShieldCheck className="w-6 h-6 text-emerald-500" />
                 </div>
                 <div>
-                  <h4 className="text-xl font-bold mb-2">Elite Sovereign</h4>
-                  <p className="text-[#86868b] text-[13px] leading-relaxed">
+                  <h4 className="text-lg font-bold mb-2">Elite Sovereign</h4>
+                  <p className="text-[#86868b] text-xs leading-relaxed">
                     Dedicated LPU nodes and unlimited operatives for high-scale agencies.
                   </p>
                 </div>
@@ -163,11 +163,11 @@ export default function MarketplacePage() {
             <div className="mt-20 p-12 bg-white/[0.02] border border-white/5 rounded-[40px] text-center relative overflow-hidden">
                <div className="relative z-10">
                   <Globe className="w-12 h-12 text-white/10 mx-auto mb-6" />
-                  <h2 className="text-3xl font-bold mb-4">Request a Module.</h2>
-                  <p className="text-[#86868b] text-lg mb-8 max-w-lg mx-auto">
+                  <h2 className="text-2xl font-bold mb-4">Request a Module.</h2>
+                  <p className="text-[#86868b] text-base mb-8 max-w-lg mx-auto">
                     Have a specific business requirement? Our engineers can build custom neural tools for your unique workflow.
                   </p>
-                  <button className="bg-white text-black px-8 py-4 rounded-full text-[15px] font-bold hover:bg-zinc-200 transition-all">
+                  <button className="bg-white text-black px-8 py-4 rounded-full text-[14px] font-bold hover:bg-zinc-200 transition-all">
                     Contact Synthesis Lab
                   </button>
                </div>
