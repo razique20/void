@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
   // Handle Initial Purchase
   if (event.type === 'checkout.session.completed') {
-    const subscription = await stripe.subscriptions.retrieve(session.subscription as string) as Stripe.Subscription;
+    const subscription = await stripe.subscriptions.retrieve(session.subscription as string) as any;
 
     if (!session?.metadata?.userId) {
       return new NextResponse('User ID missing in metadata', { status: 400 });
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
 
   // Handle Renewals & Updates
   if (event.type === 'invoice.payment_succeeded') {
-    const subscription = await stripe.subscriptions.retrieve(session.subscription as string) as Stripe.Subscription;
+    const subscription = await stripe.subscriptions.retrieve(session.subscription as string) as any;
 
     await connectDB();
     await SubscriptionModel.findOneAndUpdate(
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
 
   // Handle Cancellations
   if (event.type === 'customer.subscription.deleted' || event.type === 'customer.subscription.updated') {
-    const subscription = event.data.object as Stripe.Subscription;
+    const subscription = event.data.object as any;
     
     await connectDB();
     await SubscriptionModel.findOneAndUpdate(
