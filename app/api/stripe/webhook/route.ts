@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import connectDB from '@/lib/mongodb';
-import Subscription from '@/models/Subscription';
+import SubscriptionModel from '@/models/Subscription';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     }
 
     await connectDB();
-    await Subscription.findOneAndUpdate(
+    await SubscriptionModel.findOneAndUpdate(
       { userId: session.metadata.userId },
       {
         stripeSubscriptionId: subscription.id,
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
     const subscription = await stripe.subscriptions.retrieve(session.subscription as string) as Stripe.Subscription;
 
     await connectDB();
-    await Subscription.findOneAndUpdate(
+    await SubscriptionModel.findOneAndUpdate(
       { stripeSubscriptionId: subscription.id },
       {
         status: 'active',
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
     const subscription = event.data.object as Stripe.Subscription;
     
     await connectDB();
-    await Subscription.findOneAndUpdate(
+    await SubscriptionModel.findOneAndUpdate(
       { stripeSubscriptionId: subscription.id },
       {
         status: subscription.status === 'active' ? 'active' : 'canceled',
