@@ -3,7 +3,6 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import TrainingData from '@/models/TrainingData';
 import Worker from '@/models/Worker';
-import { PDFParse as pdf } from 'pdf-parse';
 import mammoth from 'mammoth';
 import { parse } from 'csv-parse/sync';
 
@@ -14,6 +13,8 @@ async function extractTextFromFile(file: File): Promise<string> {
 
   switch (fileType) {
     case 'pdf': {
+      // @ts-ignore
+      const pdf = require('pdf-parse');
       const data = await pdf(buffer);
       return data.text;
     }
