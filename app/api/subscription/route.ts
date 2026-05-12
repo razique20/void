@@ -12,12 +12,16 @@ export async function GET() {
 
     const sub = await getUserSubscription(userId);
     const workerCount = await Worker.countDocuments({ userId });
+    
+    const User = (await import('@/models/User')).default;
+    const user = await User.findOne({ clerkId: userId });
 
     return NextResponse.json({
       plan: sub.planInfo.name,
       maxWorkers: sub.planInfo.maxWorkers,
       usedWorkers: workerCount,
-      features: sub.planInfo.features
+      features: sub.planInfo.features,
+      userFlags: user?.featureFlags || { actionAgents: true, neuralVoice: false, vision: false, leadManagement: false }
     });
   } catch (error) {
     console.error('[SUBSCRIPTION_GET]', error);

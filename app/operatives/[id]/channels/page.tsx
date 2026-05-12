@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
-import { MessageSquare, Zap, ShieldCheck, CheckCircle2, Loader2, Smartphone, Send, Phone, Mail, Plus, X } from 'lucide-react';
+import { MessageSquare, Zap, ShieldCheck, CheckCircle2, Loader2, Smartphone, Send, Phone, Mail, Plus, X, Hash } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useParams } from 'next/navigation';
 
@@ -13,19 +13,27 @@ export default function ChannelsPage() {
 
   const [operative, setOperative] = useState<any>(null);
   const [actions, setActions] = useState<any[]>([]);
+  const [config, setConfig] = useState<any>(null);
+  const [sub, setSub] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/workers/${operativeId}`)
-      .then(res => res.json())
-      .then(data => {
-        setOperative(data);
-        setActions(data.actions || []);
-        setLoading(false);
-      });
+    Promise.all([
+      fetch(`/api/workers/${operativeId}`).then(res => res.json()),
+      fetch('/api/admin/config').then(res => res.json()),
+      fetch('/api/subscription').then(res => res.json())
+    ]).then(([workerData, configData, subData]) => {
+      setOperative(workerData);
+      setActions(workerData.actions || []);
+      setConfig(configData);
+      setSub(subData);
+      setLoading(false);
+    });
   }, [operativeId]);
+
+  const isActionAgentsEnabled = config?.featureFlags?.actionAgents && sub?.userFlags?.actionAgents;
 
   const addAction = () => {
     setActions([...actions, { name: '', description: '', webhookUrl: '', isActive: true }]);
@@ -57,6 +65,11 @@ export default function ChannelsPage() {
         telegram: {
           token: formData.get('tg_token'),
           isActive: formData.get('tg_active') === 'on'
+        },
+        slack: {
+          botToken: formData.get('slack_token'),
+          signingSecret: formData.get('slack_secret'),
+          isActive: formData.get('slack_active') === 'on'
         }
       },
       tools: {
@@ -213,6 +226,43 @@ export default function ChannelsPage() {
                       className="w-full bg-transparent border-none p-0 text-sm focus:ring-0 placeholder:text-zinc-700"
                     />
                   </div>
+                  {/* Slack Row */}
+                  <div className="p-6 flex items-center justify-between border-b border-white/5 group hover:bg-white/[0.02] transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-[#4A154B]/10 rounded-xl flex items-center justify-center text-[#4A154B]">
+                        <Hash className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="font-bold">Slack Workspace</div>
+                        <div className="text-[12px] text-[#86868b]">Enterprise App Bot</div>
+                      </div>
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      name="slack_active" 
+                      defaultChecked={operative.channels?.slack?.isActive}
+                      className="w-10 h-5 bg-white/10 border-none rounded-full appearance-none checked:bg-[#0071e3] relative cursor-pointer transition-colors after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-white after:rounded-full after:transition-all checked:after:left-6" 
+                    />
+                  </div>
+                  <div className="p-6 bg-black/20 space-y-4">
+                    <div className="grid grid-cols-1 gap-4">
+                      <input 
+                        name="slack_token" 
+                        defaultValue={operative.channels?.slack?.botToken}
+                        type="password"
+                        placeholder="Bot User OAuth Token (xoxb-...)"
+                        className="w-full bg-transparent border-none p-0 text-sm focus:ring-0 placeholder:text-zinc-700"
+                      />
+                      <div className="h-px bg-white/5 w-full" />
+                      <input 
+                        name="slack_secret" 
+                        defaultValue={operative.channels?.slack?.signingSecret}
+                        type="password"
+                        placeholder="Signing Secret"
+                        className="w-full bg-transparent border-none p-0 text-sm focus:ring-0 placeholder:text-zinc-700"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -301,6 +351,87 @@ export default function ChannelsPage() {
                       </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Action Agents Section */}
+              <div className="space-y-6">
+                <div className="flex items-center justify-between px-1">
+                  <h2 className="text-[12px] font-bold text-[#86868b] uppercase tracking-[0.2em]">Action Agents (Webhooks)</h2>
+                  {isActionAgentsEnabled && (
+                    <button 
+                      type="button"
+                      onClick={addAction}
+                      className="flex items-center gap-1.5 text-[10px] font-bold text-blue-500 uppercase tracking-widest hover:text-blue-400 transition-colors"
+                    >
+                      <Plus className="w-3 h-3" /> Add Action
+                    </button>
+                  )}
+                </div>
+                
+                {!isActionAgentsEnabled ? (
+                  <div className="bg-red-500/5 rounded-[24px] border border-red-500/10 p-10 text-center">
+                    <ShieldCheck className="w-10 h-10 text-red-500/40 mx-auto mb-4" />
+                    <h3 className="text-base font-bold text-red-500">Feature Restricted</h3>
+                    <p className="text-[12px] text-zinc-500 mt-2 max-w-sm mx-auto">
+                      Custom Action Agents are currently disabled by the system administrator. Please contact support or check the marketplace for updates.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {actions.length === 0 ? (
+                      <div className="bg-[#111112] rounded-[24px] border border-white/5 p-8 text-center">
+                        <Zap className="w-8 h-8 text-zinc-700 mx-auto mb-3" />
+                        <p className="text-[12px] text-[#86868b] font-medium">No action agents configured. Add a webhook to empower your operative.</p>
+                      </div>
+                    ) : (
+                      actions.map((action, index) => (
+                        <div key={index} className="bg-[#111112] rounded-[24px] border border-white/5 overflow-hidden group">
+                          <div className="p-6 flex items-center justify-between border-b border-white/5">
+                            <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500">
+                                <Zap className="w-5 h-5" />
+                              </div>
+                              <input 
+                                value={action.name}
+                                onChange={(e) => updateAction(index, 'name', e.target.value)}
+                                placeholder="Action Name (e.g. Refund Order)"
+                                className="bg-transparent border-none p-0 text-sm font-bold focus:ring-0 text-white placeholder:text-zinc-700 w-64"
+                              />
+                            </div>
+                            <button 
+                              type="button"
+                              onClick={() => removeAction(index)}
+                              className="p-2 hover:bg-red-500/10 rounded-full transition-colors group/delete"
+                            >
+                              <X className="w-4 h-4 text-zinc-600 group-hover/delete:text-red-500" />
+                            </button>
+                          </div>
+                          <div className="p-6 bg-black/20 space-y-4">
+                            <div className="space-y-1">
+                              <div className="text-[10px] uppercase font-bold text-[#86868b]">Description (Tells the AI when to use this)</div>
+                              <input 
+                                value={action.description}
+                                onChange={(e) => updateAction(index, 'description', e.target.value)}
+                                placeholder="If the user asks for a refund..."
+                                className="bg-transparent border-none p-0 text-sm focus:ring-0 w-full text-white placeholder:text-zinc-700" 
+                              />
+                            </div>
+                            <div className="h-px bg-white/5 w-full" />
+                            <div className="space-y-1">
+                              <div className="text-[10px] uppercase font-bold text-[#86868b]">Webhook URL</div>
+                              <input 
+                                value={action.webhookUrl}
+                                onChange={(e) => updateAction(index, 'webhookUrl', e.target.value)}
+                                placeholder="https://api.yourstore.com/refund"
+                                className="bg-transparent border-none p-0 text-sm focus:ring-0 w-full text-white placeholder:text-zinc-700 font-mono" 
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Action Button */}

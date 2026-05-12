@@ -158,19 +158,19 @@ export default function UserDirectoryPage() {
 
       {/* Management Modal */}
       {selectedUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#09090b] border border-white/10 rounded-[32px] w-full max-w-md overflow-hidden shadow-2xl">
-            <div className="p-8">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold">Manage Architect</h2>
-                <button 
-                  onClick={() => setSelectedUser(null)}
-                  className="text-zinc-500 hover:text-white transition-colors"
-                >
-                  ✕
-                </button>
-              </div>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-hidden pt-20 md:pt-0">
+          <div className="bg-[#09090b] border border-white/10 rounded-[32px] w-full max-w-md shadow-2xl flex flex-col max-h-[90vh]">
+            <div className="p-8 pb-4 border-b border-white/5 flex items-center justify-between shrink-0">
+              <h2 className="text-2xl font-bold">Manage Architect</h2>
+              <button 
+                onClick={() => setSelectedUser(null)}
+                className="text-zinc-500 hover:text-white transition-colors p-2"
+              >
+                ✕
+              </button>
+            </div>
 
+            <div className="p-8 pt-6 overflow-y-auto custom-scrollbar flex-1 space-y-8">
               <div className="space-y-6">
                 <div>
                   <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-2">Architect ID</label>
@@ -222,8 +222,44 @@ export default function UserDirectoryPage() {
                 </div>
 
                 <div>
+                  <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-3">Feature Governance</label>
+                  <div className="space-y-2">
+                    {[
+                      { id: 'actionAgents', label: 'Action Agents' },
+                      { id: 'neuralVoice', label: 'Neural Voice' },
+                      { id: 'vision', label: 'Vision / OCR' },
+                      { id: 'leadManagement', label: 'Lead Management' },
+                    ].map((feature) => (
+                      <div key={feature.id} className="flex items-center justify-between p-3 bg-white/5 border border-white/5 rounded-xl">
+                        <span className="text-xs font-bold text-zinc-300">{feature.label}</span>
+                        <button 
+                          onClick={() => {
+                            const newFlags = {
+                              ...selectedUser.featureFlags,
+                              [feature.id]: !selectedUser.featureFlags?.[feature.id]
+                            };
+                            updateUser(selectedUser.clerkId, { featureFlags: newFlags });
+                            setSelectedUser({ ...selectedUser, featureFlags: newFlags });
+                          }}
+                          disabled={isUpdating}
+                          className={cn(
+                            "w-10 h-5 rounded-full relative transition-all duration-300",
+                            selectedUser.featureFlags?.[feature.id] ? "bg-blue-500" : "bg-zinc-800"
+                          )}
+                        >
+                          <div className={cn(
+                            "absolute top-1 w-3 h-3 bg-white rounded-full transition-all",
+                            selectedUser.featureFlags?.[feature.id] ? "left-6" : "left-1"
+                          )} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
                   <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-3">Billing History</label>
-                  <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                  <div className="space-y-2 min-h-24 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                     {loadingTransactions ? (
                       <div className="py-8 text-center text-zinc-500 animate-pulse">Retrieving transactions...</div>
                     ) : transactions.length === 0 ? (
@@ -247,25 +283,25 @@ export default function UserDirectoryPage() {
                     )}
                   </div>
                 </div>
-
-                <div className="pt-4 flex gap-3">
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(selectedUser.clerkId);
-                      alert('ID Copied');
-                    }}
-                    className="flex-1 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl text-sm font-bold transition-all border border-white/5"
-                  >
-                    Copy ID
-                  </button>
-                  <button
-                    onClick={() => setSelectedUser(null)}
-                    className="flex-1 py-3 bg-white text-black hover:bg-zinc-200 rounded-xl text-sm font-bold transition-all"
-                  >
-                    Done
-                  </button>
-                </div>
               </div>
+            </div>
+
+            <div className="p-8 pt-4 border-t border-white/5 flex gap-3 shrink-0">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(selectedUser.clerkId);
+                  alert('ID Copied');
+                }}
+                className="flex-1 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl text-sm font-bold transition-all border border-white/5"
+              >
+                Copy ID
+              </button>
+              <button
+                onClick={() => setSelectedUser(null)}
+                className="flex-1 py-3 bg-white text-black hover:bg-zinc-200 rounded-xl text-sm font-bold transition-all"
+              >
+                Done
+              </button>
             </div>
           </div>
         </div>

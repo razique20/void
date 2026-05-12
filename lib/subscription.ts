@@ -17,13 +17,13 @@ export const PLANS = {
   enterprise: {
     name: 'Enterprise',
     maxWorkers: 10,
-    features: ['advanced_rag', 'memory_long', 'whatsapp', 'telegram', 'actions_webhooks', 'web_chat'],
+    features: ['advanced_rag', 'memory_long', 'whatsapp', 'telegram', 'slack', 'actions_webhooks', 'web_chat'],
     price: 699
   },
   elite: {
     name: 'Elite',
     maxWorkers: 999,
-    features: ['advanced_rag', 'memory_long', 'whatsapp', 'telegram', 'actions_full', 'sovereign_setup', 'web_chat'],
+    features: ['advanced_rag', 'memory_long', 'whatsapp', 'telegram', 'slack', 'actions_full', 'sovereign_setup', 'web_chat'],
     price: 2599
   }
 };

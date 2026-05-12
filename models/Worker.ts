@@ -33,6 +33,11 @@ const WorkerSchema = new Schema({
     telegram: {
       token: { type: String },
       isActive: { type: Boolean, default: false }
+    },
+    slack: {
+      botToken: { type: String },
+      signingSecret: { type: String },
+      isActive: { type: Boolean, default: false }
     }
   },
   tools: {

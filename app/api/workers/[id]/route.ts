@@ -31,7 +31,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     await connectDB();
 
     // Feature Gating: Check if user has access to premium channels
-    if (body.channels?.whatsapp?.isActive || body.channels?.telegram?.isActive) {
+    if (body.channels?.whatsapp?.isActive || body.channels?.telegram?.isActive || body.channels?.slack?.isActive) {
       const { getUserSubscription } = await import('@/lib/subscription');
       const sub = await getUserSubscription(userId);
       const features = sub.planInfo.features;
@@ -41,6 +41,9 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       }
       if (body.channels?.telegram?.isActive && !features.includes('telegram')) {
         return NextResponse.json({ error: `Your ${sub.planInfo.name} plan does not support Telegram integrations. Please upgrade.` }, { status: 403 });
+      }
+      if (body.channels?.slack?.isActive && !features.includes('slack')) {
+        return NextResponse.json({ error: `Your ${sub.planInfo.name} plan does not support Slack integrations. Please upgrade.` }, { status: 403 });
       }
     }
 

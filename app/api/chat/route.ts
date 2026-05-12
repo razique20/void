@@ -10,6 +10,7 @@ import { sendOperativeEmail } from '@/lib/mailer';
 import SystemLog from '@/models/SystemLog';
 import { getContactMemory, updateMemorySummary, buildMemoryPrompt } from '@/lib/memory';
 import { checkRateLimit } from '@/lib/rateLimit';
+import Lead from '@/models/Lead';
 
 export async function POST(req: Request) {
   try {
@@ -33,6 +34,11 @@ export async function POST(req: Request) {
     if (!worker) {
       return new NextResponse('Worker not found', { status: 404 });
     }
+
+    // NEW: Fetch User Feature Flags
+    const User = (await import('@/models/User')).default;
+    const userDoc = await User.findOne({ clerkId: userId });
+    const isLeadManagementEnabled = userDoc?.featureFlags?.leadManagement;
 
     // 2. RAG Retrieval Logic
     const trainingDocs = await TrainingData.find({ workerId });
@@ -87,6 +93,16 @@ ${contextText || "No specific knowledge base provided."}
 If the user asks you to send an email, YOU MUST execute it by including this exact tag in your response: 
 [SEND_EMAIL: recipient@example.com, Subject Line, The message body here]
 You can continue your conversation after the tag.
+      `;
+    }
+
+    // NEW: Lead Management Injection
+    if (isLeadManagementEnabled) {
+      systemPrompt += `
+\nLEAD CAPTURE CAPABILITY: You can capture prospective leads and sync them to the CRM.
+When a user expresses interest, provides contact info, or asks to be contacted, you MUST include this tag:
+[LEAD: name, email, phone, extra_notes_json]
+Example: [LEAD: John Doe, john@gmail.com, +1234567, {"interest": "Pro Plan", "source": "WhatsApp"}]
       `;
     }
 
@@ -181,6 +197,99 @@ When a user asks for a task matching these descriptions, you MUST include the [A
       }
     }
 
+    // NEW: Lead Management Handler
+    if (aiResponse.includes('[LEAD:')) {
+      const match = aiResponse.match(/\[LEAD:\s*([^,]+),\s*([^,]*),\s*([^,]*),\s*([^\]]+)\]/);
+      if (match && isLeadManagementEnabled) {
+        const [_, name, email, phone, extraDataRaw] = match;
+        let extraData = {};
+        try { extraData = JSON.parse(extraDataRaw); } catch { extraData = { notes: extraDataRaw }; }
+
+        try {
+          // 1. Extract interest from extraData if it exists
+          let interest = '';
+          if (typeof extraData === 'object' && extraData !== null) {
+            interest = (extraData as any).interest || (extraData as any).notes || JSON.stringify(extraData);
+          } else {
+            interest = String(extraData);
+          }
+
+          // 2. Prevent Duplicates (Upsert logic)
+          const query: any[] = [];
+          if (email.trim()) query.push({ 'contactInfo.email': email.trim() });
+          if (phone.trim()) query.push({ 'contactInfo.phone': phone.trim() });
+
+          let existingLead = null;
+          if (query.length > 0) {
+            existingLead = await Lead.findOne({
+              userId,
+              $or: query
+            });
+          }
+
+          if (existingLead) {
+            console.log(`[LEAD_SYSTEM] Updating existing web lead: ${existingLead._id}`);
+            existingLead.interest = interest;
+            existingLead.data = { ...existingLead.data, ...extraData };
+            await existingLead.save();
+          } else {
+            const lead = await Lead.create({
+              userId,
+              workerId: worker._id,
+              source: 'Web Chat',
+              contactInfo: {
+                name: name.trim(),
+                email: email.trim(),
+                phone: phone.trim()
+              },
+              interest: interest,
+              data: extraData
+            });
+            existingLead = lead; // Use for logs
+          }
+
+          await SystemLog.create({
+            type: 'handshake',
+            source: 'LEAD_SYSTEM',
+            message: existingLead?.__v > 0 ? `Updated Lead: ${name.trim()}` : `New Lead Captured: ${name.trim()}`,
+            userId,
+            metadata: { leadId: existingLead?._id }
+          });
+
+          // NEW: Auto-Sync to External CRM/Excel (Zapier/Make)
+          if (userDoc?.leadWebhookUrl) {
+            try {
+              fetch(userDoc.leadWebhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  event: 'lead_captured',
+                  architectId: userId,
+                  operativeId: worker._id,
+                  lead: {
+                    id: lead._id,
+                    name: name.trim(),
+                    email: email.trim(),
+                    phone: phone.trim(),
+                    source: 'Web Chat',
+                    data: extraData,
+                    timestamp: new Date().toISOString()
+                  }
+                })
+              }).catch(e => console.error('[LEAD_SYNC_FETCH_ERROR]', e));
+            } catch (e) {
+              console.error('[LEAD_SYNC_ERROR]', e);
+            }
+          }
+
+          aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, `(System: Lead captured for ${name.trim()})`);
+        } catch (err) {
+          console.error('[LEAD_CAPTURE_ERROR]', err);
+          aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, `(System: Lead capture failed)`);
+        }
+      }
+    }
+
     // NEW: Generic Webhook Action Execution (Option B Live)
     if (aiResponse.includes('[ACTION:')) {
       const actionMatches = aiResponse.match(/\[ACTION:\s*([^,]+),\s*([^\]]+)\]/g);
@@ -216,17 +325,6 @@ When a user asks for a task matching these descriptions, you MUST include the [A
                 })
               });
 
-              await SystemLog.create({
-                type: 'handshake',
-                source: 'ACTION_AGENT',
-                message: `Action ${actionName} executed successfully`,
-                userId: worker.userId,
-                metadata: { 
-                  webhook: configuredAction.webhookUrl,
-                  status: webhookResponse.status
-                }
-              });
-
               // Clean up the tag
               aiResponse = aiResponse.replace(fullTag, `(Action: ${actionName} executed)`);
             } catch (err: any) {
@@ -237,6 +335,7 @@ When a user asks for a task matching these descriptions, you MUST include the [A
         }
       }
     }
+
 
     // 9. Store Messages
     conversation.messages.push({ role: 'user', content: message });

@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
-import { ShoppingBag, Zap, Mic, Sparkles, Lock, ArrowRight, Bot, Globe, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, Zap, Mic, Sparkles, Lock, ArrowRight, Bot, Globe, ShieldCheck, Database } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const marketplaceFeatures = [
@@ -12,7 +12,7 @@ const marketplaceFeatures = [
     title: 'Custom Action Agents',
     description: 'Empower your operatives to execute real-world tasks via Webhooks. Connect to Shopify, CRMs, and more.',
     icon: Zap,
-    status: 'Coming Soon',
+    status: 'Live',
     tier: 'Enterprise',
     color: 'text-blue-500',
     bgColor: 'bg-blue-500/10'
@@ -50,6 +50,21 @@ const marketplaceFeatures = [
 ];
 
 export default function MarketplacePage() {
+  const [config, setConfig] = useState<any>(null);
+  const [sub, setSub] = useState<any>(null);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/admin/config').then(res => res.json()),
+      fetch('/api/subscription').then(res => res.json())
+    ]).then(([configData, subData]) => {
+      setConfig(configData);
+      setSub(subData);
+    }).catch(console.error);
+  }, []);
+
+  const isActionAgentsEnabled = config?.featureFlags?.actionAgents && sub?.userFlags?.actionAgents;
+
   return (
     <div className="h-full relative flex flex-col bg-black">
       <Navbar />
@@ -79,10 +94,21 @@ export default function MarketplacePage() {
             <div className="grid grid-cols-1 md:grid-cols-6 md:grid-rows-2 gap-6 h-auto md:h-[700px]">
               
               {/* Action Agents - Feature Hero Card (Large) */}
-              <div className="md:col-span-4 md:row-span-2 group relative bg-[#111112]/50 border border-white/5 rounded-[42px] p-10 hover:border-blue-500/30 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl">
+              <div className={cn(
+                "md:col-span-4 md:row-span-2 group relative bg-[#111112]/50 border rounded-[42px] p-10 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
+                isActionAgentsEnabled ? "border-white/5 hover:border-blue-500/30" : "border-red-500/10 opacity-50 grayscale"
+              )}>
                 <div className="absolute top-10 right-10 flex items-center gap-3">
-                  <div className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full">
-                    <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">V2 Deployment</span>
+                  <div className={cn(
+                    "px-3 py-1 border rounded-full",
+                    isActionAgentsEnabled ? "bg-blue-500/10 border-blue-500/20" : "bg-red-500/10 border-red-500/20"
+                  )}>
+                    <span className={cn(
+                      "text-[10px] font-bold uppercase tracking-widest",
+                      isActionAgentsEnabled ? "text-blue-500" : "text-red-500"
+                    )}>
+                      {isActionAgentsEnabled ? 'V2 Deployment' : !config?.featureFlags?.actionAgents ? 'Restricted by Admin' : 'Access Restricted'}
+                    </span>
                   </div>
                 </div>
 
@@ -98,11 +124,18 @@ export default function MarketplacePage() {
                 </div>
 
                 <div className="relative z-10 flex items-center gap-6 mt-12">
-                   <button 
-                    className="bg-white/10 text-white cursor-not-allowed px-8 py-4 rounded-full text-[13px] font-bold transition-all flex items-center gap-2"
-                   >
-                      Coming Soon
-                   </button>
+                   {isActionAgentsEnabled ? (
+                     <Link 
+                      href="/dashboard"
+                      className="bg-white text-black px-8 py-4 rounded-full text-[13px] font-bold transition-all flex items-center gap-2 hover:bg-zinc-200"
+                     >
+                        Configure in Fleet
+                     </Link>
+                   ) : (
+                     <button className="bg-white/5 text-white/20 px-8 py-4 rounded-full text-[13px] font-bold cursor-not-allowed">
+                        Service Unavailable
+                     </button>
+                   )}
                    <div className="flex -space-x-3">
                       {[1,2,3].map(i => (
                         <div key={i} className="w-10 h-10 rounded-full border-2 border-[#111112] bg-zinc-800 flex items-center justify-center overflow-hidden">
@@ -117,7 +150,10 @@ export default function MarketplacePage() {
               </div>
 
               {/* Neural Voice - Secondary Card */}
-              <div className="md:col-span-2 group relative bg-[#111112]/50 border border-white/5 rounded-[42px] p-8 hover:border-purple-500/30 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl">
+              <div className={cn(
+                "md:col-span-2 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
+                config?.featureFlags?.neuralVoice && sub?.userFlags?.neuralVoice ? "border-white/5 hover:border-purple-500/30" : "border-white/5 opacity-50 grayscale"
+              )}>
                 <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center border border-purple-500/20 mb-6">
                   <Mic className="w-6 h-6 text-purple-500" />
                 </div>
@@ -131,14 +167,17 @@ export default function MarketplacePage() {
                    <button 
                     className="text-[11px] font-bold text-white/50 bg-white/5 px-4 py-2 rounded-full cursor-not-allowed transition-all"
                    >
-                     Researching Phase
+                     {config?.featureFlags?.neuralVoice && sub?.userFlags?.neuralVoice ? 'Configure' : 'Researching Phase'}
                    </button>
                    <ArrowRight className="w-5 h-5 text-white/20 group-hover:text-white group-hover:translate-x-1 transition-all" />
                 </div>
               </div>
 
               {/* Elite Card */}
-              <div className="md:col-span-2 group relative bg-[#111112]/50 border border-white/5 rounded-[42px] p-8 hover:border-emerald-500/30 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl">
+              <div className={cn(
+                "md:col-span-2 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
+                config?.featureFlags?.vision && sub?.userFlags?.vision ? "border-white/5 hover:border-emerald-500/30" : "border-white/5 opacity-50 grayscale"
+              )}>
                 <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 mb-6">
                   <ShieldCheck className="w-6 h-6 text-emerald-500" />
                 </div>
@@ -152,7 +191,30 @@ export default function MarketplacePage() {
                    <button 
                     className="w-full text-[11px] font-bold text-white/50 bg-emerald-500/5 border border-emerald-500/10 py-2 rounded-full cursor-not-allowed transition-all"
                    >
-                     Planned for Q4
+                     {config?.featureFlags?.vision && sub?.userFlags?.vision ? 'Configure' : 'Planned for Q4'}
+                   </button>
+                </div>
+              </div>
+
+              {/* Lead Management Card (New) */}
+              <div className={cn(
+                "md:col-span-2 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
+                config?.featureFlags?.leadManagement && sub?.userFlags?.leadManagement ? "border-white/5 hover:border-amber-500/30" : "border-white/5 opacity-50 grayscale"
+              )}>
+                <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center border border-amber-500/20 mb-6">
+                  <Database className="w-6 h-6 text-amber-500" />
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold mb-2">Lead Sync</h4>
+                  <p className="text-[#86868b] text-xs leading-relaxed">
+                    Auto-export leads from social chats to Google Sheets, Excel, or custom CRMs.
+                  </p>
+                </div>
+                <div className="mt-6">
+                   <button 
+                    className="w-full text-[11px] font-bold text-white/50 bg-amber-500/5 border border-amber-500/10 py-2 rounded-full transition-all"
+                   >
+                     {config?.featureFlags?.leadManagement && sub?.userFlags?.leadManagement ? 'Active' : 'Closed Beta'}
                    </button>
                 </div>
               </div>
