@@ -59,6 +59,32 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
+    // --- AUTOMATIC TELEGRAM WEBHOOK REGISTRATION ---
+    if (body.channels?.telegram?.isActive && body.channels?.telegram?.token) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+      if (appUrl && !appUrl.includes('localhost')) {
+        const tgToken = body.channels.telegram.token;
+        const webhookUrl = `${appUrl}/api/webhooks/telegram?id=${id}`;
+        
+        console.log(`[API PATCH] Registering Telegram Webhook: ${webhookUrl}`);
+        
+        try {
+          const tgRes = await fetch(`https://api.telegram.org/bot${tgToken}/setWebhook?url=${webhookUrl}`);
+          const tgData = await tgRes.json();
+          if (tgData.ok) {
+            console.log(`[API PATCH] Telegram Webhook registered successfully.`);
+          } else {
+            console.error(`[API PATCH] Telegram Webhook registration failed:`, tgData.description);
+          }
+        } catch (tgErr: any) {
+          console.error(`[API PATCH] Telegram Webhook error:`, tgErr.message);
+        }
+      } else {
+        console.warn(`[API PATCH] Skipping Telegram Webhook registration: NEXT_PUBLIC_APP_URL is ${appUrl}`);
+      }
+    }
+    // ------------------------------------------------
+
     console.log(`[API PATCH] Update success. New channels state:`, JSON.stringify(worker.channels, null, 2));
 
     return NextResponse.json(worker);

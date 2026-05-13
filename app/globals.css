@@ -1,18 +1,36 @@
 @import "tailwindcss";
 
 :root {
+  --background: #ffffff;
+  --foreground: #1d1d1f;
+  --sidebar: #f5f5f7;
+  --sidebar-border: transparent;
+  --card: rgba(255, 255, 255, 0.8);
+  --card-border: transparent;
+  --primary: #1d1d1f;
+  --silver: #636366;
+  --apple-blue: #0071e3;
+  --text-gradient-start: #1d1d1f;
+  --text-gradient-end: #86868b;
+}
+
+.dark {
   --background: #000000;
   --foreground: #f5f5f7;
+  --sidebar: rgba(22, 22, 23, 0.5);
+  --sidebar-border: transparent;
   --card: rgba(22, 22, 23, 0.8);
-  --card-border: rgba(255, 255, 255, 0.08);
+  --card-border: transparent;
   --primary: #ffffff;
-  --silver: #86868b;
-  --apple-blue: #0071e3;
+  --text-gradient-start: #ffffff;
+  --text-gradient-end: #a1a1a6;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-border: var(--sidebar-border);
   --color-primary: var(--primary);
   --color-silver: var(--silver);
   --color-apple-blue: var(--apple-blue);
@@ -35,8 +53,15 @@ body {
 }
 
 .glass-hover:hover {
+  background: var(--card);
+  border-color: var(--card-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dark .glass-hover:hover {
   background: rgba(28, 28, 30, 0.9);
   border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
 .apple-button {
@@ -63,7 +88,7 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
+  background: linear-gradient(180deg, var(--text-gradient-start) 0%, var(--text-gradient-end) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -77,6 +102,11 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--foreground);
+  opacity: 0.1;
   border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
 }

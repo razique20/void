@@ -75,24 +75,23 @@ export default function NeuralConfigPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-10">
+    <div className="max-w-4xl mx-auto space-y-10 text-foreground transition-colors duration-300">
       <div>
-        <h1 className="text-4xl font-bold tracking-tight">Neural Config</h1>
-        <p className="text-zinc-500 mt-2">Manage AI providers, API keys, and model routing.</p>
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">Neural Config</h1>
+        <p className="text-silver mt-2">Manage AI providers, API keys, and model routing.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Feature Toggles */}
-        <div className="glass rounded-[32px] border border-white/5 p-8 space-y-6 h-fit">
+        <div className="bg-foreground/5 rounded-[32px] p-8 space-y-6 h-fit">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500">
+            <div className="w-10 h-10 bg-apple-blue/10 rounded-xl flex items-center justify-center text-apple-blue">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <h2 className="text-xl font-bold">Feature Governance</h2>
           </div>
 
           <div className="space-y-4">
-            {/* Toggles for non-live features are hidden as they are not currently active */}
             <FeatureToggle 
               label="Lead Management" 
               description="Automated lead extraction from social to CRM/Sheets."
@@ -103,9 +102,9 @@ export default function NeuralConfigPage() {
         </div>
 
         {/* Form */}
-        <div className="glass rounded-[32px] border border-white/5 p-8 space-y-6 h-fit">
+        <div className="bg-foreground/5 rounded-[32px] p-8 space-y-6 h-fit">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+            <div className="w-10 h-10 bg-foreground/10 rounded-xl flex items-center justify-center text-foreground">
               <Plus className="w-5 h-5" />
             </div>
             <h2 className="text-xl font-bold">Add Provider</h2>
@@ -113,18 +112,18 @@ export default function NeuralConfigPage() {
 
           <form onSubmit={handleAddProvider} className="space-y-4">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Name</label>
-              <input name="name" required placeholder="e.g. Groq Production" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-primary/50 outline-none transition-colors" />
+              <label className="text-xs font-bold text-silver uppercase tracking-widest">Name</label>
+              <input name="name" required placeholder="e.g. Groq Production" className="w-full bg-foreground/5 rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-foreground/20 outline-none transition-all text-foreground placeholder:text-silver/30" />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest">API Key</label>
-              <input name="apiKey" required type="password" placeholder="sk-..." className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-primary/50 outline-none transition-colors" />
+              <label className="text-xs font-bold text-silver uppercase tracking-widest">API Key</label>
+              <input name="apiKey" required type="password" placeholder="sk-..." className="w-full bg-foreground/5 rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-foreground/20 outline-none transition-all text-foreground placeholder:text-silver/30" />
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Models (CSV)</label>
-              <textarea name="models" required placeholder="llama-3.3-70b-versatile, llama-3.1-8b-instant" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-primary/50 outline-none transition-colors h-24" />
+              <label className="text-xs font-bold text-silver uppercase tracking-widest">Models (CSV)</label>
+              <textarea name="models" required placeholder="llama-3.3-70b-versatile, llama-3.1-8b-instant" className="w-full bg-foreground/5 rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-foreground/20 outline-none transition-all h-24 text-foreground placeholder:text-silver/30" />
             </div>
-            <button className="w-full py-4 bg-primary text-black font-bold rounded-xl hover:opacity-90 transition-opacity">
+            <button className="w-full py-4 bg-foreground text-background font-bold rounded-xl hover:opacity-90 transition-opacity">
               Inject Provider
             </button>
           </form>
@@ -132,47 +131,47 @@ export default function NeuralConfigPage() {
       </div>
 
       <div className="space-y-6">
-        <h2 className="text-sm font-bold text-zinc-500 uppercase tracking-widest px-2">Active Infrastructure</h2>
+        <h2 className="text-sm font-bold text-silver uppercase tracking-widest px-2">Active Infrastructure</h2>
         <div className="space-y-4">
           {loading ? (
-            [1, 2].map(i => <div key={i} className="h-24 bg-white/5 rounded-3xl animate-pulse" />)
+            [1, 2].map(i => <div key={i} className="h-24 bg-foreground/5 rounded-3xl animate-pulse" />)
           ) : providers.length === 0 ? (
-            <div className="p-12 border-2 border-dashed border-white/5 rounded-[32px] text-center text-zinc-600">
+            <div className="p-12 bg-foreground/5 rounded-[32px] text-center text-silver">
               <Cpu className="w-12 h-12 mx-auto mb-4 opacity-20" />
               <p>No providers configured.</p>
             </div>
           ) : (
             providers.map((p) => (
               <div key={p._id} className={cn(
-                "p-6 rounded-[32px] border transition-all relative group",
-                p.isDefault ? "bg-white/5 border-primary/30" : "bg-white/[0.02] border-white/5 hover:border-white/10"
+                "p-6 rounded-[32px] transition-all relative group",
+                p.isDefault ? "bg-foreground/10" : "bg-foreground/5 hover:bg-foreground/10"
               )}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
-                      <Database className="w-5 h-5 text-zinc-400" />
+                    <div className="w-10 h-10 bg-foreground/5 rounded-xl flex items-center justify-center">
+                      <Database className="w-5 h-5 text-silver" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-lg">{p.name}</h3>
-                      <p className="text-xs text-zinc-500">{p.models.length} Models Available</p>
+                      <h3 className="font-bold text-lg text-foreground">{p.name}</h3>
+                      <p className="text-xs text-silver">{p.models.length} Models Available</p>
                     </div>
                   </div>
                   {p.isDefault && (
-                    <div className="px-3 py-1 bg-primary text-black text-[10px] font-bold rounded-full uppercase">Default</div>
+                    <div className="px-3 py-1 bg-foreground text-background text-[10px] font-bold rounded-full uppercase">Default</div>
                   )}
                 </div>
                 
                 <div className="flex flex-wrap gap-2 mb-6">
                   {p.models.slice(0, 2).map((m: string) => (
-                    <span key={m} className="px-2 py-1 bg-white/5 text-[10px] text-zinc-400 rounded-md border border-white/5">{m}</span>
+                    <span key={m} className="px-2 py-1 bg-foreground/5 text-[10px] text-silver rounded-md">{m}</span>
                   ))}
-                  {p.models.length > 2 && <span className="text-[10px] text-zinc-600 self-center">+{p.models.length - 2} more</span>}
+                  {p.models.length > 2 && <span className="text-[10px] text-silver self-center">+{p.models.length - 2} more</span>}
                 </div>
 
                 {!p.isDefault && (
                   <button 
                     onClick={() => setDefault(p._id)}
-                    className="w-full py-2 text-xs font-bold border border-white/10 rounded-lg hover:bg-white/5 transition-colors"
+                    className="w-full py-2 text-xs font-bold bg-foreground/5 rounded-lg hover:bg-foreground/10 transition-colors text-foreground"
                   >
                     Set as Default
                   </button>
@@ -188,16 +187,16 @@ export default function NeuralConfigPage() {
 
 function FeatureToggle({ label, description, isEnabled, onToggle }: { label: string, description: string, isEnabled: boolean, onToggle: () => void }) {
   return (
-    <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10 transition-all">
+    <div className="flex items-center justify-between p-4 bg-foreground/5 rounded-2xl hover:bg-foreground/10 transition-all">
       <div className="space-y-1">
-        <div className="text-sm font-bold">{label}</div>
-        <div className="text-[10px] text-zinc-500 font-medium">{description}</div>
+        <div className="text-sm font-bold text-foreground">{label}</div>
+        <div className="text-[10px] text-silver font-medium">{description}</div>
       </div>
       <button 
         onClick={onToggle}
         className={cn(
           "w-12 h-6 rounded-full relative transition-all duration-300",
-          isEnabled ? "bg-blue-500" : "bg-zinc-800"
+          isEnabled ? "bg-apple-blue" : "bg-silver/30"
         )}
       >
         <div className={cn(

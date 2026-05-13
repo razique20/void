@@ -67,28 +67,28 @@ export default function MarketplacePage() {
   const isActionAgentsEnabled = config?.featureFlags?.actionAgents && sub?.userFlags?.actionAgents;
 
   return (
-    <div className="h-full relative flex flex-col bg-black">
+    <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300">
       <Navbar />
-      <div className="flex pt-20 h-full overflow-hidden">
-        <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40 overflow-y-auto">
+      <div className="flex flex-1 overflow-hidden">
+        <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-sidebar">
           <Sidebar />
         </div>
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28">
           <div className="max-w-6xl mx-auto">
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 pt-8">
               <div>
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[10px] font-bold text-white/40 uppercase tracking-widest">Synthesis Hub</div>
-                  <div className="w-1 h-1 bg-white/20 rounded-full" />
-                  <div className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Monetization Active</div>
+                  <div className="px-2 py-0.5 bg-foreground/5 rounded text-[10px] font-bold text-silver uppercase tracking-widest">Synthesis Hub</div>
+                  <div className="w-1 h-1 bg-foreground/20 rounded-full" />
+                  <div className="text-[10px] font-bold text-apple-blue uppercase tracking-widest">Monetization Active</div>
                 </div>
-                <h1 className="text-[44px] font-bold tracking-tight leading-none mb-4">Marketplace.</h1>
-                <p className="text-[#86868b] text-[18px] font-medium max-w-xl">
+                <h1 className="text-[44px] font-bold tracking-tight leading-none mb-4 text-foreground">Marketplace.</h1>
+                <p className="text-silver text-[18px] font-medium max-w-xl">
                   Expand your agency's capabilities with specialized neural modules and action tools.
                 </p>
               </div>
-              <ShoppingBag className="w-16 h-16 text-white/5 hidden lg:block" />
+              <ShoppingBag className="w-16 h-16 text-foreground/5 hidden lg:block" />
             </div>
 
             {/* Bento Marketplace Grid */}
@@ -96,17 +96,17 @@ export default function MarketplacePage() {
               
               {/* Action Agents - Feature Hero Card (Large) */}
               <div className={cn(
-                "md:col-span-4 md:row-span-2 group relative bg-[#111112]/50 border rounded-[42px] p-10 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
-                isActionAgentsEnabled ? "border-white/5 hover:border-blue-500/30" : "border-red-500/10 opacity-50 grayscale"
+                "md:col-span-4 md:row-span-2 group relative bg-foreground/5 rounded-[42px] p-10 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
+                !isActionAgentsEnabled && "opacity-50 grayscale"
               )}>
                 <div className="absolute top-10 right-10 flex items-center gap-3">
                   <div className={cn(
-                    "px-3 py-1 border rounded-full",
-                    isActionAgentsEnabled ? "bg-blue-500/10 border-blue-500/20" : "bg-red-500/10 border-red-500/20"
+                    "px-3 py-1 rounded-full",
+                    isActionAgentsEnabled ? "bg-apple-blue/10" : "bg-red-500/10"
                   )}>
                     <span className={cn(
                       "text-[10px] font-bold uppercase tracking-widest",
-                      isActionAgentsEnabled ? "text-blue-500" : "text-red-500"
+                      isActionAgentsEnabled ? "text-apple-blue" : "text-red-500"
                     )}>
                       {isActionAgentsEnabled ? 'Internal Testing' : 'Research Phase'}
                     </span>
@@ -114,12 +114,12 @@ export default function MarketplacePage() {
                 </div>
 
                 <div className="relative z-10">
-                  <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-8 border border-blue-500/20 shadow-[0_0_40px_-10px_rgba(59,130,246,0.3)] group-hover:scale-110 transition-transform duration-700">
-                    <Zap className="w-8 h-8 text-blue-500" />
+                  <div className="w-16 h-16 bg-apple-blue/10 rounded-2xl flex items-center justify-center mb-8 shadow-[0_0_40px_-10px_rgba(var(--apple-blue),0.3)] group-hover:scale-110 transition-transform duration-700">
+                    <Zap className="w-8 h-8 text-apple-blue" />
                   </div>
-                  <p className="text-[10px] font-bold text-blue-500 uppercase tracking-[0.3em] mb-3">Enterprise Workforce</p>
-                  <h3 className="text-[36px] font-bold leading-tight mb-6 max-w-md">Action Agent<br />Workflows.</h3>
-                  <p className="text-[#86868b] text-[16px] font-medium max-w-lg leading-relaxed">
+                  <p className="text-[10px] font-bold text-apple-blue uppercase tracking-[0.3em] mb-3">Enterprise Workforce</p>
+                  <h3 className="text-[36px] font-bold leading-tight mb-6 max-w-md text-foreground">Action Agent<br />Workflows.</h3>
+                  <p className="text-silver text-[16px] font-medium max-w-lg leading-relaxed">
                     Transform operatives into autonomous workers that can execute refunds, book meetings, and update your CRM directly from chat.
                   </p>
                 </div>
@@ -128,69 +128,69 @@ export default function MarketplacePage() {
                    {isActionAgentsEnabled ? (
                      <Link 
                       href="/dashboard"
-                      className="bg-white text-black px-8 py-4 rounded-full text-[13px] font-bold transition-all flex items-center gap-2 hover:bg-zinc-200"
+                      className="bg-foreground text-background px-8 py-4 rounded-full text-[13px] font-bold transition-all flex items-center gap-2 hover:opacity-90"
                      >
                         Configure in Fleet
                      </Link>
                    ) : (
-                     <button className="bg-white/5 text-white/20 px-8 py-4 rounded-full text-[13px] font-bold cursor-not-allowed">
+                     <button className="bg-foreground/5 text-silver px-8 py-4 rounded-full text-[13px] font-bold cursor-not-allowed">
                         Service Unavailable
                      </button>
                    )}
                    <div className="flex -space-x-3">
                       {[1,2,3].map(i => (
-                        <div key={i} className="w-10 h-10 rounded-full border-2 border-[#111112] bg-zinc-800 flex items-center justify-center overflow-hidden">
-                           <Bot className="w-5 h-5 text-zinc-500" />
+                        <div key={i} className="w-10 h-10 rounded-full bg-foreground/10 flex items-center justify-center overflow-hidden">
+                           <Bot className="w-5 h-5 text-silver" />
                         </div>
                       ))}
                    </div>
                 </div>
 
                 {/* Decorative Background Elements */}
-                <div className="absolute -bottom-20 -right-20 w-[400px] h-[400px] bg-blue-500/10 blur-[120px] rounded-full group-hover:bg-blue-500/20 transition-all duration-700" />
+                <div className="absolute -bottom-20 -right-20 w-[400px] h-[400px] bg-apple-blue/10 blur-[120px] rounded-full group-hover:bg-apple-blue/20 transition-all duration-700" />
               </div>
 
               {/* Neural Voice - Secondary Card */}
               <div className={cn(
-                "md:col-span-2 md:row-span-1 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
-                config?.featureFlags?.neuralVoice && sub?.userFlags?.neuralVoice ? "border-white/5 hover:border-purple-500/30" : "border-white/5 opacity-50 grayscale"
+                "md:col-span-2 md:row-span-1 group relative bg-foreground/5 rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
+                !(config?.featureFlags?.neuralVoice && sub?.userFlags?.neuralVoice) && "opacity-50 grayscale"
               )}>
-                <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center border border-purple-500/20 mb-6">
+                <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-6">
                   <Mic className="w-6 h-6 text-purple-500" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold mb-2">Neural Voice</h4>
-                  <p className="text-[#86868b] text-xs leading-relaxed">
+                  <h4 className="text-lg font-bold mb-2 text-foreground">Neural Voice</h4>
+                  <p className="text-silver text-xs leading-relaxed">
                     High-fidelity STT/TTS transformation for WhatsApp voice notes.
                   </p>
                 </div>
                 <div className="mt-6 flex items-center justify-between">
                    <button 
-                    className="text-[11px] font-bold text-white/50 bg-white/5 px-4 py-2 rounded-full cursor-not-allowed transition-all"
+                    className="text-[11px] font-bold text-silver bg-foreground/5 px-4 py-2 rounded-full cursor-not-allowed transition-all"
                    >
                      {config?.featureFlags?.neuralVoice && sub?.userFlags?.neuralVoice ? 'Configure' : 'Researching Phase'}
                    </button>
-                   <ArrowRight className="w-5 h-5 text-white/20 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                   <ArrowRight className="w-5 h-5 text-silver group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                 </div>
               </div>
 
               {/* Elite Card */}
               <div className={cn(
-                "md:col-span-2 md:row-span-1 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
-                config?.featureFlags?.vision && sub?.userFlags?.vision ? "border-white/5 hover:border-emerald-500/30" : "border-white/5 opacity-50 grayscale"
+                "md:col-span-2 md:row-span-1 group relative bg-foreground/5 rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
+                !(config?.featureFlags?.vision && sub?.userFlags?.vision) && "opacity-50 grayscale"
               )}>
-                <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 mb-6">
+                <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-6">
                   <ShieldCheck className="w-6 h-6 text-emerald-500" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold mb-2">Elite Sovereign</h4>
-                  <p className="text-[#86868b] text-xs leading-relaxed">
+                  <h4 className="text-lg font-bold mb-2 text-foreground">Elite Sovereign</h4>
+                  <p className="text-silver text-xs leading-relaxed">
                     Dedicated LPU nodes and unlimited operatives for high-scale agencies.
                   </p>
                 </div>
                 <div className="mt-6">
                    <button 
-                    className="w-full text-[11px] font-bold text-white/50 bg-emerald-500/5 border border-emerald-500/10 py-2 rounded-full cursor-not-allowed transition-all"
+                    className="w-full text-[11px] font-bold text-silver bg-emerald-500/5 py-2 rounded-full cursor-not-allowed transition-all"
                    >
                      {config?.featureFlags?.vision && sub?.userFlags?.vision ? 'Configure' : 'Planned for Q4'}
                    </button>
@@ -199,23 +199,23 @@ export default function MarketplacePage() {
 
               {/* Lead Management Card (New) */}
               <div className={cn(
-                "md:col-span-6 md:row-span-1 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-row items-center justify-between backdrop-blur-3xl",
-                config?.featureFlags?.leadManagement && sub?.userFlags?.leadManagement ? "border-white/5 hover:border-amber-500/30" : "border-white/5 opacity-50 grayscale"
+                "md:col-span-6 md:row-span-1 group relative bg-foreground/5 rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-row items-center justify-between backdrop-blur-3xl",
+                !(config?.featureFlags?.leadManagement && sub?.userFlags?.leadManagement) && "opacity-50 grayscale"
               )}>
                 <div className="flex items-center gap-6">
-                  <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center border border-amber-500/20 shrink-0">
+                  <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center shrink-0">
                     <Database className="w-6 h-6 text-amber-500" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-bold mb-1">Lead Sync</h4>
-                    <p className="text-[#86868b] text-xs leading-relaxed max-w-md">
+                    <h4 className="text-lg font-bold mb-1 text-foreground">Lead Sync</h4>
+                    <p className="text-silver text-xs leading-relaxed max-w-md">
                       Auto-export leads from social chats to Google Sheets, Excel, or custom CRMs.
                     </p>
                   </div>
                 </div>
                 <div>
                    <button 
-                    className="min-w-[120px] text-[11px] font-bold text-white/50 bg-amber-500/5 border border-amber-500/10 py-3 px-6 rounded-full transition-all"
+                    className="min-w-[120px] text-[11px] font-bold text-silver bg-amber-500/5 py-3 px-6 rounded-full transition-all"
                    >
                      {config?.featureFlags?.leadManagement && sub?.userFlags?.leadManagement ? 'Active' : 'Closed Beta'}
                    </button>
@@ -225,18 +225,18 @@ export default function MarketplacePage() {
             </div>
 
             {/* Bottom Callout */}
-            <div className="mt-20 p-12 bg-white/[0.02] border border-white/5 rounded-[40px] text-center relative overflow-hidden">
+            <div className="mt-20 p-12 bg-foreground/[0.02] rounded-[40px] text-center relative overflow-hidden">
                <div className="relative z-10">
-                  <Globe className="w-12 h-12 text-white/10 mx-auto mb-6" />
-                  <h2 className="text-2xl font-bold mb-4">Request a Module.</h2>
-                  <p className="text-[#86868b] text-base mb-8 max-w-lg mx-auto">
+                  <Globe className="w-12 h-12 text-foreground/10 mx-auto mb-6" />
+                  <h2 className="text-2xl font-bold mb-4 text-foreground">Request a Module.</h2>
+                  <p className="text-silver text-base mb-8 max-w-lg mx-auto">
                     Have a specific business requirement? Our engineers can build custom neural tools for your unique workflow.
                   </p>
-                  <button className="bg-white text-black px-8 py-4 rounded-full text-[14px] font-bold hover:bg-zinc-200 transition-all">
+                  <button className="bg-foreground text-background px-8 py-4 rounded-full text-[14px] font-bold hover:opacity-90 transition-all">
                     Contact Synthesis Lab
                   </button>
                </div>
-               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-blue-500/5 to-transparent opacity-50" />
+               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-apple-blue/5 to-transparent opacity-50" />
             </div>
           </div>
         </main>

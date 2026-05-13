@@ -122,10 +122,10 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 overflow-hidden relative">
+    <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-6 overflow-hidden relative transition-colors duration-300">
       {/* Background Ambience */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/5 blur-[120px] rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-apple-blue/5 blur-[120px] rounded-full" />
       </div>
 
       <div className="max-w-xl w-full relative z-10">
@@ -134,21 +134,21 @@ export default function OnboardingPage() {
           {STEPS.map((step, idx) => (
             <div key={step.id} className="flex flex-col items-center gap-2">
               <div className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center border transition-all duration-500",
-                idx < currentStep ? "bg-blue-500 border-blue-500 text-white" :
-                idx === currentStep ? "bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]" :
-                "bg-zinc-900 border-white/5 text-zinc-600"
+                "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500",
+                idx < currentStep ? "bg-apple-blue text-white" :
+                idx === currentStep ? "bg-foreground text-background shadow-[0_0_20px_rgba(var(--foreground),0.3)]" :
+                "bg-foreground/5 text-silver"
               )}>
                 {idx < currentStep ? <CheckCircle2 className="w-5 h-5" /> : <step.icon className="w-5 h-5" />}
               </div>
               <span className={cn(
                 "text-[9px] font-bold uppercase tracking-widest",
-                idx === currentStep ? "text-white" : "text-zinc-600"
+                idx === currentStep ? "text-foreground" : "text-silver"
               )}>{step.title}</span>
             </div>
           ))}
           {/* Connecting Lines */}
-          <div className="absolute top-5 left-8 right-8 h-[1px] bg-white/5 -z-10" />
+          <div className="absolute top-5 left-8 right-8 h-[1px] bg-card-border -z-10" />
         </div>
 
         <AnimatePresence mode="wait">
@@ -161,34 +161,34 @@ export default function OnboardingPage() {
               className="space-y-8"
             >
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold tracking-tight">Name your operative.</h1>
-                <p className="text-zinc-500 font-medium">Every agent needs a professional identity.</p>
+                <h1 className="text-4xl font-bold tracking-tight text-foreground">Name your operative.</h1>
+                <p className="text-silver font-medium">Every agent needs a professional identity.</p>
               </div>
 
               <div className="space-y-6">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest px-1">Identity Name</label>
+                  <label className="text-[10px] font-bold text-silver uppercase tracking-widest px-1">Identity Name</label>
                   <input 
                     value={formData.name}
                     onChange={e => setFormData({...formData, name: e.target.value})}
                     placeholder="e.g. ATLAS-01"
-                    className="w-full bg-zinc-900 border border-white/5 rounded-2xl px-6 py-4 text-lg font-bold focus:outline-none focus:border-white/20 transition-all"
+                    className="w-full bg-foreground/5 rounded-2xl px-6 py-4 text-lg font-bold focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all text-foreground placeholder:text-silver/30"
                   />
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest px-1">Neural Protocol (Tone)</label>
+                  <label className="text-[10px] font-bold text-silver uppercase tracking-widest px-1">Neural Protocol (Tone)</label>
                   <div className="grid grid-cols-2 gap-3">
                     {TONES.map(t => (
                       <button
                         key={t.id}
                         onClick={() => setFormData({...formData, tone: t.id})}
                         className={cn(
-                          "p-4 rounded-2xl border text-left transition-all",
-                          formData.tone === t.id ? "bg-white text-black border-white" : "bg-zinc-900 text-white border-white/5 hover:border-white/20"
+                          "p-4 rounded-2xl text-left transition-all",
+                          formData.tone === t.id ? "bg-foreground text-background" : "bg-foreground/5 text-foreground hover:bg-foreground/10"
                         )}
                       >
-                        <t.icon className="w-5 h-5 mb-2" />
+                        <t.icon className={cn("w-5 h-5 mb-2", formData.tone === t.id ? "text-background" : "text-silver")} />
                         <div className="text-[13px] font-bold">{t.label}</div>
                       </button>
                     ))}
@@ -198,7 +198,7 @@ export default function OnboardingPage() {
                 <button 
                   onClick={handleIdentitySubmit}
                   disabled={!formData.name || loading}
-                  className="w-full bg-white text-black py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all disabled:opacity-50"
+                  className="w-full bg-foreground text-background py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-50"
                 >
                   {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>Next <ChevronRight className="w-4 h-4" /></>}
                 </button>
@@ -215,15 +215,15 @@ export default function OnboardingPage() {
               className="space-y-8"
             >
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold tracking-tight">Prime the brain.</h1>
-                <p className="text-zinc-500 font-medium">Upload your company documents to train {formData.name}.</p>
+                <h1 className="text-4xl font-bold tracking-tight text-foreground">Prime the brain.</h1>
+                <p className="text-silver font-medium">Upload your company documents to train {formData.name}.</p>
               </div>
 
               <div className="space-y-6">
                 <div 
                   className={cn(
-                    "w-full h-48 border-2 border-dashed border-white/5 rounded-[32px] flex flex-col items-center justify-center gap-4 transition-all cursor-pointer hover:bg-white/5",
-                    trainingFile ? "border-blue-500 bg-blue-500/5" : ""
+                    "w-full h-48 bg-foreground/5 rounded-[32px] flex flex-col items-center justify-center gap-4 transition-all cursor-pointer hover:bg-foreground/10",
+                    trainingFile ? "bg-apple-blue/5" : ""
                   )}
                   onClick={() => document.getElementById('file-upload')?.click()}
                 >
@@ -233,26 +233,26 @@ export default function OnboardingPage() {
                     className="hidden" 
                     onChange={e => setTrainingFile(e.target.files?.[0] || null)}
                   />
-                  <div className={cn("w-12 h-12 rounded-full flex items-center justify-center", trainingFile ? "bg-blue-500 text-white" : "bg-white/5 text-zinc-500")}>
+                  <div className={cn("w-12 h-12 rounded-full flex items-center justify-center", trainingFile ? "bg-apple-blue text-white" : "bg-foreground/5 text-silver")}>
                     {trainingFile ? <CheckCircle2 className="w-6 h-6" /> : <Upload className="w-6 h-6" />}
                   </div>
                   <div className="text-center px-6">
-                    <p className="text-sm font-bold">{trainingFile ? trainingFile.name : "Drop mission files here"}</p>
-                    <p className="text-[11px] text-zinc-600 mt-1">PDF, DOCX, or TXT (Max 10MB)</p>
+                    <p className="text-sm font-bold text-foreground">{trainingFile ? trainingFile.name : "Drop mission files here"}</p>
+                    <p className="text-[11px] text-silver mt-1">PDF, DOCX, or TXT (Max 10MB)</p>
                   </div>
                 </div>
 
                 <div className="flex gap-4">
                   <button 
                     onClick={prevStep}
-                    className="flex-1 py-4 rounded-2xl bg-zinc-900 font-bold border border-white/5 hover:bg-zinc-800 transition-all"
+                    className="flex-1 py-4 rounded-2xl bg-foreground/5 text-foreground font-bold hover:bg-foreground/10 transition-all"
                   >
                     Back
                   </button>
                   <button 
                     onClick={handleTrainingSubmit}
                     disabled={loading}
-                    className="flex-[2] bg-white text-black py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all disabled:opacity-50"
+                    className="flex-[2] bg-foreground text-background py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-50"
                   >
                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{trainingFile ? "Synthesize Knowledge" : "Skip for now"} <ChevronRight className="w-4 h-4" /></>}
                   </button>
@@ -270,28 +270,28 @@ export default function OnboardingPage() {
               className="space-y-8"
             >
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold tracking-tight">Deploy to WhatsApp.</h1>
-                <p className="text-zinc-500 font-medium">Connect your Meta credentials to go live.</p>
+                <h1 className="text-4xl font-bold tracking-tight text-foreground">Deploy to WhatsApp.</h1>
+                <p className="text-silver font-medium">Connect your Meta credentials to go live.</p>
               </div>
 
               <div className="space-y-6">
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest px-1">Meta API Key</label>
+                    <label className="text-[10px] font-bold text-silver uppercase tracking-widest px-1">Meta API Key</label>
                     <input 
                       value={formData.wa_apiKey}
                       onChange={e => setFormData({...formData, wa_apiKey: e.target.value})}
                       placeholder="EAA..."
-                      className="w-full bg-zinc-900 border border-white/5 rounded-2xl px-6 py-4 text-xs font-mono focus:outline-none focus:border-white/20 transition-all"
+                      className="w-full bg-foreground/5 rounded-2xl px-6 py-4 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all text-foreground"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest px-1">Phone Number ID</label>
+                    <label className="text-[10px] font-bold text-silver uppercase tracking-widest px-1">Phone Number ID</label>
                     <input 
                       value={formData.wa_phoneId}
                       onChange={e => setFormData({...formData, wa_phoneId: e.target.value})}
                       placeholder="102938..."
-                      className="w-full bg-zinc-900 border border-white/5 rounded-2xl px-6 py-4 text-xs font-mono focus:outline-none focus:border-white/20 transition-all"
+                      className="w-full bg-foreground/5 rounded-2xl px-6 py-4 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all text-foreground"
                     />
                   </div>
                 </div>
@@ -299,14 +299,14 @@ export default function OnboardingPage() {
                 <div className="flex gap-4">
                    <button 
                     onClick={prevStep}
-                    className="flex-1 py-4 rounded-2xl bg-zinc-900 font-bold border border-white/5 hover:bg-zinc-800 transition-all"
+                    className="flex-1 py-4 rounded-2xl bg-foreground/5 text-foreground font-bold hover:bg-foreground/10 transition-all"
                   >
                     Back
                   </button>
                   <button 
                     onClick={handleDeploymentSubmit}
                     disabled={loading}
-                    className="flex-[2] bg-white text-black py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-zinc-200 transition-all disabled:opacity-50"
+                    className="flex-[2] bg-foreground text-background py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-50"
                   >
                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{formData.wa_apiKey ? "Finalize Uplink" : "Deploy without WhatsApp"} <ChevronRight className="w-4 h-4" /></>}
                   </button>
@@ -323,20 +323,20 @@ export default function OnboardingPage() {
               className="text-center space-y-12 py-12"
             >
               <div className="relative">
-                <div className="w-32 h-32 bg-blue-500/20 rounded-[40px] flex items-center justify-center mx-auto border border-blue-500/30 relative">
-                   <Sparkles className="w-16 h-16 text-blue-500 animate-pulse" />
-                   <div className="absolute inset-0 border-2 border-white/20 rounded-[40px] animate-ping opacity-20" />
+                <div className="w-32 h-32 bg-apple-blue/20 rounded-[40px] flex items-center justify-center mx-auto relative">
+                   <Sparkles className="w-16 h-16 text-apple-blue animate-pulse" />
+                   <div className="absolute inset-0 border-2 border-foreground/20 rounded-[40px] animate-ping opacity-20" />
                 </div>
               </div>
 
               <div className="space-y-4">
-                <h1 className="text-5xl font-bold tracking-tighter">Synthesis Active.</h1>
-                <p className="text-zinc-500 text-lg font-medium max-w-sm mx-auto">
-                   Calibrating neural pathways for <span className="text-white">@{formData.name}</span>. Preparing your command console.
+                <h1 className="text-5xl font-bold tracking-tighter text-foreground">Synthesis Active.</h1>
+                <p className="text-silver text-lg font-medium max-w-sm mx-auto">
+                   Calibrating neural pathways for <span className="text-foreground">@{formData.name}</span>. Preparing your command console.
                 </p>
               </div>
 
-              <div className="flex items-center justify-center gap-2 text-blue-500 font-bold text-sm uppercase tracking-widest animate-pulse">
+              <div className="flex items-center justify-center gap-2 text-apple-blue font-bold text-sm uppercase tracking-widest animate-pulse">
                  <Loader2 className="w-4 h-4 animate-spin" /> Initializing Mission Control
               </div>
             </motion.div>

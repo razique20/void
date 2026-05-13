@@ -105,7 +105,7 @@ export async function POST(req: Request) {
     const memoryContext = buildMemoryPrompt(contactMemory);
 
     // 4. System Prompt (now with memory injection)
-    const systemPrompt = `
+    let systemPrompt = `
       You are ${operative.name}, an AI assistant with a ${operative.tone} tone.
       Your personality: ${operative.personality}
       
@@ -119,6 +119,20 @@ export async function POST(req: Request) {
       - Be helpful and stay in character.
       - Keep responses relatively concise for chat.
     `;
+
+    // NEW: Lead Management Injection
+    const User = (await import('@/models/User')).default;
+    const userDoc = await User.findOne({ clerkId: operative.userId });
+    const isLeadManagementEnabled = userDoc?.featureFlags?.leadManagement;
+
+    if (isLeadManagementEnabled) {
+      systemPrompt += `
+\nLEAD CAPTURE CAPABILITY: You can capture prospective leads and sync them to the CRM.
+When a user expresses interest, provides contact info, or asks to be contacted, you MUST include this tag:
+[LEAD: name, email, phone, extra_notes_json]
+Example: [LEAD: ${userName}, email@example.com, ${chatId}, {"interest": "General", "source": "Telegram"}]
+      `;
+    }
 
     // 5. Dynamic AI Provider
     let apiKey = process.env.GROQ_API_KEY;
@@ -148,7 +162,7 @@ export async function POST(req: Request) {
       temperature: 0.7,
     });
 
-    const aiResponse = completion.choices[0]?.message?.content || "I'm processing your request...";
+    let aiResponse = completion.choices[0]?.message?.content || "I'm processing your request...";
 
     // Save AI response to history
     await Conversation.findByIdAndUpdate(conversation._id, {
@@ -157,6 +171,101 @@ export async function POST(req: Request) {
 
     // 8. Update longitudinal memory (non-blocking — fire and forget)
     updateMemorySummary(contactMemory, userText, aiResponse, groq, modelName);
+
+    // NEW: Lead Management Handler for Telegram
+    if (aiResponse.includes('[LEAD:')) {
+      const match = aiResponse.match(/\[LEAD:\s*([^,]+),\s*([^,]*),\s*([^,]*),\s*([^\]]+)\]/);
+      
+      if (match && isLeadManagementEnabled) {
+        const [_, name, email, phone, extraDataRaw] = match;
+        let extraData = {};
+        try { extraData = JSON.parse(extraDataRaw); } catch { extraData = { notes: extraDataRaw }; }
+
+        try {
+          const Lead = (await import('@/models/Lead')).default;
+          
+          let interest = '';
+          if (typeof extraData === 'object' && extraData !== null) {
+            interest = (extraData as any).interest || (extraData as any).notes || JSON.stringify(extraData);
+          } else {
+            interest = String(extraData);
+          }
+
+          const query: any[] = [];
+          if (email.trim()) query.push({ 'contactInfo.email': email.trim() });
+          if (phone.trim()) query.push({ 'contactInfo.phone': phone.trim() });
+          query.push({ 'contactInfo.phone': chatId.toString() }); // Always check by Telegram ID too
+
+          let existingLead = null;
+          if (query.length > 0) {
+            existingLead = await Lead.findOne({
+              userId: operative.userId,
+              $or: query
+            });
+          }
+
+          if (existingLead) {
+            existingLead.interest = interest;
+            existingLead.data = { ...existingLead.data, ...extraData };
+            await existingLead.save();
+          } else {
+            await Lead.create({
+              userId: operative.userId,
+              workerId: operative._id,
+              source: 'Telegram',
+              contactInfo: {
+                name: name.trim(),
+                email: email.trim(),
+                phone: phone.trim() || chatId.toString()
+              },
+              interest: interest,
+              data: extraData
+            });
+          }
+
+          await SystemLog.create({
+            type: 'handshake',
+            source: 'LEAD_SYSTEM',
+            message: existingLead ? `Updated Telegram Lead: ${name.trim()}` : `New Telegram Lead Captured: ${name.trim()}`,
+            userId: operative.userId,
+            metadata: { leadId: existingLead?._id || operative._id }
+          });
+
+          // Sync to External CRM
+          if (userDoc?.leadWebhookUrl) {
+            try {
+              fetch(userDoc.leadWebhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  event: 'lead_captured',
+                  architectId: operative.userId,
+                  operativeId: operative._id,
+                  lead: {
+                    name: name.trim(),
+                    email: email.trim(),
+                    phone: phone.trim() || chatId.toString(),
+                    source: 'Telegram',
+                    data: extraData,
+                    timestamp: new Date().toISOString()
+                  }
+                })
+              }).catch(e => console.error('[LEAD_SYNC_FETCH_ERROR_TG]', e));
+            } catch (e) {
+              console.error('[LEAD_SYNC_ERROR_TG]', e);
+            }
+          }
+
+          // Strip the tag from the final message
+          aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, "").trim();
+        } catch (err) {
+          console.error('[LEAD_CAPTURE_ERROR_TELEGRAM]', err);
+          aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, "").trim();
+        }
+      } else {
+         aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, "").trim();
+      }
+    }
 
     // 6. Send Response back to Telegram
     const tgUrl = `https://api.telegram.org/bot${tgToken}/sendMessage`;
