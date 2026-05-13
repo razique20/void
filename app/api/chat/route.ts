@@ -267,7 +267,7 @@ When a user asks for a task matching these descriptions, you MUST include the [A
                   architectId: userId,
                   operativeId: worker._id,
                   lead: {
-                    id: lead._id,
+                    id: existingLead?._id,
                     name: name.trim(),
                     email: email.trim(),
                     phone: phone.trim(),

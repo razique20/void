@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
 import { ShoppingBag, Zap, Mic, Sparkles, Lock, ArrowRight, Bot, Globe, ShieldCheck, Database } from 'lucide-react';

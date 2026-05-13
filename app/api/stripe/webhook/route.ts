@@ -37,7 +37,7 @@ export async function POST(req: Request) {
           return new NextResponse('Subscription ID missing', { status: 400 });
         }
 
-        const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
+        const subscription = (await stripe.subscriptions.retrieve(session.subscription as string)) as any;
 
         if (!session?.metadata?.userId) {
           console.error('[STRIPE_WEBHOOK] User ID missing in metadata');
@@ -92,10 +92,10 @@ export async function POST(req: Request) {
     // Handle Renewals & Updates
     if (event.type === 'invoice.payment_succeeded') {
       try {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object as any;
         
         if (invoice.subscription) {
-          const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string);
+          const subscription = (await stripe.subscriptions.retrieve(invoice.subscription as string)) as any;
           
           const currentPeriodEnd = subscription.current_period_end;
           const periodEndDate = currentPeriodEnd 
