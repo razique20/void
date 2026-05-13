@@ -50,11 +50,7 @@ export default function Sidebar() {
       icon: ShoppingBag,
       href: '/marketplace',
     },
-    ...(config?.featureFlags?.actionAgents && sub?.userFlags?.actionAgents ? [{
-      label: 'Action Agents',
-      icon: Zap,
-      href: '/marketplace',
-    }] : []),
+    // Action Agents removed from sidebar as it is not currently live (per user request)
     {
       label: 'Billing',
       icon: CreditCard,

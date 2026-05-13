@@ -11,7 +11,7 @@ export async function GET() {
     if (!config) {
       config = await GlobalConfig.create({
         featureFlags: {
-          actionAgents: true,
+          actionAgents: false,
           neuralVoice: false,
           vision: false,
           leadManagement: false

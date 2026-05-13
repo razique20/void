@@ -92,24 +92,7 @@ export default function NeuralConfigPage() {
           </div>
 
           <div className="space-y-4">
-            <FeatureToggle 
-              label="Action Agents (Webhooks)" 
-              description="Allow users to connect operatives to external APIs."
-              isEnabled={globalConfig?.featureFlags?.actionAgents}
-              onToggle={() => toggleFeature('actionAgents')}
-            />
-            <FeatureToggle 
-              label="Neural Voice" 
-              description="ElevenLabs & OpenAI voice synthesis modules."
-              isEnabled={globalConfig?.featureFlags?.neuralVoice}
-              onToggle={() => toggleFeature('neuralVoice')}
-            />
-            <FeatureToggle 
-              label="Vision / OCR" 
-              description="Multi-modal analysis of images and documents."
-              isEnabled={globalConfig?.featureFlags?.vision}
-              onToggle={() => toggleFeature('vision')}
-            />
+            {/* Toggles for non-live features are hidden as they are not currently active */}
             <FeatureToggle 
               label="Lead Management" 
               description="Automated lead extraction from social to CRM/Sheets."

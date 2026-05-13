@@ -21,7 +21,7 @@ export async function GET() {
       maxWorkers: sub.planInfo.maxWorkers,
       usedWorkers: workerCount,
       features: sub.planInfo.features,
-      userFlags: user?.featureFlags || { actionAgents: true, neuralVoice: false, vision: false, leadManagement: false }
+      userFlags: user?.featureFlags || { actionAgents: false, neuralVoice: false, vision: false, leadManagement: false }
     });
   } catch (error) {
     console.error('[SUBSCRIPTION_GET]', error);

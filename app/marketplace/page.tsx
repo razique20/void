@@ -13,7 +13,7 @@ const marketplaceFeatures = [
     title: 'Custom Action Agents',
     description: 'Empower your operatives to execute real-world tasks via Webhooks. Connect to Shopify, CRMs, and more.',
     icon: Zap,
-    status: 'Live',
+    status: 'Coming Soon',
     tier: 'Enterprise',
     color: 'text-blue-500',
     bgColor: 'bg-blue-500/10'
@@ -92,7 +92,7 @@ export default function MarketplacePage() {
             </div>
 
             {/* Bento Marketplace Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-6 md:grid-rows-2 gap-6 h-auto md:h-[700px]">
+            <div className="grid grid-cols-1 md:grid-cols-6 md:grid-rows-3 gap-6 h-auto">
               
               {/* Action Agents - Feature Hero Card (Large) */}
               <div className={cn(
@@ -108,7 +108,7 @@ export default function MarketplacePage() {
                       "text-[10px] font-bold uppercase tracking-widest",
                       isActionAgentsEnabled ? "text-blue-500" : "text-red-500"
                     )}>
-                      {isActionAgentsEnabled ? 'V2 Deployment' : !config?.featureFlags?.actionAgents ? 'Restricted by Admin' : 'Access Restricted'}
+                      {isActionAgentsEnabled ? 'Internal Testing' : 'Research Phase'}
                     </span>
                   </div>
                 </div>
@@ -152,7 +152,7 @@ export default function MarketplacePage() {
 
               {/* Neural Voice - Secondary Card */}
               <div className={cn(
-                "md:col-span-2 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
+                "md:col-span-2 md:row-span-1 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
                 config?.featureFlags?.neuralVoice && sub?.userFlags?.neuralVoice ? "border-white/5 hover:border-purple-500/30" : "border-white/5 opacity-50 grayscale"
               )}>
                 <div className="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center border border-purple-500/20 mb-6">
@@ -176,7 +176,7 @@ export default function MarketplacePage() {
 
               {/* Elite Card */}
               <div className={cn(
-                "md:col-span-2 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
+                "md:col-span-2 md:row-span-1 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
                 config?.featureFlags?.vision && sub?.userFlags?.vision ? "border-white/5 hover:border-emerald-500/30" : "border-white/5 opacity-50 grayscale"
               )}>
                 <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 mb-6">
@@ -199,21 +199,23 @@ export default function MarketplacePage() {
 
               {/* Lead Management Card (New) */}
               <div className={cn(
-                "md:col-span-2 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl",
+                "md:col-span-6 md:row-span-1 group relative bg-[#111112]/50 border rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-row items-center justify-between backdrop-blur-3xl",
                 config?.featureFlags?.leadManagement && sub?.userFlags?.leadManagement ? "border-white/5 hover:border-amber-500/30" : "border-white/5 opacity-50 grayscale"
               )}>
-                <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center border border-amber-500/20 mb-6">
-                  <Database className="w-6 h-6 text-amber-500" />
+                <div className="flex items-center gap-6">
+                  <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center border border-amber-500/20 shrink-0">
+                    <Database className="w-6 h-6 text-amber-500" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold mb-1">Lead Sync</h4>
+                    <p className="text-[#86868b] text-xs leading-relaxed max-w-md">
+                      Auto-export leads from social chats to Google Sheets, Excel, or custom CRMs.
+                    </p>
+                  </div>
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold mb-2">Lead Sync</h4>
-                  <p className="text-[#86868b] text-xs leading-relaxed">
-                    Auto-export leads from social chats to Google Sheets, Excel, or custom CRMs.
-                  </p>
-                </div>
-                <div className="mt-6">
                    <button 
-                    className="w-full text-[11px] font-bold text-white/50 bg-amber-500/5 border border-amber-500/10 py-2 rounded-full transition-all"
+                    className="min-w-[120px] text-[11px] font-bold text-white/50 bg-amber-500/5 border border-amber-500/10 py-3 px-6 rounded-full transition-all"
                    >
                      {config?.featureFlags?.leadManagement && sub?.userFlags?.leadManagement ? 'Active' : 'Closed Beta'}
                    </button>

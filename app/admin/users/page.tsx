@@ -225,9 +225,6 @@ export default function UserDirectoryPage() {
                   <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest block mb-3">Feature Governance</label>
                   <div className="space-y-2">
                     {[
-                      { id: 'actionAgents', label: 'Action Agents' },
-                      { id: 'neuralVoice', label: 'Neural Voice' },
-                      { id: 'vision', label: 'Vision / OCR' },
                       { id: 'leadManagement', label: 'Lead Management' },
                     ].map((feature) => (
                       <div key={feature.id} className="flex items-center justify-between p-3 bg-white/5 border border-white/5 rounded-xl">
