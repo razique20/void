@@ -9,7 +9,8 @@ import {
   Activity, 
   Settings,
   ArrowLeft,
-  ShoppingBag
+  ShoppingBag,
+  MessageSquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -38,6 +39,11 @@ const adminRoutes = [
     label: 'System Logs',
     icon: Activity,
     href: '/admin/logs',
+  },
+  {
+    label: 'Support Tickets',
+    icon: MessageSquare,
+    href: '/admin/tickets',
   },
 ];
 

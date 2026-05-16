@@ -58,6 +58,29 @@ export default function UserDirectoryPage() {
     }
   };
 
+  const exportCSV = () => {
+    const headers = ['Architect ID', 'Email', 'Active Workers', 'Last Deployment', 'Plan', 'Status'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredUsers.map(u => [
+        u.clerkId,
+        u.email || 'N/A',
+        u.workerCount,
+        new Date(u.lastActive).toLocaleDateString(),
+        u.plan,
+        u.subStatus
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute('download', `architects_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-10 text-foreground transition-colors duration-300">
       <div className="flex justify-between items-end">
@@ -65,14 +88,22 @@ export default function UserDirectoryPage() {
           <h1 className="text-4xl font-bold tracking-tight text-foreground">Architects</h1>
           <p className="text-silver mt-2">Manage users and their associated AI fleets.</p>
         </div>
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-silver" />
-          <input 
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by ID..." 
-            className="pl-11 pr-6 py-3 bg-foreground/5 rounded-full text-sm focus:ring-1 focus:ring-foreground/20 outline-none w-64 transition-all text-foreground placeholder:text-silver/30"
-          />
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={exportCSV}
+            className="px-4 py-3 bg-foreground/5 hover:bg-foreground/10 text-foreground text-sm font-bold rounded-full transition-colors whitespace-nowrap"
+          >
+            Export CSV
+          </button>
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-silver" />
+            <input 
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by ID..." 
+              className="pl-11 pr-6 py-3 bg-foreground/5 rounded-full text-sm focus:ring-1 focus:ring-foreground/20 outline-none w-64 transition-all text-foreground placeholder:text-silver/30"
+            />
+          </div>
         </div>
       </div>
 

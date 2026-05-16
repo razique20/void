@@ -19,6 +19,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -26,6 +27,8 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [shareWorker, setShareWorker] = useState<any>(null);
+
+  const [chartData, setChartData] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +52,12 @@ export default function DashboardPage() {
         console.error('Failed to fetch data', err);
       } finally {
         setLoading(false);
+        // Generate mock weekly data
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        setChartData(days.map(day => ({
+          name: day,
+          interactions: Math.floor(Math.random() * 50) + 10
+        })));
       }
     };
 
@@ -129,6 +138,29 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Activity Chart */}
+      <div className="bg-foreground/5 p-6 rounded-[28px]">
+        <h2 className="text-[10px] md:text-[11px] font-bold text-silver uppercase tracking-[0.2em] mb-6">7-Day Activity Stream</h2>
+        <div className="h-64 w-full">
+          {loading ? (
+             <div className="w-full h-full bg-foreground/5 rounded-2xl animate-pulse" />
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-silver)" strokeOpacity={0.1} vertical={false} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--color-silver)' }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--color-silver)' }} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: 'var(--color-background)', borderRadius: '12px', border: '1px solid var(--color-silver)', opacity: 0.9 }}
+                  itemStyle={{ color: 'var(--color-foreground)', fontSize: '12px', fontWeight: 'bold' }}
+                />
+                <Line type="monotone" dataKey="interactions" stroke="#0071e3" strokeWidth={3} dot={{ r: 4, fill: '#0071e3', strokeWidth: 2, stroke: 'var(--color-background)' }} activeDot={{ r: 6 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
       {/* Operatives Grid */}
       <div className="space-y-6">
         <div className="flex items-center justify-between px-1 md:px-2">
@@ -177,7 +209,7 @@ export default function DashboardPage() {
                   </button>
                   <button 
                     onClick={() => setShareWorker(worker)}
-                    className="p-1.5 bg-foreground/5 rounded-full hover:bg-foreground/10 transition-colors border border-card-border group/share"
+                    className="p-1.5 rounded-full hover:bg-foreground/10 transition-colors group/share"
                     title="Share Operative"
                   >
                     <Share2 className="w-3 md:w-3.5 h-3 md:h-3.5 text-silver group-hover/share:text-foreground transition-colors" />

@@ -16,7 +16,8 @@ import {
   Database,
   CloudUpload,
   Globe,
-  ChevronRight
+  ChevronRight,
+  MessageSquare
 } from 'lucide-react';
 
 export default function TrainingPage() {
@@ -263,6 +264,24 @@ export default function TrainingPage() {
 
               {/* Status Pane */}
               <div className="lg:col-span-4 space-y-6">
+                 {/* Test Sandbox */}
+                 {selectedWorker && (
+                   <div className="bg-foreground/5 rounded-[20px] overflow-hidden flex flex-col h-[400px] border border-card-border shadow-2xl">
+                     <div className="p-4 bg-foreground/5 border-b border-card-border flex justify-between items-center shrink-0">
+                       <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
+                         <MessageSquare className="w-4 h-4 text-apple-blue" />
+                         Test Sandbox
+                       </h3>
+                       <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-500/10 px-2 py-1 rounded">Live</span>
+                     </div>
+                     <iframe 
+                       src={`/share/${selectedWorker}`} 
+                       className="w-full flex-1 border-none"
+                       title="Test Sandbox"
+                     />
+                   </div>
+                 )}
+
                  <div className="bg-foreground/5 rounded-[20px] p-6 space-y-6">
                     <div className="flex items-center gap-4">
                        <div className="w-10 h-10 bg-foreground/5 rounded-xl flex items-center justify-center">

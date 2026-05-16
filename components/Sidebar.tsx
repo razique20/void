@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { LayoutDashboard, PlusCircle, BookOpen, MessageSquare, ShoppingBag, Bot, CreditCard, Zap, Database } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, BookOpen, MessageSquare, ShoppingBag, Bot, CreditCard, Zap, Database, LifeBuoy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Global cache to prevent flickering during navigation
@@ -70,6 +70,11 @@ export default function Sidebar() {
       label: 'Live Chat',
       icon: Bot,
       href: '/chat',
+    },
+    {
+      label: 'Support',
+      icon: LifeBuoy,
+      href: '/dashboard/support',
     },
   ];
 
