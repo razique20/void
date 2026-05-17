@@ -30,6 +30,7 @@ export async function POST(req: Request) {
     const systemPrompt = `
       You are ${worker.name}, an AI assistant with a ${worker.tone} tone.
       Your personality: ${worker.personality}
+      Language: You MUST respond strictly in ${worker.language || 'English'}, regardless of the language the user types in, unless explicitly instructed otherwise.
       
       Use the following knowledge base to answer questions:
       ${context}

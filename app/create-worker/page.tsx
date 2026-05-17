@@ -13,6 +13,7 @@ export default function CreateWorkerPage() {
     name: '',
     personality: '',
     tone: 'professional',
+    language: 'English',
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -107,6 +108,27 @@ export default function CreateWorkerPage() {
                     </div>
                   </div>
 
+                  {/* Language Section */}
+                  <div className="space-y-3">
+                    <h2 className="text-[11px] font-bold text-silver uppercase tracking-[0.2em] px-1">Primary Language</h2>
+                    <div className="flex flex-wrap gap-2">
+                      {['English', 'Spanish', 'French', 'German', 'Portuguese', 'Arabic', 'Hindi'].map((lang) => (
+                        <button
+                          key={lang}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, language: lang })}
+                          className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                            formData.language === lang 
+                              ? 'bg-foreground text-background shadow-lg' 
+                              : 'bg-foreground/5 text-foreground hover:bg-foreground/10'
+                          }`}
+                        >
+                          {lang}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   {/* Directive Section */}
                   <div className="space-y-3">
                     <h2 className="text-[11px] font-bold text-silver uppercase tracking-[0.2em] px-1">Behavior Directive</h2>
@@ -169,6 +191,8 @@ export default function CreateWorkerPage() {
                         </h3>
                         <div className="flex items-center justify-center gap-2">
                           <span className="text-[10px] font-bold text-apple-blue uppercase tracking-widest">{formData.tone}</span>
+                          <span className="text-silver">•</span>
+                          <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">{formData.language}</span>
                           <span className="text-silver">•</span>
                           <span className="text-[10px] font-bold text-silver uppercase tracking-[0.2em]">Neural Mode</span>
                         </div>

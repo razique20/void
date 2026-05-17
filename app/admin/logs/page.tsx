@@ -10,6 +10,9 @@ export default function SystemLogsPage() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [isClearing, setIsClearing] = useState(false);
+  const [activeTab, setActiveTab] = useState<'all' | 'error' | 'warning' | 'info' | 'handshake'>('all');
+  const [selectedLog, setSelectedLog] = useState<any>(null);
+  const [autoRefresh, setAutoRefresh] = useState(false);
 
   const fetchLogs = () => {
     fetch('/api/admin/logs')
@@ -29,6 +32,28 @@ export default function SystemLogsPage() {
     fetchLogs();
   }, []);
 
+  useEffect(() => {
+    let interval: any;
+    if (autoRefresh) {
+      interval = setInterval(() => {
+        fetchLogs();
+      }, 5000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [autoRefresh]);
+
+  const downloadLogs = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(logs, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `system_logs_${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
   const clearLogs = async () => {
     if (!confirm('Are you sure you want to delete ALL system logs? This cannot be undone.')) return;
     setIsClearing(true);
@@ -44,11 +69,16 @@ export default function SystemLogsPage() {
     }
   };
 
-  const filteredLogs = logs.filter(log => 
-    log.message?.toLowerCase().includes(search.toLowerCase()) ||
-    log.source?.toLowerCase().includes(search.toLowerCase()) ||
-    log.type?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredLogs = logs.filter(log => {
+    const matchesSearch = 
+      log.message?.toLowerCase().includes(search.toLowerCase()) ||
+      log.source?.toLowerCase().includes(search.toLowerCase()) ||
+      log.type?.toLowerCase().includes(search.toLowerCase());
+    
+    const matchesTab = activeTab === 'all' || log.type === activeTab;
+    
+    return matchesSearch && matchesTab;
+  });
 
   return (
     <div className="max-w-5xl mx-auto space-y-10 text-foreground transition-colors duration-300">
@@ -58,6 +88,22 @@ export default function SystemLogsPage() {
           <p className="text-silver mt-2">Real-time stream of platform events and neural activity.</p>
         </div>
         <div className="flex items-center gap-3">
+          <button 
+            onClick={downloadLogs}
+            disabled={logs.length === 0}
+            className="flex items-center gap-2 bg-foreground/5 text-foreground px-6 py-3 rounded-2xl text-xs font-bold hover:bg-foreground/10 transition-all disabled:opacity-50"
+          >
+            Export JSON
+          </button>
+          <button 
+            onClick={() => setAutoRefresh(!autoRefresh)}
+            className={cn(
+              "flex items-center gap-2 px-6 py-3 rounded-2xl text-xs font-bold transition-all",
+              autoRefresh ? "bg-emerald-500/20 text-emerald-500" : "bg-foreground/5 text-foreground hover:bg-foreground/10"
+            )}
+          >
+            {autoRefresh ? "Auto-Refresh On" : "Auto-Refresh Off"}
+          </button>
           <button 
             onClick={clearLogs}
             disabled={isClearing || logs.length === 0}
@@ -70,6 +116,30 @@ export default function SystemLogsPage() {
             <span className="text-emerald-500 text-[10px] font-bold uppercase tracking-wider">Logging Active</span>
           </div>
         </div>
+      </div>
+
+      {/* Tabs / Filter Controls */}
+      <div className="flex p-1 bg-foreground/5 rounded-[16px] max-w-lg">
+        {[
+          { id: 'all', label: 'All' },
+          { id: 'error', label: 'Errors' },
+          { id: 'warning', label: 'Warnings' },
+          { id: 'info', label: 'Info' },
+          { id: 'handshake', label: 'Handshakes' }
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id as any)}
+            className={`flex-1 py-2 rounded-[12px] text-[11px] font-bold transition-all ${
+              activeTab === tab.id 
+                ? 'bg-foreground text-background shadow-xl' 
+                : 'text-silver hover:text-foreground'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       <div className="relative">
@@ -102,11 +172,20 @@ export default function SystemLogsPage() {
           </div>
         ) : (
           filteredLogs.map((log) => (
-            <div key={log._id} className="bg-foreground/5 rounded-2xl p-5 flex items-center gap-6 hover:bg-foreground/10 transition-colors group animate-in fade-in slide-in-from-top-1 duration-300">
+            <div 
+              key={log._id} 
+              onClick={() => log.metadata ? setSelectedLog(log) : null}
+              className={cn(
+                "bg-foreground/5 rounded-2xl p-5 flex items-center gap-6 hover:bg-foreground/10 transition-colors group animate-in fade-in slide-in-from-top-1 duration-300",
+                log.metadata ? "cursor-pointer" : ""
+              )}
+            >
               <div className="w-12 h-12 bg-foreground/5 rounded-xl flex items-center justify-center shrink-0">
                 <Terminal className={cn(
                   "w-5 h-5 transition-colors",
-                  log.type === 'error' ? "text-red-500" : "text-silver group-hover:text-amber-500"
+                  log.type === 'error' ? "text-red-500" : 
+                  log.type === 'warning' ? "text-amber-500" :
+                  log.type === 'info' ? "text-apple-blue" : "text-emerald-500"
                 )} />
               </div>
               
@@ -117,6 +196,9 @@ export default function SystemLogsPage() {
                     <Clock className="w-3 h-3" />
                     {new Date(log.createdAt).toLocaleTimeString()}
                   </div>
+                  {log.metadata && (
+                    <span className="text-[9px] font-bold text-apple-blue bg-apple-blue/10 px-2 py-0.5 rounded tracking-wider uppercase">Has Metadata</span>
+                  )}
                 </div>
                 <p className="text-foreground text-sm font-medium">{log.message}</p>
                 {log.type === 'error' && log.metadata?.error && (
@@ -126,17 +208,68 @@ export default function SystemLogsPage() {
 
               <div className={cn(
                 "flex items-center gap-2 px-3 py-1 rounded-full shrink-0",
-                log.type === 'error' ? "bg-red-500/10" : "bg-emerald-500/10"
+                log.type === 'error' ? "bg-red-500/10" : 
+                log.type === 'warning' ? "bg-amber-500/10" :
+                log.type === 'info' ? "bg-apple-blue/10" : "bg-emerald-500/10"
               )}>
-                <Zap className={cn("w-3 h-3", log.type === 'error' ? "text-red-500" : "text-emerald-500")} />
-                <span className={cn("text-[10px] font-bold uppercase", log.type === 'error' ? "text-red-500" : "text-emerald-500")}>
-                  {log.type === 'error' ? 'CRASH' : 'LIVE'}
+                <Zap className={cn("w-3 h-3", 
+                  log.type === 'error' ? "text-red-500" : 
+                  log.type === 'warning' ? "text-amber-500" :
+                  log.type === 'info' ? "text-apple-blue" : "text-emerald-500"
+                )} />
+                <span className={cn("text-[10px] font-bold uppercase", 
+                  log.type === 'error' ? "text-red-500" : 
+                  log.type === 'warning' ? "text-amber-500" :
+                  log.type === 'info' ? "text-apple-blue" : "text-emerald-500"
+                )}>
+                  {log.type}
                 </span>
               </div>
             </div>
           ))
         )}
       </div>
+
+      {/* Metadata Inspector Modal */}
+      {selectedLog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-2xl bg-sidebar rounded-[28px] p-6 shadow-2xl space-y-6 border border-card-border">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <h3 className="text-lg font-bold text-foreground">Log Inspector</h3>
+                <p className="text-[10px] font-bold text-silver uppercase tracking-widest">{selectedLog.source} • {selectedLog.type}</p>
+              </div>
+              <button 
+                onClick={() => setSelectedLog(null)}
+                className="p-2 hover:bg-foreground/5 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-silver" />
+              </button>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="p-4 bg-foreground/5 rounded-2xl">
+                <p className="text-sm font-medium text-foreground">{selectedLog.message}</p>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-silver uppercase tracking-widest px-1">Log Metadata</label>
+                <pre className="p-4 bg-foreground/5 rounded-2xl text-[11px] font-mono text-foreground overflow-x-auto max-h-80 leading-relaxed">
+                  {JSON.stringify(selectedLog.metadata, null, 2)}
+                </pre>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <button 
+                onClick={() => setSelectedLog(null)}
+                className="px-6 py-3 bg-foreground text-background text-xs font-bold rounded-full hover:opacity-90 transition-opacity"
+              >
+                Close Inspector
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

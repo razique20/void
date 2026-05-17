@@ -7,6 +7,7 @@ const WorkerSchema = new Schema({
   description: { type: String }, // For marketplace
   personality: { type: String, required: true },
   tone: { type: String, enum: ['friendly', 'professional', 'witty', 'concise'], default: 'professional' },
+  language: { type: String, default: 'English' },
   isTemplate: { type: Boolean, default: false },
   isPublic: { type: Boolean, default: false }, // For marketplace listing
   price: { type: Number, default: 0 }, // Future subscription price
@@ -55,6 +56,10 @@ const WorkerSchema = new Schema({
     }
   }
 }, { timestamps: true });
+
+if (process.env.NODE_ENV === 'development' && models.Worker) {
+  delete (models as any).Worker;
+}
 
 const Worker = models.Worker || model('Worker', WorkerSchema);
 

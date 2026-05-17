@@ -81,6 +81,7 @@ export async function POST(req: Request) {
 You are a professional AI support agent named ${worker.name}.
 Personality: ${worker.personality}
 Tone: ${worker.tone}
+Language: You MUST respond strictly in ${worker.language || 'English'}, regardless of the language the user types in, unless explicitly instructed otherwise.
 ${memoryContext}
 Knowledge Base:
 ${contextText || "No specific knowledge base provided."}

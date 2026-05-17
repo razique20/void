@@ -145,7 +145,7 @@ export default function DashboardPage() {
           {loading ? (
              <div className="w-full h-full bg-foreground/5 rounded-2xl animate-pulse" />
           ) : (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="99%" height="100%" minWidth={0}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--color-silver)" strokeOpacity={0.1} vertical={false} />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--color-silver)' }} dy={10} />

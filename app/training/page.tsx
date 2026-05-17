@@ -30,6 +30,7 @@ export default function TrainingPage() {
   const [source, setSource] = useState('faq');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [showSandbox, setShowSandbox] = useState(false);
 
   useEffect(() => {
     fetch('/api/workers')
@@ -266,19 +267,30 @@ export default function TrainingPage() {
               <div className="lg:col-span-4 space-y-6">
                  {/* Test Sandbox */}
                  {selectedWorker && (
-                   <div className="bg-foreground/5 rounded-[20px] overflow-hidden flex flex-col h-[400px] border border-card-border shadow-2xl">
-                     <div className="p-4 bg-foreground/5 border-b border-card-border flex justify-between items-center shrink-0">
+                   <div className="bg-foreground/5 rounded-[20px] overflow-hidden flex flex-col shadow-2xl transition-all duration-300">
+                     <button
+                       type="button"
+                       onClick={() => setShowSandbox(!showSandbox)}
+                       className="p-4 bg-foreground/5 flex justify-between items-center w-full focus:outline-none hover:bg-foreground/10 transition-colors"
+                     >
                        <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
                          <MessageSquare className="w-4 h-4 text-apple-blue" />
                          Test Sandbox
                        </h3>
-                       <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-500/10 px-2 py-1 rounded">Live</span>
+                       <div className="flex items-center gap-3">
+                         <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-500/10 px-2 py-1 rounded">Live</span>
+                         <span className="text-silver text-xs font-bold">{showSandbox ? 'Collapse' : 'Expand'}</span>
+                       </div>
+                     </button>
+                     <div className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                       showSandbox ? 'max-h-[450px] opacity-100' : 'max-h-0 opacity-0'
+                     }`}>
+                       <iframe 
+                         src={`/share/${selectedWorker}`} 
+                         className="w-full h-[400px] border-none"
+                         title="Test Sandbox"
+                       />
                      </div>
-                     <iframe 
-                       src={`/share/${selectedWorker}`} 
-                       className="w-full flex-1 border-none"
-                       title="Test Sandbox"
-                     />
                    </div>
                  )}
 

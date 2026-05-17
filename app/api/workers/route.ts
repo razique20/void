@@ -23,13 +23,14 @@ export async function POST(req: Request) {
       }, { status: 403 });
     }
 
-    const { name, personality, tone } = await req.json();
+    const { name, personality, tone, language } = await req.json();
 
     const worker = await Worker.create({
       userId,
       name,
       personality,
       tone,
+      language,
     });
 
     return NextResponse.json(worker);
