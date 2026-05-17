@@ -3,7 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Ticket from '@/models/Ticket';
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { userId: currentUserId } = await auth();
     if (currentUserId !== process.env.ADMIN_USER_ID) {
