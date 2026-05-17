@@ -209,7 +209,7 @@ Example: [LEAD: ${userName}, email@example.com, ${chatId}, {"interest": "General
             existingLead.data = { ...existingLead.data, ...extraData };
             await existingLead.save();
           } else {
-            await Lead.create({
+            existingLead = await Lead.create({
               userId: operative.userId,
               workerId: operative._id,
               source: 'Telegram',
@@ -223,10 +223,20 @@ Example: [LEAD: ${userName}, email@example.com, ${chatId}, {"interest": "General
             });
           }
 
+          // Trigger asynchronous sentiment scoring (fire-and-forget background task)
+          if (existingLead && conversation) {
+            try {
+              const { analyzeLeadSentiment } = require('@/lib/sentiment');
+              analyzeLeadSentiment(existingLead._id.toString(), conversation._id.toString());
+            } catch (err) {
+              console.error('[LEAD_SENTIMENT_TRIGGER_ERROR_TG]', err);
+            }
+          }
+
           await SystemLog.create({
             type: 'handshake',
             source: 'LEAD_SYSTEM',
-            message: existingLead ? `Updated Telegram Lead: ${name.trim()}` : `New Telegram Lead Captured: ${name.trim()}`,
+            message: existingLead?.__v > 0 ? `Updated Telegram Lead: ${name.trim()}` : `New Telegram Lead Captured: ${name.trim()}`,
             userId: operative.userId,
             metadata: { leadId: existingLead?._id || operative._id }
           });

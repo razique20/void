@@ -246,7 +246,17 @@ When a user asks for a task matching these descriptions, you MUST include the [A
               interest: interest,
               data: extraData
             });
-            existingLead = lead; // Use for logs
+            existingLead = lead;
+          }
+
+          // Trigger asynchronous sentiment scoring (fire-and-forget background task)
+          if (existingLead && conversation) {
+            try {
+              const { analyzeLeadSentiment } = require('@/lib/sentiment');
+              analyzeLeadSentiment(existingLead._id.toString(), conversation._id.toString());
+            } catch (err) {
+              console.error('[LEAD_SENTIMENT_TRIGGER_ERROR]', err);
+            }
           }
 
           await SystemLog.create({

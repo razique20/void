@@ -81,8 +81,8 @@ export default function LeadsPage() {
 
   const exportLeads = () => {
     const csvContent = "data:text/csv;charset=utf-8," 
-      + "Date,Source,Name,Email,Phone,Interest,Status\n"
-      + filteredLeads.map(l => `${new Date(l.createdAt).toLocaleDateString()},${l.source},${l.contactInfo.name},${l.contactInfo.email},${l.contactInfo.phone},"${l.interest || ''}",${l.status}`).join("\n");
+      + "Date,Source,Name,Email,Phone,Interest,Sentiment,Status\n"
+      + filteredLeads.map(l => `${new Date(l.createdAt).toLocaleDateString()},${l.source},${l.contactInfo.name},${l.contactInfo.email},${l.contactInfo.phone},"${l.interest || ''}",${l.sentiment || 'warm'},${l.status}`).join("\n");
     
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -90,6 +90,7 @@ export default function LeadsPage() {
     link.setAttribute("download", `leads_export_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
+    link.remove();
   };
 
   return (
@@ -164,13 +165,12 @@ export default function LeadsPage() {
               </div>
             )}
 
-            {/* Stats Overview */}
             <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-12">
                {[
                  { label: 'Total Leads', val: leads.length, color: 'text-foreground' },
+                 { label: '🔥 Hot Intent', val: leads.filter(l => l.sentiment === 'hot').length, color: 'text-red-500 font-extrabold' },
                  { label: 'WhatsApp', val: leads.filter(l => l.source === 'WhatsApp').length, color: 'text-green-500' },
                  { label: 'Telegram', val: leads.filter(l => l.source === 'Telegram').length, color: 'text-sky-500' },
-                 { label: 'Slack', val: leads.filter(l => l.source === 'Slack').length, color: 'text-purple-500' },
                  { label: 'Web Chat', val: leads.filter(l => l.source === 'Web Chat').length, color: 'text-apple-blue' }
                ].map((stat, i) => (
                  <div key={i} className="bg-foreground/5 rounded-[32px] p-8 backdrop-blur-xl">
@@ -203,15 +203,16 @@ export default function LeadsPage() {
                        <th className="px-6 py-4 text-[10px] font-bold text-silver uppercase tracking-widest">Source</th>
                        <th className="px-6 py-4 text-[10px] font-bold text-silver uppercase tracking-widest">Contact Info</th>
                        <th className="px-6 py-4 text-[10px] font-bold text-silver uppercase tracking-widest">Interest/Keywords</th>
+                       <th className="px-6 py-4 text-[10px] font-bold text-silver uppercase tracking-widest">Sentiment</th>
                        <th className="px-6 py-4 text-[10px] font-bold text-silver uppercase tracking-widest">Status</th>
                        <th className="px-6 py-4 text-[10px] font-bold text-silver uppercase tracking-widest">Actions</th>
                      </tr>
                    </thead>
                    <tbody className="divide-y divide-foreground/5">
                      {loading ? (
-                       <tr><td colSpan={7} className="px-6 py-20 text-center text-silver animate-pulse">Syncing lead database...</td></tr>
+                       <tr><td colSpan={8} className="px-6 py-20 text-center text-silver animate-pulse">Syncing lead database...</td></tr>
                      ) : filteredLeads.length === 0 ? (
-                       <tr><td colSpan={7} className="px-6 py-20 text-center text-silver">No leads captured yet. Deploy an operative to start capturing.</td></tr>
+                       <tr><td colSpan={8} className="px-6 py-20 text-center text-silver">No leads captured yet. Deploy an operative to start capturing.</td></tr>
                      ) : (
                        filteredLeads.map((lead) => (
                          <tr key={lead._id} className="group hover:bg-foreground/[0.02] transition-all">
@@ -256,6 +257,17 @@ export default function LeadsPage() {
                            <td className="px-6 py-4">
                               <div className="text-xs text-foreground line-clamp-2 max-w-[200px] font-medium">{lead.interest || '—'}</div>
                            </td>
+                           <td className="px-6 py-4">
+                              <span className={cn(
+                                "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
+                                lead.sentiment === 'hot' ? "bg-red-500/10 text-red-500 border border-red-500/20" :
+                                lead.sentiment === 'cold' ? "bg-slate-500/10 text-silver/60 border border-slate-500/10" :
+                                "bg-amber-500/10 text-amber-500 border border-amber-500/20"
+                              )}>
+                                {lead.sentiment === 'hot' ? '🔥 Hot' : 
+                                 lead.sentiment === 'cold' ? '❄️ Cold' : '☀️ Warm'}
+                              </span>
+                            </td>
                            <td className="px-6 py-4">
                               <div className="text-[10px] font-bold text-silver uppercase">{lead.status}</div>
                            </td>
@@ -332,6 +344,18 @@ export default function LeadsPage() {
                         className="w-full bg-foreground/5 rounded-2xl px-4 py-3 text-sm text-foreground h-24 resize-none focus:outline-none focus:ring-1 focus:ring-apple-blue"
                         placeholder="e.g. Interested in buying property..."
                       />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-bold text-silver uppercase">Lead Sentiment</p>
+                      <select 
+                        value={editingLead.sentiment || 'warm'} 
+                        onChange={(e) => setEditingLead({...editingLead, sentiment: e.target.value})}
+                        className="w-full bg-foreground/5 rounded-2xl px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-apple-blue appearance-none"
+                      >
+                        <option value="hot" className="bg-background text-foreground">🔥 Hot (High Intent)</option>
+                        <option value="warm" className="bg-background text-foreground">☀️ Warm (Curious)</option>
+                        <option value="cold" className="bg-background text-foreground">❄️ Cold (Junk/Disinterested)</option>
+                      </select>
                     </div>
                     <div className="space-y-1">
                       <p className="text-[10px] font-bold text-silver uppercase">Lead Status</p>
