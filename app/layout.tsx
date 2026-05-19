@@ -30,6 +30,20 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('color-theme') || 'slate';
+                  document.documentElement.setAttribute('data-color-theme', theme);
+                } catch (e) {}
+              })();
+            `
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col antialiased bg-background text-foreground transition-colors duration-300">
         <ThemeProvider
           attribute="class"

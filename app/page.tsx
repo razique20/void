@@ -1,6 +1,8 @@
 'use client';
 
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import DashboardPreview from '@/components/DashboardPreview';
 import Link from 'next/link';
 import { ArrowRight, Cpu, Globe, ShieldCheck, Zap, Bot, MessageSquare, ChevronRight, Sparkles } from 'lucide-react';
 import { motion, Variants } from 'framer-motion';
@@ -36,6 +38,25 @@ export default function LandingPage() {
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-apple-blue/5 blur-[120px] rounded-full animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/5 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 contrast-150 brightness-100 dark:invert-0 invert" />
+        
+        {/* Faint Dot Grid Pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(rgba(120,120,128,0.08)_1.5px,transparent_1.5px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_at_center,black_80%,transparent_100%)]" />
+        
+        {/* Shaded matrix-like characters grid overlay */}
+        <div className="absolute inset-0 grid grid-cols-6 md:grid-cols-12 grid-rows-6 md:grid-rows-12 gap-4 p-8 text-foreground/[0.04] dark:text-foreground/[0.03] font-mono text-[10px] select-none">
+          <span>01</span><span>10</span><span>Ø</span><span>∫</span><span>11</span><span>λ</span>
+          <span>θ</span><span>00</span><span>√</span><span>10</span><span>π</span><span>01</span>
+          <span>11</span><span>λ</span><span>01</span><span>θ</span><span>10</span><span>Ø</span>
+          <span>∫</span><span>01</span><span>11</span><span>00</span><span>√</span><span>π</span>
+          <span>Ø</span><span>10</span><span>θ</span><span>λ</span><span>01</span><span>11</span>
+          <span>10</span><span>00</span><span>∫</span><span>√</span><span>11</span><span>θ</span>
+          <span>01</span><span>10</span><span>Ø</span><span>∫</span><span>11</span><span>λ</span>
+          <span>θ</span><span>00</span><span>√</span><span>10</span><span>π</span><span>01</span>
+          <span>11</span><span>λ</span><span>01</span><span>θ</span><span>10</span><span>Ø</span>
+          <span>∫</span><span>01</span><span>11</span><span>00</span><span>√</span><span>π</span>
+          <span>Ø</span><span>10</span><span>θ</span><span>λ</span><span>01</span><span>11</span>
+          <span>10</span><span>00</span><span>∫</span><span>√</span><span>11</span><span>θ</span>
+        </div>
       </div>
 
       <main className="flex-1 relative z-10">
@@ -94,36 +115,7 @@ export default function LandingPage() {
             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
             className="max-w-7xl mx-auto"
           >
-            <div className="relative aspect-video md:aspect-[3/1] bg-foreground/5 border border-foreground/5 rounded-[24px] md:rounded-[40px] overflow-hidden shadow-[0_0_80px_-20px_rgba(59,130,246,0.1)] group">
-               {/* Internal UI Simulation Glows */}
-               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-apple-blue/10 via-transparent to-transparent opacity-50" />
-               <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <Bot className="w-8 h-8 md:w-12 md:h-12 text-foreground/10 mx-auto mb-4 group-hover:scale-110 transition-transform duration-1000" />
-                    <div className="flex items-center gap-2 justify-center">
-                       <div className="w-1 h-1 md:w-1.5 md:h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                       <span className="text-[8px] md:text-[10px] font-bold text-foreground/30 uppercase tracking-[0.2em]">Neural Link Active</span>
-                    </div>
-                  </div>
-               </div>
-               
-               {/* Floating Data Nodes UI - Scaled Down */}
-               <div className="absolute bottom-4 left-6 md:bottom-8 md:left-10 p-3 md:p-4 bg-background/50 border border-card-border rounded-2xl backdrop-blur-xl hidden sm:block">
-                  <div className="flex items-center gap-3 mb-1 md:mb-2">
-                    <Zap className="w-3 h-3 md:w-3.5 md:h-3.5 text-apple-blue" />
-                    <span className="text-[8px] md:text-[10px] font-bold text-foreground/40 uppercase tracking-widest">LPU Ingress</span>
-                  </div>
-                  <div className="text-sm md:text-xl font-bold font-mono">82ms</div>
-               </div>
-
-               <div className="absolute top-4 right-6 md:top-8 md:right-10 p-3 md:p-4 bg-background/50 border border-card-border rounded-2xl backdrop-blur-xl hidden sm:block">
-                  <div className="flex items-center gap-3 mb-1 md:mb-2">
-                    <MessageSquare className="w-3 h-3 md:w-3.5 md:h-3.5 text-purple-500" />
-                    <span className="text-[8px] md:text-[10px] font-bold text-foreground/40 uppercase tracking-widest">Synthesis</span>
-                  </div>
-                  <div className="text-[8px] md:text-[10px] text-foreground/60 font-mono tracking-tighter uppercase">Calibrating...</div>
-               </div>
-            </div>
+            <DashboardPreview />
           </motion.div>
         </section>
 
@@ -157,7 +149,7 @@ export default function LandingPage() {
                </p>
             </div>
 
-            <div className="md:col-span-2 p-8 md:p-12 bg-foreground/[0.02] rounded-[32px] md:rounded-[48px] flex flex-col md:flex-row items-center gap-8 md:gap-12 group transition-all duration-500 overflow-hidden relative">
+            <div className="md:col-span-2 p-8 md:p-12 glass rounded-[32px] md:rounded-[48px] flex flex-col md:flex-row items-center gap-8 md:gap-12 group transition-all duration-500 overflow-hidden relative">
                <div className="flex-1 relative z-10">
                   <h3 className="text-2xl md:text-3xl font-bold mb-4">Marketplace Ready.</h3>
                   <p className="text-silver text-sm md:text-base font-medium">
@@ -208,20 +200,7 @@ export default function LandingPage() {
 
       </main>
 
-      <footer className="py-20 px-6 bg-background/50 backdrop-blur-xl relative z-10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 text-silver text-[12px] font-medium">
-          <div className="flex items-center gap-4">
-             <div className="w-8 h-8 glass rounded-lg flex items-center justify-center text-foreground font-bold text-xs">V</div>
-             <p>© {new Date().getFullYear()} VOID. An <a href="https://www.aethyl.com/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline underline-offset-4 transition-all">Aethyl</a> company. Engineered in the shadows.</p>
-          </div>
-          <div className="flex gap-8">
-            <Link href="/" className="hover:text-foreground transition-colors">Architecture</Link>
-            <Link href="/" className="hover:text-foreground transition-colors">Privacy</Link>
-            <Link href="/" className="hover:text-foreground transition-colors">Neural Hub</Link>
-            <Link href="/" className="hover:text-foreground transition-colors">Uplink</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

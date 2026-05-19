@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Conversation from '@/models/Conversation';
 import Worker from '@/models/Worker';
@@ -9,9 +10,14 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { content } = await req.json();
-  const { id } = await params;
-  const conversationId = id;
+    const { id } = await params;
+    const conversationId = id;
 
     await connectDB();
 
@@ -19,8 +25,13 @@ export async function POST(
     if (!conversation) return NextResponse.json({ error: 'Conversation not found' }, { status: 404 });
 
     const operative = conversation.workerId;
+    if (!operative || operative.userId !== userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const channel = conversation.channel;
     const externalId = conversation.externalId;
+
 
     console.log(`[HUMAN_OVERRIDE] Sending manual reply via ${channel} to ${externalId}`);
 

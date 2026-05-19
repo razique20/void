@@ -1,24 +1,37 @@
+'use client';
+
 import Sidebar from '@/components/Sidebar';
 import Navbar from '@/components/Navbar';
+import { usePathname } from 'next/navigation';
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isLiveChat = pathname === '/dashboard/live';
+
   return (
-    <div className="h-screen relative flex flex-col">
+    <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300">
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
         <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-sidebar">
           <Sidebar />
         </div>
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28">
-          <div className="max-w-6xl mx-auto">
+        {isLiveChat ? (
+          <main className="flex-1 overflow-hidden pt-20">
             {children}
-          </div>
-        </main>
+          </main>
+        ) : (
+          <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28">
+            <div className="max-w-6xl mx-auto">
+              {children}
+            </div>
+          </main>
+        )}
       </div>
     </div>
   );
 }
+

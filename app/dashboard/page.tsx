@@ -48,16 +48,13 @@ export default function DashboardPage() {
 
         setWorkers(workersData);
         setStats(statsData);
+        if (statsData?.dailyInteractions) {
+          setChartData(statsData.dailyInteractions);
+        }
       } catch (err) {
         console.error('Failed to fetch data', err);
       } finally {
         setLoading(false);
-        // Generate mock weekly data
-        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-        setChartData(days.map(day => ({
-          name: day,
-          interactions: Math.floor(Math.random() * 50) + 10
-        })));
       }
     };
 

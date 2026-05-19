@@ -21,8 +21,34 @@ export async function GET() {
     let totalMessages = 0;
     let activeChats = conversations.length;
     
+    // Calculate last 7 days user message interactions
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dailyInteractions: { name: string; dateStr: string; interactions: number }[] = [];
+    
+    // Initialize array with the last 7 days in chronological order
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dayName = daysOfWeek[d.getDay()];
+      const dateStr = d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+      dailyInteractions.push({
+        name: dayName,
+        dateStr,
+        interactions: 0
+      });
+    }
+
     conversations.forEach(conv => {
       totalMessages += conv.messages.length;
+      conv.messages.forEach((msg: any) => {
+        if (msg.role === 'user') {
+          const msgDate = new Date(msg.createdAt || conv.updatedAt).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+          const dayObj = dailyInteractions.find(day => day.dateStr === msgDate);
+          if (dayObj) {
+            dayObj.interactions += 1;
+          }
+        }
+      });
     });
 
     // Real-world ROI Metrics
@@ -43,10 +69,12 @@ export async function GET() {
       estimatedSavings: estimatedSavings.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
       estimatedTimeSaved: estimatedTimeSaved.toFixed(1),
       status: 'Optimal',
-      load: totalMessages > 100 ? 'High Efficiency' : 'Nominal'
+      load: totalMessages > 100 ? 'High Efficiency' : 'Nominal',
+      dailyInteractions: dailyInteractions.map(d => ({ name: d.name, interactions: d.interactions }))
     });
   } catch (error: any) {
     console.error('[ANALYTICS_ERROR]', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+

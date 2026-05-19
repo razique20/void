@@ -24,7 +24,7 @@ export default function Navbar() {
   return (
     <>
       <nav className={cn(
-        "fixed top-0 w-full z-[150] transition-all duration-300 px-4 md:px-6 py-4",
+        "fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-4 [transform:translate3d(0,0,0)]",
         isOpen ? "bg-background" : "bg-background/80 backdrop-blur-md"
       )}>
         <div className="flex justify-between items-center px-2 md:px-4 max-w-full">
