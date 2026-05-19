@@ -1,0 +1,12 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Solid Black Background with slightly rounded premium corners -->
+  <rect width="256" height="256" fill="#000000" rx="48" />
+  
+  <!-- Sleek Neural 'V' Symbol -->
+  <path d="M72 80 L128 176 L184 80" stroke="#ffffff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  
+  <!-- Active Neural Nodes -->
+  <circle cx="128" cy="176" r="14" fill="#10b981" />
+  <circle cx="72" cy="80" r="12" fill="#ffffff" />
+  <circle cx="184" cy="80" r="12" fill="#ffffff" />
+</svg>
