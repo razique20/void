@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { ArrowRight, Cpu, Globe, ShieldCheck, Zap, Bot, MessageSquare, ChevronRight, Sparkles } from 'lucide-react';
 import { motion, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { Show, SignInButton } from '@clerk/nextjs';
 
 export default function LandingPage() {
   const containerVariants: Variants = {
@@ -90,18 +91,32 @@ export default function LandingPage() {
             </motion.p>
             
             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
-              <Link 
-                href="/onboarding" 
-                className="w-full sm:w-auto group relative bg-foreground text-background px-10 py-5 rounded-full text-[17px] font-bold transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-foreground/10"
-              >
-                Hire an Operative
-              </Link>
-              <Link 
-                href="/marketplace" 
-                className="w-full sm:w-auto group flex items-center justify-center gap-2 px-8 py-5 rounded-full text-[17px] font-bold text-foreground hover:text-foreground/80 transition-all"
-              >
-                Explore Modules <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              <Show when="signed-in">
+                <Link 
+                  href="/onboarding" 
+                  className="w-full sm:w-auto group relative bg-foreground text-background px-8 py-3.5 rounded-xl text-base font-semibold transition-all hover:bg-foreground/90 active:scale-[0.98] shadow-sm ring-1 ring-foreground/10"
+                >
+                  Hire an Operative
+                </Link>
+                <Link 
+                  href="/marketplace" 
+                  className="w-full sm:w-auto group flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-base font-semibold text-foreground hover:bg-foreground/5 transition-all"
+                >
+                  Explore Modules <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </Show>
+              <Show when="signed-out">
+                <SignInButton mode="modal" fallbackRedirectUrl="/onboarding" signUpFallbackRedirectUrl="/onboarding">
+                  <button className="w-full sm:w-auto group relative bg-foreground text-background px-8 py-3.5 rounded-xl text-base font-semibold transition-all hover:bg-foreground/90 active:scale-[0.98] shadow-sm ring-1 ring-foreground/10">
+                    Hire an Operative
+                  </button>
+                </SignInButton>
+                <SignInButton mode="modal" fallbackRedirectUrl="/marketplace" signUpFallbackRedirectUrl="/marketplace">
+                  <button className="w-full sm:w-auto group flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-base font-semibold text-foreground hover:bg-foreground/5 transition-all">
+                    Explore Modules <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </SignInButton>
+              </Show>
             </motion.div>
           </motion.div>
         </section>
@@ -178,12 +193,21 @@ export default function LandingPage() {
                 Scale into<br />the Void.
               </motion.h2>
               <div className="flex flex-col items-center gap-10 md:gap-8">
-                <Link 
-                  href="/onboarding" 
-                  className="w-full sm:w-auto bg-foreground text-background px-12 py-6 rounded-full text-lg font-bold hover:scale-105 transition-all shadow-[0_0_50px_-10px_rgba(var(--primary),0.3)]"
-                >
-                  Enter the Console
-                </Link>
+                <Show when="signed-in">
+                  <Link 
+                    href="/onboarding" 
+                    className="w-full sm:w-auto bg-foreground text-background px-10 py-4 rounded-xl text-lg font-semibold transition-all hover:bg-foreground/90 active:scale-[0.98] shadow-sm ring-1 ring-foreground/10"
+                  >
+                    Enter the Console
+                  </Link>
+                </Show>
+                <Show when="signed-out">
+                  <SignInButton mode="modal" fallbackRedirectUrl="/onboarding" signUpFallbackRedirectUrl="/onboarding">
+                    <button className="w-full sm:w-auto bg-foreground text-background px-10 py-4 rounded-xl text-lg font-semibold transition-all hover:bg-foreground/90 active:scale-[0.98] shadow-sm ring-1 ring-foreground/10">
+                      Enter the Console
+                    </button>
+                  </SignInButton>
+                </Show>
                 <div className="flex flex-wrap items-center justify-center gap-4 md:gap-4 text-foreground/40 text-[10px] md:text-sm font-bold uppercase tracking-widest">
                    <span>Secure Synthesis</span>
                    <span className="w-1 h-1 bg-foreground/20 rounded-full" />
