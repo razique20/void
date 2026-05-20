@@ -176,17 +176,17 @@ export default function DashboardPreview() {
       </div>
 
       {/* Right Panel: Live Ingress Console Stream (Col-span 4) */}
-      <div className="p-6 md:col-span-4 flex flex-col justify-between bg-black/40 text-left relative overflow-hidden font-mono min-h-[180px] md:min-h-0">
-        <div className="flex items-center justify-between border-b border-foreground/10 pb-3 mb-3">
+      <div className="p-6 md:col-span-4 flex flex-col justify-between bg-black/80 text-left relative overflow-hidden font-mono min-h-[180px] md:min-h-0 border-l border-foreground/10">
+        <div className="flex items-center justify-between border-b border-foreground/20 pb-3 mb-3">
           <div className="flex items-center gap-2">
-            <Terminal className="w-3.5 h-3.5 text-silver" />
-            <span className="text-[9px] font-bold text-silver uppercase tracking-wider">Ingress Live Stream</span>
+            <Terminal className="w-3.5 h-3.5 text-white" />
+            <span className="text-[9px] font-bold text-white uppercase tracking-wider">Ingress Live Stream</span>
           </div>
-          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-[pulse_1s_infinite] shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
         </div>
 
         {/* Scrollable logs */}
-        <div className="flex-1 flex flex-col gap-2 justify-end text-[10px] text-silver/80 overflow-hidden select-text">
+        <div className="flex-1 flex flex-col gap-2 justify-end text-[10px] text-gray-200 overflow-hidden select-text">
           <AnimatePresence initial={false}>
             {logs.map((log) => (
               <motion.div 
@@ -195,15 +195,15 @@ export default function DashboardPreview() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="truncate leading-normal flex items-start gap-1"
+                className="truncate leading-normal flex items-start gap-1 drop-shadow-md"
               >
-                <span className="text-apple-blue/70 shrink-0">&gt;</span>
+                <span className="text-apple-blue shrink-0 font-bold">&gt;</span>
                 <div className="truncate">
-                  <span className="text-[9px] text-silver/40 mr-1">[{log.time}]</span>
+                  <span className="text-[9px] text-gray-500 mr-1 font-semibold">[{log.time}]</span>
                   <span className={
-                    log.type === 'success' ? 'text-emerald-400 font-bold' :
-                    log.type === 'sync' ? 'text-purple-400' :
-                    log.type === 'intent' ? 'text-yellow-400' : 'text-silver'
+                    log.type === 'success' ? 'text-emerald-400 font-bold drop-shadow-[0_0_4px_rgba(52,211,153,0.3)]' :
+                    log.type === 'sync' ? 'text-purple-300 font-medium' :
+                    log.type === 'intent' ? 'text-yellow-300 font-bold' : 'text-gray-100 font-medium'
                   }>
                     {log.msg}
                   </span>
