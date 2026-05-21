@@ -137,7 +137,7 @@ export default function LandingPage() {
         {/* Feature Bento Grid */}
         <section className="max-w-7xl mx-auto px-6 py-20 md:py-32">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            <div className="md:col-span-2 p-8 md:p-12 glass rounded-[32px] md:rounded-[48px] flex flex-col justify-between group transition-all duration-500 relative overflow-hidden">
+            <div className="md:col-span-2 p-8 md:p-12 bg-foreground/[0.03] dark:bg-foreground/[0.01] border border-foreground/5 backdrop-blur-3xl rounded-[32px] md:rounded-[48px] flex flex-col justify-between group transition-all duration-500 relative overflow-hidden">
                <div className="relative z-10">
                   <Cpu className="w-10 h-10 md:w-12 md:h-12 mb-6 md:mb-8 text-apple-blue" />
                   <h3 className="text-2xl md:text-3xl font-bold mb-4">Neural Architecture.</h3>
@@ -148,7 +148,7 @@ export default function LandingPage() {
                <div className="absolute top-0 right-0 w-64 h-64 bg-apple-blue/5 blur-[80px] group-hover:bg-apple-blue/10 transition-all" />
             </div>
 
-            <div className="p-8 md:p-12 glass rounded-[32px] md:rounded-[48px] group hover:border-foreground/10 transition-all duration-500">
+            <div className="p-8 md:p-12 bg-foreground/[0.03] dark:bg-foreground/[0.01] border border-foreground/5 backdrop-blur-3xl rounded-[32px] md:rounded-[48px] group hover:border-foreground/10 transition-all duration-500">
                <Globe className="w-10 h-10 md:w-12 md:h-12 mb-6 md:mb-8 text-purple-500" />
                <h3 className="text-lg md:text-xl font-bold mb-4">Omnipresent.</h3>
                <p className="text-silver text-sm font-medium leading-relaxed">
@@ -156,7 +156,7 @@ export default function LandingPage() {
                </p>
             </div>
 
-            <div className="p-8 md:p-12 glass rounded-[32px] md:rounded-[48px] group transition-all duration-500">
+            <div className="p-8 md:p-12 bg-foreground/[0.03] dark:bg-foreground/[0.01] border border-foreground/5 backdrop-blur-3xl rounded-[32px] md:rounded-[48px] group transition-all duration-500">
                <ShieldCheck className="w-10 h-10 md:w-12 md:h-12 mb-6 md:mb-8 text-emerald-500" />
                <h3 className="text-lg md:text-xl font-bold mb-4">Sovereign.</h3>
                <p className="text-silver text-sm font-medium leading-relaxed">
@@ -164,7 +164,7 @@ export default function LandingPage() {
                </p>
             </div>
 
-            <div className="md:col-span-2 p-8 md:p-12 glass rounded-[32px] md:rounded-[48px] flex flex-col md:flex-row items-center gap-8 md:gap-12 group transition-all duration-500 overflow-hidden relative">
+            <div className="md:col-span-2 p-8 md:p-12 bg-foreground/[0.03] dark:bg-foreground/[0.01] border border-foreground/5 backdrop-blur-3xl rounded-[32px] md:rounded-[48px] flex flex-col md:flex-row items-center gap-8 md:gap-12 group transition-all duration-500 overflow-hidden relative">
                <div className="flex-1 relative z-10">
                   <h3 className="text-2xl md:text-3xl font-bold mb-4">Marketplace Ready.</h3>
                   <p className="text-silver text-sm md:text-base font-medium">
