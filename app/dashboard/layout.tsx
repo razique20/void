@@ -2,6 +2,7 @@
 
 import Sidebar from '@/components/Sidebar';
 import Navbar from '@/components/Navbar';
+import MobileBottomNav from '@/components/MobileBottomNav';
 import { usePathname } from 'next/navigation';
 
 export default function DashboardLayout({
@@ -16,15 +17,16 @@ export default function DashboardLayout({
     <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300">
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
-        <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-sidebar">
+        <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-transparent">
           <Sidebar />
         </div>
+        <MobileBottomNav />
         {isLiveChat ? (
-          <main className="flex-1 overflow-hidden pt-20">
+          <main className="flex-1 overflow-hidden pt-20 pb-16 md:pb-0">
             {children}
           </main>
         ) : (
-          <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28">
+          <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28 pb-24 md:pb-8">
             <div className="max-w-6xl mx-auto">
               {children}
             </div>

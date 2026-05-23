@@ -53,6 +53,12 @@ const WorkerSchema = new Schema({
       port: { type: String, default: '465' },
       user: { type: String },
       pass: { type: String }
+    },
+    calcom: {
+      isActive: { type: Boolean, default: false },
+      apiKey: { type: String },
+      eventTypeId: { type: String },
+      username: { type: String }
     }
   }
 }, { timestamps: true });

@@ -5,6 +5,7 @@ import { Database, Download, Search, User, Phone, Mail, Calendar, ExternalLink, 
 import { cn } from '@/lib/utils';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
+import MobileBottomNav from '@/components/MobileBottomNav';
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<any[]>([]);
@@ -97,10 +98,11 @@ export default function LeadsPage() {
     <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300">
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
-        <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-sidebar">
+        <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-transparent">
           <Sidebar />
         </div>
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28">
+        <MobileBottomNav />
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28 pb-24 md:pb-8">
           <div className="max-w-6xl mx-auto">
             
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -110,7 +112,7 @@ export default function LeadsPage() {
                   <div className="w-1 h-1 bg-foreground/20 rounded-full" />
                   <div className="text-[10px] font-bold text-amber-500 uppercase tracking-widest">Lead Management Active</div>
                 </div>
-                <h1 className="text-[40px] font-bold tracking-tight leading-none mb-4 text-foreground">Architect Leads.</h1>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-none mb-4 text-foreground">Architect Leads.</h1>
                 <p className="text-silver text-[16px] font-medium max-w-xl leading-relaxed">
                   Automatically captured prospects from your neural workforce across all channels.
                 </p>

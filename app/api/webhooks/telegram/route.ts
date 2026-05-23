@@ -8,6 +8,7 @@ import SystemLog from '@/models/SystemLog';
 import Groq from 'groq-sdk';
 import { getContactMemory, updateMemorySummary, buildMemoryPrompt } from '@/lib/memory';
 import { checkRateLimit } from '@/lib/rateLimit';
+import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 
 /**
  * TELEGRAM WEBHOOK HANDLER
@@ -134,6 +135,34 @@ Example: [LEAD: ${userName}, email@example.com, ${chatId}, {"interest": "General
       `;
     }
 
+    if (operative.tools?.emailAgent?.isActive) {
+      systemPrompt += `
+\nCRITICAL CAPABILITY: You can send professional emails.
+If the user asks you to send an email, include this exact tag:
+[SEND_EMAIL: recipient@example.com, Subject Line, The message body here]
+      `;
+    }
+
+    if (operative.tools?.calcom?.isActive && operative.tools.calcom.username && operative.tools.calcom.eventTypeId) {
+      const calLink = `https://cal.com/${operative.tools.calcom.username}/${operative.tools.calcom.eventTypeId}`;
+      systemPrompt += `
+\nCALENDAR BOOKING CAPABILITY: You have a live calendar for booking meetings.
+If the user wants to schedule a meeting, call, or appointment, provide them this link: ${calLink}
+Do NOT book on their behalf — just share the link.
+      `;
+    }
+
+    if (operative.actions && operative.actions.length > 0) {
+      const activeActions = operative.actions.filter((a: any) => a.isActive);
+      if (activeActions.length > 0) {
+        systemPrompt += `\n\nACTION CAPABILITIES: You have access to custom business tools.
+When a user asks for a task matching these descriptions, include the [ACTION: name, data] tag.`;
+        activeActions.forEach((action: any) => {
+          systemPrompt += `\n- TOOL: ${action.name}. USE CASE: ${action.description}. FORMAT: [ACTION: ${action.name}, JSON_DATA_HERE]`;
+        });
+      }
+    }
+
     // 5. Dynamic AI Provider
     let apiKey = process.env.GROQ_API_KEY;
     let modelName = 'llama-3.3-70b-versatile';
@@ -242,29 +271,17 @@ Example: [LEAD: ${userName}, email@example.com, ${chatId}, {"interest": "General
           });
 
           // Sync to External CRM
-          if (userDoc?.leadWebhookUrl) {
-            try {
-              fetch(userDoc.leadWebhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  event: 'lead_captured',
-                  architectId: operative.userId,
-                  operativeId: operative._id,
-                  lead: {
-                    name: name.trim(),
-                    email: email.trim(),
-                    phone: phone.trim() || chatId.toString(),
-                    source: 'Telegram',
-                    data: extraData,
-                    timestamp: new Date().toISOString()
-                  }
-                })
-              }).catch(e => console.error('[LEAD_SYNC_FETCH_ERROR_TG]', e));
-            } catch (e) {
-              console.error('[LEAD_SYNC_ERROR_TG]', e);
-            }
-          }
+          syncLeadToWebhook(
+            userDoc?.leadWebhookUrl,
+            {
+              name: name.trim(),
+              email: email.trim(),
+              phone: phone.trim() || chatId.toString(),
+              source: 'Telegram',
+              data: extraData
+            },
+            { architectId: operative.userId, operativeId: operative._id.toString() }
+          );
 
           // Strip the tag from the final message
           aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, "").trim();
@@ -276,6 +293,42 @@ Example: [LEAD: ${userName}, email@example.com, ${chatId}, {"interest": "General
          aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, "").trim();
       }
     }
+
+    // Email Handler for Telegram
+    if (aiResponse.includes('[SEND_EMAIL:')) {
+      const match = aiResponse.match(/\[SEND_EMAIL:\s*([^,]+),\s*([^,]+),\s*([^\]]+)\]/);
+      if (match && operative.tools?.emailAgent?.isActive) {
+        const [_, to, subject, body] = match;
+        const config = operative.tools.emailAgent;
+        try {
+          const { sendOperativeEmail } = await import('@/lib/mailer');
+          await sendOperativeEmail({
+            host: config.host,
+            port: parseInt(config.port),
+            user: config.user,
+            pass: config.pass,
+            to: to.trim(),
+            subject: subject.trim(),
+            body: body.trim(),
+            fromName: operative.name
+          });
+          aiResponse = aiResponse.replace(/\[SEND_EMAIL:.*?\]/, `✅ Email sent to ${to.trim()}.`);
+        } catch (emailErr: any) {
+          console.error('[TG_EMAIL_ERROR]', emailErr);
+          aiResponse = aiResponse.replace(/\[SEND_EMAIL:.*?\]/, `⚠️ Email delivery failed.`);
+        }
+      }
+    }
+
+    // NEW: Action Execution via shared utility
+    aiResponse = await executeActions(aiResponse, operative.actions || [], {
+      workerId: operative._id.toString(),
+      workerName: operative.name,
+      channel: 'telegram',
+      contactId: chatId.toString(),
+      chatId,
+      userName,
+    });
 
     // 6. Send Response back to Telegram
     const tgUrl = `https://api.telegram.org/bot${tgToken}/sendMessage`;

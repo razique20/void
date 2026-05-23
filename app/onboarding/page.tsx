@@ -161,7 +161,7 @@ export default function OnboardingPage() {
               className="space-y-8"
             >
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold tracking-tight text-foreground">Name your operative.</h1>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Name your operative.</h1>
                 <p className="text-silver font-medium">Every agent needs a professional identity.</p>
               </div>
 
@@ -215,7 +215,7 @@ export default function OnboardingPage() {
               className="space-y-8"
             >
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold tracking-tight text-foreground">Prime the brain.</h1>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Prime the brain.</h1>
                 <p className="text-silver font-medium">Upload your company documents to train {formData.name}.</p>
               </div>
 
@@ -270,7 +270,7 @@ export default function OnboardingPage() {
               className="space-y-8"
             >
               <div className="text-center space-y-2">
-                <h1 className="text-4xl font-bold tracking-tight text-foreground">Deploy to WhatsApp.</h1>
+                <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Deploy to WhatsApp.</h1>
                 <p className="text-silver font-medium">Connect your Meta credentials to go live.</p>
               </div>
 
@@ -330,7 +330,7 @@ export default function OnboardingPage() {
               </div>
 
               <div className="space-y-4">
-                <h1 className="text-5xl font-bold tracking-tighter text-foreground">Synthesis Active.</h1>
+                <h1 className="text-3xl md:text-4xl font-bold tracking-tighter text-foreground">Synthesis Active.</h1>
                 <p className="text-silver text-lg font-medium max-w-sm mx-auto">
                    Calibrating neural pathways for <span className="text-foreground">@{formData.name}</span>. Preparing your command console.
                 </p>

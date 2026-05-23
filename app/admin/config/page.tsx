@@ -8,16 +8,41 @@ export default function NeuralConfigPage() {
   const [providers, setProviders] = useState<any[]>([]);
   const [globalConfig, setGlobalConfig] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
       fetch('/api/admin/providers').then(res => res.json()),
       fetch('/api/admin/config').then(res => res.json())
     ]).then(([providersData, configData]) => {
-      setProviders(providersData);
-      setGlobalConfig(configData);
-    }).finally(() => setLoading(false));
+      if (providersData?.error) {
+        setError(providersData.error);
+      } else if (configData?.error) {
+        setError(configData.error);
+      } else {
+        setProviders(providersData);
+        setGlobalConfig(configData);
+      }
+    })
+    .catch(err => setError(err.message))
+    .finally(() => setLoading(false));
   }, []);
+
+  if (error) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center text-foreground p-6">
+        <ShieldCheck className="w-16 h-16 text-red-500 mb-6 opacity-20" />
+        <h1 className="text-2xl font-bold mb-2">Access Restricted</h1>
+        <p className="text-silver text-center max-w-md">{error}</p>
+        <button 
+          onClick={() => window.location.href = '/dashboard'}
+          className="mt-8 px-6 py-2 bg-foreground/5 border-none rounded-full hover:bg-foreground/10 transition-colors"
+        >
+          Return to Dashboard
+        </button>
+      </div>
+    );
+  }
 
   const toggleFeature = async (feature: string) => {
     const newFlags = {

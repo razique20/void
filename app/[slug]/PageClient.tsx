@@ -191,7 +191,7 @@ export default function PageClient({ slug }: { slug: string }) {
             <span className="w-1.5 h-1.5 bg-apple-blue rounded-full animate-pulse" />
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/60">{content.badge}</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-[-0.05em] mb-4 text-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-[-0.05em] mb-4 text-foreground">
             {content.title}
           </h1>
           <p className="text-silver text-lg md:text-xl font-medium tracking-tight max-w-3xl leading-relaxed">

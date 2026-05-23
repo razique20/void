@@ -11,6 +11,7 @@ import SystemLog from '@/models/SystemLog';
 import { getContactMemory, updateMemorySummary, buildMemoryPrompt } from '@/lib/memory';
 import { checkRateLimit } from '@/lib/rateLimit';
 import Lead from '@/models/Lead';
+import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 
 export async function POST(req: Request) {
   try {
@@ -104,6 +105,16 @@ You can continue your conversation after the tag.
 When a user expresses interest, provides contact info, or asks to be contacted, you MUST include this tag:
 [LEAD: name, email, phone, extra_notes_json]
 Example: [LEAD: John Doe, john@gmail.com, +1234567, {"interest": "Pro Plan", "source": "WhatsApp"}]
+      `;
+    }
+
+    // NEW: Calendar Booking Injection
+    if (worker.tools?.calcom?.isActive && worker.tools.calcom.username && worker.tools.calcom.eventTypeId) {
+      const calLink = `https://cal.com/${worker.tools.calcom.username}/${worker.tools.calcom.eventTypeId}`;
+      systemPrompt += `
+\nCALENDAR BOOKING CAPABILITY: You have a live calendar for booking meetings.
+If the user wants to schedule a meeting, call, or appointment, you MUST provide them with this exact link to book a time: ${calLink}
+Always be polite and let them know they can pick a time that works best for them using the link. Do NOT attempt to book it for them or ask for a specific time, just give them the link.
       `;
     }
 
@@ -268,30 +279,18 @@ When a user asks for a task matching these descriptions, you MUST include the [A
           });
 
           // NEW: Auto-Sync to External CRM/Excel (Zapier/Make)
-          if (userDoc?.leadWebhookUrl) {
-            try {
-              fetch(userDoc.leadWebhookUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  event: 'lead_captured',
-                  architectId: userId,
-                  operativeId: worker._id,
-                  lead: {
-                    id: existingLead?._id,
-                    name: name.trim(),
-                    email: email.trim(),
-                    phone: phone.trim(),
-                    source: 'Web Chat',
-                    data: extraData,
-                    timestamp: new Date().toISOString()
-                  }
-                })
-              }).catch(e => console.error('[LEAD_SYNC_FETCH_ERROR]', e));
-            } catch (e) {
-              console.error('[LEAD_SYNC_ERROR]', e);
-            }
-          }
+          syncLeadToWebhook(
+            userDoc?.leadWebhookUrl,
+            {
+              id: existingLead?._id?.toString(),
+              name: name.trim(),
+              email: email.trim(),
+              phone: phone.trim(),
+              source: 'Web Chat',
+              data: extraData,
+            },
+            { architectId: userId, operativeId: worker._id.toString() }
+          );
 
           aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, `(System: Lead captured for ${name.trim()})`);
         } catch (err) {
@@ -301,51 +300,13 @@ When a user asks for a task matching these descriptions, you MUST include the [A
       }
     }
 
-    // NEW: Generic Webhook Action Execution (Option B Live)
-    if (aiResponse.includes('[ACTION:')) {
-      const actionMatches = aiResponse.match(/\[ACTION:\s*([^,]+),\s*([^\]]+)\]/g);
-      
-      if (actionMatches) {
-        for (const fullTag of actionMatches) {
-          const match = fullTag.match(/\[ACTION:\s*([^,]+),\s*([^\]]+)\]/);
-          if (!match) continue;
-
-          const actionName = match[1].trim();
-          const actionDataRaw = match[2].trim();
-          
-          // Find the configured webhook for this action
-          const configuredAction = worker.actions?.find((a: any) => a.name === actionName);
-          
-          if (configuredAction && configuredAction.webhookUrl) {
-            try {
-              console.log(`[ACTION_TRIGGER] Firing ${actionName} to ${configuredAction.webhookUrl}`);
-              
-              // Parse data if possible, else send as string
-              let payload;
-              try { payload = JSON.parse(actionDataRaw); } catch { payload = { data: actionDataRaw }; }
-
-              const webhookResponse = await fetch(configuredAction.webhookUrl, {
-                method: configuredAction.method || 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  action: actionName,
-                  workerId: worker._id,
-                  workerName: worker.name,
-                  timestamp: new Date().toISOString(),
-                  payload
-                })
-              });
-
-              // Clean up the tag
-              aiResponse = aiResponse.replace(fullTag, `(Action: ${actionName} executed)`);
-            } catch (err: any) {
-              console.error('[ACTION_EXECUTION_ERROR]', err);
-              aiResponse = aiResponse.replace(fullTag, `(Action: ${actionName} failed to connect)`);
-            }
-          }
-        }
-      }
-    }
+    // NEW: Action Execution via shared utility
+    aiResponse = await executeActions(aiResponse, worker.actions || [], {
+      workerId: worker._id.toString(),
+      workerName: worker.name,
+      channel: 'web',
+      contactId: userId,
+    });
 
 
     // 9. Store Messages

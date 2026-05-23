@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
+import MobileBottomNav from '@/components/MobileBottomNav';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 import { 
   BookOpen, 
   Send, 
@@ -17,7 +20,10 @@ import {
   CloudUpload,
   Globe,
   ChevronRight,
-  MessageSquare
+  MessageSquare,
+  Info,
+  Sparkles,
+  Check
 } from 'lucide-react';
 
 export default function TrainingPage() {
@@ -31,6 +37,12 @@ export default function TrainingPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showSandbox, setShowSandbox] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   useEffect(() => {
     fetch('/api/workers')
@@ -83,20 +95,38 @@ export default function TrainingPage() {
         setContent('');
         setUrl('');
         setFile(null);
+        showToast('Intelligence injected successfully!');
         setTimeout(() => setSuccess(false), 3000);
       } else {
         try {
           const err = await res.json();
-          alert(err.error || 'Failed to train worker');
+          showToast(err.error || 'Failed to train worker', 'error');
         } catch {
-          alert('Failed to train worker. Server returned an unexpected error.');
+          showToast('Failed to train worker. Server returned an unexpected error.', 'error');
         }
       }
     } catch (error) {
       console.error(error);
-      alert('An error occurred during training');
+      showToast('An error occurred during training', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: { 
+      opacity: 1, 
+      y: 0,
+      transition: { type: 'spring', stiffness: 300, damping: 24 }
     }
   };
 
@@ -104,27 +134,50 @@ export default function TrainingPage() {
     <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300">
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
-        <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-sidebar">
+        <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-transparent">
           <Sidebar />
         </div>
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28">
-          <div className="max-w-6xl mx-auto">
+        <MobileBottomNav />
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28 pb-24 md:pb-8 relative">
+          
+          {/* Background Neural Ambience */}
+          <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
+
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="max-w-6xl mx-auto relative z-10"
+          >
             {/* Header */}
-            <div className="mb-8">
-              <h1 className="text-[36px] font-bold tracking-tight leading-none mb-2 text-foreground">Knowledge Core.</h1>
-              <p className="text-silver text-[16px] font-medium">Inject intelligence into your neural fleet.</p>
-            </div>
+            <motion.div variants={itemVariants} className="mb-8">
+              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-3">
+                Knowledge Core
+                <span className="inline-flex items-center justify-center text-[10px] font-bold text-purple-500 bg-purple-500/10 border border-purple-500/10 px-2 py-0.5 rounded-full uppercase tracking-widest mt-1">
+                  Neural
+                </span>
+              </h1>
+              <p className="text-silver text-sm md:text-base font-medium mt-1">Inject intelligence and training data into your autonomous fleet.</p>
+            </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              
               {/* Main Workspace */}
-              <div className="lg:col-span-8 space-y-6">
+              <motion.div variants={itemVariants} className="lg:col-span-8 space-y-6">
                 <form onSubmit={handleTrain} className="space-y-6">
                   
                   {/* Worker Selection */}
-                  <div className="space-y-3">
-                    <h2 className="text-[11px] font-bold text-silver uppercase tracking-[0.2em] px-1">Target Operative</h2>
+                  <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] p-6 rounded-[28px] space-y-4">
+                    <div>
+                      <h2 className="text-xs font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
+                        <BrainCircuit className="w-4 h-4 text-apple-blue" />
+                        Target Operative
+                      </h2>
+                      <p className="text-[11px] text-silver mt-0.5">Select which operative will receive this intelligence.</p>
+                    </div>
                     <select 
-                      className="w-full bg-foreground/5 rounded-[16px] px-5 py-3.5 text-base font-bold focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all appearance-none text-foreground"
+                      className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-2xl px-5 py-4 text-sm font-bold focus:outline-none focus:border-apple-blue/40 transition-all appearance-none text-foreground"
                       value={selectedWorker}
                       onChange={(e) => setSelectedWorker(e.target.value)}
                     >
@@ -134,10 +187,17 @@ export default function TrainingPage() {
                     </select>
                   </div>
 
-                  {/* Ingestion Mode */}
-                  <div className="space-y-3">
-                    <h2 className="text-[11px] font-bold text-silver uppercase tracking-[0.2em] px-1">Ingestion Mode</h2>
-                    <div className="flex p-1 bg-foreground/5 rounded-[16px]">
+                  {/* Ingestion Mode Tabs */}
+                  <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] p-6 rounded-[28px] space-y-4">
+                    <div>
+                      <h2 className="text-xs font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
+                        <Database className="w-4 h-4 text-apple-blue" />
+                        Ingestion Mode
+                      </h2>
+                      <p className="text-[11px] text-silver mt-0.5">Choose how you want to feed intelligence data.</p>
+                    </div>
+
+                    <div className="flex p-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl">
                       {[
                         { id: 'text', icon: Type, label: 'Manual' },
                         { id: 'file', icon: FileUp, label: 'Document' },
@@ -147,11 +207,12 @@ export default function TrainingPage() {
                           key={m.id}
                           type="button"
                           onClick={() => setMode(m.id as any)}
-                          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-[12px] text-[12px] font-bold transition-all ${
+                          className={cn(
+                            "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold transition-all",
                             mode === m.id 
-                              ? 'bg-foreground text-background shadow-xl' 
-                              : 'text-silver hover:text-foreground'
-                          }`}
+                              ? "bg-foreground text-background shadow-lg shadow-foreground/5" 
+                              : "text-silver hover:text-foreground"
+                          )}
                         >
                           <m.icon className="w-4 h-4" />
                           {m.label}
@@ -161,18 +222,21 @@ export default function TrainingPage() {
                   </div>
 
                   {/* Content Area */}
-                  <div className="bg-foreground/5 rounded-[20px] p-6 space-y-6 min-h-[280px] flex flex-col">
+                  <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] rounded-[28px] p-6 min-h-[280px] flex flex-col">
                     {mode === 'text' && (
-                      <div className="space-y-6 flex-1 animate-in fade-in duration-500">
-                        <div className="flex gap-3">
+                      <div className="space-y-4 flex-1 flex flex-col animate-in fade-in duration-500">
+                        <div className="flex gap-2">
                           {['faq', 'manual', 'general'].map((t) => (
                             <button
                               key={t}
                               type="button"
                               onClick={() => setSource(t)}
-                              className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${
-                                source === t ? 'bg-apple-blue text-white' : 'bg-foreground/10 text-silver hover:bg-foreground/20'
-                              }`}
+                              className={cn(
+                                "px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest border transition-all",
+                                source === t 
+                                  ? "bg-apple-blue text-white border-transparent" 
+                                  : "bg-foreground/[0.02] dark:bg-white/[0.02] border-foreground/5 dark:border-white/5 text-silver hover:text-foreground hover:border-foreground/10"
+                              )}
                             >
                               {t}
                             </button>
@@ -191,7 +255,7 @@ export default function TrainingPage() {
 
                     {mode === 'file' && (
                       <div className="flex-1 flex flex-col items-center justify-center animate-in zoom-in-95 duration-500">
-                        <div className="w-full h-full bg-foreground/[0.02] rounded-[18px] flex flex-col items-center justify-center p-8 hover:bg-foreground/[0.04] transition-all cursor-pointer relative group">
+                        <div className="w-full h-full bg-foreground/[0.01] dark:bg-white/[0.01] border-2 border-dashed border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl flex flex-col items-center justify-center p-8 hover:border-apple-blue/20 hover:bg-apple-blue/[0.01] transition-all cursor-pointer relative group">
                           <input 
                             type="file"
                             className="absolute inset-0 opacity-0 cursor-pointer"
@@ -199,22 +263,22 @@ export default function TrainingPage() {
                           />
                           {file ? (
                             <div className="flex flex-col items-center gap-3">
-                              <div className="w-14 h-14 bg-apple-blue/10 rounded-[18px] flex items-center justify-center">
+                              <div className="w-14 h-14 bg-apple-blue/10 rounded-2xl flex items-center justify-center">
                                 <FileUp className="w-7 h-7 text-apple-blue" />
                               </div>
                               <div className="text-center">
-                                <p className="font-bold text-base text-foreground">{file.name}</p>
-                                <p className="text-silver text-xs mt-1">Ready for neural ingestion</p>
+                                <p className="font-bold text-sm text-foreground">{file.name}</p>
+                                <p className="text-silver text-[11px] mt-1">Ready for neural ingestion</p>
                               </div>
                             </div>
                           ) : (
                             <div className="flex flex-col items-center gap-4 text-center">
-                              <div className="w-14 h-14 bg-foreground/5 rounded-[18px] flex items-center justify-center group-hover:scale-110 transition-transform">
+                              <div className="w-14 h-14 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
                                 <CloudUpload className="w-7 h-7 text-silver" />
                               </div>
                               <div>
-                                <p className="font-bold text-base text-foreground">Drop Intelligence Brief</p>
-                                <p className="text-silver text-sm mt-1">PDF, DOCX, or TXT (Max 10MB)</p>
+                                <p className="font-bold text-sm text-foreground">Drop Intelligence Brief</p>
+                                <p className="text-silver text-[11px] mt-1">PDF, DOCX, or TXT (Max 10MB)</p>
                               </div>
                             </div>
                           )}
@@ -224,17 +288,17 @@ export default function TrainingPage() {
 
                     {mode === 'website' && (
                       <div className="space-y-6 flex-1 flex flex-col justify-center animate-in slide-in-from-bottom-4 duration-500 px-4">
-                        <div className="w-14 h-14 bg-emerald-500/10 rounded-[18px] flex items-center justify-center mx-auto mb-2">
+                        <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto">
                            <Globe className="w-7 h-7 text-emerald-500" />
                         </div>
-                        <div className="text-center mb-2">
-                           <h3 className="text-xl font-bold text-foreground">Uplink Website</h3>
-                           <p className="text-silver text-sm mt-2">Enter the URL to scrape and digest intelligence.</p>
+                        <div className="text-center">
+                           <h3 className="text-lg font-bold text-foreground">Uplink Website</h3>
+                           <p className="text-silver text-xs mt-1">Enter a URL to scrape and digest intelligence data.</p>
                         </div>
                         <input 
                           type="url"
                           placeholder="https://company.com/knowledge-base"
-                          className="w-full bg-foreground/5 rounded-xl px-5 py-3.5 text-center font-bold focus:outline-none focus:ring-1 focus:ring-foreground/10 transition-all placeholder:text-silver/30 text-foreground"
+                          className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-2xl px-5 py-4 text-center text-sm font-bold focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver/30 text-foreground"
                           value={url}
                           onChange={(e) => setUrl(e.target.value)}
                         />
@@ -242,49 +306,52 @@ export default function TrainingPage() {
                     )}
                   </div>
 
+                  {/* Submit Button */}
                   <button 
                     disabled={loading || !selectedWorker || (mode === 'text' ? !content : mode === 'file' ? !file : !url)}
-                    className="w-full py-3.5 rounded-[16px] bg-foreground text-background text-sm font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-50 shadow-2xl shadow-foreground/5 group"
+                    className="w-full py-4 rounded-2xl bg-foreground text-background text-xs font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.99] transition-all disabled:opacity-50 shadow-xl shadow-foreground/5 group"
                   >
                     {loading ? (
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                     ) : success ? (
                       <>
-                        <CheckCircle2 className="w-5 h-5" />
+                        <CheckCircle2 className="w-4 h-4" />
                         Ingestion Complete
                       </>
                     ) : (
                       <>
                         Inject Intelligence
-                        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                       </>
                     )}
                   </button>
                 </form>
-              </div>
+              </motion.div>
 
               {/* Status Pane */}
-              <div className="lg:col-span-4 space-y-6">
+              <motion.div variants={itemVariants} className="lg:col-span-4 space-y-6">
+                 
                  {/* Test Sandbox */}
                  {selectedWorker && (
-                   <div className="bg-foreground/5 rounded-[20px] overflow-hidden flex flex-col shadow-2xl transition-all duration-300">
+                   <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] rounded-[28px] overflow-hidden transition-all duration-300">
                      <button
                        type="button"
                        onClick={() => setShowSandbox(!showSandbox)}
-                       className="p-4 bg-foreground/5 flex justify-between items-center w-full focus:outline-none hover:bg-foreground/10 transition-colors"
+                       className="p-5 flex justify-between items-center w-full focus:outline-none hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] transition-colors"
                      >
-                       <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
+                       <h3 className="font-bold text-xs text-foreground flex items-center gap-2 uppercase tracking-widest">
                          <MessageSquare className="w-4 h-4 text-apple-blue" />
                          Test Sandbox
                        </h3>
                        <div className="flex items-center gap-3">
-                         <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-500/10 px-2 py-1 rounded">Live</span>
-                         <span className="text-silver text-xs font-bold">{showSandbox ? 'Collapse' : 'Expand'}</span>
+                         <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/10 px-2 py-0.5 rounded-full">Live</span>
+                         <span className="text-silver text-[10px] font-bold">{showSandbox ? 'Collapse' : 'Expand'}</span>
                        </div>
                      </button>
-                     <div className={`transition-all duration-500 ease-in-out overflow-hidden ${
-                       showSandbox ? 'max-h-[450px] opacity-100' : 'max-h-0 opacity-0'
-                     }`}>
+                     <div className={cn(
+                       "transition-all duration-500 ease-in-out overflow-hidden",
+                       showSandbox ? "max-h-[450px] opacity-100" : "max-h-0 opacity-0"
+                     )}>
                        <iframe 
                          src={`/share/${selectedWorker}`} 
                          className="w-full h-[400px] border-none"
@@ -294,45 +361,73 @@ export default function TrainingPage() {
                    </div>
                  )}
 
-                 <div className="bg-foreground/5 rounded-[20px] p-6 space-y-6">
-                    <div className="flex items-center gap-4">
-                       <div className="w-10 h-10 bg-foreground/5 rounded-xl flex items-center justify-center">
+                 {/* Collective Intelligence Status */}
+                 <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] rounded-[28px] p-6 space-y-5 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-purple-500/5 blur-[25px] rounded-full group-hover:bg-purple-500/10 transition-colors pointer-events-none" />
+                    
+                    <div className="flex items-center gap-4 relative z-10">
+                       <div className="w-10 h-10 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-2xl flex items-center justify-center">
                           <BrainCircuit className="w-5 h-5 text-foreground" />
                        </div>
                        <div>
-                          <h3 className="font-bold text-base leading-tight text-foreground">Collective Intelligence</h3>
-                          <p className="text-[11px] font-bold text-silver uppercase tracking-widest mt-1">System Health</p>
+                          <h3 className="font-bold text-sm leading-tight text-foreground">Collective Intelligence</h3>
+                          <p className="text-[10px] font-bold text-silver uppercase tracking-widest mt-0.5">System Health</p>
                        </div>
                     </div>
 
-                    <div className="space-y-4">
-                       <div className="p-3 bg-foreground/5 rounded-xl flex justify-between items-center">
+                    <div className="space-y-3 relative z-10">
+                       <div className="p-3.5 bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl flex justify-between items-center">
                           <span className="text-xs text-silver font-medium">Neural Chunks</span>
-                          <span className="text-sm font-bold text-foreground">1,248</span>
+                          <span className="text-xs font-bold text-foreground">1,248</span>
                        </div>
-                       <div className="p-3 bg-foreground/5 rounded-xl flex justify-between items-center">
+                       <div className="p-3.5 bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl flex justify-between items-center">
                           <span className="text-xs text-silver font-medium">Sync Status</span>
-                          <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-500/10 px-2 py-1 rounded">Optimal</span>
+                          <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/10 px-2 py-0.5 rounded-full">Optimal</span>
                        </div>
                     </div>
 
-                    <div className="pt-4 text-center">
-                       <p className="text-[11px] text-silver leading-relaxed">
+                    <div className="pt-2 text-center relative z-10">
+                       <p className="text-[10px] text-silver leading-relaxed">
                           All intelligence is encrypted and isolated per operative instance. 
                        </p>
                     </div>
                  </div>
 
-                 <div className="p-6 bg-apple-blue/5 border border-apple-blue/10 rounded-[20px] flex flex-col items-center text-center gap-3">
-                    <Database className="w-7 h-7 text-apple-blue" />
-                    <h4 className="font-bold text-foreground">Neural Vectoring</h4>
-                    <p className="text-xs text-apple-blue font-medium leading-relaxed">
-                       Your operatives use vector-embeddings to retrieve this knowledge in real-time during conversations.
-                    </p>
+                 {/* Neural Vectoring Info Banner */}
+                 <div className="p-5 bg-apple-blue/5 border border-apple-blue/10 rounded-[28px] flex gap-3">
+                    <Info className="w-5 h-5 text-apple-blue flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-bold text-xs text-apple-blue mb-1">Neural Vectoring</h4>
+                      <p className="text-[10px] text-apple-blue/80 font-medium leading-relaxed">
+                         Your operatives use vector-embeddings to retrieve this knowledge in real-time during conversations.
+                      </p>
+                    </div>
                  </div>
-              </div>
+              </motion.div>
+
             </div>
-          </div>
+          </motion.div>
+
+          {/* Toast Notification */}
+          {toast && (
+            <motion.div 
+              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-3 rounded-2xl glass border shadow-2xl"
+              style={{ 
+                borderColor: toast.type === 'error' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)' 
+              }}
+            >
+              {toast.type === 'error' ? (
+                <X className="w-4 h-4 text-red-500" />
+              ) : (
+                <Check className="w-4 h-4 text-emerald-500" />
+              )}
+              <span className="text-xs font-bold text-foreground">{toast.message}</span>
+            </motion.div>
+          )}
+
         </main>
       </div>
     </div>

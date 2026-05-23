@@ -31,3 +31,35 @@ export async function GET() {
     return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
   }
 }
+
+export async function PATCH(req: Request) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
+    await connectDB();
+    
+    const { id, status, notes } = await req.json();
+    if (!id) return NextResponse.json({ error: 'Lead ID required' }, { status: 400 });
+
+    const lead = await Lead.findOne({ _id: id, userId });
+    if (!lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
+
+    if (status) lead.status = status;
+    if (notes !== undefined) {
+      // Upsert notes into the data mixed object
+      lead.data = { ...lead.data, manual_notes: notes };
+      // Also mark modified since it's a Mixed type
+      lead.markModified('data');
+    }
+
+    await lead.save();
+
+    return NextResponse.json(lead);
+  } catch (error) {
+    console.error('[LEADS_PATCH]', error);
+    return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
+  }
+}

@@ -40,9 +40,7 @@ export default function LandingPage() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/5 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 contrast-150 brightness-100 dark:invert-0 invert" />
         
-        {/* Faint Dot Grid Pattern */}
-        <div className="absolute inset-0 bg-[radial-gradient(rgba(120,120,128,0.08)_1.5px,transparent_1.5px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_at_center,black_80%,transparent_100%)]" />
-        
+
         {/* Shaded matrix-like characters grid overlay */}
         <div className="absolute inset-0 grid grid-cols-6 md:grid-cols-12 grid-rows-6 md:grid-rows-12 gap-4 p-8 text-foreground/[0.04] dark:text-foreground/[0.03] font-mono text-[10px] select-none">
           <span>01</span><span>10</span><span>Ø</span><span>∫</span><span>11</span><span>λ</span>
@@ -77,7 +75,7 @@ export default function LandingPage() {
 
             <motion.h1 
               variants={itemVariants}
-              className="text-4xl sm:text-5xl md:text-[96px] font-bold tracking-[-0.05em] mb-6 md:mb-8 leading-[1] md:leading-[0.9] text-foreground"
+              className="text-3xl sm:text-4xl md:text-[64px] font-bold tracking-[-0.05em] mb-6 md:mb-8 leading-[1] md:leading-[0.95] text-foreground"
             >
               The Invisible<br className="hidden sm:block" />
               <span className="text-silver"> Workforce.</span>

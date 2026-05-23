@@ -47,6 +47,29 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       }
     }
 
+    // --- AUTO-SANITIZE CAL.COM FIELDS ---
+    // If user pastes a full URL like https://cal.com/username/15min,
+    // extract just the slug (e.g. "15min") as the eventTypeId
+    if (body.tools?.calcom?.eventTypeId) {
+      const rawEventId = body.tools.calcom.eventTypeId as string;
+      if (rawEventId.includes('cal.com/')) {
+        // Extract the last path segment: https://cal.com/username/15min → "15min"
+        const slug = rawEventId.split('/').filter(Boolean).pop() || rawEventId;
+        body.tools.calcom.eventTypeId = slug;
+        console.log(`[API PATCH] Cal.com eventTypeId sanitized: "${rawEventId}" → "${slug}"`);
+      }
+    }
+    if (body.tools?.calcom?.username) {
+      const rawUsername = body.tools.calcom.username as string;
+      if (rawUsername.includes('cal.com/')) {
+        // Extract username: https://cal.com/john-doe/... → "john-doe"
+        const parts = rawUsername.replace(/https?:\/\/cal\.com\//, '').split('/');
+        body.tools.calcom.username = parts[0];
+        console.log(`[API PATCH] Cal.com username sanitized: "${rawUsername}" → "${body.tools.calcom.username}"`);
+      }
+    }
+    // ----------------------------------------
+
     // Use strict: false to ensure the new 'channels' field is accepted even if the model was cached
     const worker = await Worker.findOneAndUpdate(
       { _id: id }, // Removed userId check temporarily to ensure we find it

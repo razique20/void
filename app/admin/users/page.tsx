@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 export default function UserDirectoryPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -16,7 +17,14 @@ export default function UserDirectoryPage() {
   useEffect(() => {
     fetch('/api/admin/users')
       .then(res => res.json())
-      .then(setUsers)
+      .then(data => {
+        if (Array.isArray(data)) {
+          setUsers(data);
+        } else if (data.error) {
+          setError(data.error);
+        }
+      })
+      .catch(err => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -33,7 +41,23 @@ export default function UserDirectoryPage() {
     }
   }, [selectedUser]);
 
-  const filteredUsers = users.filter(u => u.clerkId.toLowerCase().includes(search.toLowerCase()));
+  if (error) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center text-foreground p-6">
+        <ShieldAlert className="w-16 h-16 text-red-500 mb-6 opacity-20" />
+        <h1 className="text-2xl font-bold mb-2">Access Restricted</h1>
+        <p className="text-silver text-center max-w-md">{error}</p>
+        <button 
+          onClick={() => window.location.href = '/dashboard'}
+          className="mt-8 px-6 py-2 bg-foreground/5 border-none rounded-full hover:bg-foreground/10 transition-colors"
+        >
+          Return to Dashboard
+        </button>
+      </div>
+    );
+  }
+
+  const filteredUsers = Array.isArray(users) ? users.filter(u => u.clerkId.toLowerCase().includes(search.toLowerCase())) : [];
 
   const updateUser = async (clerkId: string, updates: any) => {
     setIsUpdating(true);

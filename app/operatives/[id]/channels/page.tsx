@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
+import MobileBottomNav from '@/components/MobileBottomNav';
 import { MessageSquare, Zap, ShieldCheck, CheckCircle2, Loader2, Smartphone, Send, Phone, Mail, Plus, X, Hash } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useParams } from 'next/navigation';
@@ -84,6 +85,12 @@ export default function ChannelsPage() {
           port: formData.get('tool_email_port'),
           user: formData.get('tool_email_user'),
           pass: formData.get('tool_email_pass')
+        },
+        calcom: {
+          isActive: formData.get('tool_calcom_active') === 'on',
+          apiKey: formData.get('tool_calcom_apikey'),
+          eventTypeId: formData.get('tool_calcom_eventid'),
+          username: formData.get('tool_calcom_username')
         }
       },
       voice: {
@@ -125,7 +132,8 @@ export default function ChannelsPage() {
           <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40 overflow-y-auto">
             <Sidebar />
           </div>
-          <main className="flex-1 overflow-y-auto p-4 md:p-8">
+          <MobileBottomNav />
+          <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
             <div className="max-w-6xl mx-auto">
               <div className="mb-8">
                 <div className="h-10 w-64 bg-foreground/5 rounded-2xl animate-pulse" />
@@ -146,11 +154,12 @@ export default function ChannelsPage() {
         <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40 overflow-y-auto">
           <Sidebar />
         </div>
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <MobileBottomNav />
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
           <div className="max-w-6xl mx-auto">
             {/* Header */}
             <div className="mb-8">
-              <h1 className="text-[40px] font-bold tracking-tight mb-2 text-foreground">Integrations.</h1>
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2 text-foreground">Integrations.</h1>
               <p className="text-silver text-lg font-medium">Connect {operative.name} to the world.</p>
             </div>
 
@@ -348,6 +357,39 @@ export default function ChannelsPage() {
                       <div className="space-y-1">
                         <div className="text-[10px] uppercase font-bold text-silver">Password</div>
                         <input name="tool_email_pass" type="password" defaultValue={operative.tools?.emailAgent?.pass} placeholder="••••••••" className="bg-transparent border-none p-0 text-sm focus:ring-0 w-full text-foreground placeholder:text-foreground/40" />
+                      </div>
+                  </div>
+
+                  {/* Cal.com Row */}
+                  <div className="p-6 flex items-center justify-between border-b border-foreground/5 group hover:bg-foreground/[0.04] transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-foreground/5 rounded-xl flex items-center justify-center text-foreground">
+                        <CheckCircle2 className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-foreground">Cal.com Scheduler</div>
+                        <div className="text-[12px] text-silver">Autonomous Calendar Booking</div>
+                      </div>
+                    </div>
+                    <input 
+                      type="checkbox" 
+                      name="tool_calcom_active" 
+                      defaultChecked={operative.tools?.calcom?.isActive}
+                      className="w-10 h-5 bg-foreground/10 border-none rounded-full appearance-none checked:bg-[#0071e3] relative cursor-pointer transition-colors after:content-[''] after:absolute after:top-1 after:left-1 after:w-3 after:h-3 after:bg-background dark:after:bg-white after:rounded-full after:transition-all checked:after:left-6" 
+                    />
+                  </div>
+                  <div className="p-6 bg-foreground/[0.02] grid grid-cols-1 md:grid-cols-3 gap-y-6 gap-x-12">
+                      <div className="space-y-1">
+                        <div className="text-[10px] uppercase font-bold text-silver">API Key</div>
+                        <input name="tool_calcom_apikey" type="password" defaultValue={operative.tools?.calcom?.apiKey} placeholder="cal_..." className="bg-transparent border-none p-0 text-sm focus:ring-0 w-full text-foreground placeholder:text-foreground/40" />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-[10px] uppercase font-bold text-silver">Cal.com Username</div>
+                        <input name="tool_calcom_username" defaultValue={operative.tools?.calcom?.username} placeholder="john-doe" className="bg-transparent border-none p-0 text-sm focus:ring-0 w-full text-foreground placeholder:text-foreground/40" />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-[10px] uppercase font-bold text-silver">Event Type ID</div>
+                        <input name="tool_calcom_eventid" defaultValue={operative.tools?.calcom?.eventTypeId} placeholder="123456" className="bg-transparent border-none p-0 text-sm focus:ring-0 w-full text-foreground placeholder:text-foreground/40" />
                       </div>
                   </div>
                 </div>

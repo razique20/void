@@ -51,7 +51,7 @@ export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="flex flex-col h-full bg-sidebar text-foreground w-64 pt-6">
+    <div className="flex flex-col h-full bg-sidebar backdrop-blur-xl border-r border-sidebar-border text-foreground w-64 pt-6">
       <div className="px-4 mb-8">
         <div className="flex items-center gap-2 px-2 py-1 bg-primary/10 rounded-lg w-fit">
           <ShieldCheck className="w-3 h-3 text-primary" />
