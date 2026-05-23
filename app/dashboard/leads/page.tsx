@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Download, Search, CheckCircle, Clock, XCircle, FileText, ChevronRight, Check, Sparkles, Database, Circle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function LeadsPage() {
@@ -131,7 +131,7 @@ export default function LeadsPage() {
     (l.interest || '').toLowerCase().includes(search.toLowerCase())
   );
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -139,7 +139,7 @@ export default function LeadsPage() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 15 },
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 25 } }
   };

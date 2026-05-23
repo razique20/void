@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -123,7 +123,7 @@ export default function DashboardPage() {
     return matchesSearch;
   });
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -133,7 +133,7 @@ export default function DashboardPage() {
     }
   };
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, y: 15 },
     show: { 
       opacity: 1, 

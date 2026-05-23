@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Bot, Plus, X, MessageSquare, AlertCircle, CheckCircle2, Circle, HelpCircle } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function SupportPage() {
@@ -74,7 +74,7 @@ export default function SupportPage() {
 
   const hasOpenTicket = tickets.some(t => t.status === 'open');
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -82,7 +82,7 @@ export default function SupportPage() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 15 },
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 25 } }
   };

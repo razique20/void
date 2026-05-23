@@ -7,7 +7,7 @@ import Sidebar from '@/components/Sidebar';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import { Bot, Save, Loader2, Sparkles, Zap, Shield, Cpu, ChevronRight, Info, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 
 export default function CreateWorkerPage() {
   const router = useRouter();
@@ -54,7 +54,7 @@ export default function CreateWorkerPage() {
     }
   };
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -64,7 +64,7 @@ export default function CreateWorkerPage() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 15 },
     show: { 
       opacity: 1, 

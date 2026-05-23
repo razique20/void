@@ -21,7 +21,7 @@ import {
   Zap,
   Sparkles
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function LiveChatPage() {
@@ -169,7 +169,7 @@ export default function LiveChatPage() {
     }
   };
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -177,7 +177,7 @@ export default function LiveChatPage() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 10 },
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 25 } }
   };
