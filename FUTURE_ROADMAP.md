@@ -79,7 +79,7 @@ Telling human closers exactly who to call.
 ## 15. 📥 Universal Omnichannel Inbox
 The command center for human oversight.
 - **The Feature**: A centralized dashboard where human admins can view, search, and manually reply to messages across Web, WhatsApp, Telegram, and Email—all threaded into a single timeline per user.
-- **Impact**: Gives businesses a unified view of every customer interaction, regardless of the channel.
+- **Impact**: Gives businesses a unified view of every customer interaction, regardless of the channel..
 
 ## 16. 🧬 Auto-Optimization & Self-Correction
 An AI that learns from its mistakes.
