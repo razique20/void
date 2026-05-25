@@ -79,7 +79,7 @@ export default function CreateWorkerPage() {
       <div className="flex pt-20 h-full overflow-hidden">
         
         {/* Sidebar */}
-        <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40 overflow-y-auto">
+        <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40">
           <Sidebar />
         </div>
         <MobileBottomNav />

@@ -96,10 +96,10 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="flex flex-col h-full bg-sidebar backdrop-blur-xl border-r border-sidebar-border text-foreground w-64 overflow-hidden pt-6">
+    <div className="flex flex-col h-full bg-sidebar backdrop-blur-xl border-r border-sidebar-border text-foreground w-64 overflow-y-auto custom-scrollbar pt-6">
       
       {/* Routes list wrapper */}
-      <div className="px-4 flex-1 overflow-y-auto custom-scrollbar">
+      <div className="px-4 pb-4">
         <div className="space-y-1">
           {loading ? (
              Array.from({ length: 7 }).map((_, i) => (
@@ -140,7 +140,7 @@ export default function Sidebar() {
       </div>
       
       {/* Dynamic limits progression card */}
-      <div className="p-4 mt-auto border-t border-foreground/[0.04] dark:border-white/[0.04]">
+      <div className="p-4 border-t border-foreground/[0.04] dark:border-white/[0.04]">
         <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] rounded-2xl p-4 relative overflow-hidden group shadow-sm">
           <div className="absolute top-0 right-0 w-16 h-16 bg-apple-blue/5 blur-[20px] rounded-full group-hover:bg-apple-blue/10 transition-colors pointer-events-none" />
           

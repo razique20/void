@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import DashboardPreview from '@/components/DashboardPreview';
 import Link from 'next/link';
-import { ArrowRight, Cpu, Globe, ShieldCheck, Zap, Bot, MessageSquare, ChevronRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Cpu, Globe, ShieldCheck, Zap, MessageSquare, ChevronRight, Sparkles } from 'lucide-react';
 import { motion, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Show, SignInButton } from '@clerk/nextjs';
@@ -68,18 +68,29 @@ export default function LandingPage() {
             animate="visible"
             className="max-w-6xl mx-auto text-center"
           >
-            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-foreground/5 border border-foreground/10 mb-6 md:mb-8 backdrop-blur-md">
-              <span className="w-1.5 h-1.5 bg-apple-blue rounded-full animate-pulse" />
-              <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/60">Sub-100ms Neural Ingress</span>
-            </motion.div>
-
-            <motion.h1 
-              variants={itemVariants}
-              className="text-3xl sm:text-4xl md:text-[64px] font-bold tracking-[-0.05em] mb-6 md:mb-8 leading-[1] md:leading-[0.95] text-foreground"
+            <motion.div 
+              variants={itemVariants} 
+              className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden marquee-mask py-6 md:py-8 mb-8 md:mb-12 select-none"
             >
-              The Invisible<br className="hidden sm:block" />
-              <span className="text-silver"> Workforce.</span>
-            </motion.h1>
+              <div className="flex w-max animate-marquee whitespace-nowrap gap-0 group hover:[animation-play-state:paused] cursor-pointer">
+                <div className="flex shrink-0 items-center gap-8 md:gap-14 pr-8 md:pr-14">
+                  <h1 className="text-5xl sm:text-7xl md:text-[110px] font-black uppercase tracking-tighter text-foreground transition-all duration-500 group-hover:text-apple-blue">
+                    The Invisible Workforce
+                  </h1>
+                  <span className="text-5xl sm:text-7xl md:text-[110px] font-black uppercase tracking-tighter text-transparent [-webkit-text-stroke:1.5px_currentColor] opacity-50 transition-colors duration-500 group-hover:text-purple-500">
+                    The Invisible Workforce
+                  </span>
+                </div>
+                <div className="flex shrink-0 items-center gap-8 md:gap-14 pr-8 md:pr-14" aria-hidden="true">
+                  <span className="text-5xl sm:text-7xl md:text-[110px] font-black uppercase tracking-tighter text-foreground transition-all duration-500 group-hover:text-apple-blue">
+                    The Invisible Workforce
+                  </span>
+                  <span className="text-5xl sm:text-7xl md:text-[110px] font-black uppercase tracking-tighter text-transparent [-webkit-text-stroke:1.5px_currentColor] opacity-50 transition-colors duration-500 group-hover:text-purple-500">
+                    The Invisible Workforce
+                  </span>
+                </div>
+              </div>
+            </motion.div>
             
             <motion.p 
               variants={itemVariants}

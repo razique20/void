@@ -16,17 +16,17 @@ export default function DashboardLayout({
   return (
     <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300">
       <Navbar />
-      <div className="flex flex-1 overflow-hidden">
-        <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-transparent">
+      <div className="flex flex-1 overflow-hidden pt-20">
+        <div className="hidden md:flex h-full w-64 flex-col z-40 bg-transparent min-h-0">
           <Sidebar />
         </div>
         <MobileBottomNav />
         {isLiveChat ? (
-          <main className="flex-1 overflow-hidden pt-20 pb-16 md:pb-0">
+          <main className="flex-1 overflow-hidden pb-16 md:pb-0">
             {children}
           </main>
         ) : (
-          <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28 pb-24 md:pb-8">
+          <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
             <div className="max-w-6xl mx-auto">
               {children}
             </div>

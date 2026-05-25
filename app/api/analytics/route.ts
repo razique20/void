@@ -38,18 +38,51 @@ export async function GET() {
       });
     }
 
+    let currentWeekInteractions = 0;
+    let previousWeekInteractions = 0;
+    let botMessages = 0;
+    let userMessages = 0;
+
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+
     conversations.forEach(conv => {
       totalMessages += conv.messages.length;
       conv.messages.forEach((msg: any) => {
+        if (msg.role === 'assistant') {
+          botMessages++;
+        }
         if (msg.role === 'user') {
-          const msgDate = new Date(msg.createdAt || conv.updatedAt).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+          userMessages++;
+          const msgDateObj = new Date(msg.createdAt || conv.updatedAt);
+          const msgDate = msgDateObj.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
           const dayObj = dailyInteractions.find(day => day.dateStr === msgDate);
           if (dayObj) {
             dayObj.interactions += 1;
           }
+          if (msgDateObj >= sevenDaysAgo) {
+            currentWeekInteractions++;
+          } else if (msgDateObj >= fourteenDaysAgo && msgDateObj < sevenDaysAgo) {
+            previousWeekInteractions++;
+          }
         }
       });
     });
+
+    let interactionTrend = 0;
+    if (previousWeekInteractions === 0) {
+      interactionTrend = currentWeekInteractions > 0 ? 100 : 0;
+    } else {
+      interactionTrend = ((currentWeekInteractions - previousWeekInteractions) / previousWeekInteractions) * 100;
+    }
+
+    // Success rate can be represented by the percentage of user messages that got an assistant response.
+    // Assuming normally it's 1-to-1, we cap it at 100.
+    let successRate = 100;
+    if (userMessages > 0) {
+      successRate = Math.min(100, Math.max(0, (botMessages / userMessages) * 100));
+    }
 
     // Real-world ROI Metrics
     // Based on average customer support agent salary ($45k/year) + benefits 
@@ -70,6 +103,8 @@ export async function GET() {
       estimatedTimeSaved: estimatedTimeSaved.toFixed(1),
       status: 'Optimal',
       load: totalMessages > 100 ? 'High Efficiency' : 'Nominal',
+      interactionTrend: interactionTrend.toFixed(1),
+      successRate: successRate.toFixed(1),
       dailyInteractions: dailyInteractions.map(d => ({ name: d.name, interactions: d.interactions }))
     });
   } catch (error: any) {

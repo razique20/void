@@ -202,7 +202,7 @@ export default function DashboardPage() {
               </div>
               <p className="text-[11px] text-silver mt-1 flex items-center gap-1 font-medium">
                 <TrendingUp className="w-3.5 h-3.5 text-apple-blue" />
-                <span>+12.4% vs last week</span>
+                <span>{loading ? '...' : `${Number(stats?.interactionTrend) > 0 ? '+' : ''}${stats?.interactionTrend || 0}% vs last week`}</span>
               </p>
             </div>
           </div>
@@ -248,7 +248,7 @@ export default function DashboardPage() {
               </div>
               <p className="text-[11px] text-silver mt-1 flex items-center gap-1 font-medium">
                 <span className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse" />
-                <span>99.9% Autonomous Success Rate</span>
+                <span>{loading ? '...' : `${stats?.successRate || '100'}% Autonomous Success Rate`}</span>
               </p>
             </div>
           </div>
