@@ -14,7 +14,8 @@ import {
   CreditCard, 
   Database, 
   LifeBuoy,
-  Key
+  Key,
+  Tag
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -32,6 +33,7 @@ export default function MobileBottomNav() {
   const moreRoutes = [
     { label: 'Knowledge Base', icon: BookOpen, href: '/training' },
     { label: 'Marketplace', icon: ShoppingBag, href: '/marketplace' },
+    { label: 'Deals', icon: Tag, href: '/dashboard/deals' },
     { label: 'Billing', icon: CreditCard, href: '/billing' },
     { label: 'Architect Leads', icon: Database, href: '/dashboard/leads' },
     { label: 'Setup & Credentials', icon: Key, href: '/dashboard/credentials' },

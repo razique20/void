@@ -13,8 +13,9 @@ import {
   CreditCard, 
   Zap, 
   Database, 
-  LifeBuoy, 
-  Key 
+  LifeBuoy,
+  Key,
+  Tag
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -62,6 +63,11 @@ export default function Sidebar() {
       label: 'Marketplace',
       icon: ShoppingBag,
       href: '/marketplace',
+    },
+    {
+      label: 'Deals',
+      icon: Tag,
+      href: '/dashboard/deals',
     },
     {
       label: 'Billing',
