@@ -70,27 +70,14 @@ export default function LandingPage() {
               </div>
             </motion.div>
 
-            {/* Brand marquee — signature element, kept tighter */}
+            {/* Brand headline */}
             <motion.div
               variants={itemVariants}
-              className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden marquee-mask py-2 md:py-4 mb-6 md:mb-8 select-none"
+              className="mb-6 md:mb-8 select-none"
             >
-              <div className="flex w-max animate-marquee whitespace-nowrap gap-0 group hover:[animation-play-state:paused] cursor-default">
-                {[0, 1].map((dup) => (
-                  <div
-                    key={dup}
-                    className="flex shrink-0 items-center gap-8 md:gap-14 pr-8 md:pr-14"
-                    aria-hidden={dup === 1}
-                  >
-                    <span className="text-4xl sm:text-6xl md:text-[92px] font-black uppercase tracking-tighter text-foreground transition-colors duration-500 group-hover:text-apple-blue">
-                      The Invisible Workforce
-                    </span>
-                    <span className="text-4xl sm:text-6xl md:text-[92px] font-black uppercase tracking-tighter text-transparent [-webkit-text-stroke:1.5px_currentColor] opacity-40 transition-colors duration-500 group-hover:text-purple-500">
-                      The Invisible Workforce
-                    </span>
-                  </div>
-                ))}
-              </div>
+              <h2 className="text-4xl sm:text-6xl md:text-[92px] font-black uppercase tracking-tighter text-foreground">
+                The Invisible Workforce
+              </h2>
             </motion.div>
 
             {/* Clear value proposition */}
@@ -110,24 +97,24 @@ export default function LandingPage() {
               <span className="text-foreground"> Invisible to the world. Invaluable to your business.</span>
             </motion.p>
 
-            {/* CTAs — full-width & large on mobile for thumb reach */}
+            {/* CTAs — compact pills on mobile, wider on desktop */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
+              className="flex flex-row items-center justify-center gap-3 sm:gap-4"
             >
               <Show when="signed-in">
                 <Link
                   href="/onboarding"
-                  className="w-full sm:w-auto group bg-foreground text-background px-8 py-4 sm:py-3.5 rounded-2xl text-base font-semibold transition-all hover:bg-foreground/90 active:scale-[0.98] shadow-sm ring-1 ring-foreground/10"
+                  className="group bg-gradient-to-b from-foreground to-foreground/85 text-background px-5 py-3 sm:px-8 sm:py-3.5 rounded-full sm:rounded-2xl text-sm sm:text-base font-semibold transition-all hover:opacity-90 active:scale-[0.97] shadow-lg shadow-foreground/10"
                 >
                   Hire an Operative
                 </Link>
                 <Link
                   href="/marketplace"
-                  className="w-full sm:w-auto group flex items-center justify-center gap-2 px-8 py-4 sm:py-3.5 rounded-2xl text-base font-semibold text-foreground border border-foreground/[0.08] hover:bg-foreground/5 transition-all active:scale-[0.98]"
+                  className="group flex items-center justify-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-8 sm:py-3.5 rounded-full sm:rounded-2xl text-sm sm:text-base font-semibold text-foreground/80 hover:text-foreground border border-foreground/[0.08] hover:bg-foreground/5 transition-all active:scale-[0.97]"
                 >
                   Explore Modules
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Show>
               <Show when="signed-out">
@@ -136,7 +123,7 @@ export default function LandingPage() {
                   fallbackRedirectUrl="/onboarding"
                   signUpFallbackRedirectUrl="/onboarding"
                 >
-                  <button className="w-full sm:w-auto group bg-foreground text-background px-8 py-4 sm:py-3.5 rounded-2xl text-base font-semibold transition-all hover:bg-foreground/90 active:scale-[0.98] shadow-sm ring-1 ring-foreground/10">
+                  <button className="group bg-gradient-to-b from-foreground to-foreground/85 text-background px-5 py-3 sm:px-8 sm:py-3.5 rounded-full sm:rounded-2xl text-sm sm:text-base font-semibold transition-all hover:opacity-90 active:scale-[0.97] shadow-lg shadow-foreground/10">
                     Start free
                   </button>
                 </SignInButton>
@@ -145,9 +132,9 @@ export default function LandingPage() {
                   fallbackRedirectUrl="/marketplace"
                   signUpFallbackRedirectUrl="/marketplace"
                 >
-                  <button className="w-full sm:w-auto group flex items-center justify-center gap-2 px-8 py-4 sm:py-3.5 rounded-2xl text-base font-semibold text-foreground border border-foreground/[0.08] hover:bg-foreground/5 transition-all active:scale-[0.98]">
+                  <button className="group flex items-center justify-center gap-1.5 sm:gap-2 px-5 py-3 sm:px-8 sm:py-3.5 rounded-full sm:rounded-2xl text-sm sm:text-base font-semibold text-foreground/80 hover:text-foreground border border-foreground/[0.08] hover:bg-foreground/5 transition-all active:scale-[0.97]">
                     Explore Modules
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </SignInButton>
               </Show>
@@ -163,32 +150,35 @@ export default function LandingPage() {
           </motion.div>
         </section>
 
-        {/* ---------------------------------------------------------- */}
-        {/* Live console preview                                       */}
-        {/* ---------------------------------------------------------- */}
-        <section
-          aria-label="Live operations console"
-          className="px-4 sm:px-6 py-6 md:py-10 relative overflow-hidden"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            className="max-w-7xl mx-auto"
+        {/* Desktop-only sections — hidden on mobile for a minimal experience */}
+        <div className="hidden md:block">
+          {/* ---------------------------------------------------------- */}
+          {/* Live console preview                                       */}
+          {/* ---------------------------------------------------------- */}
+          <section
+            aria-label="Live operations console"
+            className="px-4 sm:px-6 py-6 md:py-10 relative overflow-hidden"
           >
-            <DashboardPreview />
-          </motion.div>
-        </section>
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              className="max-w-7xl mx-auto"
+            >
+              <DashboardPreview />
+            </motion.div>
+          </section>
 
-        {/* Outcome metrics */}
-        <MetricsBand />
+          {/* Outcome metrics */}
+          <MetricsBand />
 
-        {/* How it works — clarifies the product */}
-        <HowItWorks />
+          {/* How it works — clarifies the product */}
+          <HowItWorks />
 
-        {/* Use cases — self-identification */}
-        <UseCases />
+          {/* Use cases — self-identification */}
+          <UseCases />
+        </div>
 
         {/* ---------------------------------------------------------- */}
         {/* Final CTA                                                  */}
@@ -219,7 +209,7 @@ export default function LandingPage() {
               <Show when="signed-in">
                 <Link
                   href="/onboarding"
-                  className="w-full sm:w-auto bg-foreground text-background px-10 py-4 rounded-2xl text-lg font-semibold transition-all hover:bg-foreground/90 active:scale-[0.98] shadow-sm ring-1 ring-foreground/10"
+                  className="bg-gradient-to-b from-foreground to-foreground/85 text-background px-8 py-3.5 sm:px-10 sm:py-4 rounded-full sm:rounded-2xl text-base sm:text-lg font-semibold transition-all hover:opacity-90 active:scale-[0.97] shadow-lg shadow-foreground/10"
                 >
                   Enter the Console
                 </Link>
@@ -230,7 +220,7 @@ export default function LandingPage() {
                   fallbackRedirectUrl="/onboarding"
                   signUpFallbackRedirectUrl="/onboarding"
                 >
-                  <button className="w-full sm:w-auto bg-foreground text-background px-10 py-4 rounded-2xl text-lg font-semibold transition-all hover:bg-foreground/90 active:scale-[0.98] shadow-sm ring-1 ring-foreground/10">
+                  <button className="bg-gradient-to-b from-foreground to-foreground/85 text-background px-8 py-3.5 sm:px-10 sm:py-4 rounded-full sm:rounded-2xl text-base sm:text-lg font-semibold transition-all hover:opacity-90 active:scale-[0.97] shadow-lg shadow-foreground/10">
                     Start free
                   </button>
                 </SignInButton>
