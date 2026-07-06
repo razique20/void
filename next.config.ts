@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // Offrion deal images are served from Unsplash.
       { protocol: 'https', hostname: 'images.unsplash.com' },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
     ],
   },
 };
