@@ -33,7 +33,7 @@ export default function MarketplacePage() {
   }, []);
 
   const hasMarketplaceFeature = sub?.features?.includes('marketplace');
-  const isActionAgentsEnabled = config?.featureFlags?.actionAgents && sub?.userFlags?.actionAgents;
+  const isActionAgentsEnabled = config?.featureFlags?.actionAgents !== false;
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -195,7 +195,7 @@ export default function MarketplacePage() {
                 whileHover={{ scale: 1.005 }}
                 className={cn(
                   "md:col-span-2 md:row-span-1 group relative bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl shadow-sm",
-                  !(config?.featureFlags?.neuralVoice && sub?.userFlags?.neuralVoice) && "opacity-50 grayscale"
+                  !(config?.featureFlags?.neuralVoice !== false) && "opacity-50 grayscale"
                 )}
               >
                 <div className="w-11 h-11 bg-purple-500/10 border border-purple-500/20 rounded-xl flex items-center justify-center mb-6">
@@ -211,7 +211,7 @@ export default function MarketplacePage() {
                    <button 
                     className="text-[10px] font-bold text-silver bg-foreground/[0.05] dark:bg-white/[0.05] border border-foreground/[0.04] dark:border-white/[0.04] px-4 py-2 rounded-full cursor-not-allowed transition-all"
                    >
-                     {config?.featureFlags?.neuralVoice && sub?.userFlags?.neuralVoice ? 'Configure' : 'Research Phase'}
+                     {config?.featureFlags?.neuralVoice !== false ? 'Configure' : 'Research Phase'}
                    </button>
                    <ArrowRight className="w-4 h-4 text-silver group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                 </div>
@@ -223,7 +223,7 @@ export default function MarketplacePage() {
                 whileHover={{ scale: 1.005 }}
                 className={cn(
                   "md:col-span-2 md:row-span-1 group relative bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-col justify-between backdrop-blur-3xl shadow-sm",
-                  !(config?.featureFlags?.vision && sub?.userFlags?.vision) && "opacity-50 grayscale"
+                  !(config?.featureFlags?.vision !== false) && "opacity-50 grayscale"
                 )}
               >
                 <div className="w-11 h-11 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center mb-6">
@@ -239,7 +239,7 @@ export default function MarketplacePage() {
                    <button 
                     className="w-full text-[10px] font-bold text-silver bg-emerald-500/10 border border-emerald-500/20 py-2.5 rounded-full cursor-not-allowed transition-all"
                    >
-                     {config?.featureFlags?.vision && sub?.userFlags?.vision ? 'Configure' : 'Planned for Q4'}
+                     {config?.featureFlags?.vision !== false ? 'Configure' : 'Planned for Q4'}
                    </button>
                 </div>
               </motion.div>
@@ -250,7 +250,7 @@ export default function MarketplacePage() {
                 whileHover={{ scale: 1.005 }}
                 className={cn(
                   "md:col-span-6 md:row-span-1 group relative bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[42px] p-8 transition-all duration-700 overflow-hidden flex flex-row items-center justify-between backdrop-blur-3xl shadow-sm",
-                  !(config?.featureFlags?.leadManagement && sub?.userFlags?.leadManagement) && "opacity-50 grayscale"
+                  !(config?.featureFlags?.leadManagement !== false && sub?.features?.includes('lead_capture')) && "opacity-50 grayscale"
                 )}
               >
                 <div className="flex items-center gap-6">
@@ -269,7 +269,7 @@ export default function MarketplacePage() {
                     onClick={() => showToast('Lead Sync configuration is active')}
                     className="min-w-[120px] text-[10px] font-bold text-silver bg-amber-500/5 border border-amber-500/10 py-3 px-5 rounded-full transition-all hover:bg-amber-500/10 hover:text-amber-500"
                    >
-                     {config?.featureFlags?.leadManagement && sub?.userFlags?.leadManagement ? 'Active' : 'Closed Beta'}
+                     {config?.featureFlags?.leadManagement !== false && sub?.features?.includes('lead_capture') ? 'Active' : 'Closed Beta'}
                    </button>
                 </div>
               </motion.div>

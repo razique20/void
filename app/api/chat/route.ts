@@ -38,8 +38,10 @@ export async function POST(req: Request) {
 
     // NEW: Fetch User Feature Flags
     const User = (await import('@/models/User')).default;
-    const userDoc = await User.findOne({ clerkId: userId });
-    const isLeadManagementEnabled = userDoc?.featureFlags?.leadManagement;
+    const userDoc = await User.findOne({ clerkId: worker.userId });
+    const { getUserSubscription } = await import('@/lib/subscription');
+    const sub = await getUserSubscription(worker.userId);
+    const isLeadManagementEnabled = sub.planInfo.features.includes('lead_capture');
 
     // 2. RAG Retrieval Logic
     const trainingDocs = await TrainingData.find({ workerId });

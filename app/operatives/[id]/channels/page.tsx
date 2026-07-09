@@ -43,7 +43,7 @@ export default function ChannelsPage() {
     });
   }, [operativeId]);
 
-  const isActionAgentsEnabled = config?.featureFlags?.actionAgents && sub?.userFlags?.actionAgents;
+  const isActionAgentsEnabled = config?.featureFlags?.actionAgents !== false;
 
   const addAction = () => {
     setActions([...actions, { name: '', description: '', webhookUrl: '', isActive: true }]);

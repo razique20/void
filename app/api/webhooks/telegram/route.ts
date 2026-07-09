@@ -124,7 +124,9 @@ export async function POST(req: Request) {
     // NEW: Lead Management Injection
     const User = (await import('@/models/User')).default;
     const userDoc = await User.findOne({ clerkId: operative.userId });
-    const isLeadManagementEnabled = userDoc?.featureFlags?.leadManagement;
+    const { getUserSubscription } = await import('@/lib/subscription');
+    const sub = await getUserSubscription(operative.userId);
+    const isLeadManagementEnabled = sub.planInfo.features.includes('lead_capture');
 
     if (isLeadManagementEnabled) {
       systemPrompt += `

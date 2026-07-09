@@ -73,7 +73,7 @@ export default function Sidebar() {
       icon: CreditCard,
       href: '/billing',
     },
-    ...((config?.featureFlags?.leadManagement && sub?.userFlags?.leadManagement) || pathname === '/dashboard/leads' ? [{
+    ...((config?.featureFlags?.leadManagement !== false && hasFeature('lead_capture')) || pathname === '/dashboard/leads' ? [{
       label: 'Architect Leads',
       icon: Database,
       href: '/dashboard/leads',

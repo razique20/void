@@ -154,7 +154,9 @@ export async function POST(req: Request) {
     // NEW: Lead Management Injection (Mirroring app/api/chat/route.ts)
     const User = (await import('@/models/User')).default;
     const userDoc = await User.findOne({ clerkId: operative.userId });
-    const isLeadManagementEnabled = userDoc?.featureFlags?.leadManagement;
+    const { getUserSubscription } = await import('@/lib/subscription');
+    const sub = await getUserSubscription(operative.userId);
+    const isLeadManagementEnabled = sub.planInfo.features.includes('lead_capture');
 
     if (isLeadManagementEnabled) {
       systemPrompt += `
@@ -186,10 +188,12 @@ Always be polite and let them know they can pick a time that works best for them
     if (operative.actions && operative.actions.length > 0) {
       const activeActions = operative.actions.filter((a: any) => a.isActive);
       if (activeActions.length > 0) {
-        systemPrompt += `\n\nACTION CAPABILITIES: You have access to custom business tools. 
-When a user asks for a task matching these descriptions, you MUST include the [ACTION: name, data] tag.`;
+        systemPrompt += `\n\nACTION CAPABILITIES: You have access to custom business tools.
+CRITICAL RULE: If the use case requires specific details from the user, you MUST ask the user for those details first. Do NOT invent or guess missing data. Do NOT execute the action until you have gathered all required information from the user.
+Once all conditions are met, execute the action by including the exact tag in your response.`;
         activeActions.forEach((action: any) => {
-          systemPrompt += `\n- TOOL: ${action.name}. USE CASE: ${action.description}. FORMAT: [ACTION: ${action.name}, JSON_DATA_HERE]`;
+          const safeName = action.name?.trim() || 'custom_action';
+          systemPrompt += `\n- TOOL: ${safeName}. \n  INSTRUCTIONS: ${action.description}\n  FORMAT: [ACTION: ${safeName}, JSON_DATA_HERE]`;
         });
       }
     }
@@ -224,10 +228,7 @@ When a user asks for a task matching these descriptions, you MUST include the [A
 
     let aiResponse = completion.choices[0]?.message?.content || "I'm sorry, I couldn't process that.";
 
-    // Save AI response to history
-    await Conversation.findByIdAndUpdate(conversation._id, {
-      $push: { messages: { role: 'assistant', content: aiResponse } }
-    });
+    // Save AI response to history will happen after actions and leads are stripped
 
     // 8. Update longitudinal memory (non-blocking — fire and forget)
     updateMemorySummary(contactMemory, customerText, aiResponse, dynamicGroq, modelName);
@@ -337,6 +338,11 @@ When a user asks for a task matching these descriptions, you MUST include the [A
       channel: 'whatsapp',
       contactId: customerPhone,
       customerPhone,
+    });
+
+    // Save AI response to history AFTER stripping tags
+    await Conversation.findByIdAndUpdate(conversation._id, {
+      $push: { messages: { role: 'assistant', content: aiResponse } }
     });
 
     // 6. Send Response back to WhatsApp

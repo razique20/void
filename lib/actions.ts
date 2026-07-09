@@ -44,9 +44,17 @@ export async function executeActions(
     const actionName = match[1].trim();
     const actionDataRaw = match[2].trim();
 
-    const configured = actions.find(
-      (a) => a.name === actionName && a.isActive && a.webhookUrl
+    const normalize = (s: string) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    let configured = actions.find(
+      (a) => normalize(a.name) === normalize(actionName) && a.isActive && a.webhookUrl
     );
+
+    // Fallback: If the AI hallucinated the name (e.g. user left it blank) and there's exactly 1 active action, use it.
+    const activeActions = actions.filter(a => a.isActive && a.webhookUrl);
+    if (!configured && activeActions.length === 1) {
+      configured = activeActions[0];
+    }
 
     if (!configured) {
       // Strip unknown or inactive actions silently
