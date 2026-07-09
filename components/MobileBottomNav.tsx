@@ -18,20 +18,39 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+import { useEffect } from 'react';
+
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const [sub, setSub] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/subscription')
+      .then(res => res.json())
+      .then(data => setSub(data))
+      .catch(console.error);
+  }, []);
+
+  const hasFeature = (feature: string) => {
+    if (!sub || !sub.features) return false;
+    return sub.features.includes(feature);
+  };
 
   const mainRoutes = [
     { label: 'Home', icon: LayoutDashboard, href: '/dashboard' },
     { label: 'Hire', icon: PlusCircle, href: '/create-worker' },
     { label: 'Chat', icon: Bot, href: '/chat' },
-    { label: 'Live', icon: MessageSquare, href: '/dashboard/live' },
+    ...(hasFeature('mission_control') ? [
+      { label: 'Live', icon: MessageSquare, href: '/dashboard/live' }
+    ] : []),
   ];
 
   const moreRoutes = [
     { label: 'Knowledge Base', icon: BookOpen, href: '/training' },
-    { label: 'Marketplace', icon: ShoppingBag, href: '/marketplace' },
+    ...(hasFeature('marketplace') ? [
+      { label: 'Marketplace', icon: ShoppingBag, href: '/marketplace' }
+    ] : []),
     { label: 'Billing', icon: CreditCard, href: '/billing' },
     { label: 'Architect Leads', icon: Database, href: '/dashboard/leads' },
     { label: 'Setup & Credentials', icon: Key, href: '/dashboard/credentials' },

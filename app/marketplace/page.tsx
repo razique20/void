@@ -19,6 +19,8 @@ export default function MarketplacePage() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  const [loadingSub, setLoadingSub] = useState(true);
+
   useEffect(() => {
     Promise.all([
       fetch('/api/admin/config').then(res => res.json()),
@@ -26,9 +28,11 @@ export default function MarketplacePage() {
     ]).then(([configData, subData]) => {
       setConfig(configData);
       setSub(subData);
-    }).catch(console.error);
+    }).catch(console.error)
+      .finally(() => setLoadingSub(false));
   }, []);
 
+  const hasMarketplaceFeature = sub?.features?.includes('marketplace');
   const isActionAgentsEnabled = config?.featureFlags?.actionAgents && sub?.userFlags?.actionAgents;
 
   const containerVariants: Variants = {
@@ -96,13 +100,34 @@ export default function MarketplacePage() {
               <ShoppingBag className="w-16 h-16 text-foreground/5 hidden lg:block" />
             </div>
 
-            {/* Bento Marketplace Grid */}
-            <motion.div 
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              className="grid grid-cols-1 md:grid-cols-6 md:grid-rows-3 gap-6 h-auto relative z-10"
-            >
+            {/* Upgrade Gate or Bento Marketplace Grid */}
+            {loadingSub ? (
+              <div className="flex items-center justify-center min-h-[400px]">
+                <span className="text-xs font-bold text-silver animate-pulse">Verifying access credentials...</span>
+              </div>
+            ) : !hasMarketplaceFeature ? (
+              <div className="max-w-md mx-auto text-center py-20 px-6 bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[32px] backdrop-blur-3xl shadow-sm relative z-10">
+                <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-[24px] flex items-center justify-center mx-auto mb-6">
+                  <Lock className="w-6 h-6 text-red-500" />
+                </div>
+                <h2 className="text-xl font-bold mb-3 text-foreground">Marketplace Locked</h2>
+                <p className="text-silver text-xs leading-relaxed mb-8">
+                  Your current {sub?.plan || 'Free'} plan does not have access to the Marketplace. Upgrade to Pro or higher to unlock specialized neural modules and action agents.
+                </p>
+                <Link
+                  href="/billing"
+                  className="inline-flex items-center justify-center bg-foreground text-background px-8 py-3.5 rounded-full text-xs font-bold transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] shadow-md"
+                >
+                  Upgrade Now
+                </Link>
+              </div>
+            ) : (
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-1 md:grid-cols-6 md:grid-rows-3 gap-6 h-auto relative z-10"
+              >
               
               {/* Action Agents - Feature Hero Card (Large) */}
               <motion.div 
@@ -250,6 +275,7 @@ export default function MarketplacePage() {
               </motion.div>
 
             </motion.div>
+            )}
 
             {/* Bottom Callout */}
             <div className="mt-20 p-12 bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[40px] text-center relative overflow-hidden backdrop-blur-md z-10 shadow-sm">

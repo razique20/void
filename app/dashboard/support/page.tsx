@@ -1,11 +1,13 @@
 'use client';
 
+import { useUser } from '@clerk/nextjs';
 import { useState, useEffect } from 'react';
 import { Bot, Plus, X, MessageSquare, AlertCircle, CheckCircle2, Circle, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 export default function SupportPage() {
+  const { user } = useUser();
   const [tickets, setTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -126,6 +128,12 @@ export default function SupportPage() {
           </div>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-none mb-3 text-foreground">Support.</h1>
           <p className="text-silver text-sm font-medium">Raise requests and get technical assistance from Synthesis Lab.</p>
+          {user && (
+            <p className="text-[10px] text-silver font-mono mt-2 flex items-center gap-1.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.04] dark:border-white/[0.04] px-2.5 py-1 rounded-lg w-fit">
+              <span className="text-[9px] uppercase font-bold text-silver/60">User ID:</span>
+              <span>{user.id}</span>
+            </p>
+          )}
         </div>
         {!hasOpenTicket && !showForm && (
           <button 

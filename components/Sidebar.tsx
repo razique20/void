@@ -42,6 +42,11 @@ export default function Sidebar() {
       .finally(() => setLoading(false));
   }, []);
 
+  const hasFeature = (feature: string) => {
+    if (!sub || !sub.features) return false;
+    return sub.features.includes(feature);
+  };
+
   const routes = [
     {
       label: 'Overview',
@@ -58,11 +63,11 @@ export default function Sidebar() {
       icon: BookOpen,
       href: '/training',
     },
-    {
+    ...(hasFeature('marketplace') ? [{
       label: 'Marketplace',
       icon: ShoppingBag,
       href: '/marketplace',
-    },
+    }] : []),
     {
       label: 'Billing',
       icon: CreditCard,
@@ -73,11 +78,11 @@ export default function Sidebar() {
       icon: Database,
       href: '/dashboard/leads',
     }] : []),
-    {
+    ...(hasFeature('mission_control') ? [{
       label: 'Mission Control',
       icon: MessageSquare,
       href: '/dashboard/live',
-    },
+    }] : []),
     {
       label: 'Live Chat',
       icon: Bot,

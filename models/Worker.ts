@@ -29,6 +29,7 @@ const WorkerSchema = new Schema({
     whatsapp: {
       apiKey: { type: String },
       phoneNumberId: { type: String },
+      credentialId: { type: String },  // References User.whatsappCredentials._id
       isActive: { type: Boolean, default: false }
     },
     telegram: {

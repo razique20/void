@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import Script from 'next/script';
 import { 
   Key, 
   Database, 
@@ -15,10 +16,21 @@ import {
   HelpCircle,
   Sparkles,
   Link2,
-  Circle
+  Circle,
+  Loader2,
+  Plus,
+  Trash2,
+  Pencil
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+
+declare global {
+  interface Window {
+    FB: any;
+    fbAsyncInit: () => void;
+  }
+}
 
 type TabType = 'calcom' | 'whatsapp' | 'telegram' | 'smtp' | 'crm';
 
@@ -30,13 +42,96 @@ export default function CredentialsPage() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
-  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+  const [waAccessToken, setWaAccessToken] = useState('');
+  const [waPhoneNumberId, setWaPhoneNumberId] = useState('');
+  const [waWabaId, setWaWabaId] = useState('');
+  const [waConnectionType, setWaConnectionType] = useState<'manual' | 'embedded'>('manual');
+  const [savingWhatsapp, setSavingWhatsapp] = useState(false);
+  const [fbSdkReady, setFbSdkReady] = useState(false);
+  const [fbLoggingIn, setFbLoggingIn] = useState(false);
+
+  const showToast = useCallback((message: string, type: 'success' | 'error' = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
-  };
+  }, []);
+
+  const initFacebookSDK = useCallback(() => {
+    window.fbAsyncInit = function () {
+      window.FB.init({
+        appId: process.env.NEXT_PUBLIC_META_APP_ID,
+        cookie: true,
+        xfbml: true,
+        version: 'v21.0',
+      });
+      setFbSdkReady(true);
+    };
+    // If SDK already loaded (e.g. hot reload)
+    if (window.FB) {
+      window.FB.init({
+        appId: process.env.NEXT_PUBLIC_META_APP_ID,
+        cookie: true,
+        xfbml: true,
+        version: 'v21.0',
+      });
+      setFbSdkReady(true);
+    }
+  }, []);
+
+  const handleFacebookLogin = useCallback(async () => {
+    if (!window.FB) {
+      showToast('Facebook SDK not loaded yet. Please wait.', 'error');
+      return;
+    }
+    setFbLoggingIn(true);
+    window.FB.login(
+      (response: any) => {
+        if (response.authResponse) {
+          const token = response.authResponse.accessToken;
+          setWaAccessToken(token);
+          setWaConnectionType('embedded');
+          // Auto-save to backend
+          fetch('/api/user/whatsapp-config', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              whatsappConfig: {
+                connectionType: 'embedded',
+                accessToken: token,
+                phoneNumberId: waPhoneNumberId,
+                wabaId: waWabaId,
+              },
+            }),
+          })
+            .then((res) => {
+              if (res.ok) {
+                showToast('Connected with Facebook successfully!');
+              } else {
+                showToast('Token received but failed to save.', 'error');
+              }
+            })
+            .catch(() => showToast('Token received but failed to save.', 'error'))
+            .finally(() => setFbLoggingIn(false));
+        } else {
+          showToast('Facebook login cancelled or failed.', 'error');
+          setFbLoggingIn(false);
+        }
+      },
+      {
+        config_id: '',  // Add your Configuration ID here once you have one
+        response_type: 'code',
+        override_default_response_type: true,
+        extras: {
+          setup: {},
+          featureType: '',
+          sessionInfoVersion: '3',
+        },
+      }
+    );
+  }, [waPhoneNumberId, waWabaId, showToast]);
 
   useEffect(() => {
     fetchWebhookConfig();
+    fetchWhatsappConfig();
   }, []);
 
   const fetchWebhookConfig = async () => {
@@ -46,6 +141,48 @@ export default function CredentialsPage() {
       setWebhookUrl(data.leadWebhookUrl || '');
     } catch (err) {
       console.error('Failed to load webhook URL:', err);
+    }
+  };
+
+  const fetchWhatsappConfig = async () => {
+    try {
+      const res = await fetch('/api/user/whatsapp-config');
+      const data = await res.json();
+      if (data.whatsappConfig) {
+        setWaAccessToken(data.whatsappConfig.accessToken || '');
+        setWaPhoneNumberId(data.whatsappConfig.phoneNumberId || '');
+        setWaWabaId(data.whatsappConfig.wabaId || '');
+        setWaConnectionType(data.whatsappConfig.connectionType || 'manual');
+      }
+    } catch (err) {
+      console.error('Failed to load whatsapp config:', err);
+    }
+  };
+
+  const handleSaveWhatsapp = async () => {
+    setSavingWhatsapp(true);
+    try {
+      const res = await fetch('/api/user/whatsapp-config', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          whatsappConfig: {
+            connectionType: waConnectionType,
+            accessToken: waAccessToken,
+            phoneNumberId: waPhoneNumberId,
+            wabaId: waWabaId
+          }
+        })
+      });
+      if (res.ok) {
+        showToast('WhatsApp config saved!');
+      } else {
+        showToast('Failed to save config', 'error');
+      }
+    } catch (err) {
+      showToast('Failed to save config', 'error');
+    } finally {
+      setSavingWhatsapp(false);
     }
   };
 
@@ -88,6 +225,12 @@ export default function CredentialsPage() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-10 text-foreground transition-all duration-300 relative">
+      {/* Facebook SDK */}
+      <Script
+        src="https://connect.facebook.net/en_US/sdk.js"
+        strategy="lazyOnload"
+        onLoad={initFacebookSDK}
+      />
       
       {/* Background Ambience */}
       <div className="absolute top-[-5%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
@@ -218,67 +361,7 @@ export default function CredentialsPage() {
             )}
 
             {activeTab === 'whatsapp' && (
-              <div className="space-y-8">
-                <div className="space-y-2">
-                  <h2 className="text-xl font-bold flex items-center gap-3">
-                    <MessageSquare className="w-5.5 h-5.5 text-emerald-500" />
-                    WhatsApp Business Cloud API
-                  </h2>
-                  <p className="text-silver text-xs">
-                    Equip your neural operative with a dedicated WhatsApp Business phone number for instant client assistance.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
-                  <div className="space-y-6">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Meta App Configuration Steps</h3>
-                    <ol className="space-y-4 text-xs text-silver/80 list-decimal pl-4 leading-relaxed">
-                      <li>
-                        Register at [Meta Developer Portal](https://developers.facebook.com/).
-                      </li>
-                      <li>
-                        Create a new app of type **Business**, then add the **WhatsApp** product.
-                      </li>
-                      <li>
-                        Copy your **Phone Number ID** and **Access Token** from the API Setup page.
-                      </li>
-                      <li>
-                        Under Configuration, configure your callback URL:
-                        <div className="mt-3 p-3 bg-background border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl font-mono text-xs flex items-center justify-between gap-3 overflow-hidden">
-                          <span className="truncate text-silver text-[10px]">https://yourdomain.com/api/webhooks/whatsapp?id=OPERATIVE_ID</span>
-                          <button 
-                            onClick={() => copyToClipboard('https://yourdomain.com/api/webhooks/whatsapp?id=OPERATIVE_ID', 'wa_url')}
-                            className="p-2 hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl shrink-0 transition-colors"
-                          >
-                            {copiedText === 'wa_url' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5 text-silver/60" />}
-                          </button>
-                        </div>
-                      </li>
-                      <li>
-                        Define a custom verification token and subscribe to the `messages` event.
-                      </li>
-                    </ol>
-                  </div>
-
-                  <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.04] dark:border-white/[0.04] rounded-3xl p-6 space-y-4">
-                    <h3 className="text-[11px] font-bold uppercase tracking-wider text-silver">Credential Dictionary</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <span className="text-[9px] font-bold text-silver uppercase block mb-1">Access Token</span>
-                        <p className="text-xs text-silver/70 leading-relaxed">A permanent system token generated under Meta Business Settings.</p>
-                      </div>
-                      <div>
-                        <span className="text-[9px] font-bold text-silver uppercase block mb-1">Phone Number ID</span>
-                        <p className="text-xs text-silver/70 leading-relaxed">The specific phone instance assigned to your business account.</p>
-                      </div>
-                      <div>
-                        <span className="text-[9px] font-bold text-silver uppercase block mb-1">Verify Token</span>
-                        <p className="text-xs text-silver/70 leading-relaxed">Your custom security token used to handshake Meta hook registrations.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <WhatsAppCredentialsTab showToast={showToast} copyToClipboard={copyToClipboard} copiedText={copiedText} />
             )}
 
             {activeTab === 'telegram' && (
@@ -455,6 +538,324 @@ export default function CredentialsPage() {
             )}
           </motion.div>
         </AnimatePresence>
+      </div>
+    </div>
+  );
+}
+
+// === WhatsApp Multi-Credential Vault Tab ===
+interface WaCredential {
+  _id: string;
+  label: string;
+  connectionType: string;
+  accessToken: string;
+  phoneNumberId: string;
+  wabaId: string;
+  createdAt: string;
+}
+
+function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
+  showToast: (msg: string, type?: 'success' | 'error') => void;
+  copyToClipboard: (text: string, id: string) => void;
+  copiedText: string | null;
+}) {
+  const [credentials, setCredentials] = useState<WaCredential[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  // Form fields
+  const [formLabel, setFormLabel] = useState('');
+  const [formToken, setFormToken] = useState('');
+  const [formPhoneId, setFormPhoneId] = useState('');
+  const [formWabaId, setFormWabaId] = useState('');
+
+  const fetchCredentials = useCallback(async () => {
+    try {
+      const res = await fetch('/api/user/whatsapp-credentials');
+      const data = await res.json();
+      setCredentials(data.credentials || []);
+    } catch (err) {
+      console.error('Failed to load credentials');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchCredentials(); }, [fetchCredentials]);
+
+  const resetForm = () => {
+    setFormLabel('');
+    setFormToken('');
+    setFormPhoneId('');
+    setFormWabaId('');
+    setEditingId(null);
+    setShowForm(false);
+  };
+
+  const handleSave = async () => {
+    if (!formLabel.trim()) { showToast('Label is required', 'error'); return; }
+    if (!formToken.trim()) { showToast('Access Token is required', 'error'); return; }
+    if (!formPhoneId.trim()) { showToast('Phone Number ID is required', 'error'); return; }
+
+    setSaving(true);
+    try {
+      if (editingId) {
+        // Update existing
+        const res = await fetch('/api/user/whatsapp-credentials', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            credentialId: editingId,
+            label: formLabel,
+            accessToken: formToken,
+            phoneNumberId: formPhoneId,
+            wabaId: formWabaId,
+          }),
+        });
+        if (res.ok) {
+          showToast('Credential updated!');
+          resetForm();
+          await fetchCredentials();
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Failed to update', 'error');
+        }
+      } else {
+        // Create new
+        const res = await fetch('/api/user/whatsapp-credentials', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            label: formLabel,
+            connectionType: 'manual',
+            accessToken: formToken,
+            phoneNumberId: formPhoneId,
+            wabaId: formWabaId,
+          }),
+        });
+        if (res.ok) {
+          showToast('Credential saved!');
+          resetForm();
+          await fetchCredentials();
+        } else {
+          const err = await res.json();
+          showToast(err.error || 'Failed to save', 'error');
+        }
+      }
+    } catch {
+      showToast('Network error', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    setDeleting(id);
+    try {
+      const res = await fetch(`/api/user/whatsapp-credentials?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        showToast('Credential deleted');
+        await fetchCredentials();
+      } else {
+        const err = await res.json();
+        showToast(err.error || 'Failed to delete', 'error');
+      }
+    } catch {
+      showToast('Network error', 'error');
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  const startEdit = (cred: WaCredential) => {
+    setEditingId(cred._id);
+    setFormLabel(cred.label);
+    setFormToken(''); // Don't prefill masked token — user must re-enter
+    setFormPhoneId(cred.phoneNumberId);
+    setFormWabaId(cred.wabaId);
+    setShowForm(true);
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-2">
+          <h2 className="text-xl font-bold flex items-center gap-3">
+            <MessageSquare className="w-5 h-5 text-emerald-500" />
+            WhatsApp Business Cloud API
+          </h2>
+          <p className="text-silver text-xs">
+            Save multiple WhatsApp credential sets. Assign them to operatives from their Integrations page.
+          </p>
+        </div>
+        <button
+          onClick={() => { resetForm(); setShowForm(true); }}
+          className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500 text-white text-[11px] font-bold rounded-xl hover:bg-emerald-600 transition-colors shrink-0"
+        >
+          <Plus className="w-3.5 h-3.5" />
+          Add Credential
+        </button>
+      </div>
+
+      {/* Add / Edit Form */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden"
+          >
+            <div className="bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl p-6 space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-silver">
+                {editingId ? 'Edit Credential' : 'New Credential'}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-silver uppercase tracking-wider">Label</label>
+                  <input
+                    type="text"
+                    value={formLabel}
+                    onChange={(e) => setFormLabel(e.target.value)}
+                    className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs focus:border-emerald-500/50 outline-none"
+                    placeholder="e.g. Sales Line, Support"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-silver uppercase tracking-wider">WABA ID</label>
+                  <input
+                    type="text"
+                    value={formWabaId}
+                    onChange={(e) => setFormWabaId(e.target.value)}
+                    className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-mono focus:border-emerald-500/50 outline-none"
+                    placeholder="0987654321 (optional)"
+                  />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-silver uppercase tracking-wider">
+                  Access Token {editingId && <span className="text-silver/50 normal-case">(re-enter to update)</span>}
+                </label>
+                <input
+                  type="password"
+                  value={formToken}
+                  onChange={(e) => setFormToken(e.target.value)}
+                  className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-mono focus:border-emerald-500/50 outline-none"
+                  placeholder="EAAQ..."
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-silver uppercase tracking-wider">Phone Number ID</label>
+                <input
+                  type="text"
+                  value={formPhoneId}
+                  onChange={(e) => setFormPhoneId(e.target.value)}
+                  className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-mono focus:border-emerald-500/50 outline-none"
+                  placeholder="1234567890"
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="flex-1 py-3 bg-emerald-500 text-white text-xs font-bold rounded-xl hover:bg-emerald-600 transition-colors disabled:opacity-60"
+                >
+                  {saving ? 'Saving...' : editingId ? 'Update Credential' : 'Save Credential'}
+                </button>
+                <button
+                  onClick={resetForm}
+                  className="px-6 py-3 bg-foreground/[0.05] text-foreground text-xs font-bold rounded-xl hover:bg-foreground/[0.1] transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Credential Cards */}
+      {loading ? (
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="w-6 h-6 animate-spin text-silver" />
+        </div>
+      ) : credentials.length === 0 && !showForm ? (
+        <div className="text-center py-16 space-y-4">
+          <div className="w-16 h-16 mx-auto bg-emerald-500/10 rounded-2xl flex items-center justify-center">
+            <MessageSquare className="w-8 h-8 text-emerald-500/40" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-foreground">No credentials saved yet</p>
+            <p className="text-xs text-silver mt-1">Add your first WhatsApp Business credential to get started.</p>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {credentials.map((cred) => (
+            <motion.div
+              key={cred._id}
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 flex items-center justify-between gap-4 group hover:border-emerald-500/20 transition-colors"
+            >
+              <div className="flex items-center gap-4 min-w-0 flex-1">
+                <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center shrink-0">
+                  <MessageSquare className="w-5 h-5 text-emerald-500" />
+                </div>
+                <div className="min-w-0">
+                  <div className="font-bold text-sm text-foreground truncate">{cred.label}</div>
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="text-[10px] font-mono text-silver truncate">{cred.phoneNumberId}</span>
+                    <span className="text-[10px] text-silver/40">•</span>
+                    <span className="text-[10px] font-mono text-silver/60 truncate">{cred.accessToken}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  onClick={() => startEdit(cred)}
+                  className="p-2 hover:bg-foreground/[0.05] rounded-lg transition-colors"
+                  title="Edit"
+                >
+                  <Pencil className="w-3.5 h-3.5 text-silver" />
+                </button>
+                <button
+                  onClick={() => handleDelete(cred._id)}
+                  disabled={deleting === cred._id}
+                  className="p-2 hover:bg-red-500/10 rounded-lg transition-colors"
+                  title="Delete"
+                >
+                  {deleting === cred._id ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-red-500" />
+                  ) : (
+                    <Trash2 className="w-3.5 h-3.5 text-red-500/60 hover:text-red-500" />
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      {/* Webhook Info */}
+      <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.04] dark:border-white/[0.04] rounded-3xl p-6 space-y-4">
+        <h3 className="text-[11px] font-bold uppercase tracking-wider text-silver">Webhook Configuration</h3>
+        <div className="space-y-4">
+          <p className="text-xs text-silver/70 leading-relaxed">Ensure you point your Meta App webhook callback to your platform.</p>
+          <div className="p-3 bg-background border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl font-mono text-xs flex items-center justify-between gap-3 overflow-hidden">
+            <span className="truncate text-silver text-[10px]">https://yourdomain.com/api/webhooks/whatsapp?id=OPERATIVE_ID</span>
+            <button 
+              onClick={() => copyToClipboard('https://yourdomain.com/api/webhooks/whatsapp?id=OPERATIVE_ID', 'wa_url')}
+              className="p-2 hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl shrink-0 transition-colors"
+            >
+              {copiedText === 'wa_url' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5 text-silver/60" />}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

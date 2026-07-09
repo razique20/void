@@ -56,8 +56,9 @@ if (!(global as any).automationStarted) {
     setInterval(async () => {
       try {
         const token = process.env.VOID_SECRET_TOKEN || 'void_secure_cron_token';
+        const port = process.env.PORT || '3001';
         // Hit the internal cron endpoint
-        const res = await fetch(`http://localhost:3000/api/cron/email-checker?token=${token}`);
+        const res = await fetch(`http://localhost:${port}/api/cron/email-checker?token=${token}`);
         const data = await res.json();
         
         if (data.processed > 0) {

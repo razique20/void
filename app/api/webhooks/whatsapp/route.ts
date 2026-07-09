@@ -60,10 +60,32 @@ export async function POST(req: Request) {
     // 1. Find the Operative (Lax search for debugging)
     const cleanPhoneId = phoneNumberId.toString().trim();
     
-    // We search ONLY by ID first to see if it exists
-    const operative = await Worker.findOne({ 
+    // First try: direct match on operative's inline phoneNumberId
+    let operative = await Worker.findOne({ 
       'channels.whatsapp.phoneNumberId': cleanPhoneId
     });
+
+    // Second try: match via user vault credentials (credentialId-based operatives)
+    if (!operative) {
+      const User = (await import('@/models/User')).default;
+      const usersWithCred = await User.find({
+        'whatsappCredentials.phoneNumberId': cleanPhoneId
+      });
+      
+      for (const u of usersWithCred) {
+        const matchingCred = u.whatsappCredentials?.find(
+          (c: any) => c.phoneNumberId === cleanPhoneId
+        );
+        if (matchingCred) {
+          operative = await Worker.findOne({
+            userId: u.clerkId,
+            'channels.whatsapp.credentialId': matchingCred._id.toString(),
+            'channels.whatsapp.isActive': true
+          });
+          if (operative) break;
+        }
+      }
+    }
 
     if (!operative) {
       console.log(`[WHATSAPP DEBUG] CRITICAL: No Operative found with ID: "${cleanPhoneId}"`);
@@ -318,7 +340,20 @@ When a user asks for a task matching these descriptions, you MUST include the [A
     });
 
     // 6. Send Response back to WhatsApp
-    const waAccessToken = operative.channels.whatsapp.apiKey;
+    // Resolve access token: from vault credential if linked, otherwise inline apiKey
+    let waAccessToken = operative.channels.whatsapp.apiKey;
+    if (operative.channels.whatsapp.credentialId) {
+      const UserModel = (await import('@/models/User')).default;
+      const ownerUser = await UserModel.findOne({ clerkId: operative.userId });
+      const vaultCred = ownerUser?.whatsappCredentials?.find(
+        (c: any) => c._id.toString() === operative.channels.whatsapp.credentialId
+      );
+      if (vaultCred?.accessToken) {
+        waAccessToken = vaultCred.accessToken;
+      } else {
+        console.warn(`[WHATSAPP] Credential ${operative.channels.whatsapp.credentialId} not found in vault. Falling back to inline apiKey.`);
+      }
+    }
     const waUrl = `https://graph.facebook.com/v25.0/${phoneNumberId}/messages`;
     
     console.log(`[WHATSAPP] Attempting delivery to ${customerPhone} via ${waUrl}`);

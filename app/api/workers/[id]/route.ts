@@ -70,11 +70,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     }
     // ----------------------------------------
 
-    // Use strict: false to ensure the new 'channels' field is accepted even if the model was cached
     const worker = await Worker.findOneAndUpdate(
-      { _id: id }, // Removed userId check temporarily to ensure we find it
+      { _id: id },
       { $set: body },
-      { returnDocument: 'after', strict: false }
+      { returnDocument: 'after' }
     );
 
     if (!worker) {
