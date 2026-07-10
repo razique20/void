@@ -14,7 +14,7 @@ import {
   Zap, 
   Database, 
   LifeBuoy, 
-  Key 
+  Key
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';

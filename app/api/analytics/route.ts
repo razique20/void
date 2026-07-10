@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Conversation from '@/models/Conversation';
 import Worker from '@/models/Worker';
+import SystemLog from '@/models/SystemLog';
 import { auth } from '@clerk/nextjs/server';
 
 export async function GET() {
@@ -95,6 +96,11 @@ export async function GET() {
     const estimatedSavings = totalMessages * HUMAN_COST_PER_MESSAGE;
     const estimatedTimeSaved = (totalMessages * MINUTES_SAVED_PER_RESPONSE) / 60; // in hours
 
+    // Fetch latest 10 system logs belonging to this user
+    const systemLogs = await SystemLog.find({ userId })
+      .sort({ createdAt: -1 })
+      .limit(10);
+
     return NextResponse.json({
       totalOperatives: userWorkers.length,
       totalMessages,
@@ -105,7 +111,14 @@ export async function GET() {
       load: totalMessages > 100 ? 'High Efficiency' : 'Nominal',
       interactionTrend: interactionTrend.toFixed(1),
       successRate: successRate.toFixed(1),
-      dailyInteractions: dailyInteractions.map(d => ({ name: d.name, interactions: d.interactions }))
+      dailyInteractions: dailyInteractions.map(d => ({ name: d.name, interactions: d.interactions })),
+      systemLogs: systemLogs.map(l => ({
+        _id: l._id,
+        type: l.type,
+        source: l.source,
+        message: l.message,
+        createdAt: l.createdAt
+      }))
     });
   } catch (error: any) {
     console.error('[ANALYTICS_ERROR]', error);
