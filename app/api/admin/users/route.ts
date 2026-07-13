@@ -100,7 +100,14 @@ export async function PATCH(req: Request) {
     // Update Subscription if plan/status provided
     if (plan || status) {
       const subUpdate: any = {};
-      if (plan) subUpdate.plan = plan;
+      if (plan) {
+        subUpdate.plan = plan;
+        if (plan !== 'free') {
+          subUpdate.periodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now
+        } else {
+          subUpdate.periodEnd = null; // Clear periodEnd if set back to free
+        }
+      }
       if (status) subUpdate.status = status;
       
       await Subscription.findOneAndUpdate(

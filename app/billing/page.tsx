@@ -106,13 +106,15 @@ export default function BillingPage() {
     const plan = plans.find(p => p.id === planId);
     if (!plan) return;
 
+    const currentPlanName = sub?.plan || 'Free (Tryout)';
     const userId = user?.id || 'Unknown';
     const userEmail = user?.emailAddresses?.[0]?.emailAddress || 'N/A';
     const userName = user?.fullName || user?.firstName || 'N/A';
 
     const message = encodeURIComponent(
       `Hi, I'd like to subscribe to the *${plan.name}* plan (${plan.price}/mo).\n\n` +
-      `📋 Plan: ${plan.name}\n` +
+      `🔄 Current Plan: ${currentPlanName}\n` +
+      `📋 Requested Plan: ${plan.name}\n` +
       `💰 Price: ${plan.price}/month\n` +
       `👤 Name: ${userName}\n` +
       `📧 Email: ${userEmail}\n` +
@@ -136,6 +138,13 @@ export default function BillingPage() {
   const itemVariants: Variants = {
     hidden: { opacity: 0, y: 15 },
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 25 } }
+  };
+
+  const planRanks: { [key: string]: number } = {
+    free: 0,
+    pro: 1,
+    enterprise: 2,
+    elite: 3
   };
 
   return (
@@ -237,7 +246,9 @@ export default function BillingPage() {
                 {(() => {
                   const plan = plans.find(p => p.id === selectedPlanId) || plans[1];
                   const isCurrentPlan = sub ? sub.plan === plan.name : plan.id === 'free';
-                  const isDisabled = upgrading === plan.id || isCurrentPlan || plan.id === 'free';
+                  const currentPlanId = plans.find(p => p.name === sub?.plan)?.id || 'free';
+                  const isDowngrade = planRanks[plan.id] < planRanks[currentPlanId];
+                  const isDisabled = upgrading === plan.id || isCurrentPlan || plan.id === 'free' || isDowngrade;
                   
                   return (
                     <motion.div 
@@ -295,6 +306,8 @@ export default function BillingPage() {
                       >
                         {isCurrentPlan ? (
                           'Current Active Plan'
+                        ) : isDowngrade ? (
+                          'Downgrade Unavailable'
                         ) : plan.id === 'free' ? (
                           'Free Plan'
                         ) : (

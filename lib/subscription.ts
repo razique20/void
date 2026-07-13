@@ -39,6 +39,12 @@ export async function getUserSubscription(userId: string) {
       plan: 'free', 
       status: 'active' 
     });
+  } else if (sub.plan !== 'free' && sub.periodEnd && new Date() > new Date(sub.periodEnd)) {
+    // Subscription expired, downgrade back to free
+    sub.plan = 'free';
+    sub.periodEnd = null;
+    sub.status = 'active';
+    await sub.save();
   }
   
   const planInfo = PLANS[sub.plan as keyof typeof PLANS] || PLANS.free;
