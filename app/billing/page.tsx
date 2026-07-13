@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
 import MobileBottomNav from '@/components/MobileBottomNav';
-import { Check, Loader2, CreditCard, Sparkles, Circle } from 'lucide-react';
+import { Check, Loader2, CreditCard, Sparkles, Circle, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useUser } from '@clerk/nextjs';
 
 const plans = [
   {
@@ -87,6 +88,7 @@ export default function BillingPage() {
   const [sub, setSub] = useState<any>(null);
   const [selectedPlanId, setSelectedPlanId] = useState('pro');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const { user } = useUser();
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
     setToast({ message, type });
@@ -100,26 +102,27 @@ export default function BillingPage() {
       .catch(console.error);
   }, []);
 
-  const handleSubscribe = async (plan: string) => {
-    setUpgrading(plan);
-    try {
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan })
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        showToast(data.error || 'Failed to initiate checkout', 'error');
-      }
-    } catch (err) {
-      console.error(err);
-      showToast('Stripe checkout error', 'error');
-    } finally {
-      setUpgrading(null);
-    }
+  const handleSubscribe = (planId: string) => {
+    const plan = plans.find(p => p.id === planId);
+    if (!plan) return;
+
+    const userId = user?.id || 'Unknown';
+    const userEmail = user?.emailAddresses?.[0]?.emailAddress || 'N/A';
+    const userName = user?.fullName || user?.firstName || 'N/A';
+
+    const message = encodeURIComponent(
+      `Hi, I'd like to subscribe to the *${plan.name}* plan (${plan.price}/mo).\n\n` +
+      `📋 Plan: ${plan.name}\n` +
+      `💰 Price: ${plan.price}/month\n` +
+      `👤 Name: ${userName}\n` +
+      `📧 Email: ${userEmail}\n` +
+      `🆔 User ID: ${userId}\n\n` +
+      `Please activate my subscription. Thank you!`
+    );
+
+    const whatsappUrl = `https://wa.me/971547400553?text=${message}`;
+    window.open(whatsappUrl, '_blank');
+    showToast('Redirecting to WhatsApp...', 'success');
   };
 
   const containerVariants: Variants = {
@@ -290,12 +293,15 @@ export default function BillingPage() {
                               : "bg-transparent text-foreground border-foreground/[0.1] dark:border-white/[0.1] hover:bg-foreground hover:text-background hover:border-transparent hover:scale-[1.02] active:scale-[0.98]"
                         )}
                       >
-                        {upgrading === plan.id ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : isCurrentPlan ? (
+                        {isCurrentPlan ? (
                           'Current Active Plan'
+                        ) : plan.id === 'free' ? (
+                          'Free Plan'
                         ) : (
-                          plan.buttonText
+                          <>
+                            <MessageCircle className="w-4 h-4" />
+                            Subscribe via WhatsApp
+                          </>
                         )}
                       </button>
                     </motion.div>

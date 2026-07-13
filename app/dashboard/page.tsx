@@ -202,23 +202,23 @@ export default function DashboardPage() {
 
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative z-10">
-        <div>
+        <div className="space-y-1">
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            The Fleet
-            <span className="inline-flex items-center justify-center text-[10px] font-bold text-apple-blue bg-apple-blue/10 border border-apple-blue/10 px-2 py-0.5 rounded-full uppercase tracking-widest mt-1">
-              Active
+            The Fleet.
+            <span className="inline-flex items-center justify-center text-[9px] font-bold text-apple-blue bg-apple-blue/10 border border-apple-blue/10 px-2.5 py-0.5 rounded-full uppercase tracking-widest">
+              Active Sync
             </span>
           </h1>
-          <p className="text-silver text-sm md:text-base font-medium mt-1">
-            Manage, deploy, and monitor your autonomous workforce.
+          <p className="text-silver text-sm font-medium">
+            Manage, deploy, and monitor your autonomous workforce nodes.
           </p>
         </div>
         
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex items-center gap-2.5 w-full sm:w-auto">
           <button 
             onClick={() => fetchData(true)}
             disabled={isRefreshing}
-            className="p-3 bg-card/40 backdrop-blur-md border border-foreground/5 dark:border-white/5 hover:bg-card/80 rounded-2xl transition-all disabled:opacity-50 text-foreground"
+            className="p-3 bg-foreground/[0.02] dark:bg-white/[0.01] hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-md rounded-2xl transition-all disabled:opacity-50 text-foreground"
             title="Refresh Fleet State"
           >
             <RefreshCw className={cn("w-4 h-4 text-silver hover:text-foreground", isRefreshing && "animate-spin text-foreground")} />
@@ -226,7 +226,7 @@ export default function DashboardPage() {
 
           <Link 
             href="/create-worker" 
-            className="flex-1 sm:flex-initial bg-foreground text-background px-6 py-3.5 rounded-2xl text-xs md:text-sm font-bold hover:opacity-90 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-xl shadow-foreground/5"
+            className="flex-1 sm:flex-initial bg-foreground text-background px-6 py-3.5 rounded-2xl text-xs font-bold hover:opacity-90 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-2xl shadow-foreground/5"
           >
             <Plus className="w-4 h-4" /> Hire Operative
           </Link>
@@ -237,19 +237,19 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
         
         {/* Interaction Card */}
-        <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] p-6 rounded-[28px] hover:border-foreground/10 dark:hover:border-white/10 hover:shadow-2xl hover:shadow-apple-blue/5 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-apple-blue/5 blur-[35px] rounded-full group-hover:bg-apple-blue/10 transition-colors" />
+        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] hover:border-apple-blue/20 dark:hover:border-apple-blue/30 hover:shadow-2xl hover:shadow-apple-blue/5 transition-all duration-300 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-apple-blue/5 blur-[35px] rounded-full group-hover:bg-apple-blue/10 transition-colors duration-500" />
           <div className="space-y-4">
             <div className="w-10 h-10 bg-apple-blue/10 rounded-xl flex items-center justify-center">
-              <Zap className="w-5 h-5 text-apple-blue" />
+              <Zap className="w-5 h-5 text-apple-blue animate-pulse" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-silver uppercase tracking-wider">Active Ingress</p>
+              <p className="text-[9px] font-bold text-silver uppercase tracking-wider">Active Ingress</p>
               <div className="flex items-baseline gap-2 mt-1">
                 <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
                   {loading ? '...' : `${stats?.totalMessages || 0}`}
                 </h3>
-                <span className="text-xs font-bold text-apple-blue">Interactions</span>
+                <span className="text-[10px] font-bold text-apple-blue uppercase tracking-widest">Messages</span>
               </div>
               <p className="text-[11px] text-silver mt-1 flex items-center gap-1 font-medium">
                 <TrendingUp className="w-3.5 h-3.5 text-apple-blue" />
@@ -260,19 +260,19 @@ export default function DashboardPage() {
         </div>
 
         {/* Active Chats Card */}
-        <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] p-6 rounded-[28px] hover:border-foreground/10 dark:hover:border-white/10 hover:shadow-2xl hover:shadow-violet-500/5 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 blur-[35px] rounded-full group-hover:bg-violet-500/10 transition-colors" />
+        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] hover:border-violet-500/20 dark:hover:border-violet-500/30 hover:shadow-2xl hover:shadow-violet-500/5 transition-all duration-300 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 blur-[35px] rounded-full group-hover:bg-violet-500/10 transition-colors duration-500" />
           <div className="space-y-4">
             <div className="w-10 h-10 bg-violet-500/10 rounded-xl flex items-center justify-center">
               <MessageSquare className="w-5 h-5 text-violet-500" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-silver uppercase tracking-wider">Active Conversations</p>
+              <p className="text-[9px] font-bold text-silver uppercase tracking-wider">Active Conversations</p>
               <div className="flex items-baseline gap-2 mt-1">
                 <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
                   {loading ? '...' : `${stats?.activeChats || 0}`}
                 </h3>
-                <span className="text-xs font-bold text-violet-500">Chats</span>
+                <span className="text-[10px] font-bold text-violet-500 uppercase tracking-widest">Chats</span>
               </div>
               <p className="text-[11px] text-silver mt-1 flex items-center gap-1 font-medium">
                 <span>Across all deployed nodes</span>
@@ -282,19 +282,19 @@ export default function DashboardPage() {
         </div>
 
         {/* Cost Recouped Card */}
-        <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] p-6 rounded-[28px] hover:border-foreground/10 dark:hover:border-white/10 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 blur-[35px] rounded-full group-hover:bg-emerald-500/10 transition-colors" />
+        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] hover:border-emerald-500/20 dark:hover:border-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-300 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 blur-[35px] rounded-full group-hover:bg-emerald-500/10 transition-colors duration-500" />
           <div className="space-y-4">
             <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-emerald-500" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-silver uppercase tracking-wider">Estimated Savings</p>
+              <p className="text-[9px] font-bold text-silver uppercase tracking-wider">Estimated Savings</p>
               <div className="flex items-baseline gap-2 mt-1">
                 <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
                   {loading ? '...' : `$${stats?.estimatedSavings || '0.00'}`}
                 </h3>
-                <span className="text-xs font-bold text-emerald-500">Recouped</span>
+                <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Recouped</span>
               </div>
               <p className="text-[11px] text-silver mt-1 flex items-center gap-1 font-medium">
                 <span>$1.50 per automated support msg</span>
@@ -304,21 +304,21 @@ export default function DashboardPage() {
         </div>
 
         {/* Human Hours Saved Card */}
-        <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] p-6 rounded-[28px] hover:border-foreground/10 dark:hover:border-white/10 hover:shadow-2xl hover:shadow-purple-500/5 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 blur-[35px] rounded-full group-hover:bg-purple-500/10 transition-colors" />
+        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] hover:border-purple-500/20 dark:hover:border-purple-500/30 hover:shadow-2xl hover:shadow-purple-500/5 transition-all duration-300 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 blur-[35px] rounded-full group-hover:bg-purple-500/10 transition-colors duration-500" />
           <div className="space-y-4">
             <div className="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center">
               <Activity className="w-5 h-5 text-purple-500" />
             </div>
             <div>
-              <p className="text-[10px] font-bold text-silver uppercase tracking-wider">Human Hours Reclaimed</p>
+              <p className="text-[9px] font-bold text-silver uppercase tracking-wider">Human Hours Reclaimed</p>
               <div className="flex items-baseline gap-2 mt-1">
                 <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
                   {loading ? '...' : `${stats?.estimatedTimeSaved || '0.0'}`}
                 </h3>
-                <span className="text-xs font-bold text-purple-500">Hours</span>
+                <span className="text-[10px] font-bold text-purple-500 uppercase tracking-widest">Hours</span>
               </div>
-              <p className="text-[11px] text-silver mt-1 flex items-center gap-1 font-medium">
+              <p className="text-[11px] text-silver mt-1 flex items-center gap-1.5 font-medium">
                 <span className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse" />
                 <span>{loading ? '...' : `${stats?.successRate || '100'}% Success Rate`}</span>
               </p>
@@ -332,10 +332,10 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
         
         {/* Activity Stream Chart (2/3 width) */}
-        <div className="lg:col-span-2 glass border border-foreground/[0.04] dark:border-white/[0.05] p-6 rounded-[28px] relative overflow-hidden">
+        <div className="lg:col-span-2 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] relative overflow-hidden">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h2 className="text-xs font-bold text-silver uppercase tracking-[0.2em]">7-Day Activity Stream</h2>
+              <h2 className="text-[10px] font-bold text-silver uppercase tracking-[0.2em]">7-Day Activity Stream</h2>
               <p className="text-xs text-silver mt-0.5 font-medium">Real-time interaction trends over the last week.</p>
             </div>
             <div className="flex items-center gap-4 text-xs font-semibold text-silver">
@@ -389,12 +389,12 @@ export default function DashboardPage() {
         </div>
 
         {/* Workspace Insights & Telemetry Panel (1/3 width) */}
-        <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] p-6 rounded-[28px] flex flex-col justify-between relative overflow-hidden h-full">
+        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] flex flex-col justify-between relative overflow-hidden h-full">
           <div className="space-y-6">
             
             {/* Title */}
             <div>
-              <h2 className="text-xs font-bold text-silver uppercase tracking-[0.2em] mb-1">Workspace Telemetry</h2>
+              <h2 className="text-[10px] font-bold text-silver uppercase tracking-[0.2em] mb-1">Workspace Telemetry</h2>
               <p className="text-xs text-silver font-medium">Performance metrics and communication channels.</p>
             </div>
 
@@ -405,7 +405,7 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between border-b border-foreground/[0.04] dark:border-white/[0.04] pb-3">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-500">
-                    <Cpu className="w-4 h-4" />
+                    <Cpu className="w-4 h-4 animate-pulse" />
                   </div>
                   <div>
                     <p className="text-xs font-bold text-foreground">AI Autonomy Rate</p>
@@ -414,7 +414,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="text-right">
                   <p className="text-xs font-bold text-purple-500">{loading ? '...' : `${stats?.successRate || '100'}%`}</p>
-                  <p className="text-[9px] text-silver font-bold uppercase tracking-widest">Optimal</p>
+                  <p className="text-[8px] text-silver font-bold uppercase tracking-widest">Optimal</p>
                 </div>
               </div>
 
@@ -422,7 +422,7 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between pb-1">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                    <Wifi className="w-4 h-4" />
+                    <Wifi className="w-4 h-4 animate-pulse" />
                   </div>
                   <div>
                     <p className="text-xs font-bold text-foreground">AI Response Speed</p>
@@ -431,7 +431,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="text-right">
                   <p className="text-xs font-bold text-emerald-500">&lt; 1.5s</p>
-                  <p className="text-[9px] text-silver font-bold uppercase tracking-widest">Real-time</p>
+                  <p className="text-[8px] text-silver font-bold uppercase tracking-widest">Real-time</p>
                 </div>
               </div>
 
@@ -441,13 +441,13 @@ export default function DashboardPage() {
           {/* Activity / Heartbeat Log */}
           <div className="mt-6 pt-4 border-t border-foreground/[0.06] dark:border-white/[0.06] space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-[9px] font-extrabold text-silver uppercase tracking-widest">System Log Heartbeat</h3>
+              <h3 className="text-[8px] font-extrabold text-silver uppercase tracking-widest">System Log Heartbeat</h3>
               <Link href="/dashboard/logs" className="text-[9px] font-bold text-apple-blue hover:underline uppercase tracking-widest flex items-center gap-0.5">
                 <span>View Full Logs</span>
                 <ChevronRight className="w-2.5 h-2.5" />
               </Link>
             </div>
-            <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl p-3 font-mono text-[9px] text-silver space-y-1.5 max-h-24 overflow-y-auto">
+            <div className="bg-background border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl p-3 font-mono text-[9px] text-silver space-y-1.5 max-h-24 overflow-y-auto custom-scrollbar">
               {stats?.systemLogs && stats.systemLogs.length > 0 ? (
                 stats.systemLogs.map((log: any) => {
                   const logTime = new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
@@ -480,7 +480,7 @@ export default function DashboardPage() {
         <div className="lg:col-span-2 space-y-6">
           
           {/* Controls Bar: Search & Filter Tabs */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-card/25 backdrop-blur-xl border border-foreground/[0.04] dark:border-white/[0.05] p-3 rounded-[24px]">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-3 rounded-[24px]">
             
             {/* Search Box */}
             <div className="relative flex-1 max-w-md w-full">
@@ -490,7 +490,7 @@ export default function DashboardPage() {
                 placeholder="Filter nodes by name, tone, or role..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/5 dark:border-white/5 rounded-2xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver text-foreground"
+                className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl pl-11 pr-4 py-3 text-xs focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver text-foreground font-semibold"
               />
               {searchQuery && (
                 <button 
@@ -514,9 +514,9 @@ export default function DashboardPage() {
                   key={tab.id}
                   onClick={() => setActiveFilter(tab.id as any)}
                   className={cn(
-                    "px-4 py-2 rounded-xl text-xs font-bold transition-all border border-transparent",
+                    "px-4 py-2 rounded-xl text-xs font-bold transition-all border border-transparent duration-300",
                     activeFilter === tab.id 
-                      ? "bg-foreground text-background shadow-md shadow-foreground/5" 
+                      ? "bg-foreground text-background shadow-md" 
                       : "hover:bg-foreground/5 text-silver hover:text-foreground"
                   )}
                 >
@@ -535,8 +535,8 @@ export default function DashboardPage() {
               ))}
             </div>
           ) : filteredWorkers.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 md:py-28 bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.04] dark:border-white/[0.05] rounded-[32px] p-6 text-center">
-              <div className="w-16 h-16 bg-foreground/[0.03] dark:bg-white/[0.02] rounded-3xl flex items-center justify-center mb-4">
+            <div className="flex flex-col items-center justify-center py-20 md:py-28 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[32px] p-6 text-center">
+              <div className="w-16 h-16 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.08] dark:border-white/[0.08] rounded-3xl flex items-center justify-center mb-4">
                 <Bot className="w-8 h-8 text-silver" />
               </div>
               <h3 className="text-lg font-bold text-foreground">No Nodes Found</h3>
@@ -557,23 +557,32 @@ export default function DashboardPage() {
                     layout
                     variants={cardVariants}
                     key={worker._id} 
-                    className="group glass border border-foreground/[0.04] dark:border-white/[0.05] rounded-[28px] p-6 hover:border-foreground/10 dark:hover:border-white/10 hover:shadow-2xl transition-all duration-300 relative overflow-hidden flex flex-col justify-between"
+                    className="group relative bg-gradient-to-b from-white/[0.03] to-transparent dark:from-white/[0.01] dark:to-transparent backdrop-blur-xl border border-foreground/[0.06] dark:border-white/[0.06] rounded-[32px] p-6 hover:border-apple-blue/20 dark:hover:border-apple-blue/30 hover:shadow-[0_20px_50px_rgba(8,112,244,0.04)] dark:hover:shadow-[0_20px_50px_rgba(8,112,244,0.02)] transition-all duration-500 relative overflow-hidden flex flex-col justify-between"
                   >
-                    
+                    {/* Status Neon Ambient Glow */}
+                    <div className={cn(
+                      "absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-[0.03] group-hover:opacity-10 transition-opacity duration-500 pointer-events-none",
+                      worker.status === 'online' ? "bg-emerald-500" : "bg-zinc-500"
+                    )} />
+
                     {/* Status & Options Bar */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center justify-between mb-6 relative z-10">
                       
-                      {/* Status Chip */}
+                      {/* LED Status Chip */}
                       <div className={cn(
-                        "flex items-center gap-1.5 px-3 py-1 rounded-full border text-[9px] font-bold uppercase tracking-widest",
+                        "flex items-center gap-2 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border backdrop-blur-md transition-all duration-300",
                         worker.status === 'online' 
-                          ? "bg-emerald-500/5 text-emerald-500 border-emerald-500/10" 
-                          : "bg-zinc-500/5 text-zinc-500 border-zinc-500/10"
+                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.08)]" 
+                          : "bg-zinc-500/10 text-zinc-400 border-zinc-500/20"
                       )}>
                         <span className={cn(
-                          "w-1.5 h-1.5 rounded-full",
-                          worker.status === 'online' ? "bg-emerald-500 animate-pulse" : "bg-zinc-500"
-                        )} />
+                          "w-1.5 h-1.5 rounded-full relative flex",
+                          worker.status === 'online' ? "bg-emerald-400" : "bg-zinc-500"
+                        )}>
+                          {worker.status === 'online' && (
+                            <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                          )}
+                        </span>
                         {worker.status}
                       </div>
 
@@ -598,20 +607,23 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Operative Info Area */}
-                    <div className="space-y-4 mb-6">
+                    <div className="space-y-4 mb-6 relative z-10">
                       <div className="flex items-center gap-4">
                         
-                        {/* Avatar */}
-                        <div className="w-14 h-14 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
-                          <Bot className="w-7 h-7 text-foreground" />
+                        {/* Glowing Avatar Frame */}
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-gradient-to-tr from-apple-blue to-purple-500 rounded-2xl blur-[12px] opacity-0 group-hover:opacity-15 transition-opacity duration-500" />
+                          <div className="w-14 h-14 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-105 group-hover:border-foreground/15 dark:group-hover:border-white/15 transition-all duration-500 relative z-10">
+                            <Bot className="w-7 h-7 text-foreground" />
+                          </div>
                         </div>
 
                         {/* Info Details */}
                         <div className="min-w-0 flex-1">
-                          <h3 className="text-xl font-bold tracking-tight text-foreground truncate">{worker.name}</h3>
+                          <h3 className="text-xl font-bold tracking-tight text-foreground/90 group-hover:text-foreground transition-colors truncate">{worker.name}</h3>
                           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-silver mt-0.5 font-medium">
-                            <span className="text-apple-blue font-bold tracking-wider text-[10px] uppercase">{worker.tone}</span>
-                            <span>•</span>
+                            <span className="bg-gradient-to-r from-apple-blue to-purple-500 bg-clip-text text-transparent font-bold tracking-wider text-[10px] uppercase">{worker.tone}</span>
+                            <span className="text-silver/30">•</span>
                             <span className="truncate">{worker.personality}</span>
                           </div>
                         </div>
@@ -619,32 +631,32 @@ export default function DashboardPage() {
                       </div>
 
                       {/* Channel Integration Badges */}
-                      <div className="flex flex-wrap gap-2 pt-1 border-t border-foreground/[0.03] dark:border-white/[0.03]">
+                      <div className="flex flex-wrap gap-2 pt-3 border-t border-foreground/[0.04] dark:border-white/[0.04]">
                         
                         {worker.channels?.whatsapp?.isActive ? (
-                          <div className="inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-500 bg-emerald-500/5 px-2.5 py-1 rounded-xl border border-emerald-500/10">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                            WhatsApp
+                          <div className="inline-flex items-center gap-1.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/5 px-2.5 py-1 rounded-xl border border-emerald-500/10 shadow-[0_2px_10px_rgba(16,185,129,0.02)]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                            WHATSAPP
                           </div>
                         ) : null}
 
                         {worker.channels?.telegram?.isActive ? (
-                          <div className="inline-flex items-center gap-1.5 text-[10px] font-bold text-sky-500 bg-sky-500/5 px-2.5 py-1 rounded-xl border border-sky-500/10">
-                            <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
-                            Telegram
+                          <div className="inline-flex items-center gap-1.5 text-[9px] font-bold text-sky-400 bg-sky-500/5 px-2.5 py-1 rounded-xl border border-sky-500/10 shadow-[0_2px_10px_rgba(14,165,233,0.02)]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
+                            TELEGRAM
                           </div>
                         ) : null}
 
                         {worker.tools?.calcom?.isActive ? (
-                          <div className="inline-flex items-center gap-1.5 text-[10px] font-bold text-purple-500 bg-purple-500/5 px-2.5 py-1 rounded-xl border border-purple-500/10">
-                            <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
-                            Cal.com
+                          <div className="inline-flex items-center gap-1.5 text-[9px] font-bold text-purple-400 bg-purple-500/5 px-2.5 py-1 rounded-xl border border-purple-500/10 shadow-[0_2px_10px_rgba(168,85,247,0.02)]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                            CAL.COM
                           </div>
                         ) : null}
 
                         {!worker.channels?.whatsapp?.isActive && !worker.channels?.telegram?.isActive && (
-                          <div className="inline-flex items-center gap-1.5 text-[10px] font-bold text-silver bg-foreground/[0.03] dark:bg-white/[0.03] px-2.5 py-1 rounded-xl">
-                            Web Sandbox
+                          <div className="inline-flex items-center gap-1.5 text-[9px] font-bold text-silver bg-foreground/[0.03] dark:bg-white/[0.03] px-2.5 py-1 rounded-xl">
+                            WEB SANDBOX
                           </div>
                         )}
 
@@ -653,29 +665,29 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Actions Bar */}
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-3 gap-3 relative z-10">
                       
                       <Link 
                         href="/chat" 
-                        className="flex items-center justify-center gap-2 p-3 bg-foreground/[0.02] dark:bg-white/[0.02] hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] border border-foreground/[0.03] dark:border-white/[0.03] rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-xs font-bold uppercase tracking-wider text-foreground text-center"
+                        className="flex items-center justify-center gap-2 p-3 bg-foreground/[0.02] dark:bg-white/[0.02] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] hover:border-foreground/10 dark:hover:border-white/10 border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 text-xs font-bold uppercase tracking-wider text-foreground text-center"
                       >
-                        <MessageSquare className="w-4 h-4 text-silver" />
+                        <MessageSquare className="w-4 h-4 text-silver group-hover:text-foreground transition-colors" />
                         <span>Chat</span>
                       </Link>
 
                       <Link 
                         href="/training" 
-                        className="flex items-center justify-center gap-2 p-3 bg-foreground/[0.02] dark:bg-white/[0.02] hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] border border-foreground/[0.03] dark:border-white/[0.03] rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-xs font-bold uppercase tracking-wider text-foreground text-center"
+                        className="flex items-center justify-center gap-2 p-3 bg-foreground/[0.02] dark:bg-white/[0.02] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] hover:border-foreground/10 dark:hover:border-white/10 border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 text-xs font-bold uppercase tracking-wider text-foreground text-center"
                       >
-                        <BookOpen className="w-4 h-4 text-silver" />
+                        <BookOpen className="w-4 h-4 text-silver group-hover:text-foreground transition-colors" />
                         <span>Brain</span>
                       </Link>
 
                       <Link 
                         href={`/operatives/${worker._id}/channels`} 
-                        className="flex items-center justify-center gap-2 p-3 bg-foreground/[0.02] dark:bg-white/[0.02] hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] border border-foreground/[0.03] dark:border-white/[0.03] rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all text-xs font-bold uppercase tracking-wider text-foreground text-center"
+                        className="flex items-center justify-center gap-2 p-3 bg-foreground/[0.02] dark:bg-white/[0.02] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] hover:border-foreground/10 dark:hover:border-white/10 border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 text-xs font-bold uppercase tracking-wider text-foreground text-center"
                       >
-                        <Settings className="w-4 h-4 text-silver" />
+                        <Settings className="w-4 h-4 text-silver group-hover:text-foreground transition-colors" />
                         <span>Config</span>
                       </Link>
 
@@ -690,9 +702,9 @@ export default function DashboardPage() {
         </div>
 
         {/* Channel Distribution Chart (1/3 width) */}
-        <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] p-6 rounded-[28px] flex flex-col justify-between relative overflow-hidden h-full">
+        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] flex flex-col justify-between relative overflow-hidden h-full group hover:shadow-2xl hover:shadow-purple-500/[0.02] transition-all duration-300">
           <div>
-            <h2 className="text-xs font-bold text-silver uppercase tracking-[0.2em] mb-1">Channel Distribution</h2>
+            <h2 className="text-[10px] font-bold text-silver uppercase tracking-[0.2em] mb-1">Channel Distribution</h2>
             <p className="text-xs text-silver font-medium">Deploys by communication protocol.</p>
           </div>
 
@@ -731,7 +743,7 @@ export default function DashboardPage() {
             
             {/* Center Stats overlay */}
             <div className="absolute flex flex-col items-center justify-center">
-              <span className="text-xs font-bold text-silver uppercase tracking-wider">Total</span>
+              <span className="text-[9px] font-bold text-silver uppercase tracking-widest">Total</span>
               <span className="text-2xl font-black text-foreground">
                 {workers.length}
               </span>
@@ -745,7 +757,7 @@ export default function DashboardPage() {
                   <span className="w-2.5 h-2.5 rounded-md" style={{ backgroundColor: item.color }} />
                   <span className="text-foreground">{item.name}</span>
                 </div>
-                <span className="text-silver">{item.value} active</span>
+                <span className="text-silver font-semibold">{item.value} active</span>
               </div>
             ))}
           </div>
@@ -792,16 +804,16 @@ export default function DashboardPage() {
                 
                 {/* Protocol Link */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-silver uppercase tracking-wider block">Access Protocol Link</label>
+                  <label className="text-[9px] font-bold text-silver uppercase tracking-widest block">Access Protocol Link</label>
                   <div className="flex gap-2">
                     <input 
                       readOnly 
                       value={`${window.location.origin}/share/${shareWorker._id}`}
-                      className="flex-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-xl px-4 py-3 text-xs font-mono outline-none text-foreground select-all"
+                      className="flex-1 bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs font-mono outline-none text-foreground select-all font-semibold"
                     />
                     <button 
                       onClick={() => copyText(`${window.location.origin}/share/${shareWorker._id}`)}
-                      className="p-3 bg-foreground text-background rounded-xl hover:opacity-90 active:scale-95 transition-all"
+                      className="p-3.5 bg-foreground text-background rounded-2xl hover:opacity-90 active:scale-95 transition-all"
                       title="Copy URL"
                     >
                       <Copy className="w-4 h-4" />
@@ -811,17 +823,17 @@ export default function DashboardPage() {
 
                 {/* Embed HTML Area */}
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-silver uppercase tracking-wider block">Neural Embed Code (IFrame)</label>
+                  <label className="text-[9px] font-bold text-silver uppercase tracking-widest block">Neural Embed Code (IFrame)</label>
                   <div className="flex gap-2">
                     <textarea 
                       readOnly 
                       rows={3}
                       value={`<iframe src="${window.location.origin}/share/${shareWorker._id}" width="100%" height="600px" style="border:none; border-radius: 24px;"></iframe>`}
-                      className="flex-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-xl px-4 py-3 text-xs font-mono outline-none resize-none text-foreground select-all"
+                      className="flex-1 bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs font-mono outline-none resize-none text-foreground select-all font-semibold leading-relaxed"
                     />
                     <button 
                       onClick={() => copyText(`<iframe src="${window.location.origin}/share/${shareWorker._id}" width="100%" height="600px" style="border:none; border-radius: 24px;"></iframe>`)}
-                      className="p-3 bg-foreground text-background rounded-xl hover:opacity-90 active:scale-95 transition-all h-fit self-end"
+                      className="p-3.5 bg-foreground text-background rounded-2xl hover:opacity-90 active:scale-95 transition-all h-fit self-end"
                       title="Copy Embed Code"
                     >
                       <Copy className="w-4 h-4" />
@@ -832,11 +844,11 @@ export default function DashboardPage() {
               </div>
 
               {/* Sync Alert Banner */}
-              <div className="p-4 bg-apple-blue/5 border border-apple-blue/10 rounded-2xl flex gap-3">
+              <div className="p-4 bg-apple-blue/5 border border-apple-blue/15 rounded-2xl flex gap-3 shadow-sm">
                 <Info className="w-5 h-5 text-apple-blue flex-shrink-0 mt-0.5" />
-                <p className="text-[11px] text-apple-blue font-medium leading-relaxed">
+                <p className="text-[10px] text-apple-blue font-medium leading-relaxed">
                   Operative is fully sync-active. Any modifications applied to its knowledge base, brain files, or personality traits will update automatically in real time on all active deployments.
-                  </p>
+                </p>
               </div>
             </motion.div>
 

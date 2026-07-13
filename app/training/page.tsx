@@ -23,7 +23,10 @@ import {
   MessageSquare,
   Info,
   Sparkles,
-  Check
+  Check,
+  Zap,
+  Activity,
+  Cpu
 } from 'lucide-react';
 
 export default function TrainingPage() {
@@ -138,7 +141,7 @@ export default function TrainingPage() {
           <Sidebar />
         </div>
         <MobileBottomNav />
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28 pb-24 md:pb-8 relative">
+        <main className="flex-1 overflow-y-auto p-6 md:p-12 pt-24 md:pt-28 pb-24 md:pb-12 relative">
           
           {/* Background Neural Ambience */}
           <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
@@ -148,17 +151,17 @@ export default function TrainingPage() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="max-w-6xl mx-auto relative z-10"
+            className="max-w-5xl mx-auto space-y-8 relative z-10"
           >
             {/* Header */}
-            <motion.div variants={itemVariants} className="mb-8">
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground flex items-center gap-3">
-                Knowledge Core
+            <motion.div variants={itemVariants} className="space-y-2">
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground via-foreground/90 to-silver/70 bg-clip-text text-transparent flex items-center gap-3">
+                Knowledge Core.
                 <span className="inline-flex items-center justify-center text-[10px] font-bold text-purple-500 bg-purple-500/10 border border-purple-500/10 px-2 py-0.5 rounded-full uppercase tracking-widest mt-1">
-                  Neural
+                  Neural Sync
                 </span>
               </h1>
-              <p className="text-silver text-sm md:text-base font-medium mt-1">Inject intelligence and training data into your autonomous fleet.</p>
+              <p className="text-silver text-sm font-medium">Inject custom training datasets, documents, and web portals into the agent knowledge base.</p>
             </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -168,16 +171,16 @@ export default function TrainingPage() {
                 <form onSubmit={handleTrain} className="space-y-6">
                   
                   {/* Worker Selection */}
-                  <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] p-6 rounded-[28px] space-y-4">
+                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl">
                     <div>
-                      <h2 className="text-xs font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
-                        <BrainCircuit className="w-4 h-4 text-apple-blue" />
+                      <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
+                        <BrainCircuit className="w-4 h-4 text-apple-blue animate-pulse" />
                         Target Operative
                       </h2>
-                      <p className="text-[11px] text-silver mt-0.5">Select which operative will receive this intelligence.</p>
+                      <p className="text-[11px] text-silver mt-0.5 font-medium">Select which operative will receive this intelligence.</p>
                     </div>
                     <select 
-                      className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-2xl px-5 py-4 text-sm font-bold focus:outline-none focus:border-apple-blue/40 transition-all appearance-none text-foreground"
+                      className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-5 py-4 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 transition-all text-foreground cursor-pointer"
                       value={selectedWorker}
                       onChange={(e) => setSelectedWorker(e.target.value)}
                     >
@@ -188,13 +191,13 @@ export default function TrainingPage() {
                   </div>
 
                   {/* Ingestion Mode Tabs */}
-                  <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] p-6 rounded-[28px] space-y-4">
+                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl">
                     <div>
-                      <h2 className="text-xs font-bold text-foreground uppercase tracking-widest flex items-center gap-2">
+                      <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
                         <Database className="w-4 h-4 text-apple-blue" />
                         Ingestion Mode
                       </h2>
-                      <p className="text-[11px] text-silver mt-0.5">Choose how you want to feed intelligence data.</p>
+                      <p className="text-[11px] text-silver mt-0.5 font-medium">Choose how you want to feed intelligence data.</p>
                     </div>
 
                     <div className="flex p-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl">
@@ -208,9 +211,9 @@ export default function TrainingPage() {
                           type="button"
                           onClick={() => setMode(m.id as any)}
                           className={cn(
-                            "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold transition-all",
+                            "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-bold transition-all duration-300",
                             mode === m.id 
-                              ? "bg-foreground text-background shadow-lg shadow-foreground/5" 
+                              ? "bg-foreground text-background shadow-lg" 
                               : "text-silver hover:text-foreground"
                           )}
                         >
@@ -222,7 +225,7 @@ export default function TrainingPage() {
                   </div>
 
                   {/* Content Area */}
-                  <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] rounded-[28px] p-6 min-h-[280px] flex flex-col">
+                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] p-6 min-h-[280px] flex flex-col backdrop-blur-xl">
                     {mode === 'text' && (
                       <div className="space-y-4 flex-1 flex flex-col animate-in fade-in duration-500">
                         <div className="flex gap-2">
@@ -232,10 +235,10 @@ export default function TrainingPage() {
                               type="button"
                               onClick={() => setSource(t)}
                               className={cn(
-                                "px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest border transition-all",
+                                "px-4 py-2 rounded-xl text-[9px] font-bold uppercase tracking-widest border transition-all duration-300",
                                 source === t 
                                   ? "bg-apple-blue text-white border-transparent" 
-                                  : "bg-foreground/[0.02] dark:bg-white/[0.02] border-foreground/5 dark:border-white/5 text-silver hover:text-foreground hover:border-foreground/10"
+                                  : "bg-background border-foreground/[0.06] dark:border-white/[0.06] text-silver hover:text-foreground hover:border-foreground/15 dark:hover:border-white/15"
                               )}
                             >
                               {t}
@@ -245,8 +248,8 @@ export default function TrainingPage() {
                         <textarea 
                           required
                           rows={8}
-                          placeholder="Paste the intelligence data here..."
-                          className="w-full bg-transparent text-sm leading-relaxed focus:outline-none placeholder:text-silver/30 resize-none flex-1 text-foreground"
+                          placeholder="Paste raw knowledge base notes, transcripts, or Q&As here..."
+                          className="w-full bg-transparent text-xs leading-relaxed focus:outline-none placeholder:text-silver/30 resize-none flex-1 text-foreground"
                           value={content}
                           onChange={(e) => setContent(e.target.value)}
                         />
@@ -255,7 +258,7 @@ export default function TrainingPage() {
 
                     {mode === 'file' && (
                       <div className="flex-1 flex flex-col items-center justify-center animate-in zoom-in-95 duration-500">
-                        <div className="w-full h-full bg-foreground/[0.01] dark:bg-white/[0.01] border-2 border-dashed border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl flex flex-col items-center justify-center p-8 hover:border-apple-blue/20 hover:bg-apple-blue/[0.01] transition-all cursor-pointer relative group">
+                        <div className="w-full h-full bg-background border-2 border-dashed border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl flex flex-col items-center justify-center p-8 hover:border-apple-blue/20 hover:bg-apple-blue/[0.01] transition-all cursor-pointer relative group">
                           <input 
                             type="file"
                             className="absolute inset-0 opacity-0 cursor-pointer"
@@ -273,7 +276,7 @@ export default function TrainingPage() {
                             </div>
                           ) : (
                             <div className="flex flex-col items-center gap-4 text-center">
-                              <div className="w-14 h-14 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                              <div className="w-14 h-14 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                                 <CloudUpload className="w-7 h-7 text-silver" />
                               </div>
                               <div>
@@ -288,17 +291,17 @@ export default function TrainingPage() {
 
                     {mode === 'website' && (
                       <div className="space-y-6 flex-1 flex flex-col justify-center animate-in slide-in-from-bottom-4 duration-500 px-4">
-                        <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto">
-                           <Globe className="w-7 h-7 text-emerald-500" />
+                        <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/15 rounded-2xl flex items-center justify-center mx-auto">
+                           <Globe className="w-7 h-7 text-emerald-400" />
                         </div>
                         <div className="text-center">
-                           <h3 className="text-lg font-bold text-foreground">Uplink Website</h3>
-                           <p className="text-silver text-xs mt-1">Enter a URL to scrape and digest intelligence data.</p>
+                           <h3 className="text-base font-bold text-foreground">Uplink Website Portal</h3>
+                           <p className="text-silver text-xs mt-1">Enter a URL to crawl and digest knowledge articles.</p>
                         </div>
                         <input 
                           type="url"
-                          placeholder="https://company.com/knowledge-base"
-                          className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-2xl px-5 py-4 text-center text-sm font-bold focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver/30 text-foreground"
+                          placeholder="https://docs.company.com/knowledge-base"
+                          className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-5 py-4 text-center text-xs font-semibold focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver/30 text-foreground"
                           value={url}
                           onChange={(e) => setUrl(e.target.value)}
                         />
@@ -309,7 +312,7 @@ export default function TrainingPage() {
                   {/* Submit Button */}
                   <button 
                     disabled={loading || !selectedWorker || (mode === 'text' ? !content : mode === 'file' ? !file : !url)}
-                    className="w-full py-4 rounded-2xl bg-foreground text-background text-xs font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.99] transition-all disabled:opacity-50 shadow-xl shadow-foreground/5 group"
+                    className="w-full py-4 rounded-2xl bg-foreground text-background text-xs font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.99] transition-all duration-300 disabled:opacity-50 shadow-xl shadow-foreground/5 group"
                   >
                     {loading ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -333,28 +336,28 @@ export default function TrainingPage() {
                  
                  {/* Test Sandbox */}
                  {selectedWorker && (
-                   <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] rounded-[28px] overflow-hidden transition-all duration-300">
+                   <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] overflow-hidden backdrop-blur-xl">
                      <button
                        type="button"
                        onClick={() => setShowSandbox(!showSandbox)}
                        className="p-5 flex justify-between items-center w-full focus:outline-none hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] transition-colors"
                      >
-                       <h3 className="font-bold text-xs text-foreground flex items-center gap-2 uppercase tracking-widest">
+                       <h3 className="font-bold text-[10px] text-silver flex items-center gap-2 uppercase tracking-widest">
                          <MessageSquare className="w-4 h-4 text-apple-blue" />
                          Test Sandbox
                        </h3>
                        <div className="flex items-center gap-3">
-                         <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/10 px-2 py-0.5 rounded-full">Live</span>
+                         <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">Live</span>
                          <span className="text-silver text-[10px] font-bold">{showSandbox ? 'Collapse' : 'Expand'}</span>
                        </div>
                      </button>
                      <div className={cn(
-                       "transition-all duration-500 ease-in-out overflow-hidden",
+                       "transition-all duration-500 ease-in-out overflow-hidden border-t border-foreground/[0.04] dark:border-white/[0.04]",
                        showSandbox ? "max-h-[450px] opacity-100" : "max-h-0 opacity-0"
                      )}>
                        <iframe 
                          src={`/share/${selectedWorker}`} 
-                         className="w-full h-[400px] border-none"
+                         className="w-full h-[400px] border-none bg-background"
                          title="Test Sandbox"
                        />
                      </div>
@@ -362,44 +365,44 @@ export default function TrainingPage() {
                  )}
 
                  {/* Collective Intelligence Status */}
-                 <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] rounded-[28px] p-6 space-y-5 relative overflow-hidden group">
+                 <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] p-6 space-y-5 relative overflow-hidden group backdrop-blur-xl shadow-2xl">
                     <div className="absolute top-0 right-0 w-20 h-20 bg-purple-500/5 blur-[25px] rounded-full group-hover:bg-purple-500/10 transition-colors pointer-events-none" />
                     
                     <div className="flex items-center gap-4 relative z-10">
-                       <div className="w-10 h-10 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-2xl flex items-center justify-center">
+                       <div className="w-10 h-10 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl flex items-center justify-center">
                           <BrainCircuit className="w-5 h-5 text-foreground" />
                        </div>
                        <div>
-                          <h3 className="font-bold text-sm leading-tight text-foreground">Collective Intelligence</h3>
-                          <p className="text-[10px] font-bold text-silver uppercase tracking-widest mt-0.5">System Health</p>
+                          <h3 className="font-bold text-sm leading-tight text-foreground">Collective Sync</h3>
+                          <p className="text-[9px] font-bold text-silver uppercase tracking-widest mt-0.5">System Health</p>
                        </div>
                     </div>
 
                     <div className="space-y-3 relative z-10">
-                       <div className="p-3.5 bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl flex justify-between items-center">
-                          <span className="text-xs text-silver font-medium">Neural Chunks</span>
+                       <div className="p-3.5 bg-background border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl flex justify-between items-center">
+                          <span className="text-xs text-silver font-semibold">Neural Chunks</span>
                           <span className="text-xs font-bold text-foreground">1,248</span>
                        </div>
-                       <div className="p-3.5 bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl flex justify-between items-center">
-                          <span className="text-xs text-silver font-medium">Sync Status</span>
-                          <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/10 px-2 py-0.5 rounded-full">Optimal</span>
+                       <div className="p-3.5 bg-background border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl flex justify-between items-center">
+                          <span className="text-xs text-silver font-semibold">Sync Status</span>
+                          <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">Optimal</span>
                        </div>
                     </div>
 
                     <div className="pt-2 text-center relative z-10">
-                       <p className="text-[10px] text-silver leading-relaxed">
-                          All intelligence is encrypted and isolated per operative instance. 
+                       <p className="text-[10px] text-silver leading-relaxed font-medium">
+                          All intelligence data is fully encrypted and sandboxed per agent profile. 
                        </p>
                     </div>
                  </div>
 
                  {/* Neural Vectoring Info Banner */}
-                 <div className="p-5 bg-apple-blue/5 border border-apple-blue/10 rounded-[28px] flex gap-3">
+                 <div className="p-5 bg-apple-blue/5 border border-apple-blue/15 rounded-[28px] flex gap-3 shadow-sm">
                     <Info className="w-5 h-5 text-apple-blue flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="font-bold text-xs text-apple-blue mb-1">Neural Vectoring</h4>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-xs text-apple-blue uppercase tracking-wider">Neural Vectoring</h4>
                       <p className="text-[10px] text-apple-blue/80 font-medium leading-relaxed">
-                         Your operatives use vector-embeddings to retrieve this knowledge in real-time during conversations.
+                         Your operatives leverage secure vector databases to perform semantic lookups and fetch answers in real time.
                       </p>
                     </div>
                  </div>
