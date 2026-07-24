@@ -5,20 +5,420 @@ import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Sidebar from '@/components/Sidebar';
 import MobileBottomNav from '@/components/MobileBottomNav';
-import { Bot, Save, Loader2, Sparkles, Zap, Shield, Cpu, ChevronRight, Info, AlertTriangle, Languages } from 'lucide-react';
+import { Bot, Save, Loader2, Sparkles, Zap, Shield, Cpu, ChevronRight, Info, AlertTriangle, Languages, Activity, Boxes, Store, Pill, Home, Hotel, Trash, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, Variants } from 'framer-motion';
 import Link from 'next/link';
 
+interface BlueprintField {
+  key: string;
+  label: string;
+  placeholder: string;
+  default: string;
+}
+
+interface BlueprintRole {
+  id: string;
+  label: string;
+  desc: string;
+  defaultName: string;
+  tone: string;
+  template: string;
+  fields: BlueprintField[];
+}
+
+interface BlueprintDepartment {
+  id: string;
+  label: string;
+  icon: any;
+  desc: string;
+  color: string;
+  roles: BlueprintRole[];
+}
+
+const departments: BlueprintDepartment[] = [
+  {
+    id: 'scratch',
+    label: 'From Scratch',
+    icon: Bot,
+    desc: 'Clean Slate',
+    color: 'text-silver',
+    roles: []
+  },
+  {
+    id: 'hospital',
+    label: 'Hospital',
+    icon: Activity,
+    desc: 'Medical Care',
+    color: 'text-red-500',
+    roles: [
+      {
+        id: 'receptionist',
+        label: 'Receptionist',
+        desc: 'Schedules patients & FAQs',
+        defaultName: 'CareSync Receptionist',
+        tone: 'friendly',
+        template: 'You are a warm, helpful medical receptionist at {clinicName}. Your job is to assist patients by scheduling appointments, answering questions about our hours (Open: {hours}), and sharing a list of available doctors ({doctors}). Always remain polite, compassionate, and patient-focused. Ask for patient name and phone number to schedule. Do not offer official medical diagnoses. Direct contact: {contact}.',
+        fields: [
+          { key: 'clinicName', label: 'Clinic/Hospital Name', placeholder: 'e.g. CareSync Clinic', default: 'CareSync Clinic' },
+          { key: 'hours', label: 'Operating Hours', placeholder: 'e.g. Mon-Fri 8 AM - 6 PM', default: 'Mon-Fri 8 AM - 6 PM' },
+          { key: 'doctors', label: 'Available Doctors', placeholder: 'e.g. Dr. Smith, Dr. Davis', default: 'Dr. Smith (General), Dr. Davis (Pediatrics)' },
+          { key: 'contact', label: 'Contact Phone', placeholder: 'e.g. +1 (555) 0199', default: '+1 (555) 0199' }
+        ]
+      },
+      {
+        id: 'billing',
+        label: 'Billing Assistant',
+        desc: 'Assists with copays & billing statements',
+        defaultName: 'CareSync Billing',
+        tone: 'professional',
+        template: 'You are an billing and finance assistant at {clinicName}. You help patients understand their billing statements, check accepted insurances ({insurances}), and answer general questions about copays. Always maintain a professional, calm, and reassuring tone. For direct billing issues, refer them to {billingContact}.',
+        fields: [
+          { key: 'clinicName', label: 'Clinic/Hospital Name', placeholder: 'e.g. CareSync Clinic', default: 'CareSync Clinic' },
+          { key: 'insurances', label: 'Accepted Insurances', placeholder: 'e.g. BlueCross, Aetna', default: 'BlueCross, Aetna, Cigna' },
+          { key: 'billingContact', label: 'Billing Phone/Email', placeholder: 'e.g. billing@caresync.com', default: 'billing@caresync.com' }
+        ]
+      },
+      {
+        id: 'triage',
+        label: 'Triage Support',
+        desc: 'Pre-screens patient symptoms',
+        defaultName: 'CareSync Triage',
+        tone: 'professional',
+        template: 'You are a patient support agent at {clinicName}. You help pre-screen patient concerns and guide them to the correct specialist department ({departments}). IMPORTANT: Always state that you are an AI assistant, not a doctor. If the patient describes an emergency, immediately instruct them to call {emergencyNo} or go to the nearest ER. Ask clarifying questions about their general symptoms politely.',
+        fields: [
+          { key: 'clinicName', label: 'Clinic/Hospital Name', placeholder: 'e.g. CareSync Clinic', default: 'CareSync Clinic' },
+          { key: 'departments', label: 'Specialist Departments', placeholder: 'e.g. Cardiology, Pediatrics', default: 'General Medicine, Cardiology, Pediatrics' },
+          { key: 'emergencyNo', label: 'Emergency Contact', placeholder: 'e.g. 911', default: '911' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'warehouse',
+    label: 'Warehouse',
+    icon: Boxes,
+    desc: 'Logistics Control',
+    color: 'text-sky-500',
+    roles: [
+      {
+        id: 'inventory',
+        label: 'Inventory Control',
+        desc: 'Handles stock checks & zones',
+        defaultName: 'LogiTrack Inventory',
+        tone: 'concise',
+        template: 'You are a precise, direct inventory checker for {warehouseName}. You help staff and commercial clients verify if items are in stock, check their storage zone (Zones: {zones}), and list item codes. Keep answers highly structured, brief, and factual. Restocking occurs: {restockSchedule}.',
+        fields: [
+          { key: 'warehouseName', label: 'Warehouse Name', placeholder: 'e.g. LogiTrack Hub A', default: 'LogiTrack Hub A' },
+          { key: 'zones', label: 'Active Zones', placeholder: 'e.g. A1-A4 (Dry), B1-B2 (Cold)', default: 'A1-A4 (General), B1-B2 (Cold Storage)' },
+          { key: 'restockSchedule', label: 'Restock Schedule', placeholder: 'e.g. Every Tuesday night', default: 'Every Tuesday and Thursday morning' }
+        ]
+      },
+      {
+        id: 'shipping',
+        label: 'Shipping Agent',
+        desc: 'Tracks orders & coordinates delays',
+        defaultName: 'LogiTrack Shipping',
+        tone: 'concise',
+        template: 'You are a shipping coordinator for {companyName}. You assist customers with tracking their order delivery dates and handling delayed packages. Always keep replies short and clear. If a customer is looking for their tracking page, point them to {trackingLink}. For lost packages, tell them to email {supportEmail}.',
+        fields: [
+          { key: 'companyName', label: 'Company Name', placeholder: 'e.g. LogiTrack Logistics', default: 'LogiTrack Logistics' },
+          { key: 'trackingLink', label: 'Tracking Portal Link', placeholder: 'e.g. track.logitrack.com', default: 'https://track.logitrack.com' },
+          { key: 'supportEmail', label: 'Support Email', placeholder: 'e.g. support@logitrack.com', default: 'support@logitrack.com' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'grocery',
+    label: 'Grocery Store',
+    icon: Store,
+    desc: 'Retail Support',
+    color: 'text-amber-500',
+    roles: [
+      {
+        id: 'delivery',
+        label: 'Delivery Scheduler',
+        desc: 'Coordinates delivery slots',
+        defaultName: 'FreshCart Delivery',
+        tone: 'friendly',
+        template: 'You are a customer support agent at {storeName} Supermarket. Your main task is to help customers schedule home deliveries and check delivery fees. Deliveries run from {deliveryHours}. The standard delivery fee is {deliveryFee}. Always be cheerful, use emojis occasionally, and ensure the customer gets their preferred delivery window. Direct phone: {phone}.',
+        fields: [
+          { key: 'storeName', label: 'Store Name', placeholder: 'e.g. FreshCart Supermarket', default: 'FreshCart Supermarket' },
+          { key: 'deliveryHours', label: 'Delivery Hours', placeholder: 'e.g. 10 AM to 8 PM', default: '10 AM to 8 PM daily' },
+          { key: 'deliveryFee', label: 'Delivery Fee', placeholder: 'e.g. $5.00', default: '$5.00 (free for orders over $50)' },
+          { key: 'phone', label: 'Store Phone', placeholder: 'e.g. +1 (555) 0145', default: '+1 (555) 0145' }
+        ]
+      },
+      {
+        id: 'refunds',
+        label: 'Returns Assistant',
+        desc: 'Handles complaints & return policies',
+        defaultName: 'FreshCart Returns',
+        tone: 'friendly',
+        template: 'You are a customer loyalty assistant at {storeName}. You help resolve complaints, explain our return policies (Return window: {returnWindow}), and check item replacements. Always remain friendly, apologetic for issues, and direct customers to our refund desk if they need to file a claim: {refundDesk}.',
+        fields: [
+          { key: 'storeName', label: 'Store Name', placeholder: 'e.g. FreshCart Supermarket', default: 'FreshCart Supermarket' },
+          { key: 'returnWindow', label: 'Return Window', placeholder: 'e.g. 14 days with receipt', default: '14 days with original receipt' },
+          { key: 'refundDesk', label: 'Refund Desk Info', placeholder: 'e.g. front of the store or refunds@freshcart.com', default: 'refunds@freshcart.com' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'realestate',
+    label: 'Real Estate',
+    icon: Home,
+    desc: 'Property Agency',
+    color: 'text-emerald-500',
+    roles: [
+      {
+        id: 'leasing',
+        label: 'Leasing Agent',
+        desc: 'Qualifies tenants & schedules viewings',
+        defaultName: 'Apex Leasing',
+        tone: 'friendly',
+        template: 'You are a leasing representative for {agencyName}. You help prospective tenants find rental properties in {areas}. Ask them about their budget, number of bedrooms, and target move-in date. Be professional, positive, and try to schedule a viewing. To finalize application, direct them to {applyLink}.',
+        fields: [
+          { key: 'agencyName', label: 'Agency Name', placeholder: 'e.g. Apex Realty', default: 'Apex Realty' },
+          { key: 'areas', label: 'Available Areas', placeholder: 'e.g. Downtown, Marina', default: 'Downtown, Business Bay, Marina' },
+          { key: 'applyLink', label: 'Application Link', placeholder: 'e.g. apex.com/apply', default: 'https://apex.com/apply' }
+        ]
+      },
+      {
+        id: 'sales',
+        label: 'Sales Agent',
+        desc: 'Qualifies home buyers',
+        defaultName: 'Apex Sales',
+        tone: 'professional',
+        template: 'You are a property consultant for {agencyName}. You guide potential buyers interested in purchasing properties. Share our highlight projects ({properties}). Ask about their investment budget, if they require financing, and request their email/phone to set up a consultation call with a senior broker at {brokerContact}.',
+        fields: [
+          { key: 'agencyName', label: 'Agency Name', placeholder: 'e.g. Apex Realty', default: 'Apex Realty' },
+          { key: 'properties', label: 'Highlight Properties', placeholder: 'e.g. Apex Villas, Ocean Tower', default: 'Apex Luxury Villas, Horizon Residences' },
+          { key: 'brokerContact', label: 'Broker Phone/Email', placeholder: 'e.g. info@apex.com', default: 'sales@apex.com' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'hotel',
+    label: 'Hotel Desk',
+    icon: Hotel,
+    desc: 'Hospitality',
+    color: 'text-indigo-500',
+    roles: [
+      {
+        id: 'concierge',
+        label: 'Concierge Support',
+        desc: 'Recommends amenities & local spots',
+        defaultName: 'Grand Plaza Concierge',
+        tone: 'friendly',
+        template: 'You are a helpful virtual concierge at {hotelName}. You assist guests with booking spa slots, requesting extra room amenities, checking hotel breakfast hours ({breakfastHours}), and explaining checkout parameters (Checkout is {checkoutTime}). Keep your tone exceptionally warm and hospitable. For room service requests, tell them to call extension {roomServiceExt}.',
+        fields: [
+          { key: 'hotelName', label: 'Hotel Name', placeholder: 'e.g. Grand Plaza Hotel', default: 'Grand Plaza Hotel' },
+          { key: 'breakfastHours', label: 'Breakfast Hours', placeholder: 'e.g. 7 AM - 10:30 AM', default: '7:00 AM - 10:30 AM at the Atrium' },
+          { key: 'checkoutTime', label: 'Checkout Time', placeholder: 'e.g. 11:00 AM', default: '11:00 AM' },
+          { key: 'roomServiceExt', label: 'Room Service Ext', placeholder: 'e.g. 104', default: '104' }
+        ]
+      },
+      {
+        id: 'booking',
+        label: 'Booking Agent',
+        desc: 'Assists with room reservations',
+        defaultName: 'Grand Plaza Reservations',
+        tone: 'professional',
+        template: 'You are a reservation agent at {hotelName}. You assist guests with booking room stays, checking nightly rates (starting at {startRate}), and explaining amenities like our {amenities}. Always be polite and help guide them to the online booking engine at {bookingLink}.',
+        fields: [
+          { key: 'hotelName', label: 'Hotel Name', placeholder: 'e.g. Grand Plaza Hotel', default: 'Grand Plaza Hotel' },
+          { key: 'startRate', label: 'Starting Nightly Rate', placeholder: 'e.g. $149/night', default: '$149/night' },
+          { key: 'amenities', label: 'Available Amenities', placeholder: 'e.g. pool, free wifi', default: 'infinity pool, complimentary Wi-Fi, and 24/7 fitness center' },
+          { key: 'bookingLink', label: 'Booking URL', placeholder: 'e.g. plaza.com/book', default: 'https://plaza.com/book' }
+        ]
+      }
+    ]
+  }
+];
+
 export default function CreateWorkerPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState('scratch');
+  const [selectedRole, setSelectedRole] = useState('');
+  const [blueprintInputs, setBlueprintInputs] = useState<Record<string, string>>({});
+  const [customFields, setCustomFields] = useState<{ key: string; label: string; value: string }[]>([]);
+  const [newFieldLabel, setNewFieldLabel] = useState('');
+  const [newFieldValue, setNewFieldValue] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     personality: '',
     tone: 'professional',
     language: 'English',
   });
+
+  const compilePrompt = (
+    template: string,
+    inputs: Record<string, string>,
+    cfList: { key: string; label: string; value: string }[]
+  ) => {
+    let compiled = template;
+    const dept = departments.find(d => d.id === selectedDepartment);
+    const role = dept?.roles.find(r => r.id === selectedRole);
+    
+    if (role) {
+      role.fields.forEach((f) => {
+        const val = inputs[f.key] !== undefined ? inputs[f.key] : f.default;
+        compiled = compiled.replace(new RegExp(`{${f.key}}`, 'g'), val);
+      });
+    }
+
+    // Replace custom placeholders in template
+    cfList.forEach((cf) => {
+      compiled = compiled.replace(new RegExp(`{${cf.key}}`, 'g'), cf.value);
+      compiled = compiled.replace(new RegExp(`{${cf.label}}`, 'g'), cf.value);
+    });
+
+    // Append custom fields as structured bullet list
+    if (cfList.length > 0) {
+      compiled += '\n\nAdditional Parameters:';
+      cfList.forEach((cf) => {
+        if (cf.value.trim() !== '') {
+          compiled += `\n- ${cf.label}: ${cf.value}`;
+        }
+      });
+    }
+
+    return compiled;
+  };
+
+  const selectRole = (deptId: string, role: BlueprintRole) => {
+    setSelectedRole(role.id);
+    setCustomFields([]);
+    setNewFieldLabel('');
+    setNewFieldValue('');
+    
+    // Initialize inputs with default values
+    const initialInputs: Record<string, string> = {};
+    role.fields.forEach((f) => {
+      initialInputs[f.key] = f.default;
+    });
+    setBlueprintInputs(initialInputs);
+
+    // Compile initial prompt
+    let initialPrompt = role.template;
+    role.fields.forEach((f) => {
+      initialPrompt = initialPrompt.replace(new RegExp(`{${f.key}}`, 'g'), f.default);
+    });
+
+    setFormData({
+      ...formData,
+      name: role.defaultName,
+      personality: initialPrompt,
+      tone: role.tone,
+    });
+  };
+
+  const handleDepartmentSelect = (deptId: string) => {
+    setSelectedDepartment(deptId);
+    setCustomFields([]);
+    setNewFieldLabel('');
+    setNewFieldValue('');
+    if (deptId === 'scratch') {
+      setSelectedRole('');
+      setBlueprintInputs({});
+      setFormData({
+        name: '',
+        personality: '',
+        tone: 'professional',
+        language: formData.language
+      });
+    } else {
+      const dept = departments.find(d => d.id === deptId);
+      if (dept && dept.roles.length > 0) {
+        // Auto-select the first role
+        const firstRole = dept.roles[0];
+        selectRole(deptId, firstRole);
+      }
+    }
+  };
+
+  const handleRoleSelect = (roleId: string) => {
+    const dept = departments.find(d => d.id === selectedDepartment);
+    const role = dept?.roles.find(r => r.id === roleId);
+    if (dept && role) {
+      selectRole(selectedDepartment, role);
+    }
+  };
+
+  const handleInputChange = (key: string, value: string) => {
+    const nextInputs = { ...blueprintInputs, [key]: value };
+    setBlueprintInputs(nextInputs);
+
+    const dept = departments.find(d => d.id === selectedDepartment);
+    const role = dept?.roles.find(r => r.id === selectedRole);
+    if (role) {
+      const compiled = compilePrompt(role.template, nextInputs, customFields);
+      setFormData(prev => ({
+        ...prev,
+        personality: compiled
+      }));
+    }
+  };
+
+  const handleAddCustomField = () => {
+    if (!newFieldLabel.trim()) return;
+    const key = newFieldLabel.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Avoid duplicate keys
+    if (customFields.some(cf => cf.key === key)) {
+      setError('A field with that name already exists.');
+      return;
+    }
+
+    const nextCustomFields = [...customFields, { key, label: newFieldLabel.trim(), value: newFieldValue }];
+    setCustomFields(nextCustomFields);
+    setNewFieldLabel('');
+    setNewFieldValue('');
+
+    const dept = departments.find(d => d.id === selectedDepartment);
+    const role = dept?.roles.find(r => r.id === selectedRole);
+    if (role) {
+      const compiled = compilePrompt(role.template, blueprintInputs, nextCustomFields);
+      setFormData(prev => ({
+        ...prev,
+        personality: compiled
+      }));
+    }
+  };
+
+  const handleCustomFieldChange = (key: string, value: string) => {
+    const nextCustomFields = customFields.map(cf => cf.key === key ? { ...cf, value } : cf);
+    setCustomFields(nextCustomFields);
+
+    const dept = departments.find(d => d.id === selectedDepartment);
+    const role = dept?.roles.find(r => r.id === selectedRole);
+    if (role) {
+      const compiled = compilePrompt(role.template, blueprintInputs, nextCustomFields);
+      setFormData(prev => ({
+        ...prev,
+        personality: compiled
+      }));
+    }
+  };
+
+  const handleRemoveCustomField = (key: string) => {
+    const nextCustomFields = customFields.filter(cf => cf.key !== key);
+    setCustomFields(nextCustomFields);
+
+    const dept = departments.find(d => d.id === selectedDepartment);
+    const role = dept?.roles.find(r => r.id === selectedRole);
+    if (role) {
+      const compiled = compilePrompt(role.template, blueprintInputs, nextCustomFields);
+      setFormData(prev => ({
+        ...prev,
+        personality: compiled
+      }));
+    }
+  };
 
   const [error, setError] = useState<string | null>(null);
 
@@ -113,6 +513,189 @@ export default function CreateWorkerPage() {
               {/* Configuration Form */}
               <motion.div variants={itemVariants} className="lg:col-span-7">
                 <form onSubmit={handleSubmit} className="space-y-6">
+
+                  {/* Department Blueprint Selector */}
+                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl">
+                    <div>
+                      <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-apple-blue" />
+                        1. Select Department Blueprint
+                      </h2>
+                      <p className="text-[11px] text-silver mt-0.5 font-medium">Choose a predefined sector starting point, or build from scratch.</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                      {departments.map((dept) => {
+                        const isSelected = selectedDepartment === dept.id;
+                        const DeptIcon = dept.icon;
+                        return (
+                          <button
+                            key={dept.id}
+                            type="button"
+                            onClick={() => handleDepartmentSelect(dept.id)}
+                            className={cn(
+                              "p-3 rounded-2xl text-left transition-all border flex flex-col justify-between gap-3 duration-300 min-h-[105px]",
+                              isSelected 
+                                ? "bg-foreground text-background border-transparent shadow-lg" 
+                                : "bg-background border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/15 dark:hover:border-white/15"
+                            )}
+                          >
+                            <div className={cn(
+                              "w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0",
+                              isSelected ? "bg-background/15" : "bg-foreground/5 dark:bg-white/5"
+                            )}>
+                              <DeptIcon className={cn("w-4.5 h-4.5", isSelected ? "text-background" : dept.color)} />
+                            </div>
+                            <div>
+                              <div className="text-[11px] font-bold truncate">{dept.label}</div>
+                              <div className={cn("text-[9px] font-medium mt-0.5 truncate", isSelected ? "text-background/70" : "text-silver")}>
+                                {dept.desc}
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Role Selector (only shown if a department is selected) */}
+                  {selectedDepartment !== 'scratch' && (
+                    <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-350">
+                      <div>
+                        <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
+                          <Bot className="w-4 h-4 text-apple-blue" />
+                          2. Select Operator Role
+                        </h2>
+                        <p className="text-[11px] text-silver mt-0.5 font-medium">Select the specific workflow role for this operative.</p>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        {departments.find(d => d.id === selectedDepartment)?.roles.map((role) => {
+                          const isSelected = selectedRole === role.id;
+                          return (
+                            <button
+                              key={role.id}
+                              type="button"
+                              onClick={() => handleRoleSelect(role.id)}
+                              className={cn(
+                                "p-4 rounded-2xl text-left transition-all border flex flex-col gap-1.5 duration-300",
+                                isSelected 
+                                  ? "bg-foreground text-background border-transparent shadow-lg" 
+                                  : "bg-background border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/15 dark:hover:border-white/15"
+                              )}
+                            >
+                              <div className="text-xs font-bold">{role.label}</div>
+                              <div className={cn("text-[10px] font-medium leading-relaxed", isSelected ? "text-background/70" : "text-silver")}>
+                                {role.desc}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Blueprint Customization Fields (Dynamic Inputs) */}
+                  {selectedDepartment !== 'scratch' && selectedRole && (
+                    <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-350">
+                      <div>
+                        <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
+                          <Cpu className="w-4 h-4 text-apple-blue" />
+                          3. Configure Blueprint Parameters
+                        </h2>
+                        <p className="text-[11px] text-silver mt-0.5 font-medium">Custom values will automatically compile into the system prompts.</p>
+                      </div>
+
+                      <div className="space-y-4">
+                        {departments
+                          .find(d => d.id === selectedDepartment)
+                          ?.roles.find(r => r.id === selectedRole)
+                          ?.fields.map((field) => (
+                            <div key={field.key} className="space-y-1.5">
+                              <label className="text-[10px] font-bold text-silver uppercase tracking-wider block">
+                                {field.label}
+                              </label>
+                              <input
+                                required
+                                type="text"
+                                placeholder={field.placeholder}
+                                value={blueprintInputs[field.key] || ''}
+                                onChange={(e) => handleInputChange(field.key, e.target.value)}
+                                className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
+                              />
+                            </div>
+                          ))}
+                      </div>
+
+                      {/* Divider */}
+                      <div className="border-t border-foreground/[0.06] dark:border-white/[0.06] my-6 pt-4" />
+
+                      {/* Custom Parameters Header */}
+                      <div className="space-y-1">
+                        <h3 className="text-[10px] font-bold text-silver uppercase tracking-wider">Custom Parameters</h3>
+                        <p className="text-[11px] text-silver font-medium">Add your own specific fields and information (e.g. WiFi Password, Room Code).</p>
+                      </div>
+
+                      {/* Custom Fields List */}
+                      {customFields.length > 0 && (
+                        <div className="space-y-4 pt-2">
+                          {customFields.map((field) => (
+                            <div key={field.key} className="flex items-end gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                              <div className="flex-1 space-y-1.5">
+                                <label className="text-[10px] font-bold text-silver uppercase tracking-wider block">
+                                  {field.label}
+                                </label>
+                                <input
+                                  type="text"
+                                  value={field.value}
+                                  onChange={(e) => handleCustomFieldChange(field.key, e.target.value)}
+                                  className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all"
+                                />
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveCustomField(field.key)}
+                                className="p-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl transition-colors duration-200 mb-[1px]"
+                              >
+                                <Trash className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Add Custom Field Inline Sub-form */}
+                      <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.04] dark:border-white/[0.04] p-4 rounded-2xl space-y-3 mt-4">
+                        <h4 className="text-[10px] font-bold text-silver uppercase tracking-wider">Add Custom Parameter</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <input
+                            type="text"
+                            placeholder="Field Label (e.g. WiFi Password)"
+                            value={newFieldLabel}
+                            onChange={(e) => setNewFieldLabel(e.target.value)}
+                            className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
+                          />
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              placeholder="Value (e.g. guest2026)"
+                              value={newFieldValue}
+                              onChange={(e) => setNewFieldValue(e.target.value)}
+                              className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
+                            />
+                            <button
+                              type="button"
+                              onClick={handleAddCustomField}
+                              disabled={!newFieldLabel.trim()}
+                              className="px-4 bg-apple-blue hover:bg-apple-blue/90 disabled:opacity-50 text-white rounded-xl transition-all flex items-center justify-center shadow-lg shadow-apple-blue/10"
+                            >
+                              <Plus className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   
                   {/* Identity Box */}
                   <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl">

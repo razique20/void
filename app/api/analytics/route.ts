@@ -21,11 +21,11 @@ export async function GET() {
 
     let totalMessages = 0;
     let activeChats = conversations.length;
-    
+
     // Calculate last 7 days user message interactions
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const dailyInteractions: { name: string; dateStr: string; interactions: number }[] = [];
-    
+
     // Initialize array with the last 7 days in chronological order
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
@@ -89,9 +89,9 @@ export async function GET() {
     // Based on average customer support agent salary ($45k/year) + benefits 
     // Average cost per human ticket: $1.20 - $2.50
     // Average resolution time: 5-8 minutes
-    
-    const HUMAN_COST_PER_MESSAGE = 1.50; 
-    const MINUTES_SAVED_PER_RESPONSE = 3.5; 
+
+    const HUMAN_COST_PER_MESSAGE = 0.80;
+    const MINUTES_SAVED_PER_RESPONSE = 3.5;
 
     const estimatedSavings = totalMessages * HUMAN_COST_PER_MESSAGE;
     const estimatedTimeSaved = (totalMessages * MINUTES_SAVED_PER_RESPONSE) / 60; // in hours
