@@ -194,13 +194,21 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu Toggle */}
-          <div className="flex md:hidden items-center gap-3">
-            <ThemeToggle />
+          <div className="flex md:hidden items-center gap-2">
+            <Show when="signed-out">
+              <Link 
+                href="/sign-in" 
+                className="text-[10px] uppercase tracking-wider font-extrabold bg-foreground text-background px-3 py-1.5 rounded-lg transition-all"
+              >
+                Sign In
+              </Link>
+            </Show>
             <Show when="signed-in">
               <div className="scale-90 origin-right">
                 <UserButton />
               </div>
             </Show>
+            <ThemeToggle />
             <button 
               onClick={() => setIsOpen(!isOpen)}
               className="text-foreground hover:text-foreground/85 transition-colors p-1.5 rounded-xl bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.04] dark:border-white/[0.04]"
