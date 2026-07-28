@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
-import Sidebar from '@/components/Sidebar';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import { cn } from '@/lib/utils';
 import { motion, Variants } from 'framer-motion';
@@ -137,9 +136,6 @@ export default function TrainingPage() {
     <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300">
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
-        <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-transparent">
-          <Sidebar />
-        </div>
         <MobileBottomNav />
         <main className="flex-1 overflow-y-auto p-6 md:p-12 pt-24 md:pt-28 pb-24 md:pb-12 relative">
           
@@ -151,7 +147,7 @@ export default function TrainingPage() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="max-w-5xl mx-auto space-y-8 relative z-10"
+            className="max-w-7xl mx-auto space-y-8 relative z-10"
           >
             {/* Header */}
             <motion.div variants={itemVariants} className="space-y-2">

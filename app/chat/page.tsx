@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Navbar from '@/components/Navbar';
-import Sidebar from '@/components/Sidebar';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import { Send, Bot, User, Loader2, RefreshCw, Copy, Circle, ChevronDown, Sparkles, Check } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
@@ -117,9 +116,6 @@ export default function ChatPage() {
 
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
-        <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-transparent">
-          <Sidebar />
-        </div>
         <MobileBottomNav />
         
         <main className="flex-1 flex flex-col h-full overflow-hidden pt-20 relative">

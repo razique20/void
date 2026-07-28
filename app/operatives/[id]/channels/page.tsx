@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/Navbar';
-import Sidebar from '@/components/Sidebar';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import { 
   MessageSquare, 
@@ -191,9 +190,6 @@ export default function ChannelsPage() {
       <div className="h-full relative flex flex-col bg-background">
         <Navbar />
         <div className="flex pt-20 h-full overflow-hidden">
-          <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40 overflow-y-auto">
-            <Sidebar />
-          </div>
           <MobileBottomNav />
           <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
             <div className="max-w-4xl mx-auto space-y-8">
@@ -248,9 +244,6 @@ export default function ChannelsPage() {
     <div className="h-full relative flex flex-col bg-background text-foreground transition-all duration-300">
       <Navbar />
       <div className="flex pt-20 h-full overflow-hidden">
-        <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40 overflow-y-auto">
-          <Sidebar />
-        </div>
         <MobileBottomNav />
         <main className="flex-1 overflow-y-auto p-6 md:p-12 pb-24 md:pb-12">
           
@@ -258,7 +251,7 @@ export default function ChannelsPage() {
           <div className="absolute top-[-5%] left-[20%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
           <div className="absolute bottom-[10%] right-[5%] w-[30%] h-[30%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
 
-          <div className="max-w-4xl mx-auto space-y-10 relative z-10">
+          <div className="max-w-7xl mx-auto space-y-10 relative z-10">
             
             {/* Navigation Header */}
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">

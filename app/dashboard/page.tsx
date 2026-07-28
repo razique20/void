@@ -12,28 +12,19 @@ import {
   Copy,
   X,
   Settings,
-  Activity,
-  Zap,
   TrendingUp,
   ChevronRight,
   Trash2,
   Search,
-  Check,
   Sparkles,
   RefreshCw,
-  Info,
-  Calendar,
-  Layers,
-  ArrowRight,
-  Sparkle,
-  Server,
-  ShieldCheck,
-  Database,
   Cpu,
-  Wifi
+  Wifi,
+  Terminal,
+  Shield,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 export default function DashboardPage() {
@@ -122,654 +113,395 @@ export default function DashboardPage() {
       worker.tone.toLowerCase().includes(searchQuery.toLowerCase()) ||
       worker.personality.toLowerCase().includes(searchQuery.toLowerCase());
 
-    if (activeFilter === 'online') {
-      return matchesSearch && worker.status === 'online';
-    }
-    if (activeFilter === 'whatsapp') {
-      return matchesSearch && worker.channels?.whatsapp?.isActive;
-    }
-    if (activeFilter === 'telegram') {
-      return matchesSearch && worker.channels?.telegram?.isActive;
-    }
+    if (activeFilter === 'online') return matchesSearch && worker.status === 'online';
+    if (activeFilter === 'whatsapp') return matchesSearch && worker.channels?.whatsapp?.isActive;
+    if (activeFilter === 'telegram') return matchesSearch && worker.channels?.telegram?.isActive;
     return matchesSearch;
   });
-
-  const getChannelDistribution = () => {
-    let whatsappCount = 0;
-    let telegramCount = 0;
-    let sandboxCount = 0;
-
-    workers.forEach(w => {
-      let activeAny = false;
-      if (w.channels?.whatsapp?.isActive) {
-        whatsappCount++;
-        activeAny = true;
-      }
-      if (w.channels?.telegram?.isActive) {
-        telegramCount++;
-        activeAny = true;
-      }
-      if (!activeAny) {
-        sandboxCount++;
-      }
-    });
-
-    const data = [
-      { name: 'WhatsApp', value: whatsappCount, color: '#10B981' },
-      { name: 'Telegram', value: telegramCount, color: '#0EA5E9' },
-      { name: 'Web', value: sandboxCount, color: '#A1A1AA' },
-    ];
-
-    // Fallback if everything is 0 to show a preview
-    if (whatsappCount === 0 && telegramCount === 0 && sandboxCount === 0) {
-      return [
-        { name: 'WhatsApp', value: 0, color: '#10B981' },
-        { name: 'Telegram', value: 0, color: '#0EA5E9' },
-        { name: 'Web', value: 1, color: '#A1A1AA' },
-      ];
-    }
-
-    return data.filter(d => d.value > 0);
-  };
-
-  const channelData = getChannelDistribution();
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.05
-      }
+      transition: { staggerChildren: 0.04 }
     }
   };
-  const cardVariants: Variants = {
-    hidden: { opacity: 0, y: 15 },
-    show: {
-      opacity: 1,
+
+  const rowVariants: Variants = {
+    hidden: { opacity: 0, y: 8 },
+    show: { 
+      opacity: 1, 
       y: 0,
-      transition: { type: 'spring', stiffness: 300, damping: 24 }
+      transition: { type: 'spring', stiffness: 400, damping: 30 }
     }
   };
+
+  const onlineCount = workers.filter(w => w.status === 'online').length;
+  const gatewayCount = workers.filter(w => w.channels?.whatsapp?.isActive || w.channels?.telegram?.isActive).length;
 
   return (
-    <div className="relative space-y-8 md:space-y-12 pb-10 md:pb-20 transition-colors duration-300">
+    <div className="space-y-8 font-sans antialiased">
 
-      {/* Background Ambience */}
-      <div className="absolute top-[-10%] left-[-15%] w-[40%] h-[40%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[20%] right-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
-
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative z-10">
-        <div className="space-y-1">
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            The Fleet.
-            <span className="inline-flex items-center justify-center text-[9px] font-bold text-apple-blue bg-apple-blue/10 border border-apple-blue/10 px-2.5 py-0.5 rounded-full uppercase tracking-widest">
-              Active Sync
-            </span>
-          </h1>
-          <p className="text-silver text-sm font-medium">
-            Manage, deploy, and monitor your autonomous workforce nodes.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5 w-full sm:w-auto">
-          <button
-            onClick={() => fetchData(true)}
-            disabled={isRefreshing}
-            className="p-3 bg-foreground/[0.02] dark:bg-white/[0.01] hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-md rounded-2xl transition-all disabled:opacity-50 text-foreground"
-            title="Refresh Fleet State"
-          >
-            <RefreshCw className={cn("w-4 h-4 text-silver hover:text-foreground", isRefreshing && "animate-spin text-foreground")} />
-          </button>
-
-          <Link
-            href="/create-worker"
-            className="flex-1 sm:flex-initial bg-foreground text-background px-6 py-3.5 rounded-2xl text-xs font-bold hover:opacity-90 hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-2xl shadow-foreground/5"
-          >
-            <Plus className="w-4 h-4" /> Hire Operative
-          </Link>
-        </div>
-      </div>
-
-      {/* Stats Quick Bento Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
-
-        {/* Interaction Card */}
-        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] hover:border-apple-blue/20 dark:hover:border-apple-blue/30 hover:shadow-2xl hover:shadow-apple-blue/5 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-apple-blue/5 blur-[35px] rounded-full group-hover:bg-apple-blue/10 transition-colors duration-500" />
-          <div className="space-y-4">
-            <div className="w-10 h-10 bg-apple-blue/10 rounded-xl flex items-center justify-center">
-              <Zap className="w-5 h-5 text-apple-blue animate-pulse" />
-            </div>
-            <div>
-              <p className="text-[9px] font-bold text-silver uppercase tracking-wider">Active Ingress</p>
-              <div className="flex items-baseline gap-2 mt-1">
-                <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
-                  {loading ? '...' : `${stats?.totalMessages || 0}`}
-                </h3>
-                <span className="text-[10px] font-bold text-apple-blue uppercase tracking-widest">Messages</span>
-              </div>
-              <p className="text-[11px] text-silver mt-1 flex items-center gap-1 font-medium">
-                <TrendingUp className="w-3.5 h-3.5 text-apple-blue" />
-                <span>{loading ? '...' : `${Number(stats?.interactionTrend) > 0 ? '+' : ''}${stats?.interactionTrend || 0}% vs last week`}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Active Chats Card */}
-        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] hover:border-violet-500/20 dark:hover:border-violet-500/30 hover:shadow-2xl hover:shadow-violet-500/5 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 blur-[35px] rounded-full group-hover:bg-violet-500/10 transition-colors duration-500" />
-          <div className="space-y-4">
-            <div className="w-10 h-10 bg-violet-500/10 rounded-xl flex items-center justify-center">
-              <MessageSquare className="w-5 h-5 text-violet-500" />
-            </div>
-            <div>
-              <p className="text-[9px] font-bold text-silver uppercase tracking-wider">Active Conversations</p>
-              <div className="flex items-baseline gap-2 mt-1">
-                <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
-                  {loading ? '...' : `${stats?.activeChats || 0}`}
-                </h3>
-                <span className="text-[10px] font-bold text-violet-500 uppercase tracking-widest">Chats</span>
-              </div>
-              <p className="text-[11px] text-silver mt-1 flex items-center gap-1 font-medium">
-                <span>Across all deployed nodes</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Cost Recouped Card */}
-        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] hover:border-emerald-500/20 dark:hover:border-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/5 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 blur-[35px] rounded-full group-hover:bg-emerald-500/10 transition-colors duration-500" />
-          <div className="space-y-4">
-            <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-emerald-500" />
-            </div>
-            <div>
-              <p className="text-[9px] font-bold text-silver uppercase tracking-wider">Estimated Savings</p>
-              <div className="flex items-baseline gap-2 mt-1">
-                <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
-                  {loading ? '...' : `$${stats?.estimatedSavings || '0.00'}`}
-                </h3>
-                <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Recouped</span>
-              </div>
-              <p className="text-[11px] text-silver mt-1 flex items-center gap-1 font-medium">
-                <span>$0.80 per automated support msg</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Human Hours Saved Card */}
-        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] hover:border-purple-500/20 dark:hover:border-purple-500/30 hover:shadow-2xl hover:shadow-purple-500/5 transition-all duration-300 relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 blur-[35px] rounded-full group-hover:bg-purple-500/10 transition-colors duration-500" />
-          <div className="space-y-4">
-            <div className="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center">
-              <Activity className="w-5 h-5 text-purple-500" />
-            </div>
-            <div>
-              <p className="text-[9px] font-bold text-silver uppercase tracking-wider">Human Hours Reclaimed</p>
-              <div className="flex items-baseline gap-2 mt-1">
-                <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground">
-                  {loading ? '...' : `${stats?.estimatedTimeSaved || '0.0'}`}
-                </h3>
-                <span className="text-[10px] font-bold text-purple-500 uppercase tracking-widest">Hours</span>
-              </div>
-              <p className="text-[11px] text-silver mt-1 flex items-center gap-1.5 font-medium">
-                <span className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-pulse" />
-                <span>{loading ? '...' : `${stats?.successRate || '100'}% Success Rate`}</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Middle Row: Bento Layout for Area & Workspace Telemetry */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
-
-        {/* Activity Stream Chart (2/3 width) */}
-        <div className="lg:col-span-2 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] relative overflow-hidden">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-            <div>
-              <h2 className="text-[10px] font-bold text-silver uppercase tracking-[0.2em]">7-Day Activity Stream</h2>
-              <p className="text-xs text-silver mt-0.5 font-medium">Real-time interaction trends over the last week.</p>
-            </div>
-            <div className="flex items-center gap-4 text-xs font-semibold text-silver">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-apple-blue animate-pulse" />
-                Ingress Traffic
-              </span>
-            </div>
-          </div>
-
-          <div className="h-64 w-full">
-            {loading ? (
-              <div className="w-full h-full bg-foreground/5 rounded-2xl animate-pulse" />
-            ) : (
-              <ResponsiveContainer width="99%" height="100%" minWidth={0}>
-                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorInteractions" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--color-apple-blue)" stopOpacity={0.25} />
-                      <stop offset="95%" stopColor="var(--color-apple-blue)" stopOpacity={0.0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-silver)" strokeOpacity={0.06} vertical={false} />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--color-silver)' }} dy={10} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--color-silver)' }} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'var(--color-card)',
-                      borderRadius: '16px',
-                      border: '1px solid rgba(120, 120, 128, 0.15)',
-                      backdropFilter: 'blur(20px)',
-                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.05)'
-                    }}
-                    labelStyle={{ fontWeight: 'bold', fontSize: '11px', color: 'var(--color-foreground)', marginBottom: '4px' }}
-                    itemStyle={{ color: 'var(--color-apple-blue)', fontSize: '12px', fontWeight: 'bold', padding: 0 }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="interactions"
-                    stroke="var(--color-apple-blue)"
-                    strokeWidth={2.5}
-                    fillOpacity={1}
-                    fill="url(#colorInteractions)"
-                    dot={{ r: 4, stroke: 'var(--color-background)', strokeWidth: 2, fill: 'var(--color-apple-blue)' }}
-                    activeDot={{ r: 6, stroke: 'var(--color-background)', strokeWidth: 2, fill: 'var(--color-apple-blue)' }}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
+      {/* Floating Status Toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 15, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 15, scale: 0.95 }}
+            className={cn(
+              "fixed bottom-8 right-8 z-50 px-4 py-3 rounded-xl border flex items-center gap-2.5 backdrop-blur-xl shadow-2xl text-xs font-semibold",
+              toast.type === 'error' 
+                ? 'bg-red-500/10 border-red-500/20 text-red-500' 
+                : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
             )}
-          </div>
-        </div>
+          >
+            <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", toast.type === 'error' ? 'bg-red-500' : 'bg-emerald-500')} />
+            {toast.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        {/* Workspace Insights & Telemetry Panel (1/3 width) */}
-        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] flex flex-col justify-between relative overflow-hidden h-full">
-          <div className="space-y-6">
-
-            {/* Title */}
-            <div>
-              <h2 className="text-[10px] font-bold text-silver uppercase tracking-[0.2em] mb-1">Workspace Telemetry</h2>
-              <p className="text-xs text-silver font-medium">Performance metrics and communication channels.</p>
-            </div>
-
-            {/* Metrics Checklist */}
-            <div className="space-y-4 pt-2">
-
-              {/* Autonomy Rate */}
-              <div className="flex items-center justify-between border-b border-foreground/[0.04] dark:border-white/[0.04] pb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-500">
-                    <Cpu className="w-4 h-4 animate-pulse" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-foreground">AI Autonomy Rate</p>
-                    <p className="text-[10px] text-silver font-medium">Unassisted Resolutions</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs font-bold text-purple-500">{loading ? '...' : `${stats?.successRate || '100'}%`}</p>
-                  <p className="text-[8px] text-silver font-bold uppercase tracking-widest">Optimal</p>
-                </div>
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="space-y-8"
+      >
+        
+        {/* Header Row */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-foreground/[0.06] dark:border-white/[0.06] pb-6">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
+                Fleet Overview
+              </h1>
+              <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/15 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 relative flex shrink-0">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
+                </span>
+                <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">{onlineCount} Online</span>
               </div>
-
-              {/* Response Speed */}
-              <div className="flex items-center justify-between pb-1">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                    <Wifi className="w-4 h-4 animate-pulse" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-foreground">AI Response Speed</p>
-                    <p className="text-[10px] text-silver font-medium">Average Reply Time</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs font-bold text-emerald-500">&lt; 1.5s</p>
-                  <p className="text-[8px] text-silver font-bold uppercase tracking-widest">Real-time</p>
-                </div>
-              </div>
-
             </div>
+            <p className="text-silver text-xs font-medium">
+              Monitor, calibrate, and manage your autonomous operative fleet.
+            </p>
           </div>
 
-          {/* Activity / Heartbeat Log */}
-          <div className="mt-6 pt-4 border-t border-foreground/[0.06] dark:border-white/[0.06] space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[8px] font-extrabold text-silver uppercase tracking-widest">System Log Heartbeat</h3>
-              <Link href="/dashboard/logs" className="text-[9px] font-bold text-apple-blue hover:underline uppercase tracking-widest flex items-center gap-0.5">
-                <span>View Full Logs</span>
-                <ChevronRight className="w-2.5 h-2.5" />
-              </Link>
-            </div>
-            <div className="bg-background border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl p-3 font-mono text-[9px] text-silver space-y-1.5 max-h-24 overflow-y-auto custom-scrollbar">
-              {stats?.systemLogs && stats.systemLogs.length > 0 ? (
-                stats.systemLogs.map((log: any) => {
-                  const logTime = new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-                  let dotColor = "bg-blue-500";
-                  if (log.type === 'error') dotColor = "bg-red-500 animate-pulse";
-                  else if (log.type === 'warning') dotColor = "bg-amber-500";
-                  else if (log.type === 'handshake') dotColor = "bg-emerald-500";
-
-                  return (
-                    <div key={log._id} className="flex items-start gap-1.5">
-                      <span className={cn("w-1.5 h-1.5 rounded-full mt-1 flex-shrink-0", dotColor)} />
-                      <span className="break-all">[{logTime}] {log.source}: {log.message}</span>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="text-center py-4 text-zinc-500 italic">No system events logged yet.</div>
-              )}
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* Bottom Row: Bento Layout for Nodes Directory & Channel Distribution */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 relative z-10">
-
-        {/* Operatives Hub (2/3 width) */}
-        <div className="lg:col-span-2 space-y-6">
-
-          {/* Controls Bar: Search & Filter Tabs */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-3 rounded-[24px]">
-
-            {/* Search Box */}
-            <div className="relative flex-1 max-w-md w-full">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-silver" />
-              <input
-                type="text"
-                placeholder="Filter nodes by name, tone, or role..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl pl-11 pr-4 py-3 text-xs focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver text-foreground font-semibold"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-foreground/5 text-silver hover:text-foreground transition-colors"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-
-            {/* Quick Filters */}
-            <div className="flex flex-wrap gap-1 md:self-center">
-              {[
-                { id: 'all', label: 'All Nodes' },
-                { id: 'online', label: 'Online' },
-                { id: 'whatsapp', label: 'WhatsApp' },
-                { id: 'telegram', label: 'Telegram' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveFilter(tab.id as any)}
-                  className={cn(
-                    "px-4 py-2 rounded-xl text-xs font-bold transition-all border border-transparent duration-300",
-                    activeFilter === tab.id
-                      ? "bg-foreground text-background shadow-md"
-                      : "hover:bg-foreground/5 text-silver hover:text-foreground"
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-          </div>
-
-          {/* Nodes Grid */}
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[1, 2].map(i => (
-                <div key={i} className="h-60 bg-foreground/5 rounded-[28px] animate-pulse" />
-              ))}
-            </div>
-          ) : filteredWorkers.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 md:py-28 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[32px] p-6 text-center">
-              <div className="w-16 h-16 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.08] dark:border-white/[0.08] rounded-3xl flex items-center justify-center mb-4">
-                <Bot className="w-8 h-8 text-silver" />
-              </div>
-              <h3 className="text-lg font-bold text-foreground">No Nodes Found</h3>
-              <p className="text-silver mt-1 text-xs max-w-xs font-medium">
-                We couldn't find any neural operatives matching your search query or filter settings.
-              </p>
-            </div>
-          ) : (
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <button
+              onClick={() => fetchData(true)}
+              disabled={isRefreshing}
+              className="p-2.5 bg-foreground/[0.03] dark:bg-white/[0.03] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl transition-all disabled:opacity-50 text-silver hover:text-foreground"
+              title="Refresh"
             >
-              <AnimatePresence mode="popLayout">
-                {filteredWorkers.map((worker) => (
-                  <motion.div
-                    layout
-                    variants={cardVariants}
-                    key={worker._id}
-                    className="group relative bg-gradient-to-b from-white/[0.03] to-transparent dark:from-white/[0.01] dark:to-transparent backdrop-blur-xl border border-foreground/[0.06] dark:border-white/[0.06] rounded-[32px] p-6 hover:border-apple-blue/20 dark:hover:border-apple-blue/30 hover:shadow-[0_20px_50px_rgba(8,112,244,0.04)] dark:hover:shadow-[0_20px_50px_rgba(8,112,244,0.02)] transition-all duration-500 relative overflow-hidden flex flex-col justify-between"
+              <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin text-foreground")} />
+            </button>
+            <Link
+              href="/create-worker"
+              className="flex-1 md:flex-initial bg-foreground text-background px-5 py-2.5 rounded-xl text-xs font-bold hover:opacity-90 transition-all flex items-center justify-center gap-1.5 shadow-sm"
+            >
+              <Plus className="w-3.5 h-3.5 stroke-[2.5px]" /> Deploy Operative
+            </Link>
+          </div>
+        </div>
+
+        {/* Stats Strip */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-foreground/[0.04] dark:bg-white/[0.04] rounded-2xl overflow-hidden border border-foreground/[0.06] dark:border-white/[0.06]">
+          {[
+            { label: 'Total Messages', value: stats?.totalMessages || 0, trend: stats?.interactionTrend },
+            { label: 'Active Chats', value: stats?.activeChats || 0 },
+            { label: 'Estimated Savings', value: `$${stats?.estimatedSavings || '0.00'}` },
+            { label: 'Hours Reclaimed', value: stats?.estimatedTimeSaved || '0.0' },
+          ].map((stat, i) => (
+            <div key={i} className="bg-background px-5 py-4 space-y-1">
+              <p className="text-[10px] font-bold text-silver uppercase tracking-wider">{stat.label}</p>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-lg font-bold text-foreground">{loading ? '—' : stat.value}</span>
+                {stat.trend !== undefined && !loading && (
+                  <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
+                    <TrendingUp className="w-2.5 h-2.5" />
+                    {Number(stat.trend) > 0 ? '+' : ''}{stat.trend}%
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Two-Column Bento */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* LEFT: Operatives Table (8/12) */}
+          <div className="lg:col-span-8 space-y-5">
+            
+            {/* Filter Bar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] p-1.5 rounded-xl">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-silver" />
+                <input
+                  type="text"
+                  placeholder="Filter operatives..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-transparent border-0 rounded-lg pl-9 pr-4 py-2 text-xs focus:outline-none focus:ring-0 text-foreground placeholder:text-silver/50 font-medium"
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-silver hover:text-foreground">
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-0.5">
+                {[
+                  { id: 'all', label: 'All' },
+                  { id: 'online', label: 'Online' },
+                  { id: 'whatsapp', label: 'WhatsApp' },
+                  { id: 'telegram', label: 'Telegram' }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveFilter(tab.id as any)}
+                    className={cn(
+                      "px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all",
+                      activeFilter === tab.id
+                        ? "bg-foreground text-background"
+                        : "text-silver hover:text-foreground hover:bg-foreground/[0.04] dark:hover:bg-white/[0.04]"
+                    )}
                   >
-                    {/* Status Neon Ambient Glow */}
-                    <div className={cn(
-                      "absolute -top-24 -right-24 w-48 h-48 rounded-full blur-[60px] opacity-[0.03] group-hover:opacity-10 transition-opacity duration-500 pointer-events-none",
-                      worker.status === 'online' ? "bg-emerald-500" : "bg-zinc-500"
-                    )} />
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-                    {/* Status & Options Bar */}
-                    <div className="flex items-center justify-between mb-6 relative z-10">
+            {/* Operatives List */}
+            {loading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="h-[72px] bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl animate-pulse" />
+                ))}
+              </div>
+            ) : filteredWorkers.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] border-dashed rounded-2xl text-center">
+                <div className="w-12 h-12 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl flex items-center justify-center mb-3">
+                  <Bot className="w-5 h-5 text-silver" />
+                </div>
+                <h3 className="text-sm font-semibold text-foreground">No operatives found</h3>
+                <p className="text-silver text-xs max-w-xs mt-1">
+                  Try adjusting your search or filter parameters.
+                </p>
+              </div>
+            ) : (
+              <motion.div className="space-y-2" variants={containerVariants}>
+                <AnimatePresence mode="popLayout">
+                  {filteredWorkers.map((worker) => (
+                    <motion.div
+                      layout
+                      variants={rowVariants}
+                      key={worker._id}
+                      className="group bg-foreground/[0.01] dark:bg-white/[0.005] hover:bg-foreground/[0.03] dark:hover:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/[0.1] dark:hover:border-white/[0.1] rounded-xl px-5 py-4 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3"
+                    >
+                      {/* Left: Identity */}
+                      <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                        <div className="w-9 h-9 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-lg flex items-center justify-center shrink-0 group-hover:border-foreground/[0.12] dark:group-hover:border-white/[0.12] transition-colors">
+                          <Bot className="w-4 h-4 text-silver group-hover:text-foreground transition-colors" />
+                        </div>
 
-                      {/* LED Status Chip */}
-                      <div className={cn(
-                        "flex items-center gap-2 px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest border backdrop-blur-md transition-all duration-300",
-                        worker.status === 'online'
-                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.08)]"
-                          : "bg-zinc-500/10 text-zinc-400 border-zinc-500/20"
-                      )}>
-                        <span className={cn(
-                          "w-1.5 h-1.5 rounded-full relative flex",
-                          worker.status === 'online' ? "bg-emerald-400" : "bg-zinc-500"
-                        )}>
-                          {worker.status === 'online' && (
-                            <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-                          )}
-                        </span>
-                        {worker.status}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold text-[13px] text-foreground/90 group-hover:text-foreground transition-colors truncate">
+                              {worker.name}
+                            </h3>
+                            <span className={cn(
+                              "w-1.5 h-1.5 rounded-full shrink-0",
+                              worker.status === 'online' ? "bg-emerald-500" : "bg-silver/40"
+                            )} />
+                            
+                            {/* Channel Tags */}
+                            <div className="hidden sm:flex gap-1">
+                              {worker.channels?.whatsapp?.isActive && (
+                                <span className="text-[7px] font-extrabold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-1.5 py-0.5 rounded border border-emerald-500/10 uppercase tracking-wider">WA</span>
+                              )}
+                              {worker.channels?.telegram?.isActive && (
+                                <span className="text-[7px] font-extrabold bg-sky-500/10 text-sky-600 dark:text-sky-400 px-1.5 py-0.5 rounded border border-sky-500/10 uppercase tracking-wider">TG</span>
+                              )}
+                              {!worker.channels?.whatsapp?.isActive && !worker.channels?.telegram?.isActive && (
+                                <span className="text-[7px] font-extrabold bg-foreground/[0.04] dark:bg-white/[0.04] text-silver px-1.5 py-0.5 rounded uppercase tracking-wider">WEB</span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 text-[10px] text-silver font-medium mt-0.5">
+                            <span className="text-foreground/70 font-semibold capitalize">{worker.tone}</span>
+                            <span className="text-foreground/20">·</span>
+                            <span>{worker.language}</span>
+                            <span className="text-foreground/20 hidden sm:inline">·</span>
+                            <span className="truncate max-w-[200px] hidden sm:inline italic text-silver/70">
+                              {worker.personality?.substring(0, 60)}...
+                            </span>
+                          </div>
+                        </div>
                       </div>
 
-                      {/* Quick Control Options */}
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleDelete(worker._id, worker.name)}
-                          className="p-2 hover:bg-red-500/10 rounded-xl transition-all group/trash border border-transparent hover:border-red-500/10"
-                          title="Decommission Operative"
+                      {/* Right: Actions */}
+                      <div className="flex items-center gap-1 shrink-0 self-end md:self-center opacity-70 group-hover:opacity-100 transition-opacity">
+                        <Link
+                          href="/chat"
+                          className="px-2.5 py-1.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] hover:border-foreground/[0.1] dark:hover:border-white/[0.1] text-silver hover:text-foreground rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1"
                         >
-                          <Trash2 className="w-4 h-4 text-silver group-hover/trash:text-red-500 transition-colors" />
-                        </button>
+                          <MessageSquare className="w-3 h-3" />
+                          <span className="hidden sm:inline">Chat</span>
+                        </Link>
+                        <Link
+                          href="/training"
+                          className="px-2.5 py-1.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] hover:border-foreground/[0.1] dark:hover:border-white/[0.1] text-silver hover:text-foreground rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1"
+                        >
+                          <BookOpen className="w-3 h-3" />
+                          <span className="hidden sm:inline">Brain</span>
+                        </Link>
+                        <Link
+                          href={`/operatives/${worker._id}/channels`}
+                          className="p-1.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] text-silver hover:text-foreground rounded-lg transition-all"
+                        >
+                          <Settings className="w-3 h-3" />
+                        </Link>
                         <button
                           onClick={() => setShareWorker(worker)}
-                          className="p-2 hover:bg-foreground/5 rounded-xl transition-all group/share border border-transparent hover:border-foreground/5"
-                          title="Integrate / Share"
+                          className="p-1.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] text-silver hover:text-foreground rounded-lg transition-all"
                         >
-                          <Share2 className="w-4 h-4 text-silver group-hover/share:text-foreground transition-colors" />
+                          <Share2 className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(worker._id, worker.name)}
+                          className="p-1.5 bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.04] dark:border-white/[0.04] hover:bg-red-500/10 hover:border-red-500/20 text-silver/50 hover:text-red-500 rounded-lg transition-all"
+                        >
+                          <Trash2 className="w-3 h-3" />
                         </button>
                       </div>
-
-                    </div>
-
-                    {/* Operative Info Area */}
-                    <div className="space-y-4 mb-6 relative z-10">
-                      <div className="flex items-center gap-4">
-
-                        {/* Glowing Avatar Frame */}
-                        <div className="relative">
-                          <div className="absolute inset-0 bg-gradient-to-tr from-apple-blue to-purple-500 rounded-2xl blur-[12px] opacity-0 group-hover:opacity-15 transition-opacity duration-500" />
-                          <div className="w-14 h-14 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-105 group-hover:border-foreground/15 dark:group-hover:border-white/15 transition-all duration-500 relative z-10">
-                            <Bot className="w-7 h-7 text-foreground" />
-                          </div>
-                        </div>
-
-                        {/* Info Details */}
-                        <div className="min-w-0 flex-1">
-                          <h3 className="text-xl font-bold tracking-tight text-foreground/90 group-hover:text-foreground transition-colors truncate">{worker.name}</h3>
-                          <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-silver mt-0.5 font-medium">
-                            <span className="bg-gradient-to-r from-apple-blue to-purple-500 bg-clip-text text-transparent font-bold tracking-wider text-[10px] uppercase">{worker.tone}</span>
-                            <span className="text-silver/30">•</span>
-                            <span className="truncate">{worker.personality}</span>
-                          </div>
-                        </div>
-
-                      </div>
-
-                      {/* Channel Integration Badges */}
-                      <div className="flex flex-wrap gap-2 pt-3 border-t border-foreground/[0.04] dark:border-white/[0.04]">
-
-                        {worker.channels?.whatsapp?.isActive ? (
-                          <div className="inline-flex items-center gap-1.5 text-[9px] font-bold text-emerald-400 bg-emerald-500/5 px-2.5 py-1 rounded-xl border border-emerald-500/10 shadow-[0_2px_10px_rgba(16,185,129,0.02)]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                            WHATSAPP
-                          </div>
-                        ) : null}
-
-                        {worker.channels?.telegram?.isActive ? (
-                          <div className="inline-flex items-center gap-1.5 text-[9px] font-bold text-sky-400 bg-sky-500/5 px-2.5 py-1 rounded-xl border border-sky-500/10 shadow-[0_2px_10px_rgba(14,165,233,0.02)]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                            TELEGRAM
-                          </div>
-                        ) : null}
-
-                        {worker.tools?.calcom?.isActive ? (
-                          <div className="inline-flex items-center gap-1.5 text-[9px] font-bold text-purple-400 bg-purple-500/5 px-2.5 py-1 rounded-xl border border-purple-500/10 shadow-[0_2px_10px_rgba(168,85,247,0.02)]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-                            CAL.COM
-                          </div>
-                        ) : null}
-
-                        {!worker.channels?.whatsapp?.isActive && !worker.channels?.telegram?.isActive && (
-                          <div className="inline-flex items-center gap-1.5 text-[9px] font-bold text-silver bg-foreground/[0.03] dark:bg-white/[0.03] px-2.5 py-1 rounded-xl">
-                            WEB
-                          </div>
-                        )}
-
-                      </div>
-
-                    </div>
-
-                    {/* Actions Bar */}
-                    <div className="grid grid-cols-3 gap-3 relative z-10">
-
-                      <Link
-                        href="/chat"
-                        className="flex items-center justify-center gap-2 p-3 bg-foreground/[0.02] dark:bg-white/[0.02] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] hover:border-foreground/10 dark:hover:border-white/10 border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 text-xs font-bold uppercase tracking-wider text-foreground text-center"
-                      >
-                        <MessageSquare className="w-4 h-4 text-silver group-hover:text-foreground transition-colors" />
-                        <span>Chat</span>
-                      </Link>
-
-                      <Link
-                        href="/training"
-                        className="flex items-center justify-center gap-2 p-3 bg-foreground/[0.02] dark:bg-white/[0.02] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] hover:border-foreground/10 dark:hover:border-white/10 border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 text-xs font-bold uppercase tracking-wider text-foreground text-center"
-                      >
-                        <BookOpen className="w-4 h-4 text-silver group-hover:text-foreground transition-colors" />
-                        <span>Brain</span>
-                      </Link>
-
-                      <Link
-                        href={`/operatives/${worker._id}/channels`}
-                        className="flex items-center justify-center gap-2 p-3 bg-foreground/[0.02] dark:bg-white/[0.02] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] hover:border-foreground/10 dark:hover:border-white/10 border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl hover:scale-[1.03] active:scale-[0.97] transition-all duration-300 text-xs font-bold uppercase tracking-wider text-foreground text-center"
-                      >
-                        <Settings className="w-4 h-4 text-silver group-hover:text-foreground transition-colors" />
-                        <span>Config</span>
-                      </Link>
-
-                    </div>
-
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          )}
-
-        </div>
-
-        {/* Channel Distribution Chart (1/3 width) */}
-        <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] backdrop-blur-xl p-6 rounded-[28px] flex flex-col justify-between relative overflow-hidden h-full group hover:shadow-2xl hover:shadow-purple-500/[0.02] transition-all duration-300">
-          <div>
-            <h2 className="text-[10px] font-bold text-silver uppercase tracking-[0.2em] mb-1">Channel Distribution</h2>
-            <p className="text-xs text-silver font-medium">Deploys by communication protocol.</p>
-          </div>
-
-          <div className="h-44 w-full my-4 relative flex items-center justify-center">
-            {loading ? (
-              <div className="w-32 h-32 bg-foreground/5 rounded-full animate-pulse" />
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={channelData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={68}
-                    paddingAngle={6}
-                    dataKey="value"
-                  >
-                    {channelData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'var(--color-card)',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(120, 120, 128, 0.15)',
-                      backdropFilter: 'blur(20px)',
-                      fontSize: '11px',
-                    }}
-                    itemStyle={{ fontWeight: 'bold' }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
             )}
-
-            {/* Center Stats overlay */}
-            <div className="absolute flex flex-col items-center justify-center">
-              <span className="text-[9px] font-bold text-silver uppercase tracking-widest">Total</span>
-              <span className="text-2xl font-black text-foreground">
-                {workers.length}
-              </span>
-            </div>
           </div>
 
-          <div className="space-y-2">
-            {channelData.map((item, index) => (
-              <div key={index} className="flex items-center justify-between text-xs font-semibold px-1">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-md" style={{ backgroundColor: item.color }} />
-                  <span className="text-foreground">{item.name}</span>
+          {/* RIGHT: Telemetry Console (4/12) */}
+          <div className="lg:col-span-4 space-y-5">
+            
+            {/* Activity Chart */}
+            <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Activity</h3>
+                  <p className="text-[10px] text-silver/60 font-medium mt-0.5">7-day interaction volume</p>
                 </div>
-                <span className="text-silver font-semibold">{item.value} active</span>
+                <Sparkles className="w-3.5 h-3.5 text-silver/40" />
               </div>
-            ))}
+
+              <div className="h-40 w-full">
+                {loading ? (
+                  <div className="w-full h-full bg-foreground/[0.02] dark:bg-white/[0.02] rounded-xl animate-pulse" />
+                ) : (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="var(--apple-blue)" stopOpacity={0.12} />
+                          <stop offset="95%" stopColor="var(--apple-blue)" stopOpacity={0.0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--silver)" strokeOpacity={0.1} vertical={false} />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fill: 'var(--silver)' }} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 9, fill: 'var(--silver)' }} />
+                      <Tooltip
+                        contentStyle={{ backgroundColor: 'var(--background)', borderRadius: '10px', border: '1px solid var(--silver)', fontSize: '10px' }}
+                        labelStyle={{ fontWeight: 'bold', color: 'var(--foreground)' }}
+                        itemStyle={{ color: 'var(--apple-blue)', fontWeight: 'bold' }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="interactions"
+                        stroke="var(--apple-blue)"
+                        strokeWidth={1.5}
+                        fill="url(#chartGlow)"
+                        dot={{ r: 2.5, stroke: 'var(--background)', strokeWidth: 1.5, fill: 'var(--apple-blue)' }}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </div>
+
+            {/* System Telemetry */}
+            <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-4">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-silver">System</h3>
+              
+              <div className="space-y-3">
+                {[
+                  { icon: Cpu, label: 'Autonomy Score', value: `${stats?.successRate || '100'}%`, color: '' },
+                  { icon: Wifi, label: 'Heartbeat', value: 'Active', color: 'text-emerald-600 dark:text-emerald-400' },
+                  { icon: Shield, label: 'Active Gateways', value: `${gatewayCount} / ${workers.length}`, color: '' },
+                ].map((row, i) => (
+                  <div key={i} className={cn("flex justify-between items-center text-xs", i < 2 && "border-b border-foreground/[0.04] dark:border-white/[0.04] pb-2.5")}>
+                    <div className="flex items-center gap-2">
+                      <row.icon className="w-3.5 h-3.5 text-silver" />
+                      <span className="font-medium text-silver">{row.label}</span>
+                    </div>
+                    <span className={cn("font-bold text-foreground", row.color)}>{loading ? '—' : row.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Terminal Log */}
+            <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-3">
+              <div className="flex justify-between items-center">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
+                  <Terminal className="w-3.5 h-3.5" />
+                  Events
+                </h3>
+                <Link 
+                  href="/dashboard/logs" 
+                  className="text-[9px] font-bold text-silver hover:text-foreground uppercase tracking-wider flex items-center gap-0.5 transition-colors"
+                >
+                  View all <ChevronRight className="w-2.5 h-2.5" />
+                </Link>
+              </div>
+
+              <div className="bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl p-3 font-mono text-[10px] text-silver space-y-1.5 max-h-40 overflow-y-auto">
+                {stats?.systemLogs && stats.systemLogs.length > 0 ? (
+                  stats.systemLogs.map((log: any) => {
+                    const logTime = new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+                    let dotColor = "bg-apple-blue";
+                    if (log.type === 'error') dotColor = "bg-red-500 animate-pulse";
+                    else if (log.type === 'warning') dotColor = "bg-amber-500";
+                    else if (log.type === 'handshake') dotColor = "bg-emerald-500";
+
+                    return (
+                      <div key={log._id} className="flex items-start gap-1.5">
+                        <span className={cn("w-1 h-1 rounded-full mt-1.5 flex-shrink-0", dotColor)} />
+                        <span className="break-all leading-relaxed">
+                          <span className="text-silver/50">[{logTime}]</span>{' '}
+                          {log.source}: {log.message}
+                        </span>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-center py-5 text-silver/60 italic text-[10px]">Awaiting fleet telemetry...</div>
+                )}
+              </div>
+            </div>
+
           </div>
         </div>
+      </motion.div>
 
-      </div>
-
-      {/* Share / Deployment Modal */}
+      {/* Share Modal */}
       <AnimatePresence>
         {shareWorker && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-md">
-
-            {/* Modal Overlay */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 dark:bg-black/80 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -777,106 +509,69 @@ export default function DashboardPage() {
               onClick={() => setShareWorker(null)}
               className="absolute inset-0"
             />
-
-            {/* Modal Container */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              initial={{ opacity: 0, scale: 0.96, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ type: 'spring', duration: 0.4 }}
-              className="bg-card glass border border-card-border w-full max-w-lg rounded-[32px] p-8 shadow-2xl relative z-10 space-y-6 animate-in duration-300"
+              exit={{ opacity: 0, scale: 0.96, y: 8 }}
+              className="bg-background border border-foreground/[0.08] dark:border-white/[0.08] w-full max-w-md rounded-2xl p-6 shadow-2xl relative z-10 space-y-5"
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-xl font-bold text-foreground">Deploy Node</h2>
-                  <p className="text-silver text-xs mt-1">Deploy {shareWorker.name} to standard web channels.</p>
+                  <h3 className="font-semibold text-sm text-foreground">Share Operative</h3>
+                  <p className="text-silver text-xs mt-0.5">Deployment links for &quot;{shareWorker.name}&quot;</p>
                 </div>
-                <button
-                  onClick={() => setShareWorker(null)}
-                  className="p-2 hover:bg-foreground/5 rounded-full text-silver hover:text-foreground transition-colors"
-                >
-                  <X className="w-5 h-5" />
+                <button onClick={() => setShareWorker(null)} className="p-1 rounded-full hover:bg-foreground/5 dark:hover:bg-white/5 text-silver hover:text-foreground transition-colors">
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="space-y-6">
-
-                {/* Protocol Link */}
-                <div className="space-y-2">
-                  <label className="text-[9px] font-bold text-silver uppercase tracking-widest block">Access Protocol Link</label>
-                  <div className="flex gap-2">
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Chat Link</label>
+                  <div className="flex items-center gap-2">
                     <input
+                      type="text"
                       readOnly
-                      value={`${window.location.origin}/share/${shareWorker._id}`}
-                      className="flex-1 bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs font-mono outline-none text-foreground select-all font-semibold"
+                      value={`${typeof window !== 'undefined' ? window.location.origin : ''}/share/${shareWorker._id}`}
+                      className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-foreground font-mono focus:outline-none"
                     />
                     <button
-                      onClick={() => copyText(`${window.location.origin}/share/${shareWorker._id}`)}
-                      className="p-3.5 bg-foreground text-background rounded-2xl hover:opacity-90 active:scale-95 transition-all"
-                      title="Copy URL"
+                      onClick={() => copyText(`${typeof window !== 'undefined' ? window.location.origin : ''}/share/${shareWorker._id}`)}
+                      className="p-2.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] rounded-xl text-silver hover:text-foreground transition-all shrink-0"
                     >
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
 
-                {/* Embed HTML Area */}
-                <div className="space-y-2">
-                  <label className="text-[9px] font-bold text-silver uppercase tracking-widest block">Neural Embed Code (IFrame)</label>
-                  <div className="flex gap-2">
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Embed Script</label>
+                  <div className="flex items-start gap-2">
                     <textarea
                       readOnly
                       rows={3}
-                      value={`<iframe src="${window.location.origin}/share/${shareWorker._id}" width="100%" height="600px" style="border:none; border-radius: 24px;"></iframe>`}
-                      className="flex-1 bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs font-mono outline-none resize-none text-foreground select-all font-semibold leading-relaxed"
+                      value={`<script src="${typeof window !== 'undefined' ? window.location.origin : ''}/proxy.ts" data-worker-id="${shareWorker._id}"></script>`}
+                      className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-3 py-2.5 text-[10px] text-foreground font-mono focus:outline-none resize-none"
                     />
                     <button
-                      onClick={() => copyText(`<iframe src="${window.location.origin}/share/${shareWorker._id}" width="100%" height="600px" style="border:none; border-radius: 24px;"></iframe>`)}
-                      className="p-3.5 bg-foreground text-background rounded-2xl hover:opacity-90 active:scale-95 transition-all h-fit self-end"
-                      title="Copy Embed Code"
+                      onClick={() => copyText(`<script src="${typeof window !== 'undefined' ? window.location.origin : ''}/proxy.ts" data-worker-id="${shareWorker._id}"></script>`)}
+                      className="p-2.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] rounded-xl text-silver hover:text-foreground transition-all shrink-0"
                     >
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
-
               </div>
 
-              {/* Sync Alert Banner */}
-              <div className="p-4 bg-apple-blue/5 border border-apple-blue/15 rounded-2xl flex gap-3 shadow-sm">
-                <Info className="w-5 h-5 text-apple-blue flex-shrink-0 mt-0.5" />
-                <p className="text-[10px] text-apple-blue font-medium leading-relaxed">
-                  Operative is fully sync-active. Any modifications applied to its knowledge base, brain files, or personality traits will update automatically in real time on all active deployments.
-                </p>
+              <div className="pt-1 flex justify-end">
+                <button onClick={() => setShareWorker(null)} className="px-4 py-2 bg-foreground/[0.04] dark:bg-white/[0.04] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] text-foreground rounded-xl text-xs font-semibold transition-all border border-foreground/[0.06] dark:border-white/[0.06]">
+                  Done
+                </button>
               </div>
             </motion.div>
-
           </div>
         )}
       </AnimatePresence>
-
-      {/* Dynamic Toast System */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-5 py-3 rounded-2xl glass border shadow-2xl"
-            style={{
-              borderColor: toast.type === 'error' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)'
-            }}
-          >
-            {toast.type === 'error' ? (
-              <X className="w-4 h-4 text-red-500" />
-            ) : (
-              <Check className="w-4 h-4 text-emerald-500" />
-            )}
-            <span className="text-xs font-bold text-foreground">{toast.message}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
     </div>
   );
 }

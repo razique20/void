@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
-import Sidebar from '@/components/Sidebar';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import { Bot, Save, Loader2, Sparkles, Zap, Shield, Cpu, ChevronRight, Info, AlertTriangle, Languages, Activity, Boxes, Store, Pill, Home, Hotel, Trash, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -478,11 +477,6 @@ export default function CreateWorkerPage() {
     <div className="h-full relative flex flex-col bg-background text-foreground transition-colors duration-300">
       <Navbar />
       <div className="flex pt-20 h-full overflow-hidden">
-        
-        {/* Sidebar */}
-        <div className="hidden md:flex h-full w-64 flex-col inset-y-0 z-40">
-          <Sidebar />
-        </div>
         <MobileBottomNav />
 
         {/* Main Content Area */}
@@ -496,7 +490,7 @@ export default function CreateWorkerPage() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="max-w-5xl mx-auto space-y-10"
+            className="max-w-7xl mx-auto space-y-10"
           >
             {/* Header */}
             <motion.div variants={itemVariants} className="space-y-2">
