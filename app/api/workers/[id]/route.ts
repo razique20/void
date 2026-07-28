@@ -36,8 +36,36 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       const sub = await getUserSubscription(userId);
       const features = sub.planInfo.features;
       
-      if (body.channels?.whatsapp?.isActive && !features.includes('whatsapp')) {
-        return NextResponse.json({ error: `Your ${sub.planInfo.name} plan does not support WhatsApp integrations. Please upgrade.` }, { status: 403 });
+      if (body.channels?.whatsapp?.isActive) {
+        if (!features.includes('whatsapp')) {
+          return NextResponse.json({ error: `Your ${sub.planInfo.name} plan does not support WhatsApp integrations. Please upgrade.` }, { status: 403 });
+        }
+
+        // Validate uniqueness of phone number / credential assignment for non-Elite plans
+        const incomingCredId = body.channels.whatsapp.credentialId;
+        const incomingPhoneId = body.channels.whatsapp.phoneNumberId;
+
+        if (incomingCredId || incomingPhoneId) {
+          const dupQuery: any = {
+            userId,
+            _id: { $ne: id },
+            'channels.whatsapp.isActive': true
+          };
+
+          if (incomingCredId) {
+            dupQuery['channels.whatsapp.credentialId'] = incomingCredId;
+          } else {
+            dupQuery['channels.whatsapp.phoneNumberId'] = incomingPhoneId;
+          }
+
+          const duplicateWorker = await Worker.findOne(dupQuery);
+
+          if (duplicateWorker && !features.includes('smart_routing')) {
+            return NextResponse.json({
+              error: `This WhatsApp number is already assigned to active operative "${duplicateWorker.name}". Multiple operatives per number is an Elite-only feature. Please upgrade or deactivate WhatsApp on "${duplicateWorker.name}" first.`
+            }, { status: 400 });
+          }
+        }
       }
       if (body.channels?.telegram?.isActive && !features.includes('telegram')) {
         return NextResponse.json({ error: `Your ${sub.planInfo.name} plan does not support Telegram integrations. Please upgrade.` }, { status: 403 });

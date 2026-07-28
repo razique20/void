@@ -41,6 +41,7 @@ export default function ChannelsPage() {
   const [success, setSuccess] = useState(false);
 
   const [savedCredentials, setSavedCredentials] = useState<any[]>([]);
+  const [allWorkers, setAllWorkers] = useState<any[]>([]);
   const [useVault, setUseVault] = useState(true);
 
   useEffect(() => {
@@ -48,13 +49,15 @@ export default function ChannelsPage() {
       fetch(`/api/workers/${operativeId}`).then(res => res.json()),
       fetch('/api/admin/config').then(res => res.json()),
       fetch('/api/subscription').then(res => res.json()),
-      fetch('/api/user/whatsapp-credentials').then(res => res.json()).catch(() => ({ credentials: [] }))
-    ]).then(([workerData, configData, subData, credsData]) => {
+      fetch('/api/user/whatsapp-credentials').then(res => res.json()).catch(() => ({ credentials: [] })),
+      fetch('/api/workers').then(res => res.json()).catch(() => [])
+    ]).then(([workerData, configData, subData, credsData, workersData]) => {
       setOperative(workerData);
       setActions(workerData.actions || []);
       setConfig(configData);
       setSub(subData);
       setSavedCredentials(credsData.credentials || []);
+      setAllWorkers(Array.isArray(workersData) ? workersData : []);
       if (workerData.channels?.whatsapp?.apiKey && !workerData.channels?.whatsapp?.credentialId) {
         setUseVault(false);
       }
@@ -91,6 +94,31 @@ export default function ChannelsPage() {
     setSuccess(false);
     
     const formData = new FormData(e.currentTarget);
+    
+    // Validate uniqueness of phone number assignment for non-Elite plans
+    const hasSmartRouting = sub?.features?.includes('smart_routing');
+    const waActive = hasWhatsApp && formData.get('wa_active') === 'on';
+    const waCredId = useVault ? (formData.get('wa_credentialId') || '') : '';
+    const waPhoneId = useVault ? '' : (formData.get('wa_phoneId') || '');
+
+    if (waActive && !hasSmartRouting) {
+      const duplicate = allWorkers.find(w => {
+        if (w._id === operativeId || !w.channels?.whatsapp?.isActive) return false;
+        if (useVault && waCredId) {
+          return w.channels.whatsapp.credentialId === waCredId;
+        } else if (!useVault && waPhoneId) {
+          return w.channels.whatsapp.phoneNumberId === waPhoneId;
+        }
+        return false;
+      });
+
+      if (duplicate) {
+        alert(`Error: This WhatsApp number is already assigned to active operative "${duplicate.name}". Multiple operatives per number is an Elite-only feature. Please upgrade or deactivate WhatsApp on "${duplicate.name}" first.`);
+        setSaving(false);
+        return;
+      }
+    }
+
     const payload = {
       channels: {
         whatsapp: {
@@ -181,6 +209,41 @@ export default function ChannelsPage() {
     );
   }
 
+  // Helper to compute if WhatsApp number is shared with other active operatives
+  const getWhatsAppUsage = () => {
+    if (!operative || !allWorkers.length) return { isShared: false, otherNames: [], isPrimary: true, allSharers: [] };
+
+    const wa = operative.channels?.whatsapp;
+    if (!wa?.isActive) return { isShared: false, otherNames: [], isPrimary: true, allSharers: [] };
+
+    // Find other workers with active WhatsApp sharing the same details
+    const activeOthers = allWorkers.filter(w => {
+      if (w._id === operativeId || !w.channels?.whatsapp?.isActive) return false;
+      
+      if (useVault && wa.credentialId) {
+        return w.channels.whatsapp.credentialId === wa.credentialId;
+      } else if (!useVault && wa.phoneNumberId) {
+        return w.channels.whatsapp.phoneNumberId === wa.phoneNumberId;
+      }
+      return false;
+    });
+
+    if (activeOthers.length === 0) return { isShared: false, otherNames: [], isPrimary: true, allSharers: [] };
+
+    const otherNames = activeOthers.map(w => w.name);
+    
+    // Check if this operative is the primary one (earliest created among all active sharers)
+    const allSharers = [operative, ...activeOthers].sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+    const isPrimary = allSharers[0]._id === operativeId;
+
+    return { isShared: true, otherNames, isPrimary, allSharers };
+  };
+
+  const { isShared, otherNames, isPrimary, allSharers } = getWhatsAppUsage();
+  const hasSmartRouting = sub?.features?.includes('smart_routing');
+
   return (
     <div className="h-full relative flex flex-col bg-background text-foreground transition-all duration-300">
       <Navbar />
@@ -267,6 +330,36 @@ export default function ChannelsPage() {
                     </div>
 
                     <div className={cn("p-6 bg-foreground/[0.01] dark:bg-white/[0.005] space-y-4", !hasWhatsApp && "pointer-events-none opacity-50")}>
+                      {isShared && (
+                        <div className={cn(
+                          "p-4 rounded-2xl border text-xs font-semibold leading-relaxed flex flex-col gap-1.5",
+                          hasSmartRouting 
+                            ? "bg-emerald-500/10 border-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                            : "bg-amber-500/10 border-amber-500/15 text-amber-600 dark:text-amber-400"
+                        )}>
+                          <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-[10px]">
+                            {hasSmartRouting ? (
+                              <>
+                                <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+                                🧠 Smart Routing Active
+                              </>
+                            ) : (
+                              <>
+                                <Activity className="w-3.5 h-3.5 text-amber-500" />
+                                ⚠️ Smart Routing Inactive
+                              </>
+                            )}
+                          </div>
+                          <div>
+                            This WhatsApp number is shared with: <span className="underline font-bold">{otherNames.join(', ')}</span>.
+                          </div>
+                          {!hasSmartRouting && (
+                            <div className="text-[11px] font-medium opacity-90">
+                              Only the primary operative (<span className="underline font-bold">{isPrimary ? "this operative" : `"${allSharers[0]?.name}"`}</span>) will receive incoming messages. Upgrade to Elite to enable Smart Routing.
+                            </div>
+                          )}
+                        </div>
+                      )}
                       <div className="flex gap-2 border-b border-foreground/[0.04] dark:border-white/[0.04] pb-4">
                         <button
                           type="button"

@@ -23,7 +23,7 @@ export const PLANS = {
   elite: {
     name: 'Elite',
     maxWorkers: 999,
-    features: ['advanced_rag', 'web_chat', 'memory', 'mission_control', 'marketplace', 'whatsapp', 'telegram', 'email_agent', 'actions_full', 'cal_booking', 'lead_capture', 'white_glove', 'priority_24_7'],
+    features: ['advanced_rag', 'web_chat', 'memory', 'mission_control', 'marketplace', 'whatsapp', 'telegram', 'email_agent', 'actions_full', 'cal_booking', 'lead_capture', 'white_glove', 'priority_24_7', 'smart_routing'],
     price: 2599
   }
 };

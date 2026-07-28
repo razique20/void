@@ -49,6 +49,8 @@ export async function POST(req: Request) {
     await connectDB();
 
     // 1. Find the Operative
+    // NOTE: Telegram currently uses a direct webhook per operative routing scheme: /api/webhooks/telegram?id=[workerId].
+    // If we support shared Telegram Bots in the future, we would look up candidate workers matching the bot token and route accordingly.
     const operative = await Worker.findById(workerId);
 
     if (!operative) {

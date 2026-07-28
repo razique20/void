@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Worker from '@/models/Worker';
+import User from '@/models/User';
 import TrainingData from '@/models/TrainingData';
 import Conversation from '@/models/Conversation';
 import AIProvider from '@/models/AIProvider';
@@ -57,41 +58,104 @@ export async function POST(req: Request) {
 
     await connectDB();
 
-    // 1. Find the Operative (Lax search for debugging)
+    // 1. Find all candidate Operatives matching the phone number directly or via vault credentials
     const cleanPhoneId = phoneNumberId.toString().trim();
-    
-    // First try: direct match on operative's inline phoneNumberId
-    let operative = await Worker.findOne({ 
-      'channels.whatsapp.phoneNumberId': cleanPhoneId
+    let matchingWorkers: any[] = [];
+
+    // Check direct matching active workers
+    const directWorkers = await Worker.find({
+      'channels.whatsapp.phoneNumberId': cleanPhoneId,
+      'channels.whatsapp.isActive': true
+    });
+    matchingWorkers = [...directWorkers];
+
+    // Check vault-credential based matching active workers
+    const usersWithCred = await User.find({
+      'whatsappCredentials.phoneNumberId': cleanPhoneId
     });
 
-    // Second try: match via user vault credentials (credentialId-based operatives)
-    if (!operative) {
-      const User = (await import('@/models/User')).default;
-      const usersWithCred = await User.find({
-        'whatsappCredentials.phoneNumberId': cleanPhoneId
-      });
+    for (const u of usersWithCred) {
+      const matchingCreds = u.whatsappCredentials?.filter(
+        (c: any) => c.phoneNumberId === cleanPhoneId
+      ) || [];
+      const credIds = matchingCreds.map((c: any) => c._id.toString());
       
-      for (const u of usersWithCred) {
-        const matchingCred = u.whatsappCredentials?.find(
-          (c: any) => c.phoneNumberId === cleanPhoneId
-        );
-        if (matchingCred) {
-          operative = await Worker.findOne({
-            userId: u.clerkId,
-            'channels.whatsapp.credentialId': matchingCred._id.toString(),
-            'channels.whatsapp.isActive': true
-          });
-          if (operative) break;
-        }
+      if (credIds.length > 0) {
+        const vaultWorkers = await Worker.find({
+          userId: u.clerkId,
+          'channels.whatsapp.credentialId': { $in: credIds },
+          'channels.whatsapp.isActive': true
+        });
+        matchingWorkers = [...matchingWorkers, ...vaultWorkers];
       }
     }
 
-    if (!operative) {
-      console.log(`[WHATSAPP DEBUG] CRITICAL: No Operative found with ID: "${cleanPhoneId}"`);
-      const all = await Worker.find({});
-      console.log(`[WHATSAPP DEBUG] Current DB IDs: ${all.map(a => a.channels?.whatsapp?.phoneNumberId).join(', ')}`);
+    // De-duplicate candidate workers by ID
+    const seenIds = new Set();
+    matchingWorkers = matchingWorkers.filter(w => {
+      const idStr = w._id.toString();
+      if (seenIds.has(idStr)) return false;
+      seenIds.add(idStr);
+      return true;
+    });
+
+    if (matchingWorkers.length === 0) {
+      console.log(`[WHATSAPP DEBUG] CRITICAL: No Active Operative found for ID: "${cleanPhoneId}"`);
       return NextResponse.json({ status: 'ok' });
+    }
+
+    let operative;
+    if (matchingWorkers.length === 1) {
+      operative = matchingWorkers[0];
+    } else {
+      // Multiple operatives are sharing this phone number. Check subscription for smart_routing support.
+      const { getUserSubscription } = await import('@/lib/subscription');
+      const sub = await getUserSubscription(matchingWorkers[0].userId);
+      const hasSmartRouting = sub.planInfo?.features?.includes('smart_routing');
+
+      if (hasSmartRouting) {
+        // Run AI Router
+        const { routeToOperative } = await import('@/lib/router');
+        
+        let apiKey = process.env.GROQ_API_KEY;
+        let modelName = 'llama-3.3-70b-versatile';
+        const activeProvider = await AIProvider.findOne({ isActive: true, isDefault: true });
+        if (activeProvider) {
+          apiKey = activeProvider.apiKey;
+          modelName = activeProvider.models[0] || modelName;
+        }
+        const dynamicGroq = new Groq({ apiKey });
+
+        operative = await routeToOperative(
+          customerPhone,
+          customerText,
+          matchingWorkers,
+          dynamicGroq,
+          modelName
+        );
+        
+        await SystemLog.create({
+          type: 'handshake',
+          source: 'WHATSAPP_ROUTER',
+          message: `Routed incoming message from ${customerPhone} to operative "${operative.name}"`,
+          userId: operative.userId,
+          metadata: { customerPhone, selectedOperativeId: operative._id }
+        });
+      } else {
+        // Fallback for downgraded users: use the oldest active worker
+        operative = matchingWorkers.sort(
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        )[0];
+        
+        console.log(`[WHATSAPP ROUTING] Downgraded fallback: Routing to oldest active operative "${operative.name}"`);
+        await SystemLog.create({
+          type: 'warning',
+          source: 'WHATSAPP_ROUTER_FALLBACK',
+          message: `Downgrade fallback: message routed to oldest active worker "${operative.name}"`,
+          userId: operative.userId,
+          metadata: { customerPhone, selectedOperativeId: operative._id }
+        });
+      }
     }
 
     console.log(`[WHATSAPP DEBUG] Found Operative: ${operative.name}. Active Status: ${operative.channels?.whatsapp?.isActive}`);
@@ -152,7 +216,6 @@ export async function POST(req: Request) {
     `;
 
     // NEW: Lead Management Injection (Mirroring app/api/chat/route.ts)
-    const User = (await import('@/models/User')).default;
     const userDoc = await User.findOne({ clerkId: operative.userId });
     const { getUserSubscription } = await import('@/lib/subscription');
     const sub = await getUserSubscription(operative.userId);

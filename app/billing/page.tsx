@@ -67,9 +67,10 @@ const plans = [
     id: 'elite',
     name: 'Elite',
     price: '$2,599',
-    description: 'White-glove service for high-scale agencies.',
+    description: 'White-glove service with AI Smart Routing for high-scale agencies.',
     features: [
       'Unlimited AI Operatives',
+      '🧠 Smart Router Agent (Multi-Operative per Number)',
       'All Enterprise Features',
       'Full Action Suite (Email, Webhooks, Booking)',
       'Multi-channel Agency Control',
