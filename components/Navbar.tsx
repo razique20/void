@@ -4,12 +4,30 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { UserButton, Show } from '@clerk/nextjs';
-import { Menu, X, Sparkles } from 'lucide-react';
+import { 
+  Menu, 
+  X, 
+  Sparkles,
+  ChevronDown,
+  ShoppingBag,
+  CreditCard,
+  Database,
+  MessageSquare,
+  Key,
+  LifeBuoy,
+  Bot,
+  BookOpen,
+  LayoutDashboard,
+  PlusCircle
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [sub, setSub] = useState<any>(null);
+  const [config, setConfig] = useState<any>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -23,16 +41,58 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    fetch('/api/subscription')
+      .then(res => res.json())
+      .then(data => setSub(data))
+      .catch(console.error);
+
+    fetch('/api/admin/config')
+      .then(res => res.json())
+      .then(data => setConfig(data))
+      .catch(console.error);
+  }, []);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleOutsideClick = () => {
+      setIsDropdownOpen(false);
+    };
+    if (isDropdownOpen) {
+      window.addEventListener('click', handleOutsideClick);
+    }
+    return () => {
+      window.removeEventListener('click', handleOutsideClick);
+    };
+  }, [isDropdownOpen]);
+
+  const hasFeature = (feature: string) => {
+    if (!sub || !sub.features) return false;
+    return sub.features.includes(feature);
+  };
+
   const isTabActive = (href: string) => {
     if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
   };
 
-  const navLinks = [
-    { label: 'Console', href: '/dashboard' },
-    { label: 'Marketplace', href: '/marketplace' },
-    { label: 'Billing', href: '/billing' }
+  const mainLinks = [
+    { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+    { label: 'Hire Operative', href: '/create-worker', icon: PlusCircle },
+    { label: 'Brain / Knowledge', href: '/training', icon: BookOpen },
+    { label: 'Live Chat', href: '/chat', icon: Bot },
   ];
+
+  const moreLinks = [
+    ...(hasFeature('marketplace') ? [{ label: 'Marketplace', href: '/marketplace', icon: ShoppingBag }] : []),
+    { label: 'Billing', href: '/billing', icon: CreditCard },
+    ...((config?.featureFlags?.leadManagement !== false && hasFeature('lead_capture')) || pathname === '/dashboard/leads' ? [{ label: 'Architect Leads', href: '/dashboard/leads', icon: Database }] : []),
+    ...(hasFeature('mission_control') ? [{ label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare }] : []),
+    { label: 'Setup & Credentials', href: '/dashboard/credentials', icon: Key },
+    { label: 'Support', href: '/dashboard/support', icon: LifeBuoy }
+  ];
+
+  const isMoreActive = moreLinks.some(link => pathname.startsWith(link.href));
 
   return (
     <>
@@ -53,9 +113,9 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-3">
             <Show when="signed-in">
-              {navLinks.map((link) => (
+              {mainLinks.map((link) => (
                 <Link 
                   key={link.href}
                   href={link.href} 
@@ -69,6 +129,51 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+
+              {/* More Dropdown */}
+              <div className="relative">
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setIsDropdownOpen(!isDropdownOpen); }}
+                  className={cn(
+                    "text-[10px] uppercase tracking-wider font-extrabold px-3.5 py-2 rounded-xl border transition-all duration-300 flex items-center gap-1.5",
+                    isMoreActive
+                      ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.05] dark:border-white/[0.05] text-foreground font-bold"
+                      : "text-silver hover:text-foreground border-transparent hover:bg-foreground/[0.02]"
+                  )}
+                >
+                  More
+                  <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", isDropdownOpen && "rotate-180")} />
+                </button>
+
+                {isDropdownOpen && (
+                  <div 
+                    className="absolute right-0 mt-2.5 w-56 bg-card border border-foreground/[0.08] dark:border-white/[0.08] backdrop-blur-2xl rounded-2xl shadow-2xl p-2 z-[999] animate-in fade-in slide-in-from-top-2 duration-200" 
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {moreLinks.map((link) => {
+                      const Icon = link.icon;
+                      const isActive = pathname.startsWith(link.href);
+                      return (
+                        <Link 
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setIsDropdownOpen(false)}
+                          className={cn(
+                            "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all",
+                            isActive
+                              ? "bg-foreground/[0.04] dark:bg-white/[0.04] text-foreground"
+                              : "text-silver hover:text-foreground hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01]"
+                          )}
+                        >
+                          <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-apple-blue" : "text-silver")} />
+                          <span>{link.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
               <div className="scale-90 origin-right ml-2 pl-2 border-l border-foreground/[0.08] dark:border-white/[0.08]">
                 <UserButton />
               </div>
@@ -108,7 +213,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       <div className={cn(
-        "fixed inset-0 bg-background flex flex-col items-center justify-center gap-8 transition-all duration-500 md:hidden z-[140]",
+        "fixed inset-0 bg-background flex flex-col items-center justify-center gap-6 transition-all duration-500 md:hidden z-[140]",
         isOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
       )}>
         <Link 
@@ -123,19 +228,21 @@ export default function Navbar() {
         </Link>
         
         <Show when="signed-in">
-          {navLinks.map((link) => (
-            <Link 
-              key={link.href}
-              href={link.href} 
-              onClick={() => setIsOpen(false)}
-              className={cn(
-                "text-2xl font-extrabold tracking-tight transition-all",
-                isTabActive(link.href) ? "text-foreground" : "text-silver hover:text-foreground"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
+          <div className="flex flex-col items-center gap-6 max-h-[60vh] overflow-y-auto w-full px-8 py-4">
+            {[...mainLinks, ...moreLinks].map((link) => (
+              <Link 
+                key={link.href}
+                href={link.href} 
+                onClick={() => setIsOpen(false)}
+                className={cn(
+                  "text-xl font-extrabold tracking-tight transition-all",
+                  pathname.startsWith(link.href) ? "text-foreground" : "text-silver hover:text-foreground"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
         </Show>
 
         <Show when="signed-out">
