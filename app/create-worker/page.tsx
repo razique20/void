@@ -4,10 +4,31 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import MobileBottomNav from '@/components/MobileBottomNav';
-import { Bot, Save, Loader2, Sparkles, Zap, Shield, Cpu, ChevronRight, Info, AlertTriangle, Languages, Activity, Boxes, Store, Pill, Home, Hotel, Trash, Plus } from 'lucide-react';
+import {
+  Bot,
+  Loader2,
+  Sparkles,
+  Zap,
+  Shield,
+  Cpu,
+  ChevronRight,
+  Info,
+  AlertTriangle,
+  Languages,
+  Activity,
+  Boxes,
+  Store,
+  Home,
+  Hotel,
+  Trash,
+  Plus,
+  Sliders,
+  Sparkle,
+  Check,
+  UserCheck
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, Variants } from 'framer-motion';
-import Link from 'next/link';
 
 interface BlueprintField {
   key: string;
@@ -253,6 +274,7 @@ export default function CreateWorkerPage() {
     tone: 'professional',
     language: 'English',
   });
+  const [error, setError] = useState<string | null>(null);
 
   const compilePrompt = (
     template: string,
@@ -270,13 +292,11 @@ export default function CreateWorkerPage() {
       });
     }
 
-    // Replace custom placeholders in template
     cfList.forEach((cf) => {
       compiled = compiled.replace(new RegExp(`{${cf.key}}`, 'g'), cf.value);
       compiled = compiled.replace(new RegExp(`{${cf.label}}`, 'g'), cf.value);
     });
 
-    // Append custom fields as structured bullet list
     if (cfList.length > 0) {
       compiled += '\n\nAdditional Parameters:';
       cfList.forEach((cf) => {
@@ -295,14 +315,12 @@ export default function CreateWorkerPage() {
     setNewFieldLabel('');
     setNewFieldValue('');
     
-    // Initialize inputs with default values
     const initialInputs: Record<string, string> = {};
     role.fields.forEach((f) => {
       initialInputs[f.key] = f.default;
     });
     setBlueprintInputs(initialInputs);
 
-    // Compile initial prompt
     let initialPrompt = role.template;
     role.fields.forEach((f) => {
       initialPrompt = initialPrompt.replace(new RegExp(`{${f.key}}`, 'g'), f.default);
@@ -333,9 +351,7 @@ export default function CreateWorkerPage() {
     } else {
       const dept = departments.find(d => d.id === deptId);
       if (dept && dept.roles.length > 0) {
-        // Auto-select the first role
-        const firstRole = dept.roles[0];
-        selectRole(deptId, firstRole);
+        selectRole(deptId, dept.roles[0]);
       }
     }
   };
@@ -367,9 +383,8 @@ export default function CreateWorkerPage() {
     if (!newFieldLabel.trim()) return;
     const key = newFieldLabel.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
     
-    // Avoid duplicate keys
     if (customFields.some(cf => cf.key === key)) {
-      setError('A field with that name already exists.');
+      setError('A parameter with that key already exists.');
       return;
     }
 
@@ -419,13 +434,11 @@ export default function CreateWorkerPage() {
     }
   };
 
-  const [error, setError] = useState<string | null>(null);
-
   const tones = [
-    { id: 'professional', label: 'Professional', desc: 'Formal & Polished', icon: Shield, color: 'text-emerald-500', glow: 'bg-emerald-500/10' },
-    { id: 'friendly', label: 'Friendly', desc: 'Warm & Accessible', icon: Sparkles, color: 'text-amber-500', glow: 'bg-amber-500/10' },
-    { id: 'witty', label: 'Witty', desc: 'Sharp & Engaging', icon: Zap, color: 'text-sky-500', glow: 'bg-sky-500/10' },
-    { id: 'concise', label: 'Concise', desc: 'Fast & Direct', icon: Cpu, color: 'text-purple-500', glow: 'bg-purple-500/10' },
+    { id: 'professional', label: 'Professional', desc: 'Formal & Polished', icon: Shield, color: 'text-emerald-500' },
+    { id: 'friendly', label: 'Friendly', desc: 'Warm & Accessible', icon: Sparkles, color: 'text-amber-500' },
+    { id: 'witty', label: 'Witty', desc: 'Sharp & Engaging', icon: Zap, color: 'text-sky-500' },
+    { id: 'concise', label: 'Concise', desc: 'Fast & Direct', icon: Cpu, color: 'text-purple-500' },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -458,67 +471,70 @@ export default function CreateWorkerPage() {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.05
-      }
+      transition: { staggerChildren: 0.05 }
     }
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 15 },
+    hidden: { opacity: 0, y: 12 },
     show: { 
       opacity: 1, 
       y: 0,
-      transition: { type: 'spring', stiffness: 300, damping: 24 }
+      transition: { type: 'spring', stiffness: 350, damping: 25 }
     }
   };
 
   return (
-    <div className="h-full relative flex flex-col bg-background text-foreground transition-colors duration-300">
+    <div className="min-h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300 font-sans antialiased">
       <Navbar />
-      <div className="flex pt-20 h-full overflow-hidden">
+      
+      <div className="flex pt-20 flex-1 overflow-hidden">
         <MobileBottomNav />
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-12 pb-24 md:pb-12 relative">
+        <main className="flex-1 overflow-y-auto px-4 md:px-12 py-8 md:py-10 pb-24 md:pb-12 relative">
           
-          {/* Background Neural Ambience */}
-          <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
+          {/* Subtle Ambient Background Grids */}
+          <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-[0.04] pointer-events-none" />
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
           <motion.div 
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="max-w-7xl mx-auto space-y-10"
+            className="max-w-7xl mx-auto space-y-8 relative z-10"
           >
-            {/* Header */}
-            <motion.div variants={itemVariants} className="space-y-2">
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground via-foreground/90 to-silver/70 bg-clip-text text-transparent">
-                Synthesize Operative.
+            
+            {/* Header Section */}
+            <motion.div variants={itemVariants} className="space-y-1 border-b border-foreground/[0.06] dark:border-white/[0.06] pb-6">
+              <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2.5">
+                Synthesize Operative
+                <span className="text-[10px] font-bold text-apple-blue bg-apple-blue/10 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  Node Builder
+                </span>
               </h1>
-              <p className="text-silver text-sm font-medium">
-                Engineer and calibrate a new custom AI agent to automate workflow communications.
+              <p className="text-silver text-xs font-medium">
+                Engineer and calibrate an autonomous AI agent to handle automated customer communication.
               </p>
             </motion.div>
 
+            {/* Split Form Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
               
-              {/* Configuration Form */}
+              {/* Left Column: Form Setup (7/12) */}
               <motion.div variants={itemVariants} className="lg:col-span-7">
                 <form onSubmit={handleSubmit} className="space-y-6">
 
-                  {/* Department Blueprint Selector */}
-                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl">
+                  {/* STEP 1: Department Blueprint */}
+                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-2xl space-y-4">
                     <div>
-                      <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-apple-blue" />
-                        1. Select Department Blueprint
-                      </h2>
-                      <p className="text-[11px] text-silver mt-0.5 font-medium">Choose a predefined sector starting point, or build from scratch.</p>
+                      <div className="text-[10px] font-bold text-silver uppercase tracking-wider flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-apple-blue" />
+                        01 / Select Sector Blueprint
+                      </div>
+                      <p className="text-xs text-silver mt-0.5 font-medium">Choose an industry framework or start from scratch.</p>
                     </div>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                       {departments.map((dept) => {
                         const isSelected = selectedDepartment === dept.id;
                         const DeptIcon = dept.icon;
@@ -528,21 +544,21 @@ export default function CreateWorkerPage() {
                             type="button"
                             onClick={() => handleDepartmentSelect(dept.id)}
                             className={cn(
-                              "p-3 rounded-2xl text-left transition-all border flex flex-col justify-between gap-3 duration-300 min-h-[105px]",
+                              "p-3.5 rounded-xl text-left transition-all border flex flex-col justify-between gap-3 duration-200 min-h-[96px]",
                               isSelected 
-                                ? "bg-foreground text-background border-transparent shadow-lg" 
-                                : "bg-background border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/15 dark:hover:border-white/15"
+                                ? "bg-foreground text-background border-transparent shadow-sm" 
+                                : "bg-background border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/[0.12] dark:hover:border-white/[0.12]"
                             )}
                           >
                             <div className={cn(
-                              "w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0",
-                              isSelected ? "bg-background/15" : "bg-foreground/5 dark:bg-white/5"
+                              "w-7 h-7 rounded-lg flex items-center justify-center shrink-0",
+                              isSelected ? "bg-background/20" : "bg-foreground/[0.04] dark:bg-white/[0.04]"
                             )}>
-                              <DeptIcon className={cn("w-4.5 h-4.5", isSelected ? "text-background" : dept.color)} />
+                              <DeptIcon className={cn("w-3.5 h-3.5", isSelected ? "text-background" : dept.color)} />
                             </div>
                             <div>
-                              <div className="text-[11px] font-bold truncate">{dept.label}</div>
-                              <div className={cn("text-[9px] font-medium mt-0.5 truncate", isSelected ? "text-background/70" : "text-silver")}>
+                              <div className="text-xs font-bold truncate">{dept.label}</div>
+                              <div className={cn("text-[10px] font-medium mt-0.5 truncate", isSelected ? "text-background/70" : "text-silver")}>
                                 {dept.desc}
                               </div>
                             </div>
@@ -552,18 +568,18 @@ export default function CreateWorkerPage() {
                     </div>
                   </div>
 
-                  {/* Role Selector (only shown if a department is selected) */}
+                  {/* STEP 2: Role Selector */}
                   {selectedDepartment !== 'scratch' && (
-                    <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-350">
+                    <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-2xl space-y-4">
                       <div>
-                        <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
-                          <Bot className="w-4 h-4 text-apple-blue" />
-                          2. Select Operator Role
-                        </h2>
-                        <p className="text-[11px] text-silver mt-0.5 font-medium">Select the specific workflow role for this operative.</p>
+                        <div className="text-[10px] font-bold text-silver uppercase tracking-wider flex items-center gap-1.5">
+                          <Bot className="w-3.5 h-3.5 text-apple-blue" />
+                          02 / Select Operator Role
+                        </div>
+                        <p className="text-xs text-silver mt-0.5 font-medium">Select the specific role assignment.</p>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         {departments.find(d => d.id === selectedDepartment)?.roles.map((role) => {
                           const isSelected = selectedRole === role.id;
                           return (
@@ -572,10 +588,10 @@ export default function CreateWorkerPage() {
                               type="button"
                               onClick={() => handleRoleSelect(role.id)}
                               className={cn(
-                                "p-4 rounded-2xl text-left transition-all border flex flex-col gap-1.5 duration-300",
+                                "p-3.5 rounded-xl text-left transition-all border flex flex-col gap-1 duration-200",
                                 isSelected 
-                                  ? "bg-foreground text-background border-transparent shadow-lg" 
-                                  : "bg-background border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/15 dark:hover:border-white/15"
+                                  ? "bg-foreground text-background border-transparent shadow-sm" 
+                                  : "bg-background border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/[0.12] dark:hover:border-white/[0.12]"
                               )}
                             >
                               <div className="text-xs font-bold">{role.label}</div>
@@ -589,23 +605,23 @@ export default function CreateWorkerPage() {
                     </div>
                   )}
 
-                  {/* Blueprint Customization Fields (Dynamic Inputs) */}
+                  {/* STEP 3: Dynamic Parameters */}
                   {selectedDepartment !== 'scratch' && selectedRole && (
-                    <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl animate-in fade-in slide-in-from-top-2 duration-350">
+                    <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-2xl space-y-4">
                       <div>
-                        <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
-                          <Cpu className="w-4 h-4 text-apple-blue" />
-                          3. Configure Blueprint Parameters
-                        </h2>
-                        <p className="text-[11px] text-silver mt-0.5 font-medium">Custom values will automatically compile into the system prompts.</p>
+                        <div className="text-[10px] font-bold text-silver uppercase tracking-wider flex items-center gap-1.5">
+                          <Cpu className="w-3.5 h-3.5 text-apple-blue" />
+                          03 / Configure Parameters
+                        </div>
+                        <p className="text-xs text-silver mt-0.5 font-medium">Custom parameters are compiled directly into behavioral directives.</p>
                       </div>
 
-                      <div className="space-y-4">
+                      <div className="space-y-3.5">
                         {departments
                           .find(d => d.id === selectedDepartment)
                           ?.roles.find(r => r.id === selectedRole)
                           ?.fields.map((field) => (
-                            <div key={field.key} className="space-y-1.5">
+                            <div key={field.key} className="space-y-1">
                               <label className="text-[10px] font-bold text-silver uppercase tracking-wider block">
                                 {field.label}
                               </label>
@@ -615,75 +631,59 @@ export default function CreateWorkerPage() {
                                 placeholder={field.placeholder}
                                 value={blueprintInputs[field.key] || ''}
                                 onChange={(e) => handleInputChange(field.key, e.target.value)}
-                                className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
+                                className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs font-medium focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
                               />
                             </div>
                           ))}
                       </div>
 
-                      {/* Divider */}
-                      <div className="border-t border-foreground/[0.06] dark:border-white/[0.06] my-6 pt-4" />
-
-                      {/* Custom Parameters Header */}
-                      <div className="space-y-1">
-                        <h3 className="text-[10px] font-bold text-silver uppercase tracking-wider">Custom Parameters</h3>
-                        <p className="text-[11px] text-silver font-medium">Add your own specific fields and information (e.g. WiFi Password, Room Code).</p>
-                      </div>
-
-                      {/* Custom Fields List */}
-                      {customFields.length > 0 && (
-                        <div className="space-y-4 pt-2">
-                          {customFields.map((field) => (
-                            <div key={field.key} className="flex items-end gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
-                              <div className="flex-1 space-y-1.5">
-                                <label className="text-[10px] font-bold text-silver uppercase tracking-wider block">
-                                  {field.label}
-                                </label>
-                                <input
-                                  type="text"
-                                  value={field.value}
-                                  onChange={(e) => handleCustomFieldChange(field.key, e.target.value)}
-                                  className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all"
-                                />
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveCustomField(field.key)}
-                                className="p-3 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl transition-colors duration-200 mb-[1px]"
-                              >
-                                <Trash className="w-4 h-4" />
-                              </button>
-                            </div>
-                          ))}
+                      <div className="border-t border-foreground/[0.06] dark:border-white/[0.06] pt-4 space-y-3">
+                        <div className="flex justify-between items-center">
+                          <h4 className="text-[10px] font-bold text-silver uppercase tracking-wider">Custom Fields</h4>
+                          <span className="text-[10px] text-silver/60">WiFi, room codes, extra parameters</span>
                         </div>
-                      )}
 
-                      {/* Add Custom Field Inline Sub-form */}
-                      <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.04] dark:border-white/[0.04] p-4 rounded-2xl space-y-3 mt-4">
-                        <h4 className="text-[10px] font-bold text-silver uppercase tracking-wider">Add Custom Parameter</h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {customFields.map((field) => (
+                          <div key={field.key} className="flex items-center gap-2">
+                            <input
+                              type="text"
+                              value={field.value}
+                              onChange={(e) => handleCustomFieldChange(field.key, e.target.value)}
+                              className="flex-1 bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs font-medium text-foreground focus:outline-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveCustomField(field.key)}
+                              className="p-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-xl transition-colors shrink-0"
+                            >
+                              <Trash className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                           <input
                             type="text"
                             placeholder="Field Label (e.g. WiFi Password)"
                             value={newFieldLabel}
                             onChange={(e) => setNewFieldLabel(e.target.value)}
-                            className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
+                            className="bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-3.5 py-2 text-xs font-medium focus:outline-none text-foreground placeholder:text-silver/40"
                           />
                           <div className="flex gap-2">
                             <input
                               type="text"
-                              placeholder="Value (e.g. guest2026)"
+                              placeholder="Value"
                               value={newFieldValue}
                               onChange={(e) => setNewFieldValue(e.target.value)}
-                              className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
+                              className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-3.5 py-2 text-xs font-medium focus:outline-none text-foreground placeholder:text-silver/40"
                             />
                             <button
                               type="button"
                               onClick={handleAddCustomField}
                               disabled={!newFieldLabel.trim()}
-                              className="px-4 bg-apple-blue hover:bg-apple-blue/90 disabled:opacity-50 text-white rounded-xl transition-all flex items-center justify-center shadow-lg shadow-apple-blue/10"
+                              className="px-3 bg-foreground text-background disabled:opacity-40 rounded-xl text-xs font-bold transition-all flex items-center justify-center shrink-0"
                             >
-                              <Plus className="w-4 h-4" />
+                              <Plus className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         </div>
@@ -691,39 +691,37 @@ export default function CreateWorkerPage() {
                     </div>
                   )}
                   
-                  {/* Identity Box */}
-                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl">
+                  {/* STEP 4: Identity */}
+                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-2xl space-y-4">
                     <div>
-                      <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
-                        <Bot className="w-4 h-4 text-apple-blue animate-pulse" />
-                        Identity Protocol
-                      </h2>
-                      <p className="text-[11px] text-silver mt-0.5 font-medium">Specify a custom name for your fleet operative.</p>
+                      <div className="text-[10px] font-bold text-silver uppercase tracking-wider flex items-center gap-1.5">
+                        <UserCheck className="w-3.5 h-3.5 text-apple-blue" />
+                        04 / Identity Protocol
+                      </div>
+                      <p className="text-xs text-silver mt-0.5 font-medium">Define public name and persona identifiers.</p>
                     </div>
 
-                    <div className="relative">
-                      <input 
-                        required
-                        type="text"
-                        placeholder="e.g. Sales Representative, NEXUS-02"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-5 py-4 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
-                      />
-                    </div>
+                    <input 
+                      required
+                      type="text"
+                      placeholder="e.g. CareSync Support, Apex Sales Representative"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
+                    />
                   </div>
 
-                  {/* Neural Protocol Selection */}
-                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl">
+                  {/* STEP 5: Voice & Language */}
+                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-2xl space-y-4">
                     <div>
-                      <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
-                        <Cpu className="w-4 h-4 text-apple-blue" />
-                        Neural Voice & Tone
-                      </h2>
-                      <p className="text-[11px] text-silver mt-0.5 font-medium">Select the linguistic baseline parameters.</p>
+                      <div className="text-[10px] font-bold text-silver uppercase tracking-wider flex items-center gap-1.5">
+                        <Sliders className="w-3.5 h-3.5 text-apple-blue" />
+                        05 / Neural Tone & Language
+                      </div>
+                      <p className="text-xs text-silver mt-0.5 font-medium">Select linguistic tone baseline and primary operational language.</p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       {tones.map((t) => {
                         const isSelected = formData.tone === t.id;
                         const Icon = t.icon;
@@ -733,21 +731,16 @@ export default function CreateWorkerPage() {
                             type="button"
                             onClick={() => setFormData({ ...formData, tone: t.id })}
                             className={cn(
-                              "p-4 rounded-2xl text-left transition-all border text-foreground flex gap-3 duration-300",
+                              "p-3 rounded-xl text-left transition-all border flex flex-col gap-2 duration-200",
                               isSelected 
-                                ? "bg-foreground text-background border-transparent shadow-lg" 
-                                : "bg-background border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/15 dark:hover:border-white/15"
+                                ? "bg-foreground text-background border-transparent shadow-sm" 
+                                : "bg-background border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/[0.12] dark:hover:border-white/[0.12]"
                             )}
                           >
-                            <div className={cn(
-                              "w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5",
-                              isSelected ? "bg-background/15" : "bg-foreground/5 dark:bg-white/5"
-                            )}>
-                              <Icon className={cn("w-4 h-4", isSelected ? "text-background" : t.color)} />
-                            </div>
+                            <Icon className={cn("w-4 h-4", isSelected ? "text-background" : t.color)} />
                             <div>
                               <div className="text-xs font-bold">{t.label}</div>
-                              <div className={cn("text-[10px] font-medium mt-0.5", isSelected ? "text-background/70" : "text-silver")}>
+                              <div className={cn("text-[9px] font-medium mt-0.5", isSelected ? "text-background/70" : "text-silver")}>
                                 {t.desc}
                               </div>
                             </div>
@@ -755,66 +748,56 @@ export default function CreateWorkerPage() {
                         );
                       })}
                     </div>
-                  </div>
 
-                  {/* Primary Language */}
-                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl">
-                    <div>
-                      <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
-                        <Languages className="w-4 h-4 text-apple-blue" />
-                        Primary Language
-                      </h2>
-                      <p className="text-[11px] text-silver mt-0.5 font-medium">Choose the language this operative responds in.</p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-1.5">
-                      {['English', 'Spanish', 'French', 'German', 'Portuguese', 'Arabic', 'Hindi'].map((lang) => {
-                        const isSelected = formData.language === lang;
-                        return (
-                          <button
-                            key={lang}
-                            type="button"
-                            onClick={() => setFormData({ ...formData, language: lang })}
-                            className={cn(
-                              "px-4 py-2.5 rounded-xl text-xs font-bold border transition-all duration-300",
-                              isSelected
-                                ? "bg-foreground text-background border-transparent shadow-md"
-                                : "bg-background border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/15 dark:hover:border-white/15 text-silver hover:text-foreground"
-                            )}
-                          >
-                            {lang}
-                          </button>
-                        );
-                      })}
+                    <div className="pt-2">
+                      <label className="text-[10px] font-bold text-silver uppercase tracking-wider block mb-2">Primary Language</label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {['English', 'Spanish', 'French', 'German', 'Portuguese', 'Arabic', 'Hindi'].map((lang) => {
+                          const isSelected = formData.language === lang;
+                          return (
+                            <button
+                              key={lang}
+                              type="button"
+                              onClick={() => setFormData({ ...formData, language: lang })}
+                              className={cn(
+                                "px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all duration-200",
+                                isSelected
+                                  ? "bg-foreground text-background border-transparent"
+                                  : "bg-background border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/[0.12] dark:hover:border-white/[0.12] text-silver hover:text-foreground"
+                              )}
+                            >
+                              {lang}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Directive Area */}
-                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[28px] space-y-4 backdrop-blur-xl">
+                  {/* STEP 6: Behavior Directives */}
+                  <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-2xl space-y-4">
                     <div>
-                      <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest flex items-center gap-2">
-                        <Shield className="w-4 h-4 text-apple-blue" />
-                        System Behavior Directives
-                      </h2>
-                      <p className="text-[11px] text-silver mt-0.5 font-medium">Define constraints, knowledge domains, business goals, and instructions.</p>
+                      <div className="text-[10px] font-bold text-silver uppercase tracking-wider flex items-center gap-1.5">
+                        <Shield className="w-3.5 h-3.5 text-apple-blue" />
+                        06 / Behavioral Directives
+                      </div>
+                      <p className="text-xs text-silver mt-0.5 font-medium">Define exact system instructions, constraints, and operational goals.</p>
                     </div>
 
-                    <div>
-                      <textarea 
-                        required
-                        rows={5}
-                        placeholder="e.g. You are Offrion's Real Estate sales representative. Help clients find villas in Dubai. Be polite and ask for their email and budget..."
-                        value={formData.personality}
-                        onChange={(e) => setFormData({ ...formData, personality: e.target.value })}
-                        className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-5 py-4 text-xs leading-relaxed focus:outline-none focus:border-apple-blue/40 text-foreground resize-none placeholder:text-silver/40"
-                      />
-                    </div>
+                    <textarea 
+                      required
+                      rows={5}
+                      placeholder="e.g. You are a real estate assistant. Help users schedule property viewings..."
+                      value={formData.personality}
+                      onChange={(e) => setFormData({ ...formData, personality: e.target.value })}
+                      className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl p-4 text-xs font-medium leading-relaxed focus:outline-none focus:border-apple-blue/40 text-foreground resize-none placeholder:text-silver/40"
+                    />
                   </div>
 
                   {/* Error Notification */}
                   {error && (
-                    <div className="p-4 bg-red-500/10 border border-red-500/15 rounded-2xl flex items-start gap-3 animate-in fade-in duration-300">
-                      <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                    <div className="p-3.5 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start gap-2.5">
+                      <AlertTriangle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                       <p className="text-xs text-red-500 font-bold leading-relaxed">{error}</p>
                     </div>
                   )}
@@ -822,7 +805,7 @@ export default function CreateWorkerPage() {
                   {/* Submit Button */}
                   <button 
                     disabled={loading || !formData.name || !formData.personality}
-                    className="w-full py-4 rounded-2xl bg-foreground text-background text-xs font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.99] transition-all duration-300 disabled:opacity-50 shadow-xl shadow-foreground/5 group"
+                    className="w-full py-3.5 rounded-xl bg-foreground text-background text-xs font-bold flex items-center justify-center gap-2 hover:opacity-90 active:scale-[0.99] transition-all disabled:opacity-40 shadow-sm group"
                   >
                     {loading ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -837,67 +820,65 @@ export default function CreateWorkerPage() {
                 </form>
               </motion.div>
 
-              {/* Identity Preview Pane */}
+              {/* Right Column: Identity Preview Pane (5/12 sticky) */}
               <motion.div variants={itemVariants} className="lg:col-span-5 lg:sticky lg:top-24 space-y-4">
-                <h2 className="text-[10px] font-bold text-silver uppercase tracking-[0.2em] px-1">Real-time Identity Preview</h2>
+                <div className="text-[10px] font-bold text-silver uppercase tracking-wider px-1">Node Identity Card</div>
                 
-                <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[32px] p-6 relative overflow-hidden group shadow-2xl backdrop-blur-xl">
-                  {/* Status Indicator */}
-                  <div className="absolute top-6 right-6">
-                    <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
-                      <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                      <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest">Active</span>
+                <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-6 relative overflow-hidden group shadow-sm">
+                  
+                  {/* Status LED */}
+                  <div className="absolute top-5 right-5">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                      <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Active</span>
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-center text-center space-y-5">
+                  <div className="flex flex-col items-center text-center space-y-4">
                     
-                    {/* Bot Icon Frame */}
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-tr from-apple-blue to-purple-500 rounded-2xl blur-[12px] opacity-10 group-hover:opacity-20 transition-opacity duration-500" />
-                      <div className="w-16 h-16 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl flex items-center justify-center shadow-inner relative z-10 group-hover:scale-105 transition-transform duration-300">
-                        <Bot className="w-8 h-8 text-foreground" />
-                      </div>
+                    {/* Bot Icon */}
+                    <div className="w-14 h-14 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <Bot className="w-7 h-7 text-foreground" />
                     </div>
                     
                     {/* Dynamic Name */}
                     <div className="space-y-1">
-                      <h3 className="text-xl font-bold tracking-tight text-foreground truncate max-w-[200px]">
-                        {formData.name || 'Operative-X'}
+                      <h3 className="text-base font-bold tracking-tight text-foreground truncate max-w-[220px]">
+                        {formData.name || 'Unassigned Node'}
                       </h3>
-                      <div className="flex items-center justify-center gap-2 text-[10px] font-bold text-silver">
-                        <span className="text-apple-blue font-bold tracking-wider uppercase">{formData.tone}</span>
-                        <span className="text-silver/30">•</span>
-                        <span className="text-emerald-400 font-bold uppercase">{formData.language}</span>
-                        <span className="text-silver/30">•</span>
-                        <span className="uppercase tracking-wider font-semibold">Neural Mode</span>
+                      <div className="flex items-center justify-center gap-1.5 text-[10px] font-semibold text-silver">
+                        <span className="text-apple-blue capitalize font-bold">{formData.tone}</span>
+                        <span>·</span>
+                        <span>{formData.language}</span>
+                        <span>·</span>
+                        <span className="uppercase tracking-wider">Neural</span>
                       </div>
                     </div>
 
-                    {/* Behavior Directive Display */}
-                    <div className="w-full p-4 bg-background border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl min-h-[90px] flex items-center justify-center">
-                      <p className="text-[11px] text-silver leading-relaxed italic">
-                        {formData.personality ? `"${formData.personality}"` : 'Awaiting behavioral directives for system calibration...'}
+                    {/* Behavioral Directive Output Preview */}
+                    <div className="w-full p-4 bg-background border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl min-h-[100px] flex items-center justify-center">
+                      <p className="text-[11px] text-silver leading-relaxed italic text-left w-full line-clamp-5">
+                        {formData.personality ? `"${formData.personality}"` : 'Awaiting directives to preview compiled operational parameters...'}
                       </p>
                     </div>
 
-                    {/* Animated Pulsing Bars */}
+                    {/* Telemetry Progress Bars */}
                     <div className="flex gap-2 w-full pt-1">
                       <div className="flex-1 h-1 bg-foreground/[0.08] dark:bg-white/[0.08] rounded-full overflow-hidden">
-                        <div className="h-full bg-apple-blue w-[40%] animate-[pulse_2s_infinite]" />
+                        <div className="h-full bg-apple-blue w-[50%] animate-[pulse_2s_infinite]" />
                       </div>
                       <div className="flex-1 h-1 bg-foreground/[0.08] dark:bg-white/[0.08] rounded-full overflow-hidden">
-                        <div className="h-full bg-purple-500 w-[60%] animate-[pulse_1.5s_infinite]" />
+                        <div className="h-full bg-emerald-500 w-[75%] animate-[pulse_1.5s_infinite]" />
                       </div>
                     </div>
 
                   </div>
                 </div>
 
-                <div className="p-4 bg-apple-blue/5 border border-apple-blue/10 rounded-2xl flex gap-3">
-                  <Info className="w-4 h-4 text-apple-blue flex-shrink-0 mt-0.5" />
-                  <p className="text-[10px] text-apple-blue font-medium leading-relaxed">
-                    Operatives start in the sandbox. Go to the Config tab inside your active node dashboard to wire up live communication channels (WhatsApp Cloud API, Telegram Bots).
+                <div className="p-4 bg-apple-blue/5 border border-apple-blue/15 rounded-xl flex gap-3">
+                  <Info className="w-4 h-4 text-apple-blue shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-apple-blue font-medium leading-relaxed">
+                    Once created, your node enters sandbox mode. Wire live communication channels (WhatsApp, Telegram) in your operative's config tab.
                   </p>
                 </div>
 
