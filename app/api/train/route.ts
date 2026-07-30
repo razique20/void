@@ -121,3 +121,89 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function GET(req: Request) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const workerId = searchParams.get('workerId');
+
+    await connectDB();
+
+    // Verify worker ownership or fetch all user workers
+    const userWorkers = await Worker.find({ userId }).select('_id');
+    const userWorkerIds = userWorkers.map(w => w._id.toString());
+
+    let query: any = {};
+    if (workerId) {
+      if (!userWorkerIds.includes(workerId)) {
+        return NextResponse.json({ error: 'Worker not found' }, { status: 404 });
+      }
+      query.workerId = workerId;
+    } else {
+      query.workerId = { $in: userWorkerIds };
+    }
+
+    const [totalChunks, entries, fileCount, websiteCount, textCount] = await Promise.all([
+      TrainingData.countDocuments(query),
+      TrainingData.find(query).sort({ createdAt: -1 }).limit(30).lean(),
+      TrainingData.countDocuments({ ...query, source: 'file' }),
+      TrainingData.countDocuments({ ...query, source: 'website' }),
+      TrainingData.countDocuments({ ...query, source: { $in: ['text', 'faq', 'manual', 'general'] } }),
+    ]);
+
+    return NextResponse.json({
+      totalChunks,
+      entries,
+      stats: {
+        fileCount,
+        websiteCount,
+        textCount,
+        totalWorkers: userWorkerIds.length
+      }
+    });
+  } catch (error: any) {
+    console.error('[TRAIN_GET]', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const entryId = searchParams.get('id');
+
+    if (!entryId) {
+      return NextResponse.json({ error: 'Missing entry id' }, { status: 400 });
+    }
+
+    await connectDB();
+    const entry = await TrainingData.findById(entryId);
+    if (!entry) {
+      return NextResponse.json({ error: 'Entry not found' }, { status: 404 });
+    }
+
+    // Verify ownership via Worker
+    const worker = await Worker.findOne({ _id: entry.workerId, userId });
+    if (!worker) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    await TrainingData.findByIdAndDelete(entryId);
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error('[TRAIN_DELETE]', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
