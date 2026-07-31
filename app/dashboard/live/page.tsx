@@ -20,7 +20,15 @@ import {
   Info,
   Mail,
   Zap,
-  Sparkles
+  Sparkles,
+  Search,
+  Layers,
+  Shield,
+  Activity,
+  ChevronRight,
+  MoreVertical,
+  Copy,
+  Loader2
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -33,6 +41,8 @@ export default function LiveChatPage() {
   const [showDrawer, setShowDrawer] = useState(true);
   const [isEditingName, setIsEditingName] = useState(false);
   const [editNameValue, setEditNameValue] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'ai' | 'takeover'>('all');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -43,6 +53,22 @@ export default function LiveChatPage() {
 
   const [sub, setSub] = useState<any>(null);
   const [loadingSub, setLoadingSub] = useState(true);
+
+  const fetchConversations = async () => {
+    try {
+      const res = await fetch('/api/conversations');
+      if (res.ok) {
+        const data = await res.json();
+        setConversations(data);
+        if (selectedChat) {
+          const updated = data.find((c: any) => c._id === selectedChat._id);
+          if (updated) setSelectedChat(updated);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch conversations', err);
+    }
+  };
 
   useEffect(() => {
     fetch('/api/subscription')
@@ -63,7 +89,7 @@ export default function LiveChatPage() {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [selectedChat?.messages?.length]);
+  }, [selectedChat?.messages?.length, loading]);
 
   useEffect(() => {
     if (selectedChat) {
@@ -71,20 +97,6 @@ export default function LiveChatPage() {
       setIsEditingName(false);
     }
   }, [selectedChat?._id]);
-
-  const fetchConversations = async () => {
-    try {
-      const res = await fetch('/api/conversations');
-      const data = await res.json();
-      setConversations(data);
-      if (selectedChat) {
-        const updated = data.find((c: any) => c._id === selectedChat._id);
-        if (updated) setSelectedChat(updated);
-      }
-    } catch (err) {
-      console.error('Failed to fetch conversations', err);
-    }
-  };
 
   const handleUpdateName = async () => {
     if (!selectedChat) return;
@@ -148,7 +160,7 @@ export default function LiveChatPage() {
       }
       
       fetchConversations();
-      showToast(newStatus ? 'Manual Takeover Active' : 'AI Autopilot Resumed');
+      showToast(newStatus ? 'Manual Takeover Engaged' : 'AI Autopilot Resumed');
     } catch (err) {
       console.error(err);
       fetchConversations();
@@ -182,17 +194,36 @@ export default function LiveChatPage() {
     }
   };
 
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    showToast('Copied message content');
+  };
+
+  const filteredConversations = conversations.filter(c => {
+    const matchesSearch = 
+      (c.displayName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (c.externalId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (c.messages[c.messages.length - 1]?.content || '').toLowerCase().includes(searchQuery.toLowerCase());
+
+    if (activeFilter === 'ai') return matchesSearch && !c.isPaused;
+    if (activeFilter === 'takeover') return matchesSearch && c.isPaused;
+    return matchesSearch;
+  });
+
+  const aiCount = conversations.filter(c => !c.isPaused).length;
+  const takeoverCount = conversations.filter(c => c.isPaused).length;
+
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      transition: { staggerChildren: 0.05 }
+      transition: { staggerChildren: 0.04 }
     }
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 25 } }
+    hidden: { opacity: 0, y: 8 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 400, damping: 30 } }
   };
 
   if (loadingSub) {
@@ -206,7 +237,6 @@ export default function LiveChatPage() {
   if (!sub?.features?.includes('mission_control')) {
     return (
       <div className="h-full w-full flex flex-col items-center justify-center text-center p-6 bg-background text-foreground relative">
-        {/* Background Ambience */}
         <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
@@ -240,78 +270,125 @@ export default function LiveChatPage() {
       <AnimatePresence>
         {toast && (
           <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            initial={{ opacity: 0, y: 15, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            exit={{ opacity: 0, y: 15, scale: 0.95 }}
             className={cn(
-              "fixed top-24 right-8 z-[100] px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 backdrop-blur-xl border",
+              "fixed bottom-8 right-8 z-[100] px-4 py-3 rounded-xl border flex items-center gap-2.5 backdrop-blur-xl shadow-2xl text-xs font-semibold",
               toast.type === 'error' 
                 ? 'bg-red-500/10 border-red-500/20 text-red-500' 
                 : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
             )}
           >
-            <Circle className={cn("w-2 h-2 fill-current", toast.type === 'error' ? 'text-red-500' : 'text-emerald-500')} />
-            <span className="text-xs font-bold uppercase tracking-wider">{toast.message}</span>
+            <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", toast.type === 'error' ? 'bg-red-500' : 'bg-emerald-500')} />
+            {toast.message}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 1. Conversation List Sidebar */}
-      <div className="w-80 flex flex-col bg-sidebar/40 border-r border-foreground/[0.04] dark:border-white/[0.04] shrink-0 backdrop-blur-md">
-        <div className="p-6 border-b border-foreground/[0.04] dark:border-white/[0.04] shrink-0">
-          <h1 className="text-base font-bold flex items-center gap-2 text-foreground">
-            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-            Live Ingress
-          </h1>
-          <p className="text-silver text-[9px] mt-1.5 uppercase tracking-widest font-extrabold">War Room Telemetry</p>
+      {/* 1. Sidebar - Chat List (w-80) */}
+      <div className="w-80 flex flex-col bg-foreground/[0.01] dark:bg-white/[0.005] border-r border-foreground/[0.06] dark:border-white/[0.06] shrink-0 backdrop-blur-md z-20">
+        
+        {/* Sidebar Header */}
+        <div className="p-5 border-b border-foreground/[0.06] dark:border-white/[0.06] shrink-0 space-y-3.5">
+          <div className="flex justify-between items-center">
+            <h1 className="text-sm font-bold flex items-center gap-2 text-foreground">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 relative flex shrink-0">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
+              </span>
+              War Room Traffic
+            </h1>
+            <span className="text-[9px] font-mono text-silver/60">LIVE FEED</span>
+          </div>
+
+          {/* Search bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-silver" />
+            <input
+              type="text"
+              placeholder="Search active sessions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl pl-9 pr-3 py-1.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
+            />
+          </div>
+
+          {/* Filter segment tabs */}
+          <div className="flex p-0.5 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-lg">
+            {[
+              { id: 'all', label: `All (${conversations.length})` },
+              { id: 'ai', label: `AI (${aiCount})` },
+              { id: 'takeover', label: `Manual (${takeoverCount})` },
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveFilter(tab.id as any)}
+                className={cn(
+                  "flex-1 text-center py-1 rounded text-[10px] font-bold transition-all",
+                  activeFilter === tab.id
+                    ? "bg-foreground text-background shadow-sm"
+                    : "text-silver hover:text-foreground"
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1">
-          {conversations.length === 0 ? (
-            <div className="p-10 text-center text-silver text-xs italic">
-              No active traffic detected...
+        {/* Conversation List */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
+          {filteredConversations.length === 0 ? (
+            <div className="p-8 text-center text-xs text-silver/60 italic">
+              {searchQuery ? 'No matching feeds found.' : 'Awaiting network traffic...'}
             </div>
           ) : (
-            conversations.map((chat) => {
+            filteredConversations.map((chat) => {
               const isSelected = selectedChat?._id === chat._id;
+              const lastMsg = chat.messages[chat.messages.length - 1];
               return (
                 <button
                   key={chat._id}
                   onClick={() => setSelectedChat(chat)}
                   className={cn(
-                    "w-full p-4 flex items-start gap-3.5 rounded-2xl border text-left relative overflow-hidden transition-all duration-300",
+                    "w-full p-3.5 flex items-start gap-3 rounded-xl border text-left relative overflow-hidden transition-all duration-200 cursor-pointer group",
                     isSelected
-                      ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] shadow-sm"
+                      ? "bg-foreground/[0.05] dark:bg-white/[0.05] border-foreground/[0.12] dark:border-white/[0.12] shadow-sm"
                       : "border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01]"
                   )}
                 >
-                  {isSelected && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-[60%] bg-apple-blue rounded-r" />
-                  )}
-                  <div className="w-9 h-9 rounded-xl bg-foreground/[0.05] dark:bg-white/[0.05] flex items-center justify-center shrink-0 border border-foreground/[0.04] dark:border-white/[0.04]">
+                  {/* Status Indicator Band */}
+                  <div className={cn(
+                    "absolute left-0 top-0 bottom-0 w-1 rounded-r",
+                    chat.isPaused ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
+                  )} />
+
+                  {/* Channel icon */}
+                  <div className="w-8 h-8 rounded-lg bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] flex items-center justify-center shrink-0">
                     {chat.channel === 'whatsapp' ? <Smartphone className="w-4 h-4 text-emerald-500" /> : 
                      chat.channel === 'telegram' ? <Send className="w-4 h-4 text-sky-500" /> : 
                      chat.channel === 'email' ? <Mail className="w-4 h-4 text-amber-500" /> :
                      <Globe className="w-4 h-4 text-silver" />}
                   </div>
+
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-center mb-0.5">
-                      <span className="font-bold text-xs truncate text-foreground">
+                      <span className="font-semibold text-xs truncate text-foreground">
                         {chat.displayName || chat.externalId}
                       </span>
-                      <span className="text-[9px] text-silver font-bold">
+                      <span className="text-[9px] text-silver font-medium">
                         {new Date(chat.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
                     <p className="text-[11px] text-silver truncate leading-relaxed">
-                      {chat.messages[chat.messages.length - 1]?.content}
+                      {lastMsg ? lastMsg.content : 'No transmissions yet'}
                     </p>
-                    <div className="flex items-center gap-1.5 mt-2.5">
-                      <span className="text-[8px] px-2 py-0.5 bg-foreground/[0.05] dark:bg-white/[0.05] rounded-[6px] text-silver font-mono font-bold tracking-tight border border-foreground/[0.03] dark:border-white/[0.03]">
+                    <div className="flex items-center gap-1.5 mt-2">
+                      <span className="text-[8px] px-1.5 py-0.5 bg-foreground/[0.04] dark:bg-white/[0.04] rounded text-silver font-mono border border-foreground/[0.04] dark:border-white/[0.04]">
                         {chat.workerId?.name}
                       </span>
                       {chat.isPaused && (
-                        <span className="text-[8px] px-2 py-0.5 bg-amber-500/10 text-amber-500 rounded-[6px] font-bold uppercase tracking-wider border border-amber-500/20">
+                        <span className="text-[8px] px-1.5 py-0.5 bg-amber-500/10 text-amber-500 rounded font-bold uppercase tracking-wider">
                           Takeover
                         </span>
                       )}
@@ -324,295 +401,345 @@ export default function LiveChatPage() {
         </div>
       </div>
 
-      {/* 2. Main Chat Panel */}
-      {selectedChat ? (
-        <div className="flex-1 flex flex-col bg-background/20 min-w-0 relative">
-          {/* Chat Header */}
-          <div className="p-4 md:p-5 border-b border-foreground/[0.04] dark:border-white/[0.04] flex justify-between items-center bg-background/40 backdrop-blur-xl shrink-0 z-10">
-            <div className="flex items-center gap-3.5 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-foreground/[0.05] dark:bg-white/[0.05] flex items-center justify-center shrink-0 border border-foreground/[0.04] dark:border-white/[0.04]">
-                <User className="w-4.5 h-4.5 text-foreground" />
+      {/* 2. Center Panel - Active chat screen */}
+      <div className="flex-1 flex flex-col min-w-0 relative">
+        {selectedChat ? (
+          <div className="flex flex-col h-full overflow-hidden">
+            
+            {/* Header bar */}
+            <div className="px-6 py-4 border-b border-foreground/[0.06] dark:border-white/[0.06] bg-background/40 backdrop-blur-xl flex justify-between items-center shrink-0 z-10">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-center shrink-0 font-bold text-xs text-foreground">
+                  {(selectedChat.displayName || selectedChat.externalId || '?')[0].toUpperCase()}
+                </div>
+                <div className="min-w-0">
+                  <h2 className="font-semibold text-xs text-foreground truncate">
+                    {selectedChat.displayName || selectedChat.externalId}
+                  </h2>
+                  <p className="text-[10px] text-silver font-medium flex items-center gap-1.5 mt-0.5">
+                    <Circle className={cn(
+                      "w-1.5 h-1.5 rounded-full fill-current animate-pulse",
+                      selectedChat.isPaused ? "text-amber-500" : "text-emerald-500"
+                    )} />
+                    {selectedChat.channel.toUpperCase()} Uplink · via {selectedChat.workerId?.name}
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <h2 className="font-bold text-xs text-foreground truncate">
-                  {selectedChat.displayName || selectedChat.externalId}
-                </h2>
-                <p className="text-[9px] text-silver flex items-center gap-1.5 mt-0.5">
-                  <Circle className="w-1 h-1 fill-emerald-500 text-emerald-500" />
-                  Active via {selectedChat.channel.toUpperCase()} {selectedChat.displayName && `(${selectedChat.externalId})`}
-                </p>
+
+              {/* Action utilities */}
+              <div className="flex items-center gap-2">
+                
+                {/* Visual Autopilot / Takeover Switcher */}
+                <button
+                  onClick={() => togglePause(selectedChat)}
+                  className={cn(
+                    "px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 border shadow-sm transition-all duration-300",
+                    selectedChat.isPaused
+                      ? "bg-amber-500/10 border-amber-500/30 text-amber-500 hover:bg-amber-500/20"
+                      : "bg-emerald-500/10 border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20"
+                  )}
+                >
+                  {selectedChat.isPaused ? (
+                    <>
+                      <Zap className="w-3.5 h-3.5 fill-current" />
+                      Takeover Active
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Autopilot Running
+                    </>
+                  )}
+                </button>
+
+                {/* Open drawer toggle */}
+                <button
+                  onClick={() => setShowDrawer(!showDrawer)}
+                  className={cn(
+                    "p-2 rounded-xl transition-all border shrink-0",
+                    showDrawer
+                      ? 'bg-purple-500/10 border-purple-500/30 text-purple-500'
+                      : 'bg-foreground/[0.03] dark:bg-white/[0.03] border-foreground/[0.06] dark:border-white/[0.06] text-silver hover:text-foreground'
+                  )}
+                  title="Toggle Cognitive Memory"
+                >
+                  <BookOpen className="w-4 h-4" />
+                </button>
+
+                {/* Clear conversation button */}
+                <button
+                  onClick={() => handleClear(selectedChat._id)}
+                  className="p-2 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl hover:bg-red-500/20 transition-all shrink-0"
+                  title="Clear Session History"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5 shrink-0">
-              <div className="hidden sm:flex flex-col items-end mr-2">
-                <span className="text-[8px] font-extrabold text-silver uppercase tracking-widest">Active Operative</span>
-                <span className="text-[11px] font-bold text-foreground mt-0.5">{selectedChat.workerId?.name}</span>
-              </div>
-              
-              <button 
-                onClick={() => togglePause(selectedChat)}
-                className={cn(
-                  "flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-bold tracking-wider uppercase transition-all duration-300 shadow-sm border",
-                  selectedChat.isPaused 
-                    ? 'bg-amber-500 text-black border-amber-500/20 hover:bg-amber-400' 
-                    : 'bg-foreground text-background border-transparent hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]'
-                )}
-              >
-                {selectedChat.isPaused ? (
-                  <> <Play className="w-3 h-3 fill-current" /> Resume AI</>
-                ) : (
-                  <> <Pause className="w-3 h-3 fill-current" /> Takeover</>
-                )}
-              </button>
-
-              <button 
-                onClick={() => setShowDrawer(!showDrawer)}
-                className={cn(
-                  "p-2 rounded-xl transition-all border shrink-0",
-                  showDrawer 
-                    ? 'bg-apple-blue/10 border-apple-blue/20 text-apple-blue' 
-                    : 'bg-foreground/[0.03] dark:bg-white/[0.03] border-foreground/[0.04] dark:border-white/[0.04] text-silver hover:text-foreground'
-                )}
-                title="Toggle Neural Memory"
-              >
-                <BookOpen className="w-4 h-4" />
-              </button>
-
-              <button 
-                onClick={() => handleClear(selectedChat._id)}
-                className="p-2 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl hover:bg-red-500/20 transition-all shrink-0"
-                title="Clear History"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Messages Area */}
-          <div 
-            ref={scrollRef}
-            className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar"
-          >
-            <motion.div 
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              className="space-y-6"
+            {/* Bubble Message Stream */}
+            <div 
+              ref={scrollRef}
+              className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar"
             >
-              {selectedChat.messages.map((m: any, i: number) => {
-                const isAI = m.role === 'assistant';
-                return (
-                  <motion.div 
-                    key={i} 
-                    variants={itemVariants}
-                    className={cn("flex", isAI ? 'justify-start' : 'justify-end')}
-                  >
-                    <div className="max-w-[70%] space-y-1.5">
-                      <div className={cn("flex items-center gap-2", isAI ? 'flex-row' : 'flex-row-reverse')}>
-                        <div className={cn(
-                          "w-5 h-5 rounded-md flex items-center justify-center shrink-0 border",
-                          isAI ? "bg-foreground/5 border-foreground/5" : "bg-foreground/10 border-foreground/10"
-                        )}>
-                          {isAI ? <Bot className="w-3 h-3 text-silver" /> : <User className="w-3 h-3 text-silver" />}
-                        </div>
-                        <span className="text-[9px] font-bold text-silver uppercase tracking-widest">
-                          {isAI ? selectedChat.workerId?.name : (selectedChat.displayName || 'User')}
-                        </span>
-                      </div>
-                      <div className={cn(
-                        "px-4.5 py-3 rounded-[20px] text-xs leading-relaxed border shadow-sm",
-                        isAI 
-                          ? 'bg-foreground/[0.03] dark:bg-white/[0.03] border-foreground/[0.04] dark:border-white/[0.04] text-foreground rounded-tl-none' 
-                          : 'bg-foreground text-background border-transparent rounded-tr-none font-medium'
-                      )}>
-                        <p className="whitespace-pre-wrap">{m.content}</p>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          </div>
-
-          {/* Reply Area */}
-          <div className="p-6 bg-foreground/[0.02] dark:bg-white/[0.01] border-t border-foreground/[0.04] dark:border-white/[0.04] shrink-0">
-            <form onSubmit={handleSend} className="relative max-w-4xl mx-auto">
-              <input 
-                disabled={!selectedChat.isPaused}
-                placeholder={selectedChat.isPaused ? "Type your manual override message..." : "Takeover to send a manual reply"}
-                className="w-full bg-background border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl pl-6 pr-16 py-4 focus:outline-none focus:ring-1 focus:ring-apple-blue/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-xs text-foreground placeholder:text-silver/40 shadow-sm"
-                value={reply}
-                onChange={(e) => setReply(e.target.value)}
-              />
-              <button 
-                disabled={!selectedChat.isPaused || !reply.trim() || loading}
-                className="absolute right-2 top-2 p-2.5 bg-foreground text-background rounded-xl hover:opacity-90 transition-all disabled:opacity-0 disabled:scale-90 duration-300 shadow-md"
+              <motion.div
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                className="space-y-5"
               >
-                <Send className="w-4 h-4" />
-              </button>
-            </form>
-            <p className="text-center text-[8px] text-silver mt-4.5 uppercase tracking-[0.2em] font-extrabold flex items-center justify-center gap-1.5">
-              {selectedChat.isPaused ? (
-                <>
-                  <Zap className="w-3 h-3 text-amber-500 fill-amber-500/20" />
-                  Manual Override Active — AI is currently suspended
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-3 h-3 text-apple-blue" />
-                  AI Autopilot Engaged — Operative is responding autonomously
-                </>
-              )}
-            </p>
-          </div>
-        </div>
-      ) : (
-        <div className="flex-1 flex flex-col items-center justify-center text-center space-y-5 bg-background/40 relative">
-          <div className="w-16 h-16 rounded-[24px] bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.04] dark:border-white/[0.04] flex items-center justify-center animate-pulse">
-            <MessageSquare className="w-7 h-7 text-silver" />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold text-foreground">Select a Transmission</h2>
-            <p className="text-silver text-xs mt-1.5 max-w-xs leading-relaxed">Choose an active channel links from the sidebar to inspect logs and perform manual overrides.</p>
-          </div>
-        </div>
-      )}
+                {selectedChat.messages.map((m: any, i: number) => {
+                  const isAI = m.role === 'assistant';
+                  return (
+                    <motion.div
+                      key={i}
+                      variants={itemVariants}
+                      className={cn("flex gap-3 max-w-[85%] sm:max-w-[70%]", isAI ? 'mr-auto' : 'ml-auto flex-row-reverse')}
+                    >
+                      <div className={cn(
+                        "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border text-xs mt-0.5",
+                        isAI 
+                          ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground" 
+                          : "bg-foreground text-background border-transparent"
+                      )}>
+                        {isAI ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
+                      </div>
 
-      {/* 3. Neural Memory Drawer */}
+                      <div className="space-y-1 min-w-0">
+                        <div className={cn("flex items-center gap-2 text-[10px] text-silver font-medium", !isAI && "justify-end")}>
+                          <span>{isAI ? selectedChat.workerId?.name : (selectedChat.displayName || 'Client')}</span>
+                          <span className="text-[9px] opacity-50 font-mono">
+                            {new Date(m.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+
+                        <div className={cn(
+                          "p-4 rounded-2xl text-xs leading-relaxed border relative group shadow-sm font-sans",
+                          isAI
+                            ? "bg-foreground/[0.02] dark:bg-white/[0.015] border-foreground/[0.06] dark:border-white/[0.06] text-foreground rounded-tl-none"
+                            : "bg-foreground text-background border-transparent rounded-tr-none"
+                        )}>
+                          <p className="whitespace-pre-wrap break-words">{m.content}</p>
+                          <button
+                            onClick={() => copyToClipboard(m.content)}
+                            className="absolute -bottom-6 right-2 p-1 text-silver hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity"
+                            title="Copy message"
+                          >
+                            <Copy className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            </div>
+
+            {/* Input / Form overlay controller */}
+            <div className="p-5 border-t border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] shrink-0 relative">
+              
+              {/* Autopilot Locked state overlay */}
+              {!selectedChat.isPaused && (
+                <div className="absolute inset-0 bg-background/60 dark:bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-30 transition-all">
+                  <div className="p-4 bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl shadow-xl flex flex-col sm:flex-row items-center gap-3.5 max-w-md text-center sm:text-left">
+                    <div className="w-10 h-10 bg-purple-500/10 border border-purple-500/20 rounded-xl flex items-center justify-center shrink-0">
+                      <Sparkles className="w-5 h-5 text-purple-500" />
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-xs text-foreground">AI Autopilot Running</h4>
+                      <p className="text-[10px] text-silver font-medium">To manually intervene or override, engage takeover mode.</p>
+                    </div>
+                    <button
+                      onClick={() => togglePause(selectedChat)}
+                      className="px-4 py-2 bg-foreground text-background text-xs font-bold rounded-xl shadow-sm hover:opacity-90 transition-all shrink-0 cursor-pointer"
+                    >
+                      Takeover Link
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Message typing form */}
+              <form onSubmit={handleSend} className="space-y-2 max-w-4xl mx-auto">
+                <div className="relative flex items-center">
+                  <input
+                    disabled={!selectedChat.isPaused}
+                    type="text"
+                    placeholder="Compose manual override message..."
+                    value={reply}
+                    onChange={(e) => setReply(e.target.value)}
+                    className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl pl-4 pr-12 py-3.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all font-medium shadow-sm"
+                  />
+                  <button
+                    disabled={!reply.trim() || loading}
+                    className="absolute right-2 p-2 bg-foreground text-background rounded-lg hover:opacity-90 transition-all disabled:opacity-30 cursor-pointer"
+                  >
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+
+                <div className="flex justify-between items-center text-[9px] text-silver font-mono px-1">
+                  <span className="flex items-center gap-1 text-amber-500 font-semibold">
+                    <Zap className="w-3 h-3 fill-current" />
+                    Manual Takeover Mode Active
+                  </span>
+                  <span>Press Enter ↵ to dispatch override</span>
+                </div>
+              </form>
+            </div>
+
+          </div>
+        ) : (
+          <div className="flex-1 flex flex-col items-center justify-center text-center p-6 space-y-6 relative">
+            <div className="w-16 h-16 rounded-[24px] bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-center animate-pulse">
+              <MessageSquare className="w-7 h-7 text-silver" />
+            </div>
+            <div className="space-y-1">
+              <h2 className="text-sm font-semibold text-foreground">Select a Transmission Feed</h2>
+              <p className="text-silver text-xs font-medium max-w-xs leading-relaxed">
+                Choose an active session from the War Room listing to inspect RAG memory, monitor dialogues, or manually intervene.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 3. Right Sidebar - Neural Memory Drawer */}
       <AnimatePresence>
         {selectedChat && showDrawer && (
-          <motion.div 
+          <motion.div
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: 320, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="border-l border-foreground/[0.04] dark:border-white/[0.04] bg-sidebar/30 backdrop-blur-md overflow-hidden flex flex-col shrink-0"
+            transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+            className="border-l border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] overflow-hidden flex flex-col shrink-0 z-20"
           >
             <div className="w-80 flex flex-col h-full">
-              <div className="p-6 border-b border-foreground/[0.04] dark:border-white/[0.04] flex justify-between items-center shrink-0">
+              
+              {/* Drawer Header */}
+              <div className="p-5 border-b border-foreground/[0.06] dark:border-white/[0.06] flex justify-between items-center shrink-0 bg-foreground/[0.01] dark:bg-white/[0.005]">
                 <h3 className="font-bold text-xs text-foreground flex items-center gap-2 uppercase tracking-wider">
-                  <BookOpen className="w-4 h-4 text-apple-blue" />
-                  Neural Memory
+                  <BookOpen className="w-4 h-4 text-purple-500" />
+                  Cognitive Memory
                 </h3>
-                <button 
+                <button
                   onClick={() => setShowDrawer(false)}
-                  className="p-1 hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] rounded-lg transition-colors text-silver hover:text-foreground"
+                  className="p-1 rounded-lg hover:bg-foreground/5 dark:hover:bg-white/5 text-silver hover:text-foreground transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="p-6 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
-                {/* Identity / Display Name Editing */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-foreground/[0.05] dark:bg-white/[0.05] flex items-center justify-center text-foreground font-bold shrink-0 text-sm border border-foreground/[0.04] dark:border-white/[0.04]">
-                      {(selectedChat.displayName || selectedChat.externalId || '?')[0].toUpperCase()}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      {isEditingName ? (
-                        <div className="flex items-center gap-1.5">
-                          <input 
-                            className="w-full bg-background border border-foreground/[0.1] dark:border-white/[0.1] rounded-xl px-2.5 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-apple-blue text-foreground"
-                            value={editNameValue}
-                            onChange={(e) => setEditNameValue(e.target.value)}
-                            placeholder="Set user name..."
-                            autoFocus
-                          />
-                          <button 
-                            onClick={handleUpdateName} 
-                            className="p-1.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-lg hover:bg-emerald-500/20"
-                            title="Save"
-                          >
-                            <Check className="w-3 h-3" />
-                          </button>
-                          <button 
-                            onClick={() => { setIsEditingName(false); setEditNameValue(selectedChat.displayName || ''); }} 
-                            className="p-1.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded-lg hover:bg-red-500/20"
-                            title="Cancel"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="font-bold text-xs truncate text-foreground">
-                            {selectedChat.displayName || 'Anonymous User'}
-                          </h4>
-                          <button 
-                            onClick={() => setIsEditingName(true)}
-                            className="p-1 text-silver hover:text-foreground hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] rounded-md transition-colors"
-                            title="Edit Name"
-                          >
-                            <Edit2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      )}
-                      <p className="text-[9px] text-silver mt-0.5 truncate font-mono">{selectedChat.externalId}</p>
-                    </div>
+              {/* Drawer Scroll Container */}
+              <div className="p-5 space-y-6 flex-1 overflow-y-auto custom-scrollbar">
+                
+                {/* Initial Profile Avatar Box */}
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-500 font-bold shrink-0 text-sm animate-pulse">
+                    {(selectedChat.displayName || selectedChat.externalId || '?')[0].toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    {isEditingName ? (
+                      <div className="flex items-center gap-1">
+                        <input
+                          type="text"
+                          value={editNameValue}
+                          onChange={(e) => setEditNameValue(e.target.value)}
+                          className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-lg px-2 py-1 text-xs text-foreground focus:outline-none"
+                          autoFocus
+                        />
+                        <button
+                          onClick={handleUpdateName}
+                          className="p-1 text-emerald-500 hover:bg-emerald-500/10 rounded"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => { setIsEditingName(false); setEditNameValue(selectedChat.displayName || ''); }}
+                          className="p-1 text-red-500 hover:bg-red-500/10 rounded"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="font-semibold text-xs text-foreground truncate">
+                          {selectedChat.displayName || 'Anonymous User'}
+                        </h4>
+                        <button
+                          onClick={() => setIsEditingName(true)}
+                          className="p-1 text-silver hover:text-foreground opacity-60 hover:opacity-100 transition-opacity"
+                        >
+                          <Edit2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
+                    <p className="text-[9px] font-mono text-silver mt-0.5 truncate">{selectedChat.externalId}</p>
                   </div>
                 </div>
 
-                {/* Longitudinal Memory Profile */}
+                {/* Cognitive Profile card */}
                 <div className="space-y-2">
-                  <h5 className="text-[8px] font-extrabold text-silver uppercase tracking-widest flex items-center gap-1">
-                    Cognitive Profile
-                  </h5>
-                  <div className="p-4 bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl">
+                  <h5 className="text-[9px] font-bold text-silver uppercase tracking-wider">Cognitive Profile</h5>
+                  <div className="p-4 bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl">
                     {selectedChat.memorySummary ? (
-                      <p className="text-xs text-foreground/80 leading-relaxed whitespace-pre-wrap">
+                      <p className="text-xs text-foreground/80 leading-relaxed font-sans">
                         {selectedChat.memorySummary}
                       </p>
                     ) : (
-                      <p className="text-xs text-silver italic leading-relaxed">
-                        No active profile summaries recorded yet. Memory compiles dynamically as conversation runs.
+                      <p className="text-xs text-silver/60 italic leading-relaxed">
+                        Awaiting rolling summarization metrics. Memory compiles dynamically as dialogue progresses.
                       </p>
                     )}
                   </div>
                 </div>
 
-                {/* Extracted Key Facts */}
+                {/* Extracted Facts */}
                 <div className="space-y-2">
-                  <h5 className="text-[8px] font-extrabold text-silver uppercase tracking-widest">Extracted Facts</h5>
+                  <h5 className="text-[9px] font-bold text-silver uppercase tracking-wider">Extracted Facts</h5>
                   {selectedChat.facts && selectedChat.facts.length > 0 ? (
                     <div className="flex flex-wrap gap-1.5">
                       {selectedChat.facts.map((fact: string, idx: number) => (
-                        <div key={idx} className="text-[10px] px-3 py-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-full text-foreground/80 font-medium">
+                        <span key={idx} className="text-[10px] px-2.5 py-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg text-foreground/80 font-medium">
                           {fact}
-                        </div>
+                        </span>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-silver italic">No concrete facts cataloged yet.</p>
+                    <p className="text-xs text-silver/60 italic">No static facts recorded in this session.</p>
                   )}
                 </div>
 
-                {/* Uplink Telemetry */}
+                {/* Technical Telemetry */}
                 <div className="space-y-2">
-                  <h5 className="text-[8px] font-extrabold text-silver uppercase tracking-widest">Uplink Telemetry</h5>
-                  <div className="space-y-2 text-xs p-3.5 bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.04] dark:border-white/[0.04] rounded-2xl">
-                    <div className="flex justify-between py-1 border-b border-foreground/[0.03] dark:border-white/[0.03]">
+                  <h5 className="text-[9px] font-bold text-silver uppercase tracking-wider">Session Telemetry</h5>
+                  <div className="space-y-2 text-xs p-3.5 bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl">
+                    <div className="flex justify-between py-1 border-b border-foreground/[0.04] dark:border-white/[0.04]">
                       <span className="text-silver">Channel</span>
-                      <span className="font-bold text-foreground uppercase tracking-wide">{selectedChat.channel}</span>
+                      <span className="font-bold text-foreground uppercase">{selectedChat.channel}</span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-foreground/[0.03] dark:border-white/[0.03]">
+                    <div className="flex justify-between py-1 border-b border-foreground/[0.04] dark:border-white/[0.04]">
                       <span className="text-silver">Uplink Address</span>
-                      <span className="font-semibold font-mono text-[10px] text-foreground truncate max-w-[120px]">{selectedChat.externalId}</span>
+                      <span className="font-semibold font-mono text-[10px] text-foreground truncate max-w-[120px]" title={selectedChat.externalId}>
+                        {selectedChat.externalId}
+                      </span>
                     </div>
                     <div className="flex justify-between py-1">
-                      <span className="text-silver">Last Ping</span>
-                      <span className="font-bold text-foreground">
-                        {new Date(selectedChat.updatedAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
+                      <span className="text-silver">Last Activity</span>
+                      <span className="font-semibold text-foreground">
+                        {new Date(selectedChat.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
                   </div>
                 </div>
+
               </div>
+
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+      
     </div>
   );
 }

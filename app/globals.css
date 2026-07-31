@@ -112,6 +112,8 @@
   --color-foreground: var(--foreground);
   --color-sidebar: var(--sidebar);
   --color-sidebar-border: var(--sidebar-border);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
   --color-primary: var(--primary);
   --color-silver: var(--silver);
   --color-apple-blue: var(--apple-blue);
