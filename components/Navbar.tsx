@@ -23,7 +23,8 @@ import {
   ChevronRight,
   Sliders,
   Activity,
-  Cpu
+  Cpu,
+  PanelLeftClose
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
@@ -32,21 +33,39 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [sub, setSub] = useState<any>(null);
   const [config, setConfig] = useState<any>(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
 
   const isWorkspace = pathname !== '/' && !pathname.startsWith('/sign-in') && !pathname.startsWith('/sign-up');
+
+  // Load collapsed state from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('sidebar-collapsed');
+    if (saved === 'true') setIsCollapsed(true);
+  }, []);
+
+  const toggleCollapse = () => {
+    const next = !isCollapsed;
+    setIsCollapsed(next);
+    localStorage.setItem('sidebar-collapsed', String(next));
+  };
 
   // Handle body padding dynamic class assignment
   useEffect(() => {
     if (isWorkspace) {
       document.body.classList.add('has-sidebars');
+      if (isCollapsed) {
+        document.body.classList.add('sidebar-collapsed');
+      } else {
+        document.body.classList.remove('sidebar-collapsed');
+      }
     } else {
-      document.body.classList.remove('has-sidebars');
+      document.body.classList.remove('has-sidebars', 'sidebar-collapsed');
     }
     return () => {
-      document.body.classList.remove('has-sidebars');
+      document.body.classList.remove('has-sidebars', 'sidebar-collapsed');
     };
-  }, [isWorkspace]);
+  }, [isWorkspace, isCollapsed]);
 
   // Lock scroll when mobile menu is open
   useEffect(() => {
@@ -145,23 +164,30 @@ export default function Navbar() {
   // RENDER OPTION B: Authenticated Workspace View (Dual Sidebars: Left Wide Sidebar + Right Slim Dock)
   return (
     <>
-      {/* 1. LEFT WORKSPACE SIDEBAR */}
-      <aside className="fixed top-0 left-0 h-full w-60 border-r border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col p-5 justify-between select-none">
+      {/* 1. LEFT WORKSPACE SIDEBAR (Collapsible) */}
+      <aside className={cn(
+        "fixed top-0 left-0 h-full border-r border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col justify-between select-none transition-all duration-200 ease-in-out",
+        isCollapsed ? "w-16 p-3 py-5" : "w-60 p-5"
+      )}>
         <div className="space-y-6">
           {/* Logo Branding */}
-          <Link href="/" className="group flex items-center gap-2 px-1.5">
-            <span className="text-base font-black tracking-[-0.04em] text-foreground flex items-center gap-1">
-              VOID
+          <Link href="/" className={cn("group flex items-center gap-2", isCollapsed ? "justify-center" : "px-1.5")}>
+            <span className={cn("font-black tracking-[-0.04em] text-foreground flex items-center gap-1", isCollapsed ? "text-sm" : "text-base")}>
+              {isCollapsed ? "V" : "VOID"}
               <span className="w-1.5 h-1.5 rounded-full bg-apple-blue mt-0.5 animate-pulse" />
             </span>
-            <span className="text-[8px] font-bold text-silver/60 bg-foreground/[0.05] dark:bg-white/[0.05] px-1.5 py-0.5 rounded border border-foreground/[0.08] dark:border-white/[0.08] font-mono">
-              v1.0
-            </span>
+            {!isCollapsed && (
+              <span className="text-[8px] font-bold text-silver/60 bg-foreground/[0.05] dark:bg-white/[0.05] px-1.5 py-0.5 rounded border border-foreground/[0.08] dark:border-white/[0.08] font-mono">
+                v1.0
+              </span>
+            )}
           </Link>
 
           {/* Core Workspaces Navigation */}
           <div className="space-y-3">
-            <p className="text-[9px] font-bold text-silver uppercase tracking-widest px-1.5">Core Workspaces</p>
+            {!isCollapsed && (
+              <p className="text-[9px] font-bold text-silver uppercase tracking-widest px-1.5">Core Workspaces</p>
+            )}
             <nav className="space-y-0.5">
               {leftLinks.map((link) => {
                 const Icon = link.icon;
@@ -171,7 +197,8 @@ export default function Navbar() {
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all border cursor-pointer",
+                      "flex items-center rounded-xl text-xs font-bold transition-all border cursor-pointer relative group",
+                      isCollapsed ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
                       isActive
                         ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground"
                         : link.locked
@@ -180,8 +207,16 @@ export default function Navbar() {
                     )}
                   >
                     <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-apple-blue" : "text-silver")} />
-                    <span className="flex-1 truncate">{link.label}</span>
-                    {link.locked && <Lock className="w-3 h-3 text-silver/30" />}
+                    {!isCollapsed && <span className="flex-1 truncate">{link.label}</span>}
+                    {!isCollapsed && link.locked && <Lock className="w-3 h-3 text-silver/30" />}
+                    
+                    {/* Tooltip for collapsed state */}
+                    {isCollapsed && (
+                      <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background dark:bg-white dark:text-black text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
+                        {link.label}
+                        {link.locked && " (LOCKED)"}
+                      </div>
+                    )}
                   </Link>
                 );
               })}
@@ -189,20 +224,38 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Telemetry diagnostics in bottom left */}
-        <div className="p-4 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl space-y-2">
-          <div className="flex justify-between items-center text-[9px] font-mono text-silver/60">
-            <span>UPLINK STATUS</span>
-            <span className="text-emerald-500 font-bold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 relative flex shrink-0">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
-              </span>
-              ONLINE
-            </span>
-          </div>
-          <div className="h-1.5 w-full bg-foreground/[0.06] dark:bg-white/[0.06] rounded-full overflow-hidden border border-foreground/[0.02] dark:border-white/[0.02]">
-            <div className="h-full bg-apple-blue w-[85%] rounded-full animate-pulse" />
-          </div>
+        {/* Bottom: Telemetry + Collapse Toggle */}
+        <div className="space-y-3">
+          {/* Telemetry diagnostics */}
+          {!isCollapsed && (
+            <div className="p-4 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl space-y-2">
+              <div className="flex justify-between items-center text-[9px] font-mono text-silver/60">
+                <span>UPLINK STATUS</span>
+                <span className="text-emerald-500 font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 relative flex shrink-0">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
+                  </span>
+                  ONLINE
+                </span>
+              </div>
+              <div className="h-1.5 w-full bg-foreground/[0.06] dark:bg-white/[0.06] rounded-full overflow-hidden border border-foreground/[0.02] dark:border-white/[0.02]">
+                <div className="h-full bg-apple-blue w-[85%] rounded-full animate-pulse" />
+              </div>
+            </div>
+          )}
+
+          {/* Collapse / Expand Toggle */}
+          <button
+            onClick={toggleCollapse}
+            className={cn(
+              "flex items-center justify-center rounded-xl border border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.02] dark:bg-white/[0.01] hover:bg-foreground/[0.04] dark:hover:bg-white/[0.03] text-silver hover:text-foreground transition-all cursor-pointer",
+              isCollapsed ? "w-10 h-10 mx-auto" : "w-full py-2.5 gap-2"
+            )}
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <PanelLeftClose className={cn("w-4 h-4 shrink-0 transition-transform duration-200", isCollapsed && "rotate-180")} />
+            {!isCollapsed && <span className="text-[9px] font-bold uppercase tracking-widest">Collapse</span>}
+          </button>
         </div>
       </aside>
 
