@@ -79,6 +79,7 @@ export default function Navbar() {
 
   const isTabActive = (href: string) => {
     if (href === '/') return pathname === '/';
+    if (href === '/dashboard') return pathname === '/dashboard';
     return pathname.startsWith(href);
   };
 
