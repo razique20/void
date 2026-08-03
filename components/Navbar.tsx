@@ -18,14 +18,14 @@ import {
   Bot,
   BookOpen,
   LayoutDashboard,
-  PlusCircle
+  PlusCircle,
+  Lock
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [sub, setSub] = useState<any>(null);
   const [config, setConfig] = useState<any>(null);
   const pathname = usePathname();
@@ -53,19 +53,6 @@ export default function Navbar() {
       .catch(console.error);
   }, []);
 
-  // Close dropdown on click outside
-  useEffect(() => {
-    const handleOutsideClick = () => {
-      setIsDropdownOpen(false);
-    };
-    if (isDropdownOpen) {
-      window.addEventListener('click', handleOutsideClick);
-    }
-    return () => {
-      window.removeEventListener('click', handleOutsideClick);
-    };
-  }, [isDropdownOpen]);
-
   const hasFeature = (feature: string) => {
     if (!sub || !sub.features) return false;
     return sub.features.includes(feature);
@@ -76,105 +63,94 @@ export default function Navbar() {
     return pathname.startsWith(href);
   };
 
-  const mainLinks = [
+  // 1. Left-aligned Workspace Links
+  const leftLinks = [
     { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Hire Operative', href: '/create-worker', icon: PlusCircle },
     { label: 'Brain / Knowledge', href: '/training', icon: BookOpen },
     { label: 'Live Chat', href: '/chat', icon: Bot },
+    ...(config?.featureFlags?.leadManagement !== false || pathname === '/dashboard/leads' 
+      ? [{ label: 'Leads CRM', href: '/dashboard/leads', icon: Database, locked: !hasFeature('lead_capture') }] 
+      : []),
+    { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') }
   ];
 
-  const moreLinks = [
-    ...(hasFeature('marketplace') ? [{ label: 'Marketplace', href: '/marketplace', icon: ShoppingBag }] : []),
+  // 2. Right-aligned System & Billing Links
+  const rightLinks = [
+    { label: 'Marketplace', href: '/marketplace', icon: ShoppingBag, locked: !hasFeature('marketplace') },
     { label: 'Billing', href: '/billing', icon: CreditCard },
-    ...((config?.featureFlags?.leadManagement !== false && hasFeature('lead_capture')) || pathname === '/dashboard/leads' ? [{ label: 'Architect Leads', href: '/dashboard/leads', icon: Database }] : []),
-    ...(hasFeature('mission_control') ? [{ label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare }] : []),
-    { label: 'Setup & Credentials', href: '/dashboard/credentials', icon: Key },
+    { label: 'Credentials', href: '/dashboard/credentials', icon: Key },
     { label: 'Support', href: '/dashboard/support', icon: LifeBuoy }
   ];
-
-  const isMoreActive = moreLinks.some(link => pathname.startsWith(link.href));
 
   return (
     <>
       <nav className={cn(
-        "fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b [transform:translate3d(0,0,0)]",
+        "fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3 border-b [transform:translate3d(0,0,0)]",
         isOpen 
           ? "bg-background border-transparent" 
           : "bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]"
       )}>
-        <div className="flex justify-between items-center px-2 md:px-4 max-w-full">
+        <div className="flex justify-between items-center px-2 md:px-4 max-w-full gap-4">
           
-          {/* Logo Branding */}
-          <Link href="/" className="group flex items-center" onClick={() => setIsOpen(false)}>
-            <span className="text-lg md:text-xl font-extrabold tracking-[-0.04em] text-foreground flex items-center gap-1">
-              VOID
-              <span className="w-1.5 h-1.5 rounded-full bg-apple-blue mt-0.5 animate-pulse" />
-            </span>
-          </Link>
+          {/* LEFT GROUP: Logo + Workspace Links */}
+          <div className="flex items-center gap-6 flex-1 min-w-0">
+            {/* Logo Branding */}
+            <Link href="/" className="group flex items-center shrink-0">
+              <span className="text-base md:text-lg font-black tracking-[-0.04em] text-foreground flex items-center gap-1">
+                VOID
+                <span className="w-1.5 h-1.5 rounded-full bg-apple-blue mt-0.5 animate-pulse" />
+              </span>
+            </Link>
 
-          {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-3">
-            <Show when="signed-in">
-              {mainLinks.map((link) => (
-                <Link 
-                  key={link.href}
-                  href={link.href} 
-                  className={cn(
-                    "text-[10px] uppercase tracking-wider font-extrabold px-3.5 py-2 rounded-xl border transition-all duration-300",
-                    isTabActive(link.href)
-                      ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.05] dark:border-white/[0.05] text-foreground font-bold"
-                      : "text-silver hover:text-foreground border-transparent hover:bg-foreground/[0.02]"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              {/* More Dropdown */}
-              <div className="relative">
-                <button 
-                  onClick={(e) => { e.stopPropagation(); setIsDropdownOpen(!isDropdownOpen); }}
-                  className={cn(
-                    "text-[10px] uppercase tracking-wider font-extrabold px-3.5 py-2 rounded-xl border transition-all duration-300 flex items-center gap-1.5",
-                    isMoreActive
-                      ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.05] dark:border-white/[0.05] text-foreground font-bold"
-                      : "text-silver hover:text-foreground border-transparent hover:bg-foreground/[0.02]"
-                  )}
-                >
-                  More
-                  <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", isDropdownOpen && "rotate-180")} />
-                </button>
-
-                {isDropdownOpen && (
-                  <div 
-                    className="absolute right-0 mt-2.5 w-56 bg-card border border-foreground/[0.08] dark:border-white/[0.08] backdrop-blur-2xl rounded-2xl shadow-2xl p-2 z-[999] animate-in fade-in slide-in-from-top-2 duration-200" 
-                    onClick={(e) => e.stopPropagation()}
+            {/* Desktop Workspaces (Left) */}
+            <div className="hidden lg:flex items-center gap-1.5 min-w-0 overflow-x-auto no-scrollbar py-1">
+              <Show when="signed-in">
+                {leftLinks.map((link) => (
+                  <Link 
+                    key={link.href}
+                    href={link.href} 
+                    className={cn(
+                      "text-[9px] uppercase tracking-wider font-extrabold px-3 py-2 rounded-xl border transition-all duration-200 shrink-0 flex items-center gap-1.5",
+                      isTabActive(link.href)
+                        ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground"
+                        : link.locked
+                          ? "text-silver/50 hover:text-foreground border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01]"
+                          : "text-silver hover:text-foreground border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01]"
+                    )}
                   >
-                    {moreLinks.map((link) => {
-                      const Icon = link.icon;
-                      const isActive = pathname.startsWith(link.href);
-                      return (
-                        <Link 
-                          key={link.href}
-                          href={link.href}
-                          onClick={() => setIsDropdownOpen(false)}
-                          className={cn(
-                            "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all",
-                            isActive
-                              ? "bg-foreground/[0.04] dark:bg-white/[0.04] text-foreground"
-                              : "text-silver hover:text-foreground hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01]"
-                          )}
-                        >
-                          <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-apple-blue" : "text-silver")} />
-                          <span>{link.label}</span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
+                    {link.label}
+                    {link.locked && <Lock className="w-2.5 h-2.5 text-silver/40" />}
+                  </Link>
+                ))}
+              </Show>
+            </div>
+          </div>
+
+          {/* RIGHT GROUP: System Links + Theme/User Controls */}
+          <div className="hidden lg:flex items-center gap-2 shrink-0">
+            <Show when="signed-in">
+              <div className="flex items-center gap-1.5 border-r border-foreground/[0.08] dark:border-white/[0.08] pr-2">
+                {rightLinks.map((link) => (
+                  <Link 
+                    key={link.href}
+                    href={link.href} 
+                    className={cn(
+                      "text-[9px] uppercase tracking-wider font-extrabold px-3 py-2 rounded-xl border transition-all duration-200 flex items-center gap-1.5",
+                      isTabActive(link.href)
+                        ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground"
+                        : link.locked
+                          ? "text-silver/50 hover:text-foreground border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01]"
+                          : "text-silver hover:text-foreground border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01]"
+                    )}
+                  >
+                    {link.label}
+                    {link.locked && <Lock className="w-2.5 h-2.5 text-silver/40" />}
+                  </Link>
+                ))}
               </div>
 
-              <div className="scale-90 origin-right ml-2 pl-2 border-l border-foreground/[0.08] dark:border-white/[0.08]">
+              <div className="scale-90 origin-right ml-1 pl-1">
                 <UserButton />
               </div>
             </Show>
@@ -182,7 +158,7 @@ export default function Navbar() {
             <Show when="signed-out">
               <Link 
                 href="/sign-in" 
-                className="text-[10px] uppercase tracking-wider font-extrabold text-silver hover:text-foreground hover:bg-foreground/[0.02] px-3.5 py-2 rounded-xl transition-all"
+                className="text-[9px] uppercase tracking-wider font-extrabold text-silver hover:text-foreground hover:bg-foreground/[0.02] px-3.5 py-2 rounded-xl transition-all"
               >
                 Sign In
               </Link>
@@ -193,12 +169,12 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <div className="flex md:hidden items-center gap-2">
+          {/* Mobile Menu Toggle (lg:hidden) */}
+          <div className="flex lg:hidden items-center gap-2 shrink-0">
             <Show when="signed-out">
               <Link 
                 href="/sign-in" 
-                className="text-[10px] uppercase tracking-wider font-extrabold bg-foreground text-background px-3 py-1.5 rounded-lg transition-all"
+                className="text-[9px] uppercase tracking-wider font-extrabold bg-foreground text-background px-3 py-1.5 rounded-lg transition-all"
               >
                 Sign In
               </Link>
@@ -211,64 +187,90 @@ export default function Navbar() {
             <ThemeToggle />
             <button 
               onClick={() => setIsOpen(!isOpen)}
-              className="text-foreground hover:text-foreground/85 transition-colors p-1.5 rounded-xl bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.04] dark:border-white/[0.04]"
+              className="text-foreground hover:text-foreground/85 transition-colors p-1.5 rounded-xl bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.04] dark:border-white/[0.04] cursor-pointer"
             >
               {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
+
         </div>
       </nav>
 
       {/* Mobile Menu Overlay */}
       <div className={cn(
-        "fixed inset-0 bg-background flex flex-col items-center justify-center gap-6 transition-all duration-500 md:hidden z-[140]",
+        "fixed inset-0 bg-background flex flex-col justify-between p-6 transition-all duration-500 lg:hidden z-[990]",
         isOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
       )}>
-        <Link 
-          href="/" 
-          onClick={() => setIsOpen(false)}
-          className={cn(
-            "text-2xl font-extrabold tracking-tight transition-all",
-            pathname === '/' ? "text-foreground" : "text-silver hover:text-foreground"
-          )}
-        >
-          Home
-        </Link>
-        
-        <Show when="signed-in">
-          <div className="flex flex-col items-center gap-6 max-h-[60vh] overflow-y-auto w-full px-8 py-4">
-            {[...mainLinks, ...moreLinks].map((link) => (
-              <Link 
-                key={link.href}
-                href={link.href} 
-                onClick={() => setIsOpen(false)}
-                className={cn(
-                  "text-xl font-extrabold tracking-tight transition-all",
-                  pathname.startsWith(link.href) ? "text-foreground" : "text-silver hover:text-foreground"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </Show>
+        <div className="flex-1 flex flex-col justify-center gap-10 max-h-[75vh] overflow-y-auto w-full px-4 pt-16">
+          <Show when="signed-in">
+            {/* Core Workspaces Section */}
+            <div className="space-y-4">
+              <p className="text-[9px] font-bold text-silver uppercase tracking-widest border-b border-foreground/[0.06] dark:border-white/[0.06] pb-2">Core Workspaces</p>
+              <div className="flex flex-col gap-3">
+                {leftLinks.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <Link 
+                      key={link.href}
+                      href={link.href} 
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "font-extrabold tracking-tight transition-all text-lg flex items-center gap-2.5",
+                        isTabActive(link.href) ? "text-foreground" : "text-silver hover:text-foreground"
+                      )}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span>{link.label}</span>
+                      {link.locked && <Lock className="w-3.5 h-3.5 text-silver/40" />}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* System Utilities Section */}
+            <div className="space-y-4">
+              <p className="text-[9px] font-bold text-silver uppercase tracking-widest border-b border-foreground/[0.06] dark:border-white/[0.06] pb-2">System Utilities</p>
+              <div className="flex flex-col gap-3">
+                {rightLinks.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <Link 
+                      key={link.href}
+                      href={link.href} 
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "font-extrabold tracking-tight transition-all text-base flex items-center gap-2.5",
+                        isTabActive(link.href) ? "text-foreground" : "text-silver hover:text-foreground"
+                      )}
+                    >
+                      <Icon className="w-4.5 h-4.5" />
+                      <span>{link.label}</span>
+                      {link.locked && <Lock className="w-3.5 h-3.5 text-silver/40" />}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </Show>
 
-        <Show when="signed-out">
-          <Link 
-            href="/sign-in" 
-            onClick={() => setIsOpen(false)}
-            className="text-2xl font-extrabold tracking-tight text-silver hover:text-foreground transition-all"
-          >
-            Sign In
-          </Link>
-        </Show>
+          <Show when="signed-out">
+            <Link 
+              href="/sign-in" 
+              onClick={() => setIsOpen(false)}
+              className="text-2xl font-extrabold tracking-tight text-silver hover:text-foreground transition-all text-center"
+            >
+              Sign In
+            </Link>
+          </Show>
+        </div>
 
-        {/* Mobile Footer Decor */}
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 text-center w-full space-y-4">
-          <div className="w-10 h-10 glass border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl flex items-center justify-center mx-auto shadow-md">
-            <span className="text-foreground text-sm font-black">V</span>
+        {/* Mobile Footer */}
+        <div className="text-center w-full space-y-2 pb-6 border-t border-foreground/[0.04] dark:border-white/[0.04] pt-4">
+          <div className="w-8 h-8 glass border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg flex items-center justify-center mx-auto shadow-sm">
+            <span className="text-foreground text-xs font-black">V</span>
           </div>
-          <p className="text-[9px] font-extrabold text-silver uppercase tracking-[0.4em]">Aethyl Research v1.0</p>
+          <p className="text-[8px] font-extrabold text-silver uppercase tracking-[0.4em]">Aethyl Research v1.0</p>
         </div>
       </div>
     </>
