@@ -20,7 +20,10 @@ import {
   LayoutDashboard,
   PlusCircle,
   Lock,
-  ChevronRight
+  ChevronRight,
+  Sliders,
+  Activity,
+  Cpu
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
@@ -79,7 +82,7 @@ export default function Navbar() {
     return pathname.startsWith(href);
   };
 
-  // 1. Left-aligned Workspace Links
+  // 1. Left-aligned Workspace Links (Sidebar)
   const leftLinks = [
     { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Hire Operative', href: '/create-worker', icon: PlusCircle },
@@ -91,7 +94,7 @@ export default function Navbar() {
     { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') }
   ];
 
-  // 2. Right-aligned System & Billing Links
+  // 2. Right-aligned System & Billing Links (Slim Dock)
   const rightLinks = [
     { label: 'Marketplace', href: '/marketplace', icon: ShoppingBag, locked: !hasFeature('marketplace') },
     { label: 'Billing', href: '/billing', icon: CreditCard },
@@ -102,50 +105,46 @@ export default function Navbar() {
   // RENDER OPTION A: Public Header (Landing Page or Auth flows)
   if (!isWorkspace) {
     return (
-      <>
-        <nav className={cn(
-          "fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b [transform:translate3d(0,0,0)] bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]"
-        )}>
-          <div className="flex justify-between items-center px-2 md:px-4 max-w-7xl mx-auto">
-            <Link href="/" className="group flex items-center">
-              <span className="text-lg md:text-xl font-extrabold tracking-[-0.04em] text-foreground flex items-center gap-1">
-                VOID
-                <span className="w-1.5 h-1.5 rounded-full bg-apple-blue mt-0.5 animate-pulse" />
-              </span>
-            </Link>
+      <nav className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]">
+        <div className="flex justify-between items-center px-2 md:px-4 max-w-7xl mx-auto">
+          <Link href="/" className="group flex items-center">
+            <span className="text-lg md:text-xl font-extrabold tracking-[-0.04em] text-foreground flex items-center gap-1">
+              VOID
+              <span className="w-1.5 h-1.5 rounded-full bg-apple-blue mt-0.5 animate-pulse" />
+            </span>
+          </Link>
 
-            <div className="flex items-center gap-4">
-              <Show when="signed-in">
-                <Link 
-                  href="/dashboard" 
-                  className="text-[10px] uppercase tracking-wider font-extrabold px-4 py-2 bg-foreground text-background rounded-xl hover:opacity-90 transition-all shadow-sm"
-                >
-                  Console
-                </Link>
-                <div className="scale-90">
-                  <UserButton />
-                </div>
-              </Show>
-              <Show when="signed-out">
-                <Link 
-                  href="/sign-in" 
-                  className="text-[10px] uppercase tracking-wider font-extrabold text-silver hover:text-foreground hover:bg-foreground/[0.02] px-3.5 py-2 rounded-xl transition-all"
-                >
-                  Sign In
-                </Link>
-              </Show>
-              <ThemeToggle />
-            </div>
+          <div className="flex items-center gap-4">
+            <Show when="signed-in">
+              <Link 
+                href="/dashboard" 
+                className="text-[10px] uppercase tracking-wider font-extrabold px-4 py-2 bg-foreground text-background rounded-xl hover:opacity-90 transition-all shadow-sm"
+              >
+                Console
+              </Link>
+              <div className="scale-90">
+                <UserButton />
+              </div>
+            </Show>
+            <Show when="signed-out">
+              <Link 
+                href="/sign-in" 
+                className="text-[10px] uppercase tracking-wider font-extrabold text-silver hover:text-foreground hover:bg-foreground/[0.02] px-3.5 py-2 rounded-xl transition-all"
+              >
+                Sign In
+              </Link>
+            </Show>
+            <ThemeToggle />
           </div>
-        </nav>
-      </>
+        </div>
+      </nav>
     );
   }
 
-  // RENDER OPTION B: Authenticated Workspace View (Dual Sidebars + Mobile Topbar fallback)
+  // RENDER OPTION B: Authenticated Workspace View (Dual Sidebars: Left Wide Sidebar + Right Slim Dock)
   return (
     <>
-      {/* 1. LEFT SIDEBAR (Desktop) */}
+      {/* 1. LEFT WORKSPACE SIDEBAR */}
       <aside className="fixed top-0 left-0 h-full w-60 border-r border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col p-5 justify-between select-none">
         <div className="space-y-6">
           {/* Logo Branding */}
@@ -206,62 +205,58 @@ export default function Navbar() {
         </div>
       </aside>
 
-      {/* 2. RIGHT SIDEBAR (Desktop) */}
-      <aside className="fixed top-0 right-0 h-full w-60 border-l border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col p-5 justify-between select-none">
-        <div className="space-y-6">
-          <div className="h-7 flex items-center justify-between px-1.5">
-            <p className="text-[9px] font-bold text-silver uppercase tracking-widest">System Utilities</p>
-            <span className="text-[8px] font-mono text-silver/30">MGMT</span>
-          </div>
-
-          {/* System Utilities list */}
-          <nav className="space-y-0.5">
-            {rightLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive = isTabActive(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all border cursor-pointer",
-                    isActive
-                      ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground"
-                      : link.locked
-                        ? "text-silver/40 border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground/60"
-                        : "text-silver border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground"
-                  )}
-                >
-                  <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-apple-blue" : "text-silver")} />
-                  <span className="flex-1 truncate">{link.label}</span>
-                  {link.locked && <Lock className="w-3 h-3 text-silver/30" />}
-                </Link>
-              );
-            })}
-          </nav>
+      {/* 2. RIGHT SLIM ACTION DOCK */}
+      <aside className="fixed top-0 right-0 h-full w-16 border-l border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col p-3 py-6 items-center justify-between select-none">
+        
+        {/* Top telemetry icon */}
+        <div className="w-8 h-8 rounded-lg bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-center text-silver/50 hover:text-apple-blue transition-colors">
+          <Cpu className="w-4.5 h-4.5 animate-pulse" />
         </div>
 
-        {/* User profile & theme selector capsules at bottom right */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-3.5 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="scale-90 shrink-0">
-                <UserButton />
-              </div>
-              <div className="min-w-0">
-                <span className="text-[10px] font-extrabold text-foreground block truncate">OPERATIVE SESSION</span>
-                <span className="text-[8px] font-mono text-silver/40 uppercase tracking-wider truncate block">Active Link</span>
-              </div>
-            </div>
-            <ThemeToggle />
+        {/* Center Icons Menu with Tooltips */}
+        <nav className="flex flex-col gap-3">
+          {rightLinks.map((link) => {
+            const Icon = link.icon;
+            const isActive = isTabActive(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "relative group w-10 h-10 rounded-xl flex items-center justify-center transition-all border cursor-pointer",
+                  isActive
+                    ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground shadow-sm"
+                    : link.locked
+                      ? "text-silver/40 border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground/60"
+                      : "text-silver border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground"
+                )}
+              >
+                <Icon className={cn("w-4.5 h-4.5", isActive ? "text-apple-blue" : "text-silver")} />
+                {link.locked && (
+                  <div className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-background" />
+                )}
+                
+                {/* Immersive Tooltip */}
+                <div className="absolute right-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background dark:bg-white dark:text-black text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-right shadow-xl pointer-events-none whitespace-nowrap">
+                  {link.label}
+                  {link.locked && " (LOCKED)"}
+                </div>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Bottom profile & settings elements */}
+        <div className="flex flex-col items-center gap-4">
+          <ThemeToggle />
+          <div className="scale-90">
+            <UserButton />
           </div>
         </div>
       </aside>
 
       {/* 3. MOBILE HEADER (lg:hidden fallback) */}
-      <nav className={cn(
-        "fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3 border-b lg:hidden bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]"
-      )}>
+      <nav className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3 border-b lg:hidden bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]">
         <div className="flex justify-between items-center px-2 md:px-4 max-w-full">
           <Link href="/" className="group flex items-center">
             <span className="text-base font-black tracking-[-0.04em] text-foreground flex items-center gap-1">

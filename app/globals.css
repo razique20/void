@@ -136,7 +136,7 @@ body {
 @media (min-width: 1024px) {
   body.has-sidebars {
     padding-left: 240px;
-    padding-right: 240px;
+    padding-right: 64px;
   }
 }
 
