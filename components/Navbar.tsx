@@ -208,11 +208,6 @@ export default function Navbar() {
 
       {/* 2. RIGHT SLIM ACTION DOCK */}
       <aside className="fixed top-0 right-0 h-full w-16 border-l border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col p-3 py-6 items-center justify-between select-none">
-        
-        {/* Top telemetry icon */}
-        <div className="w-8 h-8 rounded-lg bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-center text-silver/50 hover:text-apple-blue transition-colors">
-          <Cpu className="w-4.5 h-4.5 animate-pulse" />
-        </div>
 
         {/* Center Icons Menu with Tooltips */}
         <nav className="flex flex-col gap-3">
