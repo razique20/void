@@ -142,6 +142,12 @@ body {
   body.has-sidebars.sidebar-collapsed {
     padding-left: 64px;
   }
+  body.has-sidebars .pt-20,
+  body.has-sidebars .pt-24,
+  body.has-sidebars .pt-28,
+  body.has-sidebars .md\:pt-28 {
+    padding-top: 0 !important;
+  }
 }
 
 .glass {
