@@ -33,16 +33,19 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [sub, setSub] = useState<any>(null);
   const [config, setConfig] = useState<any>(null);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('sidebar-collapsed');
+    }
+    return false;
+  });
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
   const isWorkspace = pathname !== '/' && !pathname.startsWith('/sign-in') && !pathname.startsWith('/sign-up');
 
-  // Load collapsed state from localStorage
+  // Trigger mounted state
   useEffect(() => {
-    const saved = localStorage.getItem('sidebar-collapsed');
-    if (saved === 'true') setIsCollapsed(true);
     setMounted(true);
   }, []);
 
@@ -50,6 +53,14 @@ export default function Navbar() {
     const next = !isCollapsed;
     setIsCollapsed(next);
     localStorage.setItem('sidebar-collapsed', String(next));
+    
+    if (next) {
+      document.documentElement.classList.add('sidebar-collapsed');
+      document.body.classList.add('sidebar-collapsed');
+    } else {
+      document.documentElement.classList.remove('sidebar-collapsed');
+      document.body.classList.remove('sidebar-collapsed');
+    }
   };
 
   // Handle body padding dynamic class assignment
@@ -58,8 +69,10 @@ export default function Navbar() {
       document.body.classList.add('has-sidebars');
       if (isCollapsed) {
         document.body.classList.add('sidebar-collapsed');
+        document.documentElement.classList.add('sidebar-collapsed');
       } else {
         document.body.classList.remove('sidebar-collapsed');
+        document.documentElement.classList.remove('sidebar-collapsed');
       }
       
       if (mounted) {
@@ -69,6 +82,7 @@ export default function Navbar() {
       }
     } else {
       document.body.classList.remove('has-sidebars', 'sidebar-collapsed', 'has-transitions');
+      document.documentElement.classList.remove('sidebar-collapsed');
     }
     return () => {
       document.body.classList.remove('has-sidebars', 'sidebar-collapsed', 'has-transitions');

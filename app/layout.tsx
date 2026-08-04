@@ -38,6 +38,11 @@ export default function RootLayout({
                 try {
                   var theme = localStorage.getItem('color-theme') || 'slate';
                   document.documentElement.setAttribute('data-color-theme', theme);
+                  
+                  var collapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+                  if (collapsed) {
+                    document.documentElement.classList.add('sidebar-collapsed');
+                  }
                 } catch (e) {}
               })();
             `
