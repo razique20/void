@@ -137,6 +137,8 @@ body {
   body.has-sidebars {
     padding-left: 240px;
     padding-right: 64px;
+  }
+  body.has-sidebars.has-transitions {
     transition: padding-left 0.2s ease;
   }
   body.has-sidebars.sidebar-collapsed {

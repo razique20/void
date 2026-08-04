@@ -34,6 +34,7 @@ export default function Navbar() {
   const [sub, setSub] = useState<any>(null);
   const [config, setConfig] = useState<any>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
   const isWorkspace = pathname !== '/' && !pathname.startsWith('/sign-in') && !pathname.startsWith('/sign-up');
@@ -42,6 +43,7 @@ export default function Navbar() {
   useEffect(() => {
     const saved = localStorage.getItem('sidebar-collapsed');
     if (saved === 'true') setIsCollapsed(true);
+    setMounted(true);
   }, []);
 
   const toggleCollapse = () => {
@@ -59,13 +61,19 @@ export default function Navbar() {
       } else {
         document.body.classList.remove('sidebar-collapsed');
       }
+      
+      if (mounted) {
+        document.body.classList.add('has-transitions');
+      } else {
+        document.body.classList.remove('has-transitions');
+      }
     } else {
-      document.body.classList.remove('has-sidebars', 'sidebar-collapsed');
+      document.body.classList.remove('has-sidebars', 'sidebar-collapsed', 'has-transitions');
     }
     return () => {
-      document.body.classList.remove('has-sidebars', 'sidebar-collapsed');
+      document.body.classList.remove('has-sidebars', 'sidebar-collapsed', 'has-transitions');
     };
-  }, [isWorkspace, isCollapsed]);
+  }, [isWorkspace, isCollapsed, mounted]);
 
   // Lock scroll when mobile menu is open
   useEffect(() => {
@@ -164,9 +172,9 @@ export default function Navbar() {
   // RENDER OPTION B: Authenticated Workspace View (Dual Sidebars: Left Wide Sidebar + Right Slim Dock)
   return (
     <>
-      {/* 1. LEFT WORKSPACE SIDEBAR (Collapsible) */}
       <aside className={cn(
-        "fixed top-0 left-0 h-full border-r border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col justify-between select-none transition-all duration-200 ease-in-out",
+        "fixed top-0 left-0 h-full border-r border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col justify-between select-none",
+        mounted && "transition-all duration-200 ease-in-out",
         isCollapsed ? "w-16 p-3 py-5" : "w-60 p-5"
       )}>
         <div className="space-y-6">
