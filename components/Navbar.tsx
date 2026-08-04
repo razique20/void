@@ -192,6 +192,30 @@ export default function Navbar() {
               {leftLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive = isTabActive(link.href);
+
+                if (link.locked) {
+                  return (
+                    <div
+                      key={link.href}
+                      onClick={() => alert('Upgrade your plan to access ' + link.label)}
+                      className={cn(
+                        "flex items-center rounded-xl text-xs font-bold transition-all border cursor-not-allowed relative group opacity-50",
+                        isCollapsed ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
+                        "text-silver/40 border-transparent"
+                      )}
+                    >
+                      <Icon className="w-4 h-4 shrink-0 text-silver/40" />
+                      {!isCollapsed && <span className="flex-1 truncate">{link.label}</span>}
+                      {!isCollapsed && <Lock className="w-3 h-3 text-silver/30" />}
+                      {isCollapsed && (
+                        <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-red-500 text-white text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
+                          {link.label} — UPGRADE
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
                 return (
                   <Link
                     key={link.href}
@@ -201,20 +225,14 @@ export default function Navbar() {
                       isCollapsed ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
                       isActive
                         ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground"
-                        : link.locked
-                          ? "text-silver/40 border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground/60"
-                          : "text-silver border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground"
+                        : "text-silver border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground"
                     )}
                   >
                     <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-apple-blue" : "text-silver")} />
                     {!isCollapsed && <span className="flex-1 truncate">{link.label}</span>}
-                    {!isCollapsed && link.locked && <Lock className="w-3 h-3 text-silver/30" />}
-                    
-                    {/* Tooltip for collapsed state */}
                     {isCollapsed && (
                       <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background dark:bg-white dark:text-black text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
                         {link.label}
-                        {link.locked && " (LOCKED)"}
                       </div>
                     )}
                   </Link>

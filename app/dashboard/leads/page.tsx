@@ -20,10 +20,13 @@ import {
   Bot,
   Zap,
   Filter,
-  Flame
+  Flame,
+  Lock,
+  X
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<any[]>([]);
@@ -38,6 +41,8 @@ export default function LeadsPage() {
   const [savingWebhook, setSavingWebhook] = useState(false);
   const [showWebhookPanel, setShowWebhookPanel] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const [sub, setSub] = useState<any>(null);
+  const [loadingSub, setLoadingSub] = useState(true);
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
     setToast({ message, type });
@@ -45,8 +50,17 @@ export default function LeadsPage() {
   };
 
   useEffect(() => {
-    fetchLeads();
-    fetchWebhookConfig();
+    fetch('/api/subscription')
+      .then(res => res.json())
+      .then(data => {
+        setSub(data);
+        if (data.features?.includes('lead_capture')) {
+          fetchLeads();
+          fetchWebhookConfig();
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoadingSub(false));
   }, []);
 
   const fetchWebhookConfig = async () => {
@@ -215,6 +229,39 @@ export default function LeadsPage() {
       transition: { type: 'spring', stiffness: 400, damping: 30 }
     }
   };
+
+  if (loadingSub) {
+    return (
+      <div className="min-h-[60vh] w-full flex items-center justify-center">
+        <span className="text-xs font-bold text-silver animate-pulse">Verifying credentials...</span>
+      </div>
+    );
+  }
+
+  if (!sub?.features?.includes('lead_capture')) {
+    return (
+      <div className="min-h-[70vh] w-full flex flex-col items-center justify-center text-center p-6 text-foreground relative">
+        <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="max-w-md mx-auto text-center py-16 px-6 bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[32px] backdrop-blur-3xl shadow-sm relative z-10">
+          <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-[24px] flex items-center justify-center mx-auto mb-6">
+            <Lock className="w-6 h-6 text-red-500" />
+          </div>
+          <h2 className="text-xl font-bold mb-3 text-foreground">Leads CRM Locked</h2>
+          <p className="text-silver text-xs leading-relaxed mb-8">
+            Your current plan does not have access to Leads CRM. Upgrade to Enterprise or higher to automatically qualify and capture prospective targets into your workspace pipeline.
+          </p>
+          <Link
+            href="/billing"
+            className="inline-flex items-center justify-center bg-foreground text-background px-8 py-3.5 rounded-full text-xs font-bold transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] shadow-md cursor-pointer"
+          >
+            Upgrade Now
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 font-sans antialiased">
