@@ -26,6 +26,24 @@ const UserSchema = new Schema({
     phoneNumberId: { type: String },
     wabaId: { type: String },
     createdAt: { type: Date, default: Date.now }
+  }],
+  emailAccounts: [{
+    label: { type: String, required: true },
+    email: { type: String, required: true },
+    connectionType: { type: String, enum: ['imap', 'oauth_google'], default: 'imap' },
+    // IMAP/SMTP credentials (used when connectionType = 'imap')
+    imapHost: { type: String },
+    imapPort: { type: Number, default: 993 },
+    smtpHost: { type: String },
+    smtpPort: { type: Number, default: 465 },
+    username: { type: String },
+    password: { type: String },
+    // Google OAuth tokens (used when connectionType = 'oauth_google')
+    oauthAccessToken: { type: String },
+    oauthRefreshToken: { type: String },
+    oauthTokenExpiry: { type: Date },
+    isActive: { type: Boolean, default: true },
+    createdAt: { type: Date, default: Date.now }
   }]
 }, { timestamps: true });
 

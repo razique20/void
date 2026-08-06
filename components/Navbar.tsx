@@ -24,7 +24,8 @@ import {
   Sliders,
   Activity,
   Cpu,
-  PanelLeftClose
+  PanelLeftClose,
+  Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
@@ -133,7 +134,8 @@ export default function Navbar() {
     ...(config?.featureFlags?.leadManagement !== false || pathname === '/dashboard/leads' 
       ? [{ label: 'Leads CRM', href: '/dashboard/leads', icon: Database, locked: !hasFeature('lead_capture') }] 
       : []),
-    { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') }
+    { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
+    { label: 'AI Email Hub', href: '/dashboard/email', icon: Mail, locked: !hasFeature('email_agent') }
   ];
 
   // 2. Right-aligned System & Billing Links (Slim Dock)

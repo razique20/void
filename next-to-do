@@ -1,1 +1,11 @@
-redesign /create-worker  , /billing , /dashboard/live , /dashboard/credentials , and /dashboard/support like /training and /dashboard page
+1)redesign /create-worker , /billing , /dashboard/live , /dashboard/credentials , and /dashboard/support like /training and /dashboard page
+2)shift the navbar menu to left and right side of the screen based on the best ux expereince. , rather than making the navbar feels over occupied.
+3)making the system extendable for making the system another level than an ai workspace.
+4)Integrating gmail ui to the system and ai features.
+5)stripe and buzipay.
+6)multi currency support.
+7)multi language support.
+8)multi user support.
+9)adding real time notifications for the system.
+10)inApp crm ui for the  client for managing their team members and access controls.
+11)making the light theme more colorfull theme like modern crm  , use bright colors.
