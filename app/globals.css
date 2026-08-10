@@ -1,29 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #1d1d1f;
-  --sidebar: rgba(255, 255, 255, 0.45);
-  --sidebar-border: rgba(29, 29, 31, 0.04);
+  --background: #f4fbf7;
+  --foreground: #064e3b;
+  --sidebar: rgba(244, 251, 247, 0.45);
+  --sidebar-border: rgba(6, 78, 59, 0.04);
   --card: rgba(255, 255, 255, 0.95);
-  --card-border: transparent;
-  --primary: #1d1d1f;
-  --silver: #636366;
-  --apple-blue: #0071e3;
-  --text-gradient-start: #1d1d1f;
-  --text-gradient-end: #86868b;
+  --card-border: rgba(16, 185, 129, 0.08);
+  --primary: #059669;
+  --silver: #4b5563;
+  --apple-blue: #059669;
+  --emerald-primary: #059669;
+  --emerald-glow: rgba(16, 185, 129, 0.15);
+  --text-gradient-start: #064e3b;
+  --text-gradient-end: #10b981;
 }
 
 .dark {
-  --background: #000000;
-  --foreground: #f5f5f7;
-  --sidebar: rgba(0, 0, 0, 0.45);
-  --sidebar-border: rgba(255, 255, 255, 0.04);
-  --card: rgba(22, 22, 23, 0.95);
-  --card-border: transparent;
-  --primary: #ffffff;
+  --background: #040d0a;
+  --foreground: #ecfdf5;
+  --sidebar: rgba(4, 13, 10, 0.45);
+  --sidebar-border: rgba(236, 253, 245, 0.04);
+  --card: rgba(10, 26, 20, 0.95);
+  --card-border: rgba(16, 185, 129, 0.12);
+  --primary: #10b981;
+  --silver: #9ca3af;
+  --apple-blue: #10b981;
+  --emerald-primary: #10b981;
+  --emerald-glow: rgba(16, 185, 129, 0.2);
   --text-gradient-start: #ffffff;
-  --text-gradient-end: #a1a1a6;
+  --text-gradient-end: #10b981;
 }
 
 /* --- Emerald Matrix Theme --- */
@@ -187,21 +193,23 @@ body {
 }
 
 .apple-button {
-  background: var(--apple-blue);
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
   color: white;
   padding: 12px 24px;
   border-radius: 980px;
   font-weight: 600;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.25);
 }
 
 .apple-button:hover {
-  background: #0077ed;
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
   transform: scale(1.02);
+  box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.35);
 }
 
 .apple-button-secondary {
-  color: var(--apple-blue);
+  color: var(--emerald-primary);
   font-weight: 500;
 }
 
