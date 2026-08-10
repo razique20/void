@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4fbf7;
-  --foreground: #064e3b;
-  --sidebar: rgba(244, 251, 247, 0.45);
-  --sidebar-border: rgba(6, 78, 59, 0.04);
+  --background: #fbfdfc;
+  --foreground: #111827;
+  --sidebar: rgba(251, 253, 252, 0.65);
+  --sidebar-border: rgba(16, 185, 129, 0.08);
   --card: rgba(255, 255, 255, 0.95);
-  --card-border: rgba(16, 185, 129, 0.08);
-  --primary: #059669;
-  --silver: #4b5563;
-  --apple-blue: #059669;
-  --emerald-primary: #059669;
-  --emerald-glow: rgba(16, 185, 129, 0.15);
-  --text-gradient-start: #064e3b;
-  --text-gradient-end: #10b981;
+  --card-border: rgba(16, 185, 129, 0.1);
+  --primary: #10b981;
+  --silver: #6b7280;
+  --apple-blue: #10b981;
+  --emerald-primary: #10b981;
+  --emerald-glow: rgba(16, 185, 129, 0.12);
+  --text-gradient-start: #0f172a;
+  --text-gradient-end: #059669;
 }
 
 .dark {
@@ -35,14 +35,14 @@
 /* --- Emerald Matrix Theme --- */
 [data-color-theme="emerald"] {
   --apple-blue: #10b981;
-  --background: #f4fbf7;
-  --foreground: #064e3b;
-  --sidebar: rgba(244, 251, 247, 0.45);
-  --sidebar-border: rgba(6, 78, 59, 0.04);
-  --card: rgba(232, 248, 239, 0.95);
-  --primary: #064e3b;
-  --text-gradient-start: #064e3b;
-  --text-gradient-end: #34d399;
+  --background: #fbfdfc;
+  --foreground: #111827;
+  --sidebar: rgba(251, 253, 252, 0.65);
+  --sidebar-border: rgba(16, 185, 129, 0.08);
+  --card: rgba(255, 255, 255, 0.95);
+  --primary: #10b981;
+  --text-gradient-start: #0f172a;
+  --text-gradient-end: #059669;
 }
 .dark[data-color-theme="emerald"] {
   --apple-blue: #10b981;
