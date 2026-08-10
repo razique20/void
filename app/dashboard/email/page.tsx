@@ -87,6 +87,50 @@ export default function EmailWorkspacePage() {
   // Toast status
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
+  // Resizable layout state (Panel 1 width & Panel 2 width)
+  const [panel1Width, setPanel1Width] = useState<number>(208); // default 52 (208px)
+  const [panel2Width, setPanel2Width] = useState<number>(340); // default 340px
+  const [isResizing1, setIsResizing1] = useState(false);
+  const [isResizing2, setIsResizing2] = useState(false);
+
+  const startResizing1 = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing1(true);
+  };
+
+  const startResizing2 = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing2(true);
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (isResizing1) {
+        // Constrain Panel 1 width between 160px and 340px
+        const newW = Math.min(Math.max(e.clientX - 20, 160), 340);
+        setPanel1Width(newW);
+      } else if (isResizing2) {
+        // Constrain Panel 2 width between 240px and 550px
+        const newW = Math.min(Math.max(e.clientX - panel1Width - 20, 240), 550);
+        setPanel2Width(newW);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing1(false);
+      setIsResizing2(false);
+    };
+
+    if (isResizing1 || isResizing2) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing1, isResizing2, panel1Width]);
+
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
@@ -450,7 +494,10 @@ export default function EmailWorkspacePage() {
   }
 
   return (
-    <div className="h-[calc(100vh-100px)] w-full flex overflow-hidden bg-background text-foreground transition-colors duration-300 relative rounded-2xl border border-foreground/[0.06] dark:border-white/[0.06]">
+    <div className={cn(
+      "h-[calc(100vh-100px)] w-full flex overflow-hidden bg-background text-foreground transition-colors duration-300 relative rounded-2xl border border-foreground/[0.06] dark:border-white/[0.06]",
+      (isResizing1 || isResizing2) && "select-none cursor-col-resize"
+    )}>
       
       {/* Ambience grids */}
       <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
@@ -477,8 +524,10 @@ export default function EmailWorkspacePage() {
       </AnimatePresence>
 
       {/* PANEL 1: SIDEBAR (Mailboxes/Folders list) */}
-      <div className="w-52 flex flex-col bg-foreground/[0.01] dark:bg-white/[0.005] border-r border-foreground/[0.06] dark:border-white/[0.06] shrink-0 backdrop-blur-md">
-        
+      <div 
+        style={{ width: `${panel1Width}px` }} 
+        className="flex flex-col bg-foreground/[0.01] dark:bg-white/[0.005] border-r border-foreground/[0.06] dark:border-white/[0.06] shrink-0 backdrop-blur-md relative group"
+      >
         {/* Account Switcher Header */}
         <div className="p-4 border-b border-foreground/[0.06] dark:border-white/[0.06] space-y-3">
           <div className="flex items-center justify-between">
@@ -566,7 +615,7 @@ export default function EmailWorkspacePage() {
                 )}
               >
                 <Icon className={cn("w-4 h-4", isActive ? "text-apple-blue" : "text-silver")} />
-                <span className="flex-1 text-left">{folder.label}</span>
+                <span className="flex-1 text-left truncate">{folder.label}</span>
               </button>
             );
           })}
@@ -578,11 +627,26 @@ export default function EmailWorkspacePage() {
         </div>
       </div>
 
+      {/* DRAG RESIZE HANDLE 1 (between Panel 1 and Panel 2) */}
+      <div 
+        onMouseDown={startResizing1}
+        className={cn(
+          "w-1.5 hover:w-2 bg-transparent hover:bg-apple-blue/50 active:bg-apple-blue transition-all cursor-col-resize z-20 shrink-0 border-r border-foreground/[0.04] dark:border-white/[0.04] flex items-center justify-center group",
+          isResizing1 && "bg-apple-blue w-2"
+        )}
+        title="Drag to resize folder sidebar"
+      >
+        <div className="w-0.5 h-6 rounded-full bg-silver/30 group-hover:bg-white transition-colors" />
+      </div>
+
       {/* PANEL 2: EMAIL LISTING */}
-      <div className={cn(
-        "w-[340px] shrink-0 flex flex-col bg-background/50 border-r border-foreground/[0.06] dark:border-white/[0.06]",
-        selectedEmail ? "hidden md:flex" : "flex"
-      )}>
+      <div 
+        style={{ width: `${panel2Width}px` }}
+        className={cn(
+          "shrink-0 flex flex-col bg-background/50 border-r border-foreground/[0.06] dark:border-white/[0.06]",
+          selectedEmail ? "hidden md:flex" : "flex"
+        )}
+      >
         {/* Search header bar */}
         <div className="p-4 border-b border-foreground/[0.06] dark:border-white/[0.06] flex items-center gap-3 shrink-0">
           <div className="relative flex-1">
@@ -713,6 +777,18 @@ export default function EmailWorkspacePage() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* DRAG RESIZE HANDLE 2 (between Panel 2 and Panel 3) */}
+      <div 
+        onMouseDown={startResizing2}
+        className={cn(
+          "w-1.5 hover:w-2 bg-transparent hover:bg-apple-blue/50 active:bg-apple-blue transition-all cursor-col-resize z-20 shrink-0 border-r border-foreground/[0.04] dark:border-white/[0.04] flex items-center justify-center group hidden md:flex",
+          isResizing2 && "bg-apple-blue w-2"
+        )}
+        title="Drag to resize conversation list"
+      >
+        <div className="w-0.5 h-6 rounded-full bg-silver/30 group-hover:bg-white transition-colors" />
       </div>
 
       {/* PANEL 3: EMAIL READER CONTENT */}
