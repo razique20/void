@@ -477,7 +477,7 @@ export default function EmailWorkspacePage() {
       </AnimatePresence>
 
       {/* PANEL 1: SIDEBAR (Mailboxes/Folders list) */}
-      <div className="w-60 flex flex-col bg-foreground/[0.01] dark:bg-white/[0.005] border-r border-foreground/[0.06] dark:border-white/[0.06] shrink-0 backdrop-blur-md">
+      <div className="w-52 flex flex-col bg-foreground/[0.01] dark:bg-white/[0.005] border-r border-foreground/[0.06] dark:border-white/[0.06] shrink-0 backdrop-blur-md">
         
         {/* Account Switcher Header */}
         <div className="p-4 border-b border-foreground/[0.06] dark:border-white/[0.06] space-y-3">
@@ -580,7 +580,7 @@ export default function EmailWorkspacePage() {
 
       {/* PANEL 2: EMAIL LISTING */}
       <div className={cn(
-        "flex-1 flex flex-col bg-background/50 border-r border-foreground/[0.06] dark:border-white/[0.06]",
+        "w-[340px] shrink-0 flex flex-col bg-background/50 border-r border-foreground/[0.06] dark:border-white/[0.06]",
         selectedEmail ? "hidden md:flex" : "flex"
       )}>
         {/* Search header bar */}
@@ -638,11 +638,11 @@ export default function EmailWorkspacePage() {
                   key={email._id}
                   onClick={() => handleSelectEmail(email)}
                   className={cn(
-                    "p-3 rounded-xl border transition-all cursor-pointer relative group flex gap-3.5",
+                    "p-3 rounded-xl border transition-all duration-200 cursor-pointer relative group flex gap-3.5 hover:shadow-md",
                     !email.isRead 
                       ? "bg-foreground/[0.02] dark:bg-white/[0.015] border-foreground/[0.08] dark:border-white/[0.08]" 
-                      : "bg-transparent border-transparent hover:bg-foreground/[0.01] dark:hover:bg-white/[0.005]",
-                    isSelected && "border-apple-blue bg-foreground/[0.03] dark:bg-white/[0.03] shadow-sm"
+                      : "bg-transparent border-transparent hover:bg-foreground/[0.015] dark:hover:bg-white/[0.01]",
+                    isSelected && "border-apple-blue bg-apple-blue/[0.04] dark:bg-apple-blue/[0.06] shadow-sm"
                   )}
                 >
                   {/* Star toggle action */}
@@ -675,11 +675,11 @@ export default function EmailWorkspacePage() {
                     {/* Meta Category label tag if present */}
                     {email.labels?.length > 0 && (
                       <span className={cn(
-                        "inline-block text-[8px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded border mt-1",
-                        email.labels[0] === 'Lead' && 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500',
-                        email.labels[0] === 'Support' && 'bg-apple-blue/10 border-apple-blue/20 text-apple-blue',
-                        email.labels[0] === 'Billing' && 'bg-amber-500/10 border-amber-500/20 text-amber-500',
-                        email.labels[0] === 'Spam/Junk' && 'bg-red-500/10 border-red-500/20 text-red-500'
+                        "inline-block text-[8px] font-bold capitalize tracking-wide px-2 py-0.5 rounded-full mt-1",
+                        email.labels[0] === 'Lead' && 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+                        email.labels[0] === 'Support' && 'bg-apple-blue/10 text-apple-blue',
+                        email.labels[0] === 'Billing' && 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+                        email.labels[0] === 'Spam/Junk' && 'bg-red-500/10 text-red-500'
                       )}>
                         {email.labels[0]}
                       </span>
@@ -717,7 +717,7 @@ export default function EmailWorkspacePage() {
 
       {/* PANEL 3: EMAIL READER CONTENT */}
       <div className={cn(
-        "flex-[1.5] flex flex-col bg-background/30 backdrop-blur-sm",
+        "flex-1 min-w-0 flex flex-col bg-background/30 backdrop-blur-sm",
         selectedEmail ? "flex" : "hidden md:flex items-center justify-center text-silver text-center p-8"
       )}>
         {selectedEmail ? (
@@ -888,11 +888,17 @@ export default function EmailWorkspacePage() {
                   <Loader2 className="w-6 h-6 text-apple-blue animate-spin" />
                 </div>
               ) : (
-                <div className="prose dark:prose-invert max-w-none text-xs leading-relaxed text-foreground/95 select-text">
+                <div className="max-w-none text-xs leading-relaxed text-foreground/95 select-text">
                   {selectedEmail.htmlBody ? (
-                    <div dangerouslySetInnerHTML={{ __html: selectedEmail.htmlBody }} className="email-body-content" />
+                    <iframe
+                      srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13px;line-height:1.6;color:#1a1a1a;margin:0;padding:16px;background:white;}img{max-width:100%;height:auto;}a{color:#007AFF;}</style></head><body>${selectedEmail.htmlBody}</body></html>`}
+                      sandbox="allow-same-origin"
+                      className="w-full border-0 rounded-xl bg-white min-h-[300px]"
+                      style={{ height: '60vh' }}
+                      title="Email content"
+                    />
                   ) : (
-                    <div className="whitespace-pre-wrap">{selectedEmail.body}</div>
+                    <div className="whitespace-pre-wrap prose dark:prose-invert">{selectedEmail.body}</div>
                   )}
                 </div>
               )}

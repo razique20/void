@@ -43,7 +43,7 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
-  const isWorkspace = pathname !== '/' && !pathname.startsWith('/sign-in') && !pathname.startsWith('/sign-up');
+  const isWorkspace = pathname !== '/' && !pathname.startsWith('/sign-in') && !pathname.startsWith('/sign-up') && !pathname.startsWith('/admin');
 
   // Trigger mounted state
   useEffect(() => {
