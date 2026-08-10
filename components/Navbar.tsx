@@ -191,16 +191,16 @@ export default function Navbar() {
       <aside className={cn(
         "fixed top-0 left-0 h-full border-r border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col justify-between select-none",
         mounted && "transition-all duration-200 ease-in-out",
-        isCollapsed ? "w-16 p-3 py-5" : "w-60 p-5"
+        (mounted && isCollapsed) ? "w-16 p-3 py-5" : "w-60 p-5"
       )}>
         <div className="space-y-6">
           {/* Logo Branding */}
-          <Link href="/" className={cn("group flex items-center gap-2", isCollapsed ? "justify-center" : "px-1.5")}>
-            <span className={cn("font-black tracking-[-0.04em] text-foreground flex items-center gap-1", isCollapsed ? "text-sm" : "text-base")}>
-              {isCollapsed ? "V" : "VOID"}
+          <Link href="/" className={cn("group flex items-center gap-2", (mounted && isCollapsed) ? "justify-center" : "px-1.5")}>
+            <span className={cn("font-black tracking-[-0.04em] text-foreground flex items-center gap-1", (mounted && isCollapsed) ? "text-sm" : "text-base")}>
+              {(mounted && isCollapsed) ? "V" : "VOID"}
               <span className="w-1.5 h-1.5 rounded-full bg-apple-blue mt-0.5 animate-pulse" />
             </span>
-            {!isCollapsed && (
+            {(!mounted || !isCollapsed) && (
               <span className="text-[8px] font-bold text-silver/60 bg-foreground/[0.05] dark:bg-white/[0.05] px-1.5 py-0.5 rounded border border-foreground/[0.08] dark:border-white/[0.08] font-mono">
                 v1.0
               </span>
@@ -209,7 +209,7 @@ export default function Navbar() {
 
           {/* Core Workspaces Navigation */}
           <div className="space-y-3">
-            {!isCollapsed && (
+            {(!mounted || !isCollapsed) && (
               <p className="text-[9px] font-bold text-silver uppercase tracking-widest px-1.5">Core Workspaces</p>
             )}
             <nav className="space-y-0.5">
@@ -224,14 +224,14 @@ export default function Navbar() {
                       onClick={() => alert('Upgrade your plan to access ' + link.label)}
                       className={cn(
                         "flex items-center rounded-xl text-xs font-bold transition-all border cursor-not-allowed relative group opacity-50",
-                        isCollapsed ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
+                        (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
                         "text-silver/40 border-transparent"
                       )}
                     >
                       <Icon className="w-4 h-4 shrink-0 text-silver/40" />
-                      {!isCollapsed && <span className="flex-1 truncate">{link.label}</span>}
-                      {!isCollapsed && <Lock className="w-3 h-3 text-silver/30" />}
-                      {isCollapsed && (
+                      {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
+                      {(!mounted || !isCollapsed) && <Lock className="w-3 h-3 text-silver/30" />}
+                      {(mounted && isCollapsed) && (
                         <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-red-500 text-white text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
                           {link.label} — UPGRADE
                         </div>
@@ -246,15 +246,15 @@ export default function Navbar() {
                     href={link.href}
                     className={cn(
                       "flex items-center rounded-xl text-xs font-bold transition-all border cursor-pointer relative group",
-                      isCollapsed ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
+                      (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
                       isActive
                         ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground"
                         : "text-silver border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground"
                     )}
                   >
                     <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-apple-blue" : "text-silver")} />
-                    {!isCollapsed && <span className="flex-1 truncate">{link.label}</span>}
-                    {isCollapsed && (
+                    {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
+                    {(mounted && isCollapsed) && (
                       <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background dark:bg-white dark:text-black text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
                         {link.label}
                       </div>
@@ -269,7 +269,7 @@ export default function Navbar() {
         {/* Bottom: Telemetry + Collapse Toggle */}
         <div className="space-y-3">
           {/* Telemetry diagnostics */}
-          {!isCollapsed && (
+          {(!mounted || !isCollapsed) && (
             <div className="p-4 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl space-y-2">
               <div className="flex justify-between items-center text-[9px] font-mono text-silver/60">
                 <span>UPLINK STATUS</span>
@@ -291,12 +291,12 @@ export default function Navbar() {
             onClick={toggleCollapse}
             className={cn(
               "flex items-center justify-center rounded-xl border border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.02] dark:bg-white/[0.01] hover:bg-foreground/[0.04] dark:hover:bg-white/[0.03] text-silver hover:text-foreground transition-all cursor-pointer",
-              isCollapsed ? "w-10 h-10 mx-auto" : "w-full py-2.5 gap-2"
+              (mounted && isCollapsed) ? "w-10 h-10 mx-auto" : "w-full py-2.5 gap-2"
             )}
-            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={(mounted && isCollapsed) ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <PanelLeftClose className={cn("w-4 h-4 shrink-0 transition-transform duration-200", isCollapsed && "rotate-180")} />
-            {!isCollapsed && <span className="text-[9px] font-bold uppercase tracking-widest">Collapse</span>}
+            <PanelLeftClose className={cn("w-4 h-4 shrink-0 transition-transform duration-200", (mounted && isCollapsed) && "rotate-180")} />
+            {(!mounted || !isCollapsed) && <span className="text-[9px] font-bold uppercase tracking-widest">Collapse</span>}
           </button>
         </div>
       </aside>
