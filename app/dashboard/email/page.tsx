@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { 
   Mail, 
   Send, 
@@ -88,10 +88,21 @@ export default function EmailWorkspacePage() {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   // Resizable layout state (Panel 1 width & Panel 2 width)
-  const [panel1Width, setPanel1Width] = useState<number>(208); // default 52 (208px)
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [panel1Width, setPanel1Width] = useState<number>(208); // default 208px
   const [panel2Width, setPanel2Width] = useState<number>(340); // default 340px
   const [isResizing1, setIsResizing1] = useState(false);
   const [isResizing2, setIsResizing2] = useState(false);
+
+  // Load saved panel widths from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved1 = localStorage.getItem('email_panel1_width');
+      const saved2 = localStorage.getItem('email_panel2_width');
+      if (saved1) setPanel1Width(Number(saved1));
+      if (saved2) setPanel2Width(Number(saved2));
+    }
+  }, []);
 
   const startResizing1 = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -105,14 +116,20 @@ export default function EmailWorkspacePage() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const relativeX = e.clientX - rect.left;
+
       if (isResizing1) {
-        // Constrain Panel 1 width between 160px and 340px
-        const newW = Math.min(Math.max(e.clientX - 20, 160), 340);
+        // Constrain Panel 1 width between 140px and 360px
+        const newW = Math.min(Math.max(relativeX, 140), 360);
         setPanel1Width(newW);
+        localStorage.setItem('email_panel1_width', String(newW));
       } else if (isResizing2) {
-        // Constrain Panel 2 width between 240px and 550px
-        const newW = Math.min(Math.max(e.clientX - panel1Width - 20, 240), 550);
+        // Constrain Panel 2 width between 220px and 600px
+        const newW = Math.min(Math.max(relativeX - panel1Width, 220), 600);
         setPanel2Width(newW);
+        localStorage.setItem('email_panel2_width', String(newW));
       }
     };
 
@@ -494,10 +511,17 @@ export default function EmailWorkspacePage() {
   }
 
   return (
-    <div className={cn(
-      "h-[calc(100vh-100px)] w-full flex overflow-hidden bg-background text-foreground transition-colors duration-300 relative rounded-2xl border border-foreground/[0.06] dark:border-white/[0.06]",
-      (isResizing1 || isResizing2) && "select-none cursor-col-resize"
-    )}>
+    <div 
+      ref={containerRef}
+      className={cn(
+        "h-[calc(100vh-100px)] w-full flex overflow-hidden bg-background text-foreground transition-colors duration-300 relative rounded-2xl border border-foreground/[0.06] dark:border-white/[0.06]",
+        (isResizing1 || isResizing2) && "select-none cursor-col-resize"
+      )}
+    >
+      {/* Invisible overlay when dragging so iframe doesn't intercept mouse move events */}
+      {(isResizing1 || isResizing2) && (
+        <div className="absolute inset-0 z-50 bg-transparent cursor-col-resize" />
+      )}
       
       {/* Ambience grids */}
       <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
