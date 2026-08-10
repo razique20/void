@@ -125,20 +125,42 @@ export default function Navbar() {
     return pathname.startsWith(href);
   };
 
-  // 1. Left-aligned Workspace Links (Sidebar)
-  const leftLinks = [
-    { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-    { label: 'Hire Operative', href: '/create-worker', icon: PlusCircle },
-    { label: 'Brain & Knowledge', href: '/training', icon: BookOpen },
-    { label: 'Live Chat', href: '/chat', icon: Bot },
-    ...(config?.featureFlags?.leadManagement !== false || pathname === '/dashboard/leads' 
-      ? [{ label: 'Leads CRM', href: '/dashboard/leads', icon: Database, locked: !hasFeature('lead_capture') }] 
-      : []),
-    { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
-    { label: 'AI Email Hub', href: '/dashboard/email', icon: Mail, locked: !hasFeature('email_agent') }
+  // Categorized Left Sidebar Links
+  const menuCategories = [
+    {
+      title: 'Core Intelligence',
+      links: [
+        { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+        { label: 'Hire Operative', href: '/create-worker', icon: PlusCircle },
+        { label: 'Brain & Knowledge', href: '/training', icon: BookOpen },
+        { label: 'Live Chat', href: '/chat', icon: Bot },
+      ]
+    },
+    {
+      title: 'Workspaces & CRM',
+      links: [
+        ...(config?.featureFlags?.leadManagement !== false || pathname === '/dashboard/leads' 
+          ? [{ label: 'Leads CRM', href: '/dashboard/leads', icon: Database, locked: !hasFeature('lead_capture') }] 
+          : []),
+        { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
+        { label: 'AI Email Hub', href: '/dashboard/email', icon: Mail, locked: !hasFeature('email_agent') }
+      ].filter(Boolean)
+    },
+    {
+      title: 'System & Ecosystem',
+      links: [
+        { label: 'Marketplace', href: '/marketplace', icon: ShoppingBag, locked: !hasFeature('marketplace') },
+        { label: 'Billing', href: '/billing', icon: CreditCard },
+        { label: 'Credentials', href: '/dashboard/credentials', icon: Key },
+        { label: 'Support', href: '/dashboard/support', icon: LifeBuoy }
+      ]
+    }
   ];
 
-  // 2. Right-aligned System & Billing Links (Slim Dock)
+  // Flat left links for mobile menu
+  const leftLinks = menuCategories.flatMap(c => c.links);
+
+  // Right-aligned System & Billing Links (Slim Dock)
   const rightLinks = [
     { label: 'Marketplace', href: '/marketplace', icon: ShoppingBag, locked: !hasFeature('marketplace') },
     { label: 'Billing', href: '/billing', icon: CreditCard },
@@ -207,62 +229,68 @@ export default function Navbar() {
             )}
           </Link>
 
-          {/* Core Workspaces Navigation */}
-          <div className="space-y-3">
-            {(!mounted || !isCollapsed) && (
-              <p className="text-[9px] font-bold text-silver uppercase tracking-widest px-1.5">Core Workspaces</p>
-            )}
-            <nav className="space-y-0.5">
-              {leftLinks.map((link) => {
-                const Icon = link.icon;
-                const isActive = isTabActive(link.href);
+          {/* Categorized Workspaces Navigation */}
+          <div className="space-y-5 overflow-y-auto max-h-[calc(100vh-180px)] custom-scrollbar pr-0.5">
+            {menuCategories.map((cat, catIdx) => (
+              <div key={cat.title} className="space-y-1.5">
+                {(!mounted || !isCollapsed) && (
+                  <p className="text-[9px] font-bold text-silver/60 uppercase tracking-widest px-1.5 pt-1">
+                    {cat.title}
+                  </p>
+                )}
+                <nav className="space-y-0.5">
+                  {cat.links.map((link) => {
+                    const Icon = link.icon;
+                    const isActive = isTabActive(link.href);
 
-                if (link.locked) {
-                  return (
-                    <div
-                      key={link.href}
-                      onClick={() => alert('Upgrade your plan to access ' + link.label)}
-                      className={cn(
-                        "flex items-center rounded-xl text-xs font-bold transition-all border cursor-not-allowed relative group opacity-50",
-                        (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
-                        "text-silver/40 border-transparent"
-                      )}
-                    >
-                      <Icon className="w-4 h-4 shrink-0 text-silver/40" />
-                      {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
-                      {(!mounted || !isCollapsed) && <Lock className="w-3 h-3 text-silver/30" />}
-                      {(mounted && isCollapsed) && (
-                        <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-red-500 text-white text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
-                          {link.label} — UPGRADE
+                    if (link.locked) {
+                      return (
+                        <div
+                          key={link.href}
+                          onClick={() => alert('Upgrade your plan to access ' + link.label)}
+                          className={cn(
+                            "flex items-center rounded-xl text-xs font-bold transition-all border cursor-not-allowed relative group opacity-50",
+                            (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
+                            "text-silver/40 border-transparent"
+                          )}
+                        >
+                          <Icon className="w-4 h-4 shrink-0 text-silver/40" />
+                          {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
+                          {(!mounted || !isCollapsed) && <Lock className="w-3 h-3 text-silver/30" />}
+                          {(mounted && isCollapsed) && (
+                            <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-red-500 text-white text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
+                              {link.label} — UPGRADE
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  );
-                }
+                      );
+                    }
 
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                      "flex items-center rounded-xl text-xs font-bold transition-all border cursor-pointer relative group",
-                      (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
-                      isActive
-                        ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground"
-                        : "text-silver border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground"
-                    )}
-                  >
-                    <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-apple-blue" : "text-silver")} />
-                    {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
-                    {(mounted && isCollapsed) && (
-                      <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background dark:bg-white dark:text-black text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
-                        {link.label}
-                      </div>
-                    )}
-                  </Link>
-                );
-              })}
-            </nav>
+                    return (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className={cn(
+                          "flex items-center rounded-xl text-xs font-bold transition-all border cursor-pointer relative group",
+                          (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
+                          isActive
+                            ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-extrabold shadow-xs"
+                            : "text-silver border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground"
+                        )}
+                      >
+                        <Icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-emerald-500" : "text-silver")} />
+                        {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
+                        {(mounted && isCollapsed) && (
+                          <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background dark:bg-white dark:text-black text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
+                            {link.label}
+                          </div>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </nav>
+              </div>
+            ))}
           </div>
         </div>
 
