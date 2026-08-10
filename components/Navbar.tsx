@@ -130,10 +130,10 @@ export default function Navbar() {
     {
       title: 'Core Intelligence',
       links: [
-        { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-        { label: 'Hire Operative', href: '/create-worker', icon: PlusCircle },
-        { label: 'Brain & Knowledge', href: '/training', icon: BookOpen },
-        { label: 'Live Chat', href: '/chat', icon: Bot },
+        { label: 'Overview', href: '/dashboard', icon: LayoutDashboard, locked: false },
+        { label: 'Hire Operative', href: '/create-worker', icon: PlusCircle, locked: false },
+        { label: 'Brain & Knowledge', href: '/training', icon: BookOpen, locked: false },
+        { label: 'Live Chat', href: '/chat', icon: Bot, locked: false },
       ]
     },
     {
@@ -145,15 +145,6 @@ export default function Navbar() {
         { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
         { label: 'AI Email Hub', href: '/dashboard/email', icon: Mail, locked: !hasFeature('email_agent') }
       ].filter(Boolean)
-    },
-    {
-      title: 'System & Ecosystem',
-      links: [
-        { label: 'Marketplace', href: '/marketplace', icon: ShoppingBag, locked: !hasFeature('marketplace') },
-        { label: 'Billing', href: '/billing', icon: CreditCard },
-        { label: 'Credentials', href: '/dashboard/credentials', icon: Key },
-        { label: 'Support', href: '/dashboard/support', icon: LifeBuoy }
-      ]
     }
   ];
 
