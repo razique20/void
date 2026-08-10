@@ -202,34 +202,51 @@ export default function Navbar() {
   return (
     <>
       <aside className={cn(
-        "fixed top-0 left-0 h-full border-r border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col justify-between select-none",
+        "fixed top-0 left-0 h-full border-r border-foreground/[0.08] dark:border-white/[0.08] bg-background/80 dark:bg-black/60 backdrop-blur-2xl z-40 hidden lg:flex flex-col justify-between select-none shadow-sm",
         mounted && "transition-all duration-200 ease-in-out",
-        (mounted && isCollapsed) ? "w-16 p-3 py-5" : "w-60 p-5"
+        (mounted && isCollapsed) ? "w-16 p-2.5 py-4" : "w-64 p-4"
       )}>
-        <div className="space-y-6">
-          {/* Logo Branding */}
-          <Link href="/" className={cn("group flex items-center gap-2", (mounted && isCollapsed) ? "justify-center" : "px-1.5")}>
-            <span className={cn("font-black tracking-[-0.04em] text-foreground flex items-center gap-1", (mounted && isCollapsed) ? "text-sm" : "text-base")}>
-              {(mounted && isCollapsed) ? "V" : "VOID"}
-              <span className="w-1.5 h-1.5 rounded-full bg-apple-blue mt-0.5 animate-pulse" />
-            </span>
+        <div className="space-y-5">
+          {/* Logo & Platform Badge Header Box */}
+          <div className={cn(
+            "p-3 rounded-2xl border border-foreground/[0.08] dark:border-white/[0.08] bg-foreground/[0.02] dark:bg-white/[0.015] flex items-center justify-between",
+            (mounted && isCollapsed) && "justify-center p-2"
+          )}>
+            <Link href="/" className={cn("group flex items-center gap-2", (mounted && isCollapsed) ? "justify-center" : "px-0.5")}>
+              <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white font-black text-xs shadow-md shrink-0">
+                V
+              </div>
+              {(!mounted || !isCollapsed) && (
+                <div className="flex flex-col">
+                  <span className="font-extrabold text-sm tracking-tight text-foreground flex items-center gap-1.5 leading-none">
+                    VOID
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  </span>
+                  <span className="text-[9px] font-mono font-medium text-silver/60 mt-0.5">WORKFORCE OS</span>
+                </div>
+              )}
+            </Link>
+
             {(!mounted || !isCollapsed) && (
-              <span className="text-[8px] font-bold text-silver/60 bg-foreground/[0.05] dark:bg-white/[0.05] px-1.5 py-0.5 rounded border border-foreground/[0.08] dark:border-white/[0.08] font-mono">
+              <span className="text-[8px] font-mono font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                 v1.0
               </span>
             )}
-          </Link>
+          </div>
 
           {/* Categorized Workspaces Navigation */}
-          <div className="space-y-5 overflow-y-auto max-h-[calc(100vh-180px)] custom-scrollbar pr-0.5">
-            {menuCategories.map((cat, catIdx) => (
+          <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-210px)] custom-scrollbar pr-0.5">
+            {menuCategories.map((cat) => (
               <div key={cat.title} className="space-y-1.5">
                 {(!mounted || !isCollapsed) && (
-                  <p className="text-[9px] font-bold text-silver/60 uppercase tracking-widest px-1.5 pt-1">
-                    {cat.title}
-                  </p>
+                  <div className="flex items-center gap-2 px-1">
+                    <span className="text-[9px] font-black text-silver/70 uppercase tracking-widest">
+                      {cat.title}
+                    </span>
+                    <div className="flex-1 h-[1px] bg-foreground/[0.06] dark:bg-white/[0.06]" />
+                  </div>
                 )}
-                <nav className="space-y-0.5">
+                <nav className="space-y-1">
                   {cat.links.map((link) => {
                     const Icon = link.icon;
                     const isActive = isTabActive(link.href);
@@ -240,9 +257,9 @@ export default function Navbar() {
                           key={link.href}
                           onClick={() => alert('Upgrade your plan to access ' + link.label)}
                           className={cn(
-                            "flex items-center rounded-xl text-xs font-bold transition-all border cursor-not-allowed relative group opacity-50",
-                            (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
-                            "text-silver/40 border-transparent"
+                            "flex items-center rounded-xl text-xs font-bold transition-all border border-foreground/[0.04] dark:border-white/[0.04] cursor-not-allowed relative group opacity-50 bg-foreground/[0.01] dark:bg-white/[0.005]",
+                            (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3.5 py-2.5",
+                            "text-silver/40"
                           )}
                         >
                           <Icon className="w-4 h-4 shrink-0 text-silver/40" />
@@ -263,14 +280,17 @@ export default function Navbar() {
                         href={link.href}
                         className={cn(
                           "flex items-center rounded-xl text-xs font-bold transition-all border cursor-pointer relative group",
-                          (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-2.5 px-3 py-2.5",
+                          (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3.5 py-2.5",
                           isActive
-                            ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-extrabold shadow-xs"
-                            : "text-silver border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground"
+                            ? "bg-emerald-500/[0.08] dark:bg-emerald-500/[0.12] border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-extrabold shadow-sm"
+                            : "bg-foreground/[0.015] dark:bg-white/[0.01] border-foreground/[0.05] dark:border-white/[0.05] text-silver hover:border-emerald-500/20 hover:bg-emerald-500/[0.03] hover:text-foreground"
                         )}
                       >
-                        <Icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-emerald-500" : "text-silver")} />
+                        <Icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-emerald-500" : "text-silver group-hover:text-emerald-500")} />
                         {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
+                        {isActive && (!mounted || !isCollapsed) && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                        )}
                         {(mounted && isCollapsed) && (
                           <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background dark:bg-white dark:text-black text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
                             {link.label}
@@ -285,22 +305,22 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Bottom: Telemetry + Collapse Toggle */}
-        <div className="space-y-3">
-          {/* Telemetry diagnostics */}
+        {/* Bottom: Telemetry & Collapse Control */}
+        <div className="space-y-2.5 pt-2">
+          {/* Telemetry status card */}
           {(!mounted || !isCollapsed) && (
-            <div className="p-4 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl space-y-2">
-              <div className="flex justify-between items-center text-[9px] font-mono text-silver/60">
-                <span>UPLINK STATUS</span>
+            <div className="p-3 bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl space-y-2">
+              <div className="flex justify-between items-center text-[9px] font-mono text-silver/70">
+                <span className="font-extrabold tracking-wider">SYSTEM ACTIVE</span>
                 <span className="text-emerald-500 font-bold flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 relative flex shrink-0">
                     <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
                   </span>
-                  ONLINE
+                  99.9%
                 </span>
               </div>
               <div className="h-1.5 w-full bg-foreground/[0.06] dark:bg-white/[0.06] rounded-full overflow-hidden border border-foreground/[0.02] dark:border-white/[0.02]">
-                <div className="h-full bg-apple-blue w-[85%] rounded-full animate-pulse" />
+                <div className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 w-[92%] rounded-full" />
               </div>
             </div>
           )}
@@ -309,13 +329,13 @@ export default function Navbar() {
           <button
             onClick={toggleCollapse}
             className={cn(
-              "flex items-center justify-center rounded-xl border border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.02] dark:bg-white/[0.01] hover:bg-foreground/[0.04] dark:hover:bg-white/[0.03] text-silver hover:text-foreground transition-all cursor-pointer",
+              "flex items-center justify-center rounded-xl border border-foreground/[0.08] dark:border-white/[0.08] bg-foreground/[0.02] dark:bg-white/[0.015] hover:bg-foreground/[0.05] dark:hover:bg-white/[0.03] text-silver hover:text-foreground transition-all cursor-pointer shadow-xs",
               (mounted && isCollapsed) ? "w-10 h-10 mx-auto" : "w-full py-2.5 gap-2"
             )}
             aria-label={(mounted && isCollapsed) ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <PanelLeftClose className={cn("w-4 h-4 shrink-0 transition-transform duration-200", (mounted && isCollapsed) && "rotate-180")} />
-            {(!mounted || !isCollapsed) && <span className="text-[9px] font-bold uppercase tracking-widest">Collapse</span>}
+            <PanelLeftClose className={cn("w-4 h-4 shrink-0 transition-transform duration-200 text-emerald-500", (mounted && isCollapsed) && "rotate-180")} />
+            {(!mounted || !isCollapsed) && <span className="text-[9px] font-extrabold uppercase tracking-widest">Collapse Sidebar</span>}
           </button>
         </div>
       </aside>
