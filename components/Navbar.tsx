@@ -30,10 +30,36 @@ import {
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
 
+// Module-level memory cache for instant render during SPA navigation
+let cachedNavbarSub: any = null;
+let cachedNavbarConfig: any = null;
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [sub, setSub] = useState<any>(null);
-  const [config, setConfig] = useState<any>(null);
+  
+  // Initialize state synchronously from module cache or localStorage backup
+  const [sub, setSub] = useState<any>(() => {
+    if (cachedNavbarSub) return cachedNavbarSub;
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('void_navbar_sub');
+        if (stored) return JSON.parse(stored);
+      } catch (e) {}
+    }
+    return null;
+  });
+
+  const [config, setConfig] = useState<any>(() => {
+    if (cachedNavbarConfig) return cachedNavbarConfig;
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('void_navbar_config');
+        if (stored) return JSON.parse(stored);
+      } catch (e) {}
+    }
+    return null;
+  });
+
   const [isCollapsed, setIsCollapsed] = useState(() => {
     if (typeof window !== 'undefined') {
       return document.documentElement.classList.contains('sidebar-collapsed');
@@ -105,12 +131,24 @@ export default function Navbar() {
   useEffect(() => {
     fetch('/api/subscription')
       .then(res => res.json())
-      .then(data => setSub(data))
+      .then(data => {
+        cachedNavbarSub = data;
+        setSub(data);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('void_navbar_sub', JSON.stringify(data));
+        }
+      })
       .catch(console.error);
 
     fetch('/api/admin/config')
       .then(res => res.json())
-      .then(data => setConfig(data))
+      .then(data => {
+        cachedNavbarConfig = data;
+        setConfig(data);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('void_navbar_config', JSON.stringify(data));
+        }
+      })
       .catch(console.error);
   }, []);
 
