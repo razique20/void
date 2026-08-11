@@ -25,8 +25,30 @@ let cachedConfig: any = null;
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const [sub, setSub] = useState<any>(cachedSub);
-  const [config, setConfig] = useState<any>(cachedConfig);
+
+  // Initialize from module cache or localStorage backup (matches Navbar keys)
+  const [sub, setSub] = useState<any>(() => {
+    if (cachedSub) return cachedSub;
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('void_navbar_sub');
+        if (stored) { cachedSub = JSON.parse(stored); return cachedSub; }
+      } catch (e) {}
+    }
+    return null;
+  });
+
+  const [config, setConfig] = useState<any>(() => {
+    if (cachedConfig) return cachedConfig;
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('void_navbar_config');
+        if (stored) { cachedConfig = JSON.parse(stored); return cachedConfig; }
+      } catch (e) {}
+    }
+    return null;
+  });
+
   const [loading, setLoading] = useState(!cachedSub || !cachedConfig);
 
   useEffect(() => {
@@ -38,6 +60,10 @@ export default function Sidebar() {
       cachedConfig = configData;
       setSub(subData);
       setConfig(configData);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('void_navbar_sub', JSON.stringify(subData));
+        localStorage.setItem('void_navbar_config', JSON.stringify(configData));
+      }
     }).catch(console.error)
       .finally(() => setLoading(false));
   }, []);
