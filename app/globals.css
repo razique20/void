@@ -1,35 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbfdfc;
-  --foreground: #111827;
-  --sidebar: rgba(251, 253, 252, 0.65);
-  --sidebar-border: rgba(16, 185, 129, 0.08);
+  --background: #fbfdfd;
+  --foreground: #0f172a;
+  --sidebar: rgba(251, 253, 253, 0.65);
+  --sidebar-border: rgba(30, 64, 175, 0.08);
   --card: rgba(255, 255, 255, 0.95);
-  --card-border: rgba(16, 185, 129, 0.1);
-  --primary: #10b981;
-  --silver: #6b7280;
-  --apple-blue: #10b981;
-  --emerald-primary: #10b981;
-  --emerald-glow: rgba(16, 185, 129, 0.12);
+  --card-border: rgba(30, 64, 175, 0.1);
+  --primary: #1d4ed8;
+  --silver: #64748b;
+  --apple-blue: #1d4ed8;
+  --emerald-primary: #1d4ed8;
+  --emerald-glow: rgba(30, 64, 175, 0.12);
   --text-gradient-start: #0f172a;
-  --text-gradient-end: #059669;
+  --text-gradient-end: #1d4ed8;
 }
 
 .dark {
-  --background: #040d0a;
-  --foreground: #ecfdf5;
-  --sidebar: rgba(4, 13, 10, 0.45);
-  --sidebar-border: rgba(236, 253, 245, 0.04);
-  --card: rgba(10, 26, 20, 0.95);
-  --card-border: rgba(16, 185, 129, 0.12);
-  --primary: #10b981;
+  --background: #030712;
+  --foreground: #f3f4f6;
+  --sidebar: rgba(3, 7, 18, 0.45);
+  --sidebar-border: rgba(243, 244, 246, 0.04);
+  --card: rgba(17, 24, 39, 0.95);
+  --card-border: rgba(37, 99, 235, 0.12);
+  --primary: #3b82f6;
   --silver: #9ca3af;
-  --apple-blue: #10b981;
-  --emerald-primary: #10b981;
-  --emerald-glow: rgba(16, 185, 129, 0.2);
+  --apple-blue: #3b82f6;
+  --emerald-primary: #3b82f6;
+  --emerald-glow: rgba(37, 99, 235, 0.2);
   --text-gradient-start: #ffffff;
-  --text-gradient-end: #10b981;
+  --text-gradient-end: #3b82f6;
 }
 
 /* --- Emerald Matrix Theme --- */
@@ -193,19 +193,19 @@ body {
 }
 
 .apple-button {
-  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
   color: white;
   padding: 12px 24px;
   border-radius: 980px;
   font-weight: 600;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.25);
 }
 
 .apple-button:hover {
-  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
   transform: scale(1.02);
-  box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.35);
+  box-shadow: 0 6px 20px 0 rgba(37, 99, 235, 0.35);
 }
 
 .apple-button-secondary {
