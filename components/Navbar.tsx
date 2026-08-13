@@ -62,7 +62,10 @@ export default function Navbar() {
 
   const [isCollapsed, setIsCollapsed] = useState(() => {
     if (typeof window !== 'undefined') {
-      return document.documentElement.classList.contains('sidebar-collapsed');
+      try {
+        const stored = localStorage.getItem('sidebar-collapsed');
+        return stored === 'true';
+      } catch (e) {}
     }
     return false;
   });
@@ -71,9 +74,13 @@ export default function Navbar() {
 
   const isWorkspace = pathname !== '/' && !pathname.startsWith('/sign-in') && !pathname.startsWith('/sign-up') && !pathname.startsWith('/admin');
 
-  // Trigger mounted state
+  // Trigger mounted state after first paint to enable CSS transitions
   useEffect(() => {
-    setMounted(true);
+    // Use requestAnimationFrame to ensure the initial paint is complete
+    // before enabling transitions, preventing the flash/blink
+    requestAnimationFrame(() => {
+      setMounted(true);
+    });
   }, []);
 
   const toggleCollapse = () => {
@@ -273,7 +280,7 @@ export default function Navbar() {
           </div>
 
           {/* Categorized Workspaces Navigation */}
-          <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-210px)] custom-scrollbar pr-0.5">
+          <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-210px)] custom-scrollbar pr-0.5" suppressHydrationWarning>
             {menuCategories.map((cat) => (
               <div key={cat.title} className="space-y-1.5">
                 {(!mounted || !isCollapsed) && (
@@ -291,9 +298,13 @@ export default function Navbar() {
 
                     if (link.locked) {
                       return (
-                        <div
+                        <Link
                           key={link.href}
-                          onClick={() => alert('Upgrade your plan to access ' + link.label)}
+                          href={link.href}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            alert('Upgrade your plan to access ' + link.label);
+                          }}
                           className={cn(
                             "flex items-center rounded-xl text-xs font-bold transition-all border border-foreground/[0.04] dark:border-white/[0.04] cursor-not-allowed relative group opacity-50 bg-foreground/[0.01] dark:bg-white/[0.005]",
                             (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3.5 py-2.5",
@@ -308,7 +319,7 @@ export default function Navbar() {
                               {link.label} — UPGRADE
                             </div>
                           )}
-                        </div>
+                        </Link>
                       );
                     }
 
