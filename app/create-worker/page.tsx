@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import MobileBottomNav from '@/components/MobileBottomNav';
@@ -264,6 +264,7 @@ export default function CreateWorkerPage() {
   const [loading, setLoading] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState('scratch');
   const [selectedRole, setSelectedRole] = useState('');
+  const [userIndustry, setUserIndustry] = useState<string | null>(null);
   const [blueprintInputs, setBlueprintInputs] = useState<Record<string, string>>({});
   const [customFields, setCustomFields] = useState<{ key: string; label: string; value: string }[]>([]);
   const [newFieldLabel, setNewFieldLabel] = useState('');
@@ -276,6 +277,52 @@ export default function CreateWorkerPage() {
   });
   const [error, setError] = useState<string | null>(null);
 
+  const getProfileDefault = (key: string, fallback: string) => {
+    if (typeof window === 'undefined') return fallback;
+    if (['clinicName', 'companyName', 'storeName', 'agencyName', 'hotelName', 'warehouseName'].includes(key)) {
+      return localStorage.getItem('void_profile_companyName') || fallback;
+    }
+    if (['hours', 'deliveryHours', 'breakfastHours'].includes(key)) {
+      return localStorage.getItem('void_profile_hours') || fallback;
+    }
+    if (['contact', 'phone', 'billingContact', 'brokerContact'].includes(key)) {
+      return localStorage.getItem('void_profile_contact') || fallback;
+    }
+    return fallback;
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('void_profile_industry');
+      const activeInd = stored || 'hospital';
+      setUserIndustry(activeInd);
+      setSelectedDepartment(activeInd);
+      const dept = departments.find(d => d.id === activeInd);
+      if (dept && dept.roles.length > 0) {
+        const role = dept.roles[0];
+        setSelectedRole(role.id);
+        const initialInputs: Record<string, string> = {};
+        role.fields.forEach((f) => {
+          initialInputs[f.key] = getProfileDefault(f.key, f.default);
+        });
+        setBlueprintInputs(initialInputs);
+        let initialPrompt = role.template;
+        role.fields.forEach((f) => {
+          initialPrompt = initialPrompt.replace(new RegExp(`{${f.key}}`, 'g'), initialInputs[f.key]);
+        });
+        setFormData(prev => ({
+          ...prev,
+          name: role.defaultName,
+          personality: initialPrompt,
+          tone: role.tone,
+        }));
+      }
+    }
+  }, []);
+
+  const activeIndustry = userIndustry || 'hospital';
+  const filteredDepartments = departments.filter(d => d.id === 'scratch' || d.id === activeIndustry);
+
   const compilePrompt = (
     template: string,
     inputs: Record<string, string>,
@@ -287,7 +334,7 @@ export default function CreateWorkerPage() {
     
     if (role) {
       role.fields.forEach((f) => {
-        const val = inputs[f.key] !== undefined ? inputs[f.key] : f.default;
+        const val = inputs[f.key] !== undefined ? inputs[f.key] : getProfileDefault(f.key, f.default);
         compiled = compiled.replace(new RegExp(`{${f.key}}`, 'g'), val);
       });
     }
@@ -317,13 +364,13 @@ export default function CreateWorkerPage() {
     
     const initialInputs: Record<string, string> = {};
     role.fields.forEach((f) => {
-      initialInputs[f.key] = f.default;
+      initialInputs[f.key] = getProfileDefault(f.key, f.default);
     });
     setBlueprintInputs(initialInputs);
 
     let initialPrompt = role.template;
     role.fields.forEach((f) => {
-      initialPrompt = initialPrompt.replace(new RegExp(`{${f.key}}`, 'g'), f.default);
+      initialPrompt = initialPrompt.replace(new RegExp(`{${f.key}}`, 'g'), initialInputs[f.key]);
     });
 
     setFormData({
@@ -535,16 +582,26 @@ export default function CreateWorkerPage() {
 
                   {/* STEP 1: Department Blueprint */}
                   <div className="bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[24px] space-y-4 backdrop-blur-3xl shadow-sm relative overflow-hidden">
-                    <div>
-                      <div className="text-[9px] font-bold text-silver uppercase tracking-widest flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5 text-apple-blue" />
-                        01 / Select Sector Blueprint
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-[9px] font-bold text-silver uppercase tracking-widest flex items-center gap-1.5">
+                          <Sparkles className="w-3.5 h-3.5 text-apple-blue" />
+                          01 / Sector Framework
+                        </div>
+                        <p className="text-xs text-silver mt-0.5 font-medium">
+                          Showing your configured industry blueprint and From Scratch option.
+                        </p>
                       </div>
-                      <p className="text-xs text-silver mt-0.5 font-medium">Choose an industry framework or start from scratch.</p>
+                      <a
+                        href="/dashboard/profile"
+                        className="text-[10px] font-bold text-emerald-500 hover:underline bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20 shrink-0"
+                      >
+                        Change Industry in Profile
+                      </a>
                     </div>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                      {departments.map((dept) => {
+                      {filteredDepartments.map((dept) => {
                         const isSelected = selectedDepartment === dept.id;
                         const DeptIcon = dept.icon;
                         return (

@@ -25,7 +25,9 @@ import {
   Activity,
   Cpu,
   PanelLeftClose,
-  Mail
+  Mail,
+  Building2,
+  User
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
@@ -37,45 +39,49 @@ let cachedNavbarConfig: any = null;
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   
-  // Initialize state synchronously from module cache or localStorage backup
-  const [sub, setSub] = useState<any>(() => {
-    if (cachedNavbarSub) return cachedNavbarSub;
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('void_navbar_sub');
-        if (stored) return JSON.parse(stored);
-      } catch (e) {}
-    }
-    return null;
-  });
+  // Initialize from module cache only — localStorage is deferred to useEffect
+  // Module cache survives SPA navigation (no flicker), but is null on cold start (SSR-safe)
+  const [sub, setSub] = useState<any>(cachedNavbarSub);
+  const [config, setConfig] = useState<any>(cachedNavbarConfig);
 
-  const [config, setConfig] = useState<any>(() => {
-    if (cachedNavbarConfig) return cachedNavbarConfig;
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('void_navbar_config');
-        if (stored) return JSON.parse(stored);
-      } catch (e) {}
-    }
-    return null;
-  });
-
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('sidebar-collapsed');
-        return stored === 'true';
-      } catch (e) {}
-    }
-    return false;
-  });
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
   const isWorkspace = pathname !== '/' && !pathname.startsWith('/sign-in') && !pathname.startsWith('/sign-up') && !pathname.startsWith('/admin');
 
-  // Trigger mounted state after first paint to enable CSS transitions
+  // Hydrate from localStorage + enable transitions after first paint
   useEffect(() => {
+    // Hydrate collapsed state from localStorage
+    const storedCollapsed = localStorage.getItem('sidebar-collapsed');
+    if (storedCollapsed === 'true') {
+      setIsCollapsed(true);
+      document.documentElement.classList.add('sidebar-collapsed');
+      document.body.classList.add('sidebar-collapsed');
+    }
+
+    // Hydrate sub/config from localStorage if not already in module cache
+    if (!cachedNavbarSub) {
+      try {
+        const stored = localStorage.getItem('void_navbar_sub');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          cachedNavbarSub = parsed;
+          setSub(parsed);
+        }
+      } catch (e) {}
+    }
+    if (!cachedNavbarConfig) {
+      try {
+        const stored = localStorage.getItem('void_navbar_config');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          cachedNavbarConfig = parsed;
+          setConfig(parsed);
+        }
+      } catch (e) {}
+    }
+
     // Use requestAnimationFrame to ensure the initial paint is complete
     // before enabling transitions, preventing the flash/blink
     requestAnimationFrame(() => {
@@ -198,6 +204,7 @@ export default function Navbar() {
 
   // Right-aligned System & Billing Links (Slim Dock)
   const rightLinks = [
+    { label: 'Profile', href: '/dashboard/profile', icon: User },
     { label: 'Marketplace', href: '/marketplace', icon: ShoppingBag, locked: !hasFeature('marketplace') },
     { label: 'Billing', href: '/billing', icon: CreditCard },
     { label: 'Credentials', href: '/dashboard/credentials', icon: Key },
@@ -236,7 +243,6 @@ export default function Navbar() {
                 Sign In
               </Link>
             </Show>
-            <ThemeToggle />
           </div>
         </div>
       </nav>
@@ -258,14 +264,14 @@ export default function Navbar() {
             (mounted && isCollapsed) && "justify-center p-2"
           )}>
             <Link href="/" className={cn("group flex items-center gap-2", (mounted && isCollapsed) ? "justify-center" : "px-0.5")}>
-              <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-800 flex items-center justify-center text-white font-black text-xs shadow-md shrink-0">
+              <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black text-xs shadow-md shrink-0">
                 V
               </div>
               {(!mounted || !isCollapsed) && (
                 <div className="flex flex-col">
                   <span className="font-extrabold text-sm tracking-tight text-foreground flex items-center gap-1.5 leading-none">
                     VOID
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   </span>
                   <span className="text-[9px] font-mono font-medium text-silver/60 mt-0.5">WORKFORCE OS</span>
                 </div>
@@ -273,7 +279,7 @@ export default function Navbar() {
             </Link>
 
             {(!mounted || !isCollapsed) && (
-              <span className="text-[8px] font-mono font-extrabold text-blue-600 dark:text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+              <span className="text-[8px] font-mono font-extrabold text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
                 v1.0
               </span>
             )}
@@ -295,54 +301,44 @@ export default function Navbar() {
                   {cat.links.map((link) => {
                     const Icon = link.icon;
                     const isActive = isTabActive(link.href);
-
-                    if (link.locked) {
-                      return (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            alert('Upgrade your plan to access ' + link.label);
-                          }}
-                          className={cn(
-                            "flex items-center rounded-xl text-xs font-bold transition-all border border-foreground/[0.04] dark:border-white/[0.04] cursor-not-allowed relative group opacity-50 bg-foreground/[0.01] dark:bg-white/[0.005]",
-                            (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3.5 py-2.5",
-                            "text-silver/40"
-                          )}
-                        >
-                          <Icon className="w-4 h-4 shrink-0 text-silver/40" />
-                          {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
-                          {(!mounted || !isCollapsed) && <Lock className="w-3 h-3 text-silver/30" />}
-                          {(mounted && isCollapsed) && (
-                            <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-red-500 text-white text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
-                              {link.label} — UPGRADE
-                            </div>
-                          )}
-                        </Link>
-                      );
-                    }
+                    // Only apply locked state after mount to prevent SSR/CSR mismatch
+                    const isLocked = mounted && link.locked;
 
                     return (
                       <Link
                         key={link.href}
                         href={link.href}
+                        onClick={isLocked ? (e: React.MouseEvent) => {
+                          e.preventDefault();
+                          alert('Upgrade your plan to access ' + link.label);
+                        } : undefined}
                         className={cn(
-                          "flex items-center rounded-xl text-xs font-bold transition-all border cursor-pointer relative group",
+                          "flex items-center rounded-xl text-xs font-bold transition-all border relative group",
                           (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3.5 py-2.5",
-                          isActive
-                            ? "bg-blue-500/[0.08] dark:bg-blue-500/[0.12] border-blue-500/30 text-blue-600 dark:text-blue-400 font-extrabold shadow-sm"
-                            : "bg-foreground/[0.015] dark:bg-white/[0.01] border-foreground/[0.05] dark:border-white/[0.05] text-silver hover:border-blue-500/20 hover:bg-blue-500/[0.03] hover:text-foreground"
+                          isLocked
+                            ? "border-foreground/[0.04] dark:border-white/[0.04] cursor-not-allowed opacity-50 bg-foreground/[0.01] dark:bg-white/[0.005] text-silver/40"
+                            : isActive
+                              ? "bg-emerald-500/[0.08] dark:bg-emerald-500/[0.12] border-emerald-500/30 text-emerald-500 dark:text-emerald-400 font-extrabold shadow-sm cursor-pointer"
+                              : "bg-foreground/[0.015] dark:bg-white/[0.01] border-foreground/[0.05] dark:border-white/[0.05] text-silver hover:border-emerald-500/20 hover:bg-emerald-500/[0.03] hover:text-foreground cursor-pointer"
                         )}
                       >
-                        <Icon className={cn("w-4 h-4 shrink-0 transition-colors", isActive ? "text-blue-500" : "text-silver group-hover:text-blue-500")} />
+                        <Icon className={cn(
+                          "w-4 h-4 shrink-0 transition-colors",
+                          isLocked ? "text-silver/40" : isActive ? "text-emerald-500" : "text-silver group-hover:text-emerald-500"
+                        )} />
                         {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
-                        {isActive && (!mounted || !isCollapsed) && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
+                        {isLocked && (!mounted || !isCollapsed) && <Lock className="w-3 h-3 text-silver/30" />}
+                        {!isLocked && isActive && (!mounted || !isCollapsed) && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
                         )}
                         {(mounted && isCollapsed) && (
-                          <div className="absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background dark:bg-white dark:text-black text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50">
-                            {link.label}
+                          <div className={cn(
+                            "absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50",
+                            isLocked
+                              ? "bg-red-500 text-white"
+                              : "bg-foreground text-background dark:bg-white dark:text-black"
+                          )}>
+                            {link.label}{isLocked ? ' — UPGRADE' : ''}
                           </div>
                         )}
                       </Link>
@@ -361,15 +357,15 @@ export default function Navbar() {
             <div className="p-3 bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl space-y-2">
               <div className="flex justify-between items-center text-[9px] font-mono text-silver/70">
                 <span className="font-extrabold tracking-wider">SYSTEM ACTIVE</span>
-                <span className="text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 relative flex shrink-0">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-blue-600 opacity-75 animate-ping" />
+                <span className="text-emerald-500 dark:text-emerald-400 font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 relative flex shrink-0">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
                   </span>
                   99.9%
                 </span>
               </div>
               <div className="h-1.5 w-full bg-foreground/[0.06] dark:bg-white/[0.06] rounded-full overflow-hidden border border-foreground/[0.02] dark:border-white/[0.02]">
-                <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 w-[92%] rounded-full" />
+                <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 w-[92%] rounded-full" />
               </div>
             </div>
           )}
@@ -383,7 +379,7 @@ export default function Navbar() {
             )}
             aria-label={(mounted && isCollapsed) ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <PanelLeftClose className={cn("w-4 h-4 shrink-0 transition-transform duration-200 text-blue-600 dark:text-blue-400", (mounted && isCollapsed) && "rotate-180")} />
+            <PanelLeftClose className={cn("w-4 h-4 shrink-0 transition-transform duration-200 text-emerald-500 dark:text-emerald-400", (mounted && isCollapsed) && "rotate-180")} />
             {(!mounted || !isCollapsed) && <span className="text-[9px] font-extrabold uppercase tracking-widest">Collapse Sidebar</span>}
           </button>
         </div>
