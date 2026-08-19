@@ -123,8 +123,8 @@
   --color-primary: var(--primary);
   --color-silver: var(--silver);
   --color-apple-blue: var(--apple-blue);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-inter);
 }
 
 @utility animate-marquee {
@@ -134,7 +134,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   letter-spacing: -0.011em;
   overflow-x: hidden;
 }

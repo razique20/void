@@ -9,7 +9,7 @@ import {
   TrustStrip,
 } from '@/components/landing/LandingSections';
 import Link from 'next/link';
-import { ChevronRight, ShieldCheck, Check, Activity, Shield, Users, ArrowUpRight } from 'lucide-react';
+import { ChevronRight, ShieldCheck, ArrowRight } from 'lucide-react';
 import { motion, Variants, Easing } from 'framer-motion';
 import { Show, SignInButton } from '@clerk/nextjs';
 
@@ -18,18 +18,18 @@ export default function LandingPage() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+      transition: { staggerChildren: 0.08, delayChildren: 0.1 },
     },
   };
 
   const ease: Easing = [0.22, 1, 0.36, 1];
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 16 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.8, ease },
+      transition: { duration: 0.6, ease },
     },
   };
 
@@ -37,71 +37,58 @@ export default function LandingPage() {
     <div className="dark flex flex-col min-h-screen bg-[#030304] text-zinc-100 selection:bg-emerald-500/30 overflow-x-hidden">
       <Navbar />
 
-      {/* Background Neural Ambience / Gradients inspired by Go-Lifted */}
+      {/* Background ambience */}
       <div className="fixed inset-0 z-0 pointer-events-none">
-        {/* Soft emerald/cyan glow on the right */}
-        <div className="absolute top-[10%] right-[-5%] w-[55%] h-[55%] bg-emerald-500/10 blur-[140px] rounded-full" />
-        {/* Deep blue/purple glow on the left */}
-        <div className="absolute bottom-[10%] left-[-5%] w-[45%] h-[45%] bg-blue-600/10 blur-[130px] rounded-full" />
-        {/* Grain Overlay */}
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-15 contrast-125 brightness-90 pointer-events-none" />
+        <div className="absolute top-[15%] right-[10%] w-[40%] h-[40%] bg-emerald-500/[0.07] blur-[150px] rounded-full" />
+        <div className="absolute bottom-[10%] left-[5%] w-[35%] h-[35%] bg-blue-600/[0.05] blur-[120px] rounded-full" />
       </div>
 
       <main className="flex-1 relative z-10">
-        {/* ---------------------------------------------------------- */}
-        {/* Hero Section                                               */}
-        {/* ---------------------------------------------------------- */}
-        <section className="relative pt-32 md:pt-40 pb-16 md:pb-28 px-5 sm:px-6">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
-            {/* Left Column: Headline and CTAs */}
+        {/* Hero Section */}
+        <section className="relative pt-32 md:pt-44 pb-20 md:pb-32 px-5 sm:px-6">
+          <div className="max-w-6xl mx-auto text-center">
             <motion.div
               variants={containerVariants}
               initial="hidden"
               animate="visible"
-              className="lg:col-span-6 text-left"
             >
-              {/* Status pill */}
-              <motion.div variants={itemVariants} className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/60 backdrop-blur-xl px-3.5 py-1.5 text-xs font-semibold text-zinc-400 mb-6">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              {/* Headline */}
+              <motion.h1
+                variants={itemVariants}
+                className="text-5xl sm:text-7xl md:text-[88px] font-black tracking-tighter leading-[0.95] text-white mb-8"
+              >
+                Hire an AI workforce
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400">
+                  that never sleeps.
                 </span>
-                Autonomous AI operatives · Live now
-              </motion.div>
+              </motion.h1>
 
-              {/* Brand headline */}
-              <motion.div variants={itemVariants} className="mb-6">
-                <h1 className="text-4xl sm:text-6xl md:text-[68px] font-black uppercase tracking-tighter leading-[1.05] text-white">
-                  Elevate your global <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500">AI workforce</span>
-                </h1>
-              </motion.div>
-
-              {/* Description */}
+              {/* Subheadline */}
               <motion.p
                 variants={itemVariants}
-                className="text-zinc-400 text-base sm:text-lg max-w-xl mb-8 leading-relaxed font-medium"
+                className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed font-medium"
               >
-                One workspace built for enterprise teams to deploy, manage, and scale autonomous AI operatives. Handle support, sales and workflows seamlessly.
-                <span className="text-zinc-200"> Invaluable to your business, invisible to the world.</span>
+                Deploy autonomous operatives that handle support, sales, and workflows 24/7. 
+                Built for teams that move fast and ship faster.
               </motion.p>
 
               {/* CTAs */}
               <motion.div
                 variants={itemVariants}
-                className="flex flex-row items-center gap-4 mb-6"
+                className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
               >
                 <Show when="signed-in">
                   <Link
                     href="/onboarding"
-                    className="group bg-white text-black hover:bg-zinc-200 px-6 py-3.5 rounded-full text-sm font-bold transition-all active:scale-[0.97] flex items-center gap-2"
+                    className="group bg-white text-black hover:bg-zinc-200 px-8 py-4 rounded-full text-sm font-bold transition-all active:scale-[0.98] flex items-center gap-2"
                   >
-                    Hire an Operative
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                    Deploy an Operative
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                   <Link
                     href="/marketplace"
-                    className="group flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-sm font-bold text-zinc-300 hover:text-white border border-zinc-800 hover:bg-zinc-900/60 transition-all active:scale-[0.97]"
+                    className="group flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-zinc-300 hover:text-white border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/50 transition-all"
                   >
                     Explore Modules
                   </Link>
@@ -112,9 +99,9 @@ export default function LandingPage() {
                     fallbackRedirectUrl="/onboarding"
                     signUpFallbackRedirectUrl="/onboarding"
                   >
-                    <button className="group bg-white text-black hover:bg-zinc-200 px-6 py-3.5 rounded-full text-sm font-bold transition-all active:scale-[0.97] flex items-center gap-2 cursor-pointer">
+                    <button className="group bg-white text-black hover:bg-zinc-200 px-8 py-4 rounded-full text-sm font-bold transition-all active:scale-[0.98] flex items-center gap-2 cursor-pointer">
                       Start free
-                      <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                   </SignInButton>
                   <SignInButton
@@ -122,214 +109,84 @@ export default function LandingPage() {
                     fallbackRedirectUrl="/marketplace"
                     signUpFallbackRedirectUrl="/marketplace"
                   >
-                    <button className="group flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-sm font-bold text-zinc-300 hover:text-white border border-zinc-800 hover:bg-zinc-900/60 transition-all active:scale-[0.97] cursor-pointer">
+                    <button className="group flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-zinc-300 hover:text-white border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/50 transition-all cursor-pointer">
                       Explore Modules
                     </button>
                   </SignInButton>
                 </Show>
               </motion.div>
 
+              {/* Trust signals */}
               <motion.p
                 variants={itemVariants}
-                className="text-xs font-semibold text-zinc-500 flex items-center gap-1.5"
+                className="text-sm text-zinc-500 flex items-center justify-center gap-2"
               >
                 <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                No credit card · Enterprise privacy isolation · Live in minutes
+                No credit card required · Enterprise-grade security · Deploy in minutes
               </motion.p>
             </motion.div>
-
-            {/* Right Column: High-Fidelity Floating UI & Generated Image */}
-            <div className="lg:col-span-6 relative flex justify-center items-center">
-              
-              {/* Graphic Container with custom organic border radius */}
-              <div className="relative w-full max-w-[480px] aspect-square rounded-[2.5rem] overflow-hidden border border-zinc-800 bg-zinc-950/60 backdrop-blur-md shadow-2xl p-4">
-                <img
-                  src="/hero-operative.png"
-                  alt="AI Operative Interface"
-                  className="w-full h-full object-cover rounded-[2rem] opacity-90"
-                />
-              </div>
-
-              {/* Floating Widget 1: Onboarding Progress List */}
-              <div className="absolute -left-6 bottom-8 bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 shadow-xl backdrop-blur-xl w-60 z-20 hidden sm:block">
-                <p className="text-xs font-bold text-white mb-3">Onboarding status</p>
-                <div className="space-y-2.5">
-                  {[
-                    { label: 'Knowledge Base sync', done: true },
-                    { label: 'Integrations linked', done: true },
-                    { label: 'Security guardrails active', done: true },
-                    { label: 'Agent Nova initialized', done: false }
-                  ].map((step, idx) => (
-                    <div key={idx} className="flex items-center gap-2.5">
-                      <div className="flex flex-col items-center">
-                        <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] ${step.done ? 'bg-emerald-500 text-white' : 'border-2 border-emerald-500 animate-pulse'}`}>
-                          {step.done && <Check className="w-2.5 h-2.5 stroke-[4]" />}
-                        </div>
-                      </div>
-                      <span className={`text-[11px] font-medium ${step.done ? 'text-zinc-300' : 'text-zinc-500'}`}>{step.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Floating Widget 2: Resolution Metrics */}
-              <div className="absolute -right-4 top-10 bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 shadow-xl backdrop-blur-xl w-48 z-20 hidden sm:block">
-                <div className="flex items-center gap-2 text-zinc-400 text-[10px] uppercase font-bold tracking-wider">
-                  <Activity className="w-3.5 h-3.5 text-emerald-400" />
-                  Speed to Solve
-                </div>
-                <div className="text-xl font-extrabold text-white mt-1">Saved 88%</div>
-                
-                {/* SVG Trendline */}
-                <div className="h-10 mt-2">
-                  <svg className="w-full h-full" viewBox="0 0 100 40">
-                    <path
-                      d="M0 35 Q20 30 40 20 T80 5 T100 8"
-                      fill="none"
-                      stroke="#10b981"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M0 35 Q20 30 40 20 T80 5 T100 8 L100 40 L0 40 Z"
-                      fill="url(#gradient)"
-                      opacity="0.15"
-                    />
-                    <defs>
-                      <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="#10b981" />
-                        <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                </div>
-              </div>
-
-              {/* Floating Widget 3: Trust Badge */}
-              <div className="absolute right-6 -bottom-4 bg-zinc-900/90 border border-zinc-800 rounded-xl px-4 py-2.5 shadow-xl backdrop-blur-xl flex items-center gap-2.5 z-20 hidden sm:flex">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                  <Shield className="w-4.5 h-4.5 text-emerald-400" />
-                </div>
-                <div>
-                  <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Privacy Grade</div>
-                  <div className="text-xs font-black text-white">SOC-2 Isolated</div>
-                </div>
-              </div>
-
-            </div>
           </div>
         </section>
 
-        {/* ---------------------------------------------------------- */}
-        {/* Real Operational Telemetry & System Benchmarks              */}
-        {/* ---------------------------------------------------------- */}
-        <section className="py-10 border-y border-zinc-900 bg-zinc-950/40 backdrop-blur-md">
-          <div className="max-w-7xl mx-auto px-5 sm:px-6">
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-emerald-400/80 mb-8 text-center flex items-center justify-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Real-Time Platform Performance &amp; Operational Benchmarks
-            </p>
-            
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
-              <div className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 backdrop-blur-xl">
-                <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">99.98%</div>
-                <div className="text-[11px] font-semibold text-emerald-400 mt-1 uppercase tracking-wider">System Uptime SLA</div>
-                <div className="text-[10px] text-zinc-400 mt-0.5 font-medium">Continuous event loop availability</div>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 backdrop-blur-xl">
-                <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">&lt; 1.2s</div>
-                <div className="text-[11px] font-semibold text-emerald-400 mt-1 uppercase tracking-wider">Response Latency</div>
-                <div className="text-[10px] text-zinc-400 mt-0.5 font-medium">Sub-second neural synthesis</div>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 backdrop-blur-xl">
-                <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">24/7/365</div>
-                <div className="text-[11px] font-semibold text-emerald-400 mt-1 uppercase tracking-wider">Autonomous Triage</div>
-                <div className="text-[10px] text-zinc-400 mt-0.5 font-medium">Zero human intervention required</div>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 backdrop-blur-xl">
-                <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">5 Sectors</div>
-                <div className="text-[11px] font-semibold text-emerald-400 mt-1 uppercase tracking-wider">Pre-Trained Frameworks</div>
-                <div className="text-[10px] text-zinc-400 mt-0.5 font-medium">Healthcare, Retail, Logistics &amp; more</div>
-              </div>
-
-              <div className="col-span-2 md:col-span-1 p-4 rounded-2xl bg-zinc-900/40 border border-zinc-800/60 backdrop-blur-xl">
-                <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">SOC-2</div>
-                <div className="text-[11px] font-semibold text-emerald-400 mt-1 uppercase tracking-wider">Data Isolation</div>
-                <div className="text-[10px] text-zinc-400 mt-0.5 font-medium">End-to-end encrypted pathways</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Outcome metrics */}
-        <div className="bg-[#030304]/80 py-6">
+        {/* Metrics Band */}
+        <div className="py-16 md:py-24">
           <MetricsBand />
         </div>
 
         {/* How it works */}
-        <div className="border-t border-zinc-900 bg-zinc-950/30">
+        <div className="border-t border-zinc-900/50">
           <HowItWorks />
         </div>
 
         {/* Use cases */}
-        <div className="border-t border-zinc-900">
+        <div className="border-t border-zinc-900/50">
           <UseCases />
         </div>
 
-        {/* ---------------------------------------------------------- */}
-        {/* Final CTA Section                                          */}
-        {/* ---------------------------------------------------------- */}
-        <section className="relative py-28 md:py-36 overflow-hidden border-t border-zinc-900">
+        {/* Final CTA */}
+        <section className="relative py-28 md:py-40 overflow-hidden border-t border-zinc-900/50">
           <div className="max-w-4xl mx-auto px-5 sm:px-6 text-center relative z-10">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="text-4xl sm:text-5xl md:text-[60px] font-black uppercase tracking-tighter mb-6 leading-none text-white"
+              transition={{ duration: 0.7, ease }}
             >
-              Scale into the Void.
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-              className="text-zinc-400 text-base md:text-lg font-medium max-w-lg mx-auto mb-10"
-            >
-              Spin up your first AI operative today. It pays for itself instantly.
-            </motion.p>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter mb-6 text-white leading-tight">
+                Ready to scale?
+              </h2>
+              <p className="text-zinc-400 text-lg md:text-xl font-medium max-w-xl mx-auto mb-12">
+                Your first operative pays for itself instantly. Start free today.
+              </p>
 
-            <div className="flex flex-col items-center gap-8">
-              <Show when="signed-in">
-                <Link
-                  href="/onboarding"
-                  className="bg-white text-black hover:bg-zinc-200 px-8 py-4 rounded-full text-base font-bold transition-all active:scale-[0.97] shadow-lg shadow-white/10"
-                >
-                  Enter the Console
-                </Link>
-              </Show>
-              <Show when="signed-out">
-                <SignInButton
-                  mode="modal"
-                  fallbackRedirectUrl="/onboarding"
-                  signUpFallbackRedirectUrl="/onboarding"
-                >
-                  <button className="bg-white text-black hover:bg-zinc-200 px-8 py-4 rounded-full text-base font-bold transition-all active:scale-[0.97] shadow-lg shadow-white/10 cursor-pointer">
-                    Start free
-                  </button>
-                </SignInButton>
-              </Show>
+              <div className="flex flex-col items-center gap-8">
+                <Show when="signed-in">
+                  <Link
+                    href="/onboarding"
+                    className="bg-white text-black hover:bg-zinc-200 px-10 py-4 rounded-full text-base font-bold transition-all active:scale-[0.98] shadow-lg shadow-white/10"
+                  >
+                    Enter the Console
+                  </Link>
+                </Show>
+                <Show when="signed-out">
+                  <SignInButton
+                    mode="modal"
+                    fallbackRedirectUrl="/onboarding"
+                    signUpFallbackRedirectUrl="/onboarding"
+                  >
+                    <button className="bg-white text-black hover:bg-zinc-200 px-10 py-4 rounded-full text-base font-bold transition-all active:scale-[0.98] shadow-lg shadow-white/10 cursor-pointer">
+                      Start free
+                    </button>
+                  </SignInButton>
+                </Show>
 
-              <TrustStrip />
-            </div>
+                <TrustStrip />
+              </div>
+            </motion.div>
           </div>
 
-          {/* Bottom cinematic glow */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[100%] h-[40%] bg-emerald-500/5 blur-[120px] rounded-full" />
+          {/* Bottom glow */}
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[50%] bg-emerald-500/[0.03] blur-[100px] rounded-full" />
         </section>
       </main>
 
@@ -337,4 +194,3 @@ export default function LandingPage() {
     </div>
   );
 }
-

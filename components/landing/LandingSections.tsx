@@ -13,20 +13,20 @@ import {
   Check,
 } from 'lucide-react';
 
-/* Shared reveal-on-scroll variant. Honors prefers-reduced-motion via CSS fallback. */
+/* Shared reveal-on-scroll variant */
 const reveal: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 20 },
   visible: (i: number = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.6, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] },
   }),
 };
 
-const viewport = { once: true, margin: '-80px' } as const;
+const viewport = { once: true, margin: '-60px' } as const;
 
 /* ------------------------------------------------------------------ */
-/* Trust / outcomes band — concrete numbers sell better than adjectives */
+/* Metrics Band — Concrete performance numbers                         */
 /* ------------------------------------------------------------------ */
 const STATS = [
   { value: '99.8%', label: 'Resolution accuracy' },
@@ -39,9 +39,9 @@ export function MetricsBand() {
   return (
     <section
       aria-label="Performance at a glance"
-      className="max-w-6xl mx-auto px-5 sm:px-6 py-10 md:py-16"
+      className="max-w-6xl mx-auto px-5 sm:px-6"
     >
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
         {STATS.map((s, i) => (
           <motion.div
             key={s.label}
@@ -50,12 +50,12 @@ export function MetricsBand() {
             initial="hidden"
             whileInView="visible"
             viewport={viewport}
-            className="rounded-2xl md:rounded-[2rem] border border-zinc-800 bg-zinc-900/30 backdrop-blur-xl px-5 py-6 md:px-7 md:py-8 text-center hover:border-emerald-500/20 transition-all duration-300"
+            className="text-center p-6"
           >
-            <div className="text-3xl md:text-5xl font-black tracking-tighter text-white tabular-nums">
+            <div className="text-4xl md:text-5xl font-black tracking-tighter text-white tabular-nums">
               {s.value}
             </div>
-            <div className="mt-2 text-[11px] md:text-xs font-semibold text-zinc-500 leading-tight uppercase tracking-wider">
+            <div className="mt-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
               {s.label}
             </div>
           </motion.div>
@@ -66,26 +66,26 @@ export function MetricsBand() {
 }
 
 /* ------------------------------------------------------------------ */
-/* How it works — the biggest UX gap was "what is this & how do I use it" */
+/* How it works — Simple 3-step process                                */
 /* ------------------------------------------------------------------ */
 const STEPS = [
   {
     icon: MessageSquare,
     step: '01',
     title: 'Describe the job',
-    body: 'Tell VOID what you need handled in plain language — support, sales, scheduling, follow-ups. No prompt engineering required.',
+    body: 'Tell VOID what you need in plain language. No prompt engineering required.',
   },
   {
     icon: PlugZap,
     step: '02',
     title: 'Connect your stack',
-    body: 'Plug in WhatsApp, Telegram, web chat, email and your CRM. Your operative learns from your data, privately.',
+    body: 'Plug in WhatsApp, Telegram, web, email and your CRM. Your operative learns privately.',
   },
   {
     icon: Rocket,
     step: '03',
     title: 'Deploy & relax',
-    body: 'Your operative goes live in minutes and runs around the clock. Watch every action stream live from the console.',
+    body: 'Go live in minutes. Run 24/7 with full visibility from the console.',
   },
 ];
 
@@ -93,30 +93,27 @@ export function HowItWorks() {
   return (
     <section
       aria-labelledby="how-heading"
-      className="max-w-6xl mx-auto px-5 sm:px-6 py-16 md:py-28"
+      className="max-w-6xl mx-auto px-5 sm:px-6 py-20 md:py-32"
     >
       <motion.div
         variants={reveal}
         initial="hidden"
         whileInView="visible"
         viewport={viewport}
-        className="text-center mb-12 md:mb-20"
+        className="text-center mb-16 md:mb-24"
       >
-        <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-emerald-400">
-          How it works
-        </span>
         <h2
           id="how-heading"
-          className="mt-3 text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-white uppercase"
+          className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-white"
         >
           Live in three steps.
         </h2>
-        <p className="mt-4 text-zinc-400 text-base md:text-lg max-w-xl mx-auto font-medium">
-          No engineers. No six-month rollout. Most teams ship their first operative the same day.
+        <p className="mt-4 text-zinc-400 text-lg max-w-xl mx-auto font-medium">
+          No engineers. No six-month rollout. Ship your first operative today.
         </p>
       </motion.div>
 
-      <ol className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <ol className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {STEPS.map((s, i) => (
           <motion.li
             key={s.step}
@@ -125,20 +122,20 @@ export function HowItWorks() {
             initial="hidden"
             whileInView="visible"
             viewport={viewport}
-            className="relative rounded-[2rem] border border-zinc-800 bg-zinc-900/20 backdrop-blur-xl p-7 md:p-8 group hover:border-emerald-500/30 hover:bg-zinc-900/40 transition-all duration-300"
+            className="relative p-8 group"
           >
-            <div className="flex items-center justify-between mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                 <s.icon className="w-6 h-6 text-emerald-400" />
               </div>
-              <span className="text-4xl font-black text-zinc-800/40 tabular-nums select-none">
+              <span className="text-5xl font-black text-zinc-800/30 tabular-nums select-none">
                 {s.step}
               </span>
             </div>
-            <h3 className="text-lg md:text-xl font-bold text-white mb-2.5">
+            <h3 className="text-xl font-bold text-white mb-3">
               {s.title}
             </h3>
-            <p className="text-zinc-400 text-sm md:text-[15px] font-medium leading-relaxed">
+            <p className="text-zinc-400 text-base font-medium leading-relaxed">
               {s.body}
             </p>
           </motion.li>
@@ -149,28 +146,28 @@ export function HowItWorks() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Use cases — let visitors self-identify with a concrete outcome      */
+/* Use cases — Let visitors self-identify                              */
 /* ------------------------------------------------------------------ */
 const USE_CASES = [
   {
     icon: Headphones,
     tag: 'Support',
     title: 'Resolve tickets in seconds',
-    body: 'Refunds, order status, troubleshooting — handled instantly across every channel, escalated only when it truly matters.',
+    body: 'Refunds, order status, troubleshooting — handled instantly across every channel.',
     href: '/marketplace',
   },
   {
     icon: TrendingUp,
     tag: 'Sales',
     title: 'Never miss a lead again',
-    body: 'Qualify, follow up and book demos automatically. Your pipeline keeps moving at 3am and on weekends.',
+    body: 'Qualify, follow up and book demos automatically. Your pipeline keeps moving 24/7.',
     href: '/marketplace',
   },
   {
     icon: Workflow,
     tag: 'Operations',
     title: 'Automate the busywork',
-    body: 'Sync your CRM, dispatch webhooks and run multi-step workflows without a single human in the loop.',
+    body: 'Sync your CRM, dispatch webhooks and run multi-step workflows without human in the loop.',
     href: '/marketplace',
   },
 ];
@@ -179,27 +176,26 @@ export function UseCases() {
   return (
     <section
       aria-labelledby="usecases-heading"
-      className="max-w-6xl mx-auto px-5 sm:px-6 py-16 md:py-28"
+      className="max-w-6xl mx-auto px-5 sm:px-6 py-20 md:py-32"
     >
       <motion.div
         variants={reveal}
         initial="hidden"
         whileInView="visible"
         viewport={viewport}
-        className="mb-12 md:mb-20 max-w-2xl"
+        className="mb-16 md:mb-24 max-w-2xl"
       >
-        <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-emerald-400">
-          Built for your team
-        </span>
         <h2
           id="usecases-heading"
-          className="mt-3 text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-white uppercase"
+          className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-white"
         >
-          One workforce.<br className="hidden sm:block" /> Every department.
+          One workforce.
+          <br />
+          Every department.
         </h2>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {USE_CASES.map((u, i) => (
           <motion.div
             key={u.tag}
@@ -212,17 +208,17 @@ export function UseCases() {
           >
             <Link
               href={u.href}
-              className="flex h-full flex-col rounded-[2rem] border border-zinc-800 bg-zinc-900/20 backdrop-blur-xl p-7 md:p-8 group hover:border-emerald-500/30 hover:bg-zinc-900/40 transition-all duration-300 active:scale-[0.99]"
+              className="flex h-full flex-col p-8 group hover:bg-zinc-900/30 rounded-3xl border border-transparent hover:border-zinc-800 transition-all duration-300"
             >
               <div className="flex items-center justify-between mb-6">
                 <u.icon className="w-8 h-8 text-white" />
-                <ArrowUpRight className="w-5 h-5 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                <ArrowUpRight className="w-5 h-5 text-zinc-600 group-hover:text-emerald-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400 mb-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-3">
                 {u.tag}
               </span>
-              <h3 className="text-xl font-bold text-white mb-2.5">{u.title}</h3>
-              <p className="text-zinc-400 text-sm md:text-[15px] font-medium leading-relaxed">
+              <h3 className="text-xl font-bold text-white mb-3">{u.title}</h3>
+              <p className="text-zinc-400 text-base font-medium leading-relaxed">
                 {u.body}
               </p>
             </Link>
@@ -234,7 +230,7 @@ export function UseCases() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Trust strip — quick reassurance row above the final CTA             */
+/* Trust strip — Quick reassurance                                    */
 /* ------------------------------------------------------------------ */
 const TRUST = [
   'No code required',
@@ -246,13 +242,13 @@ const TRUST = [
 export function TrustStrip() {
   return (
     <section className="max-w-4xl mx-auto px-5 sm:px-6">
-      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+      <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
         {TRUST.map((t) => (
           <span
             key={t}
-            className="flex items-center gap-2 text-xs md:text-sm font-semibold text-zinc-400"
+            className="flex items-center gap-2 text-sm font-medium text-zinc-500"
           >
-            <Check className="w-4 h-4 text-emerald-500 shrink-0" />
+            <Check className="w-4 h-4 text-emerald-500/70 shrink-0" />
             {t}
           </span>
         ))}

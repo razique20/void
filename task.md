@@ -1,0 +1,7 @@
+- [x] Redesign landing page theme in VOID workspace
+  - [x] Generate modern visual asset `hero-operative.png` using `generate_image`
+  - [x] Redesign `app/page.tsx` with a dual-column layout, glowing gradients, and floating widget mockups
+  - [x] Update `components/landing/LandingSections.tsx` to match the dark premium layout style
+  - [x] Verify visually by checking local preview
+- [x] Remove the light theme toggle from landing page navbar
+- [x] Align system primary and secondary colors in CSS variables and other pages to match landing page (emerald theme)
