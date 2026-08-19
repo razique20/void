@@ -279,24 +279,18 @@ export default function Navbar() {
             "pb-3.5 pt-1 border-b border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-between px-1 transition-all",
             (mounted && isCollapsed) && "justify-center px-0 pb-3"
           )}>
-            <Link href="/" className={cn("group flex items-center gap-3 transition-transform hover:scale-[1.02]", (mounted && isCollapsed) ? "justify-center" : "")}>
-              {/* Sleek Glowing Glass Logo Mark */}
-              <div className="w-8 h-8 rounded-xl bg-zinc-900 border border-emerald-500/30 bg-gradient-to-br from-emerald-500/20 via-zinc-900 to-zinc-950 flex items-center justify-center text-white font-black text-xs shadow-[0_0_15px_rgba(16,185,129,0.2)] group-hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:border-emerald-500/50 transition-all shrink-0 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="relative z-10 text-emerald-400 font-extrabold tracking-tighter text-sm">V</span>
-              </div>
-
-              {(!mounted || !isCollapsed) && (
-                <div className="flex flex-col">
-                  <span className="font-black text-sm tracking-wide text-foreground flex items-center gap-1.5 leading-none">
-                    VOID
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
-                  </span>
+            <Link href="/" className="group flex items-center gap-2 transition-transform hover:scale-[1.02]">
+              <div className="flex flex-col">
+                <span className="font-black text-base tracking-wide text-foreground flex items-center gap-1.5 leading-none">
+                  VOID
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
+                </span>
+                {(!mounted || !isCollapsed) && (
                   <span className="text-[8.5px] font-mono font-bold tracking-[0.18em] text-silver/60 uppercase mt-1">
                     AUTONOMOUS OS
                   </span>
-                </div>
-              )}
+                )}
+              </div>
             </Link>
 
             {(!mounted || !isCollapsed) && (
