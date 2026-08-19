@@ -27,10 +27,12 @@ import {
   PanelLeftClose,
   Mail,
   Building2,
-  User
+  User,
+  Compass
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
+import SystemTourModal from './SystemTourModal';
 
 // Module-level memory cache for instant render during SPA navigation
 let cachedNavbarSub: any = null;
@@ -196,11 +198,28 @@ export default function Navbar() {
     }
   ];
 
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  // Auto prompt first time workspace visitors with tour
+  useEffect(() => {
+    if (isWorkspace && typeof window !== 'undefined') {
+      const hasSeen = localStorage.getItem('void_has_seen_tour');
+      if (!hasSeen) {
+        const timer = setTimeout(() => {
+          setIsTourOpen(true);
+          localStorage.setItem('void_has_seen_tour', 'true');
+        }, 1200);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isWorkspace]);
+
   // Flat left links for mobile menu
   const leftLinks = menuCategories.flatMap(c => c.links);
 
   // Right-aligned System & Billing Links (Slim Dock)
   const rightLinks = [
+    { label: 'System Tour', href: '#tour', icon: Compass, isAction: true },
     { label: 'Profile', href: '/dashboard/profile', icon: User },
     { label: 'Marketplace', href: '/marketplace', icon: ShoppingBag, locked: !hasFeature('marketplace') },
     { label: 'Billing', href: '/billing', icon: CreditCard },
@@ -394,6 +413,10 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={link.isAction ? (e: React.MouseEvent) => {
+                  e.preventDefault();
+                  setIsTourOpen(true);
+                } : undefined}
                 className={cn(
                   "relative group w-10 h-10 rounded-xl flex items-center justify-center transition-all border cursor-pointer",
                   isActive
@@ -493,7 +516,13 @@ export default function Navbar() {
                   <Link 
                     key={link.href}
                     href={link.href} 
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => {
+                      setIsOpen(false);
+                      if (link.isAction) {
+                        e.preventDefault();
+                        setIsTourOpen(true);
+                      }
+                    }}
                     className={cn(
                       "font-extrabold tracking-tight transition-all text-base flex items-center gap-2.5",
                       isTabActive(link.href) ? "text-foreground" : "text-silver hover:text-foreground"
@@ -517,6 +546,20 @@ export default function Navbar() {
           <p className="text-[8px] font-extrabold text-silver uppercase tracking-[0.4em]">Aethyl Research v1.0</p>
         </div>
       </div>
+
+      {/* Persistent Floating System Tour Action Button */}
+      {isWorkspace && (
+        <button
+          onClick={() => setIsTourOpen(true)}
+          className="fixed bottom-6 right-6 z-[990] bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-4 py-3 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center gap-2 transition-all cursor-pointer hover:scale-105"
+        >
+          <Compass className="w-4 h-4 text-white" />
+          System Tour
+        </button>
+      )}
+
+      {/* Interactive System Tour Modal */}
+      <SystemTourModal isOpen={isTourOpen} onClose={() => setIsTourOpen(false)} />
     </>
   );
 }
