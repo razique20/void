@@ -274,30 +274,38 @@ export default function Navbar() {
         (mounted && isCollapsed) ? "w-16 p-2.5 py-4" : "w-64 p-4"
       )}>
         <div className="space-y-5">
-          {/* Logo & Platform Badge Header Box */}
+          {/* Modernized Brand & Platform Status Header */}
           <div className={cn(
-            "p-3 rounded-2xl border border-foreground/[0.08] dark:border-white/[0.08] bg-foreground/[0.02] dark:bg-white/[0.015] flex items-center justify-between",
-            (mounted && isCollapsed) && "justify-center p-2"
+            "pb-3.5 pt-1 border-b border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-between px-1 transition-all",
+            (mounted && isCollapsed) && "justify-center px-0 pb-3"
           )}>
-            <Link href="/" className={cn("group flex items-center gap-2", (mounted && isCollapsed) ? "justify-center" : "px-0.5")}>
-              <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white font-black text-xs shadow-md shrink-0">
-                V
+            <Link href="/" className={cn("group flex items-center gap-3 transition-transform hover:scale-[1.02]", (mounted && isCollapsed) ? "justify-center" : "")}>
+              {/* Sleek Glowing Glass Logo Mark */}
+              <div className="w-8 h-8 rounded-xl bg-zinc-900 border border-emerald-500/30 bg-gradient-to-br from-emerald-500/20 via-zinc-900 to-zinc-950 flex items-center justify-center text-white font-black text-xs shadow-[0_0_15px_rgba(16,185,129,0.2)] group-hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] group-hover:border-emerald-500/50 transition-all shrink-0 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="relative z-10 text-emerald-400 font-extrabold tracking-tighter text-sm">V</span>
               </div>
+
               {(!mounted || !isCollapsed) && (
                 <div className="flex flex-col">
-                  <span className="font-extrabold text-sm tracking-tight text-foreground flex items-center gap-1.5 leading-none">
+                  <span className="font-black text-sm tracking-wide text-foreground flex items-center gap-1.5 leading-none">
                     VOID
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
                   </span>
-                  <span className="text-[9px] font-mono font-medium text-silver/60 mt-0.5">WORKFORCE OS</span>
+                  <span className="text-[8.5px] font-mono font-bold tracking-[0.18em] text-silver/60 uppercase mt-1">
+                    AUTONOMOUS OS
+                  </span>
                 </div>
               )}
             </Link>
 
             {(!mounted || !isCollapsed) && (
-              <span className="text-[8px] font-mono font-extrabold text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                v1.0
-              </span>
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-sm">
+                <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping" />
+                <span className="text-[8.5px] font-mono font-bold text-emerald-400 tracking-wider">
+                  v1.0
+                </span>
+              </div>
             )}
           </div>
 
