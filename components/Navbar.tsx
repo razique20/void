@@ -547,17 +547,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Persistent Floating System Tour Action Button */}
-      {isWorkspace && (
-        <button
-          onClick={() => setIsTourOpen(true)}
-          className="fixed bottom-6 right-6 z-[990] bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-4 py-3 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.4)] flex items-center gap-2 transition-all cursor-pointer hover:scale-105"
-        >
-          <Compass className="w-4 h-4 text-white" />
-          System Tour
-        </button>
-      )}
-
       {/* Interactive System Tour Modal */}
       <SystemTourModal isOpen={isTourOpen} onClose={() => setIsTourOpen(false)} />
     </>
