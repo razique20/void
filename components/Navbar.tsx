@@ -124,9 +124,6 @@ export default function Navbar() {
       document.body.classList.remove('has-sidebars', 'sidebar-collapsed', 'has-transitions');
       document.documentElement.classList.remove('sidebar-collapsed');
     }
-    return () => {
-      document.body.classList.remove('has-sidebars', 'sidebar-collapsed', 'has-transitions');
-    };
   }, [isWorkspace, isCollapsed, mounted]);
 
   // Lock scroll when mobile menu is open

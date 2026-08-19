@@ -104,18 +104,7 @@ export default function ProfilePage() {
   const activeIndustryObj = INDUSTRIES.find(i => i.id === selectedIndustry);
 
   return (
-    <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300 font-sans antialiased overflow-hidden">
-      <Navbar />
-      
-      <div className="flex pt-20 flex-1 overflow-hidden">
-        <MobileBottomNav />
-
-        <main className="flex-1 overflow-y-auto px-4 md:px-12 py-8 md:py-10 pb-24 md:pb-12 relative z-10 custom-scrollbar">
-          
-          <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-[0.04] pointer-events-none" />
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
-
-          <div className="max-w-4xl mx-auto space-y-8 relative z-10">
+    <div className="max-w-4xl mx-auto space-y-8 relative z-10">
             
             {/* Header */}
             <div className="space-y-1.5 border-b border-foreground/[0.06] dark:border-white/[0.06] pb-6">
@@ -444,10 +433,6 @@ export default function ProfilePage() {
               </form>
             )}
 
-          </div>
-
-        </main>
-      </div>
     </div>
   );
 }
