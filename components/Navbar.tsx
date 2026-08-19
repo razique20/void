@@ -286,8 +286,8 @@ export default function Navbar() {
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
                 </span>
                 {(!mounted || !isCollapsed) && (
-                  <span className="text-[8.5px] font-mono font-bold tracking-[0.18em] text-silver/60 uppercase mt-1">
-                    AUTONOMOUS OS
+                  <span className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-silver/60 uppercase mt-1 flex items-center gap-1">
+                    AUTONOMOUS OS <span className="text-emerald-400/80 font-normal lowercase tracking-normal">by Aethyl</span>
                   </span>
                 )}
               </div>
