@@ -12,6 +12,7 @@ import { getContactMemory, updateMemorySummary, buildMemoryPrompt } from '@/lib/
 import { checkRateLimit } from '@/lib/rateLimit';
 import Lead from '@/models/Lead';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
+import { broadcast } from '@/lib/notifications';
 
 export async function POST(req: Request) {
   try {
@@ -319,6 +320,18 @@ When a user asks for a task matching these descriptions, you MUST include the [A
     // 10. Update longitudinal memory (non-blocking — fire and forget)
     const dynamicGroqRef = dynamicGroq;
     updateMemorySummary(contactMemory, message, aiResponse, dynamicGroqRef, modelName);
+
+    // 11. Broadcast real-time notification for new conversation activity
+    const isNewConversation = conversation.messages.length <= 2; // user msg + assistant reply
+    if (isNewConversation) {
+      broadcast(userId, {
+        type: 'message',
+        title: 'New Conversation Started',
+        body: `${worker.name} is handling a new web chat session.`,
+        href: '/dashboard/live',
+        meta: { workerId: worker._id, conversationId: conversation._id },
+      });
+    }
 
     return NextResponse.json({
       response: aiResponse,

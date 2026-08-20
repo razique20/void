@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Navbar from '@/components/Navbar';
-import MobileBottomNav from '@/components/MobileBottomNav';
+
 import { useUser, useClerk } from '@clerk/nextjs';
 import { 
   Building2, 

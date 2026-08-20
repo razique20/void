@@ -68,8 +68,25 @@ export default function LiveChatPage() {
   useEffect(() => {
     if (!loadingSub && sub?.features?.includes('mission_control')) {
       fetchConversations();
-      const interval = setInterval(fetchConversations, 5000); // Poll every 5s
-      return () => clearInterval(interval);
+
+      // Fallback polling at a relaxed 15s interval (SSE triggers immediate re-fetch)
+      const interval = setInterval(fetchConversations, 15_000);
+
+      // SSE connection for instant updates — re-fetch on any message/lead notification
+      const es = new EventSource('/api/notifications');
+      es.addEventListener('notification', (e) => {
+        try {
+          const n = JSON.parse(e.data);
+          if (n.type === 'message' || n.type === 'lead') {
+            fetchConversations();
+          }
+        } catch {}
+      });
+
+      return () => {
+        clearInterval(interval);
+        es.close();
+      };
     }
   }, [sub, loadingSub]);
 

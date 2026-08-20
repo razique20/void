@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Ticket from '@/models/Ticket';
+import { broadcast } from '@/lib/notifications';
 
 export async function POST(req: Request) {
   try {
@@ -29,6 +30,15 @@ export async function POST(req: Request) {
       subject,
       description,
       status: 'open'
+    });
+
+    // Broadcast real-time notification
+    broadcast(userId, {
+      type: 'ticket',
+      title: 'Ticket Submitted',
+      body: `Your support ticket "${subject}" has been submitted and is being reviewed.`,
+      href: '/dashboard/support',
+      meta: { ticketId: ticket._id },
     });
 
     return NextResponse.json(ticket);

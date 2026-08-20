@@ -1,7 +1,5 @@
 'use client';
 
-import Navbar from '@/components/Navbar';
-import MobileBottomNav from '@/components/MobileBottomNav';
 import { usePathname } from 'next/navigation';
 import { Monitor, X } from 'lucide-react';
 import { useState } from 'react';
@@ -16,10 +14,7 @@ export default function DashboardLayout({
   const [showBanner, setShowBanner] = useState(true);
 
   return (
-    <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300">
-      <Navbar />
-      <div className="flex flex-1 overflow-hidden pt-20">
-        <MobileBottomNav />
+    <div className="flex flex-1 overflow-hidden pt-20">
         <div className="flex flex-1 flex-col overflow-hidden relative">
           
           {/* Subtle dot grid background */}
@@ -55,7 +50,6 @@ export default function DashboardLayout({
             </main>
           )}
         </div>
-      </div>
     </div>
   );
 }

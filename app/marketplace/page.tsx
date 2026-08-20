@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import MobileBottomNav from '@/components/MobileBottomNav';
 import { ShoppingBag, Zap, Mic, Sparkles, Lock, ArrowRight, Bot, Globe, ShieldCheck, Database, Circle, Search, Layers, Crown, Star } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -32,17 +30,13 @@ export default function MarketplacePage() {
   };
 
   return (
-    <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300 overflow-hidden">
+    <div className="flex flex-1 overflow-hidden pt-20">
       
       {/* Background Ambience */}
       <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
       {Toast}
-
-      <Navbar />
-      <div className="flex flex-1 overflow-hidden">
-        <MobileBottomNav />
         
         <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28 pb-24 md:pb-8 relative">
           <div className="max-w-7xl mx-auto">
@@ -285,7 +279,6 @@ export default function MarketplacePage() {
             </div>
           </div>
         </main>
-      </div>
     </div>
   );
 }

@@ -16,37 +16,36 @@ interface DataContextValue {
 const DataContext = createContext<DataContextValue | null>(null);
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  // Initialize from module cache immediately, hydrate from localStorage on first render
-  const [sub, setSub] = useState<any>(() => {
-    if (cachedSub) return cachedSub;
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('void_navbar_sub');
-        if (stored) { cachedSub = JSON.parse(stored); return cachedSub; }
-      } catch (e) {}
-    }
-    return null;
-  });
-
-  const [config, setConfig] = useState<any>(() => {
-    if (cachedConfig) return cachedConfig;
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('void_navbar_config');
-        if (stored) { cachedConfig = JSON.parse(stored); return cachedConfig; }
-      } catch (e) {}
-    }
-    return null;
-  });
-
-  const [loading, setLoading] = useState(!cachedSub || !cachedConfig);
+  // Always start with null/loading on both server and client to avoid hydration mismatches.
+  // Module cache and localStorage are hydrated in useEffect after mount.
+  const [sub, setSub] = useState<any>(null);
+  const [config, setConfig] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Skip fetch entirely if module cache is warm (survives SPA navigation)
+    // Hydrate from module cache first (survives SPA navigation without fetching)
     if (cachedSub && cachedConfig) {
+      setSub(cachedSub);
+      setConfig(cachedConfig);
       setLoading(false);
       return;
     }
+
+    // Try localStorage backup before fetching
+    try {
+      const storedSub = localStorage.getItem('void_navbar_sub');
+      const storedConfig = localStorage.getItem('void_navbar_config');
+      if (storedSub && storedConfig) {
+        const parsedSub = JSON.parse(storedSub);
+        const parsedConfig = JSON.parse(storedConfig);
+        cachedSub = parsedSub;
+        cachedConfig = parsedConfig;
+        setSub(parsedSub);
+        setConfig(parsedConfig);
+        setLoading(false);
+        return;
+      }
+    } catch (e) {}
 
     Promise.all([
       fetch('/api/subscription').then(res => res.json()),
@@ -56,10 +55,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
       cachedConfig = configData;
       setSub(subData);
       setConfig(configData);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('void_navbar_sub', JSON.stringify(subData));
-        localStorage.setItem('void_navbar_config', JSON.stringify(configData));
-      }
+      localStorage.setItem('void_navbar_sub', JSON.stringify(subData));
+      localStorage.setItem('void_navbar_config', JSON.stringify(configData));
     }).catch(console.error)
       .finally(() => setLoading(false));
   }, []);

@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import MobileBottomNav from '@/components/MobileBottomNav';
 import { 
   Send, 
   Bot, 
@@ -29,7 +27,8 @@ import {
   Trash2,
   Cpu,
   CornerDownLeft,
-  Info
+  Info,
+  Plus
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -174,10 +173,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300 overflow-hidden">
-      <Navbar />
-      <div className="flex flex-1 overflow-hidden pt-20">
-        <MobileBottomNav />
+    <div className="flex flex-1 overflow-hidden pt-20">
         <div className="flex flex-1 flex-col overflow-hidden relative">
 
           {/* Dot grid & ambient glows */}
@@ -280,7 +276,23 @@ export default function ChatPage() {
                   {/* Operatives Cards */}
                   <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                     {filteredWorkers.length === 0 ? (
-                      <div className="text-center py-8 text-xs text-silver/60">No operatives found</div>
+                      <div className="flex flex-col items-center justify-center py-8 text-center">
+                        <div className="w-10 h-10 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl flex items-center justify-center mb-3">
+                          <Bot className="w-5 h-5 text-silver" />
+                        </div>
+                        <p className="text-xs font-semibold text-foreground">{searchQuery ? 'No matches' : 'No operatives yet'}</p>
+                        <p className="text-[10px] text-silver mt-1 max-w-[180px] leading-relaxed">
+                          {searchQuery ? 'Try a different search term.' : 'Deploy an operative to start live testing.'}
+                        </p>
+                        {!searchQuery && (
+                          <Link
+                            href="/create-worker"
+                            className="mt-3 inline-flex items-center gap-1.5 bg-foreground text-background px-3 py-1.5 rounded-lg text-[10px] font-bold hover:opacity-90 transition-all"
+                          >
+                            <Plus className="w-3 h-3" /> Deploy Operative
+                          </Link>
+                        )}
+                      </div>
                     ) : (
                       filteredWorkers.map((w) => {
                         const isSelected = selectedWorker === w._id;
@@ -397,32 +409,54 @@ export default function ChatPage() {
                   >
                     {messages.length === 0 ? (
                       <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-6">
-                        <div className="w-14 h-14 rounded-2xl bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] flex items-center justify-center">
-                          <BrainCircuit className="w-7 h-7 text-silver animate-pulse" />
-                        </div>
-
-                        <div className="space-y-1 max-w-sm">
-                          <h3 className="text-sm font-semibold text-foreground">
-                            {activeWorkerObj ? `Handshake with ${activeWorkerObj.name}` : 'Select an Operative'}
-                          </h3>
-                          <p className="text-silver text-xs font-medium">
-                            Type a transmission or pick a starter prompt below to test your agent&apos;s neural model.
-                          </p>
-                        </div>
-
-                        {/* Starter Prompt Chips */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-md w-full pt-2">
-                          {starterPrompts.map((prompt, i) => (
-                            <button
-                              key={i}
-                              onClick={() => handleSend(undefined, prompt)}
-                              className="p-3 bg-foreground/[0.02] dark:bg-white/[0.015] hover:bg-foreground/[0.04] dark:hover:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl text-left text-[11px] font-medium text-silver hover:text-foreground transition-all flex items-start gap-2 group"
+                        {workers.length === 0 ? (
+                          /* No workers at all */
+                          <>
+                            <div className="w-14 h-14 rounded-2xl bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] flex items-center justify-center">
+                              <Bot className="w-7 h-7 text-silver" />
+                            </div>
+                            <div className="space-y-1 max-w-sm">
+                              <h3 className="text-sm font-semibold text-foreground">No operatives to chat with</h3>
+                              <p className="text-silver text-xs font-medium">
+                                Deploy your first AI agent to start live conversations and test its intelligence.
+                              </p>
+                            </div>
+                            <Link
+                              href="/create-worker"
+                              className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-sm"
                             >
-                              <Sparkles className="w-3 h-3 text-apple-blue shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                              <span className="line-clamp-2">{prompt}</span>
-                            </button>
-                          ))}
-                        </div>
+                              <Plus className="w-3.5 h-3.5" /> Deploy Operative
+                            </Link>
+                          </>
+                        ) : (
+                          /* Workers exist, no messages yet */
+                          <>
+                            <div className="w-14 h-14 rounded-2xl bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] flex items-center justify-center">
+                              <BrainCircuit className="w-7 h-7 text-silver animate-pulse" />
+                            </div>
+                            <div className="space-y-1 max-w-sm">
+                              <h3 className="text-sm font-semibold text-foreground">
+                                {activeWorkerObj ? `Handshake with ${activeWorkerObj.name}` : 'Select an Operative'}
+                              </h3>
+                              <p className="text-silver text-xs font-medium">
+                                Type a transmission or pick a starter prompt below to test your agent&apos;s neural model.
+                              </p>
+                            </div>
+                            {/* Starter Prompt Chips */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-md w-full pt-2">
+                              {starterPrompts.map((prompt, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => handleSend(undefined, prompt)}
+                                  className="p-3 bg-foreground/[0.02] dark:bg-white/[0.015] hover:bg-foreground/[0.04] dark:hover:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl text-left text-[11px] font-medium text-silver hover:text-foreground transition-all flex items-start gap-2 group"
+                                >
+                                  <Sparkles className="w-3 h-3 text-apple-blue shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                                  <span className="line-clamp-2">{prompt}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </>
+                        )}
                       </div>
                     ) : (
                       <div className="space-y-5">
@@ -649,6 +683,5 @@ export default function ChatPage() {
 
         </div>
       </div>
-    </div>
   );
 }

@@ -1,12 +1,10 @@
 'use client';
 
-import Navbar from '@/components/Navbar';
 import AdminSidebar from '@/components/AdminSidebar';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="h-screen relative flex flex-col">
-      <Navbar />
       <div className="flex flex-1 overflow-hidden">
         <div className="hidden md:flex h-full w-64 flex-col z-40 overflow-y-auto pt-20 bg-transparent">
           <AdminSidebar />

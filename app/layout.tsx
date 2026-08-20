@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkThemeProvider } from "@/components/clerk-theme-provider";
 import { DataProvider } from "@/lib/DataContext";
 import PageTransition from "@/components/PageTransition";
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 
 const inter = Inter({
@@ -60,6 +61,7 @@ export default function RootLayout({
         >
           <ClerkThemeProvider>
             <DataProvider>
+              <Navbar />
               <PageTransition>
                 {children}
               </PageTransition>

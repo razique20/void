@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import MobileBottomNav from '@/components/MobileBottomNav';
+
 import {
   Bot,
   Loader2,
@@ -532,11 +531,7 @@ export default function CreateWorkerPage() {
   };
 
   return (
-    <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300 font-sans antialiased overflow-hidden">
-      <Navbar />
-      
-      <div className="flex pt-20 flex-1 overflow-hidden">
-        <MobileBottomNav />
+    <div className="flex pt-20 flex-1 overflow-hidden">
 
         <main className="flex-1 overflow-y-auto px-4 md:px-12 py-8 md:py-10 pb-24 md:pb-12 relative z-10 custom-scrollbar">
           
@@ -955,7 +950,6 @@ export default function CreateWorkerPage() {
             </div>
           </motion.div>
         </main>
-      </div>
     </div>
   );
 }

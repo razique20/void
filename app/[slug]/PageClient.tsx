@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -147,7 +146,6 @@ export default function PageClient({ slug }: { slug: string }) {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground overflow-x-hidden transition-colors duration-300">
-      <Navbar />
 
       {/* Decorative ambient gradients */}
       <div className="fixed inset-0 z-0 pointer-events-none">

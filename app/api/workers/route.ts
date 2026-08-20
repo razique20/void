@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Worker from '@/models/Worker';
 import { getUserSubscription } from '@/lib/subscription';
+import { broadcast } from '@/lib/notifications';
 
 export async function POST(req: Request) {
   try {
@@ -31,6 +32,15 @@ export async function POST(req: Request) {
       personality,
       tone,
       language,
+    });
+
+    // Broadcast real-time notification
+    broadcast(userId, {
+      type: 'worker',
+      title: 'Operative Deployed',
+      body: `"${name}" is now online and ready to handle conversations.`,
+      href: '/dashboard',
+      meta: { workerId: worker._id },
     });
 
     return NextResponse.json(worker);

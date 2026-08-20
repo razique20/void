@@ -33,6 +33,8 @@ import {
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
 import SystemTourModal from './SystemTourModal';
+import UpgradeModal from './UpgradeModal';
+import NotificationBell from './NotificationBell';
 import { useData } from '@/lib/DataContext';
 
 let cachedMounted = false; // survives SPA remounts so transitions stay enabled
@@ -148,6 +150,7 @@ export default function Navbar() {
   ];
 
   const [isTourOpen, setIsTourOpen] = useState(false);
+  const [upgradeModal, setUpgradeModal] = useState<{ open: boolean; feature: string }>({ open: false, feature: '' });
 
   // Auto prompt first time workspace visitors with tour
   useEffect(() => {
@@ -277,7 +280,7 @@ export default function Navbar() {
                         href={link.href}
                         onClick={isLocked ? (e: React.MouseEvent) => {
                           e.preventDefault();
-                          alert('Upgrade your plan to access ' + link.label);
+                          setUpgradeModal({ open: true, feature: link.label });
                         } : undefined}
                         className={cn(
                           "flex items-center rounded-xl text-xs font-bold transition-all border relative group",
@@ -364,10 +367,15 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={link.isAction ? (e: React.MouseEvent) => {
-                  e.preventDefault();
-                  setIsTourOpen(true);
-                } : undefined}
+                onClick={(e: React.MouseEvent) => {
+                  if (link.isAction) {
+                    e.preventDefault();
+                    setIsTourOpen(true);
+                  } else if (link.locked) {
+                    e.preventDefault();
+                    setUpgradeModal({ open: true, feature: link.label });
+                  }
+                }}
                 className={cn(
                   "relative group w-10 h-10 rounded-xl flex items-center justify-center transition-all border cursor-pointer",
                   isActive
@@ -394,6 +402,7 @@ export default function Navbar() {
 
         {/* Bottom profile & settings elements */}
         <div className="flex flex-col items-center gap-4">
+          <NotificationBell />
           <ThemeToggle />
           <div className="scale-90">
             <UserButton />
@@ -442,7 +451,13 @@ export default function Navbar() {
                   <Link 
                     key={link.href}
                     href={link.href} 
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => {
+                      setIsOpen(false);
+                      if (link.locked) {
+                        e.preventDefault();
+                        setUpgradeModal({ open: true, feature: link.label });
+                      }
+                    }}
                     className={cn(
                       "font-extrabold tracking-tight transition-all text-lg flex items-center gap-2.5",
                       isTabActive(link.href) ? "text-foreground" : "text-silver hover:text-foreground"
@@ -472,6 +487,9 @@ export default function Navbar() {
                       if (link.isAction) {
                         e.preventDefault();
                         setIsTourOpen(true);
+                      } else if (link.locked) {
+                        e.preventDefault();
+                        setUpgradeModal({ open: true, feature: link.label });
                       }
                     }}
                     className={cn(
@@ -500,6 +518,13 @@ export default function Navbar() {
 
       {/* Interactive System Tour Modal */}
       <SystemTourModal isOpen={isTourOpen} onClose={() => setIsTourOpen(false)} />
+
+      {/* Upgrade Modal for locked features */}
+      <UpgradeModal
+        isOpen={upgradeModal.open}
+        onClose={() => setUpgradeModal({ open: false, feature: '' })}
+        featureName={upgradeModal.feature}
+      />
     </>
   );
 }

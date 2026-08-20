@@ -4,6 +4,7 @@ import connectDB from '@/lib/mongodb';
 import Conversation from '@/models/Conversation';
 import Worker from '@/models/Worker';
 import ContactMemory from '@/models/ContactMemory';
+import { broadcast } from '@/lib/notifications';
 
 // GET: List all conversations with worker details for the logged-in user
 export async function GET() {
@@ -72,6 +73,16 @@ export async function PATCH(req: Request) {
 
     conversation.isPaused = isPaused;
     await conversation.save();
+
+    // Broadcast real-time notification
+    broadcast(userId, {
+      type: 'message',
+      title: isPaused ? 'Takeover Engaged' : 'Autopilot Resumed',
+      body: isPaused
+        ? `Manual takeover activated for ${conversation.externalId || 'a session'}. AI responses paused.`
+        : `AI autopilot resumed for ${conversation.externalId || 'a session'}. Manual override ended.`,
+      href: '/dashboard/live',
+    });
 
     return NextResponse.json(conversation);
   } catch (error: any) {

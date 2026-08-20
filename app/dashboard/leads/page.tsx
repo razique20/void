@@ -22,7 +22,9 @@ import {
   Filter,
   Flame,
   Lock,
-  X
+  X,
+  Plus,
+  MessageSquare
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -441,10 +443,28 @@ export default function LeadsPage() {
               <div className="w-12 h-12 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl flex items-center justify-center mb-3">
                 <FileText className="w-5 h-5 text-silver" />
               </div>
-              <h3 className="text-sm font-semibold text-foreground">No leads captured</h3>
-              <p className="text-silver text-xs max-w-xs mt-1 font-medium">
-                {search ? 'No lead matches your search criteria.' : 'Neural operatives will catalog prospective target leads automatically.'}
+              <h3 className="text-sm font-semibold text-foreground">{search ? 'No leads match your search' : 'No leads in pipeline yet'}</h3>
+              <p className="text-silver text-xs max-w-sm mt-1.5 font-medium leading-relaxed">
+                {search
+                  ? 'Try adjusting your search terms or clear the filter to see all leads.'
+                  : 'Leads are captured automatically when customers interact with your operatives via chat, WhatsApp, or web widgets. Deploy an operative and start conversations to begin capturing leads.'}
               </p>
+              {!search && (
+                <div className="mt-5 flex flex-col sm:flex-row gap-2">
+                  <Link
+                    href="/create-worker"
+                    className="inline-flex items-center justify-center gap-1.5 bg-foreground text-background px-5 py-2.5 rounded-xl text-[11px] font-bold hover:opacity-90 transition-all shadow-sm"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Deploy Operative
+                  </Link>
+                  <Link
+                    href="/chat"
+                    className="inline-flex items-center justify-center gap-1.5 bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.06] dark:border-white/[0.06] text-foreground px-5 py-2.5 rounded-xl text-[11px] font-bold hover:bg-foreground/[0.08] dark:hover:bg-white/[0.08] transition-all"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" /> Start Chat
+                  </Link>
+                </div>
+              )}
             </div>
           ) : (
             <motion.div className="space-y-2" variants={containerVariants}>

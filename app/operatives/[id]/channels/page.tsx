@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Navbar from '@/components/Navbar';
-import MobileBottomNav from '@/components/MobileBottomNav';
+
 import { 
   MessageSquare, 
   Zap, 
@@ -183,10 +182,7 @@ export default function ChannelsPage() {
 
   if (loading || !operative) {
     return (
-      <div className="h-full relative flex flex-col bg-background">
-        <Navbar />
-        <div className="flex pt-20 h-full overflow-hidden">
-          <MobileBottomNav />
+      <div className="flex pt-20 h-full overflow-hidden">
           <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
             <div className="max-w-4xl mx-auto space-y-8">
               <div className="mb-8">
@@ -196,7 +192,6 @@ export default function ChannelsPage() {
               <div className="h-64 bg-foreground/[0.02] rounded-[32px] animate-pulse" />
             </div>
           </main>
-        </div>
       </div>
     );
   }
@@ -237,10 +232,7 @@ export default function ChannelsPage() {
   const hasSmartRouting = sub?.features?.includes('smart_routing');
 
   return (
-    <div className="h-full relative flex flex-col bg-background text-foreground transition-all duration-300">
-      <Navbar />
-      <div className="flex pt-20 h-full overflow-hidden">
-        <MobileBottomNav />
+    <div className="flex pt-20 h-full overflow-hidden">
         <main className="flex-1 overflow-y-auto p-6 md:p-12 pb-24 md:pb-12">
           
           {/* Background Ambience */}
@@ -813,7 +805,6 @@ export default function ChannelsPage() {
             </form>
           </div>
         </main>
-      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Ticket from '@/models/Ticket';
+import { broadcast } from '@/lib/notifications';
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -23,6 +24,17 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     
     if (!ticket) {
       return NextResponse.json({ error: 'Ticket not found' }, { status: 404 });
+    }
+
+    // Broadcast real-time notification to the ticket owner
+    if (adminResponse) {
+      broadcast(ticket.userId, {
+        type: 'ticket',
+        title: 'Support Reply',
+        body: `New response on "${ticket.subject}": ${adminResponse.slice(0, 120)}`,
+        href: '/dashboard/support',
+        meta: { ticketId: ticket._id, status },
+      });
     }
 
     // [FEATURE: Email Notification] 

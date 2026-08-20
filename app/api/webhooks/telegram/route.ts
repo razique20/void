@@ -9,6 +9,7 @@ import Groq from 'groq-sdk';
 import { getContactMemory, updateMemorySummary, buildMemoryPrompt } from '@/lib/memory';
 import { checkRateLimit } from '@/lib/rateLimit';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
+import { broadcast } from '@/lib/notifications';
 
 /**
  * TELEGRAM WEBHOOK HANDLER
@@ -65,6 +66,8 @@ export async function POST(req: Request) {
       channel: 'telegram'
     });
 
+    const isNewConversation = !conversation;
+
     if (!conversation) {
       conversation = await Conversation.create({
         workerId: operative._id,
@@ -77,6 +80,17 @@ export async function POST(req: Request) {
     // Save user message to history
     conversation.messages.push({ role: 'user', content: userText });
     await conversation.save();
+
+    // Broadcast real-time notification for new Telegram conversation
+    if (isNewConversation) {
+      broadcast(operative.userId, {
+        type: 'message',
+        title: 'New Telegram Message',
+        body: `${operative.name} received a new Telegram message from ${userName}.`,
+        href: '/dashboard/live',
+        meta: { workerId: operative._id, channel: 'telegram', chatId },
+      });
+    }
 
     if (conversation.isPaused) {
       console.log(`[TELEGRAM] Takeover active for chat ${chatId}. AI skipping response.`);

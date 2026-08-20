@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Navbar from '@/components/Navbar';
-import MobileBottomNav from '@/components/MobileBottomNav';
+
 import { Check, Loader2, CreditCard, Sparkles, Circle, MessageCircle, Shield, Zap, Crown, Star, ArrowRight, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -139,17 +138,13 @@ export default function BillingPage() {
   const isDisabled = upgrading === selectedPlan.id || isCurrentPlan || selectedPlan.id === 'free' || isDowngrade;
 
   return (
-    <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300 overflow-hidden">
+    <div className="flex flex-1 overflow-hidden pt-20">
       
       {/* Background Ambience */}
       <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
       {Toast}
-
-      <Navbar />
-      <div className="flex flex-1 overflow-hidden">
-        <MobileBottomNav />
         
         <main className="flex-1 overflow-y-auto p-4 md:p-8 pt-24 md:pt-28 pb-24 md:pb-8 relative">
           <div className="max-w-7xl mx-auto min-h-full flex flex-col lg:flex-row gap-8 lg:gap-12 relative z-10 pt-4">
@@ -333,7 +328,6 @@ export default function BillingPage() {
 
           </div>
         </main>
-      </div>
     </div>
   );
 }

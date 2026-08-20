@@ -1,15 +1,10 @@
 'use client';
 
-import Navbar from '@/components/Navbar';
-import MobileBottomNav from '@/components/MobileBottomNav';
 import DashboardLeadsPage from '@/app/dashboard/leads/page';
 
 export default function LeadsPage() {
   return (
-    <div className="h-screen relative flex flex-col bg-background text-foreground transition-colors duration-300">
-      <Navbar />
-      <div className="flex flex-1 overflow-hidden pt-20">
-        <MobileBottomNav />
+    <div className="flex flex-1 overflow-hidden pt-20">
         <div className="flex flex-1 flex-col overflow-hidden relative">
           
           {/* Subtle dot grid background */}
@@ -25,6 +20,5 @@ export default function LeadsPage() {
 
         </div>
       </div>
-    </div>
   );
 }

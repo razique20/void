@@ -1,6 +1,5 @@
 'use client';
 
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import {
   MetricsBand,
@@ -35,7 +34,6 @@ export default function LandingPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-emerald-500/30 overflow-x-hidden">
-      <Navbar />
 
       {/* Background ambience */}
       <div className="fixed inset-0 z-0 pointer-events-none">

@@ -39,13 +39,13 @@ These pages still use older, less polished layouts:
 
 ## 🟠 HIGH PRIORITY — Feature Gaps & Improvements
 
-### 6. No onboarding flow for new users after sign-up
-- After sign-up, user is redirected to `/onboarding` but there's no clear progress indicator or step-by-step wizard guidance.
-- **Recommendation**: Add a proper onboarding stepper (Step 1: Name → Step 2: Industry → Step 3: First Operative) with progress persistence.
+### 6. ~~No onboarding flow for new users after sign-up~~ ✅
+- ~~After sign-up, user is redirected to `/onboarding` but there's no clear progress indicator or step-by-step wizard guidance.~~
+- ~~**Recommendation**: Add a proper onboarding stepper (Step 1: Name → Step 2: Industry → Step 3: First Operative) with progress persistence.~~ **Implemented a full 3-step onboarding wizard: Step 1 (Business Name) → Step 2 (Industry Selection with 5 sector blueprints) → Step 3 (First Operative with name + tone). Added animated progress indicator with connecting track, localStorage persistence (`void_onboarding_state`) so users resume where they left off, directional Framer Motion slide transitions, and success animation on completion. Industry selection feeds into `void_profile_industry` / `void_profile_companyName` for downstream blueprint compatibility. Updated loading skeleton to match new layout.**
 
-### 7. No "Empty State" experience on dashboard for new users
-- If a new user with 0 workers lands on `/dashboard`, they're redirected to `/onboarding` (line ~40 of dashboard). But if they have workers but no conversations, the training page shows empty states that could be more helpful.
-- **Recommendation**: Add contextual empty states with CTAs (e.g., "No knowledge chunks yet — upload your first FAQ" with a highlighted button).
+### 7. ~~No "Empty State" experience on dashboard for new users~~ ✅
+- ~~If a new user with 0 workers lands on `/dashboard`, they're redirected to `/onboarding` (line ~40 of dashboard). But if they have workers but no conversations, the training page shows empty states that could be more helpful.~~
+- ~~**Recommendation**: Add contextual empty states with CTAs (e.g., "No knowledge chunks yet — upload your first FAQ" with a highlighted button).~~ **Added contextual empty states across 3 pages: (1) Training page: full-page empty state when 0 operatives with "Deploy First Operative" CTA; improved Memory Bank empty state with "Add FAQ / SOP" and "Upload Document" quick-action buttons that switch the ingestion mode. (2) Chat page: sidebar empty state with "Deploy Operative" CTA when 0 operatives; main empty state splits into two variants — no operatives (deploy CTA) vs. operatives exist but no messages (starter prompts). (3) Leads page: improved empty state with explanation of how leads are captured automatically, plus dual CTAs ("Deploy Operative" and "Start Chat").**
 
 ### 8. Billing is WhatsApp-based — needs proper Stripe checkout integration
 - Currently `handleSubscribe` opens a WhatsApp link with a pre-filled message.
@@ -55,9 +55,9 @@ These pages still use older, less polished layouts:
 - The email page has settings modal for adding IMAP/SMTP accounts but it's deeply buried.
 - **Recommendation**: Show a prominent "Connect your first email account" CTA when no accounts exist, similar to how credentials page works for WhatsApp.
 
-### 10. No real-time notifications system
-- There's no WebSocket or SSE-based notification system. The dashboard polls every 5s in Mission Control but that's it.
-- **Recommendation**: Implement Server-Sent Events (SSE) or a lightweight WebSocket for real-time: new message alerts, operative status changes, billing events, and support ticket replies.
+### 10. ~~No real-time notifications system~~ ✅
+- ~~There's no WebSocket or SSE-based notification system. The dashboard polls every 5s in Mission Control but that's it.~~
+- ~~**Recommendation**: Implement Server-Sent Events (SSE) or a lightweight WebSocket for real-time: new message alerts, operative status changes, billing events, and support ticket replies.~~ **Implemented full SSE-based notification system. Created in-memory pub/sub hub (`lib/notifications.ts`) managing per-user SSE connections with 50-notification replay buffer. SSE endpoint at `/api/notifications` with POST for mark-read and `?action=unread` lightweight poll fallback. Client hook (`lib/useNotifications.ts`) with auto-reconnect, mark-read, dismiss. `NotificationBell` component integrated into the right dock sidebar with unread badge, dropdown panel, and auto-marks-read on open. Wired up 7 event producers: new web chat conversations, new WhatsApp messages, new Telegram messages, operative deployed, takeover/autopilot toggled, ticket submitted, and admin support replies. Live Mission Control page upgraded from 5s polling to SSE-triggered instant re-fetch with 15s fallback polling.
 
 ### 11. No multi-user / team support
 - Currently each account is single-user via Clerk. No team member invitation, role-based access control (RBAC), or shared workspace.
@@ -164,7 +164,7 @@ These pages still use older, less polished layouts:
 
 38. Multi-user support ✅ (item 11)
 
-39. Adding real-time notifications for the system ✅ (item 10)
+39. Adding real-time notifications for the system ✅ (item 10 — completed: full SSE system with 7 event producers, bell UI, and live page upgrade)
 
 40. In-app CRM UI for the client for managing their team members and access controls ✅ (item 11)
 
@@ -174,4 +174,4 @@ These pages still use older, less polished layouts:
 
 ---
 
-*Generated by system audit — 42 actionable items identified (6 completed ✅)*
+*Generated by system audit — 42 actionable items identified (9 completed ✅)*

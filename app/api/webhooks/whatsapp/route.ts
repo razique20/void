@@ -10,6 +10,7 @@ import Groq from 'groq-sdk';
 import { getContactMemory, updateMemorySummary, buildMemoryPrompt } from '@/lib/memory';
 import { checkRateLimit } from '@/lib/rateLimit';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
+import { broadcast } from '@/lib/notifications';
 
 // 1. Webhook Verification (GET) - Required by Meta
 export async function GET(req: Request) {
@@ -167,6 +168,8 @@ export async function POST(req: Request) {
       channel: 'whatsapp'
     });
 
+    const isNewConversation = !conversation;
+
     if (!conversation) {
       conversation = await Conversation.create({
         workerId: operative._id,
@@ -179,6 +182,17 @@ export async function POST(req: Request) {
     // Save user message to history
     conversation.messages.push({ role: 'user', content: customerText });
     await conversation.save();
+
+    // Broadcast real-time notification for new WhatsApp conversation
+    if (isNewConversation) {
+      broadcast(operative.userId, {
+        type: 'message',
+        title: 'New WhatsApp Message',
+        body: `${operative.name} received a new WhatsApp message from ${customerPhone}.`,
+        href: '/dashboard/live',
+        meta: { workerId: operative._id, channel: 'whatsapp', phone: customerPhone },
+      });
+    }
 
     if (conversation.isPaused) {
       console.log(`[WHATSAPP] Takeover active for ${customerPhone}. AI skipping response.`);
