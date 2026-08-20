@@ -124,7 +124,7 @@
   --color-silver: var(--silver);
   --color-apple-blue: var(--apple-blue);
   --font-sans: var(--font-inter);
-  --font-mono: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 @utility animate-marquee {

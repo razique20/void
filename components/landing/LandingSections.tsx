@@ -52,10 +52,10 @@ export function MetricsBand() {
             viewport={viewport}
             className="text-center p-6"
           >
-            <div className="text-4xl md:text-5xl font-black tracking-tighter text-white tabular-nums">
+            <div className="text-4xl md:text-5xl font-black tracking-tighter text-foreground tabular-nums">
               {s.value}
             </div>
-            <div className="mt-3 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
+            <div className="mt-3 text-xs font-semibold text-silver uppercase tracking-wider">
               {s.label}
             </div>
           </motion.div>
@@ -104,11 +104,11 @@ export function HowItWorks() {
       >
         <h2
           id="how-heading"
-          className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-white"
+          className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-foreground"
         >
           Live in three steps.
         </h2>
-        <p className="mt-4 text-zinc-400 text-lg max-w-xl mx-auto font-medium">
+        <p className="mt-4 text-silver text-lg max-w-xl mx-auto font-medium">
           No engineers. No six-month rollout. Ship your first operative today.
         </p>
       </motion.div>
@@ -128,14 +128,14 @@ export function HowItWorks() {
               <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
                 <s.icon className="w-6 h-6 text-emerald-400" />
               </div>
-              <span className="text-5xl font-black text-zinc-800/30 tabular-nums select-none">
+              <span className="text-5xl font-black text-foreground/[0.12] tabular-nums select-none">
                 {s.step}
               </span>
             </div>
-            <h3 className="text-xl font-bold text-white mb-3">
+            <h3 className="text-xl font-bold text-foreground mb-3">
               {s.title}
             </h3>
-            <p className="text-zinc-400 text-base font-medium leading-relaxed">
+            <p className="text-silver text-base font-medium leading-relaxed">
               {s.body}
             </p>
           </motion.li>
@@ -187,7 +187,7 @@ export function UseCases() {
       >
         <h2
           id="usecases-heading"
-          className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-white"
+          className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-foreground"
         >
           One workforce.
           <br />
@@ -208,17 +208,17 @@ export function UseCases() {
           >
             <Link
               href={u.href}
-              className="flex h-full flex-col p-8 group hover:bg-zinc-900/30 rounded-3xl border border-transparent hover:border-zinc-800 transition-all duration-300"
+              className="flex h-full flex-col p-8 group hover:bg-foreground/[0.04] rounded-3xl border border-transparent hover:border-foreground/[0.12] transition-all duration-300"
             >
               <div className="flex items-center justify-between mb-6">
-                <u.icon className="w-8 h-8 text-white" />
-                <ArrowUpRight className="w-5 h-5 text-zinc-600 group-hover:text-emerald-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                <u.icon className="w-8 h-8 text-foreground" />
+                <ArrowUpRight className="w-5 h-5 text-silver group-hover:text-emerald-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
               </div>
               <span className="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-3">
                 {u.tag}
               </span>
-              <h3 className="text-xl font-bold text-white mb-3">{u.title}</h3>
-              <p className="text-zinc-400 text-base font-medium leading-relaxed">
+              <h3 className="text-xl font-bold text-foreground mb-3">{u.title}</h3>
+              <p className="text-silver text-base font-medium leading-relaxed">
                 {u.body}
               </p>
             </Link>
@@ -246,7 +246,7 @@ export function TrustStrip() {
         {TRUST.map((t) => (
           <span
             key={t}
-            className="flex items-center gap-2 text-sm font-medium text-zinc-500"
+            className="flex items-center gap-2 text-sm font-medium text-silver"
           >
             <Check className="w-4 h-4 text-emerald-500/70 shrink-0" />
             {t}

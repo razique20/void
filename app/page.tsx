@@ -34,7 +34,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="dark flex flex-col min-h-screen bg-[#030304] text-zinc-100 selection:bg-emerald-500/30 overflow-x-hidden">
+    <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-emerald-500/30 overflow-x-hidden">
       <Navbar />
 
       {/* Background ambience */}
@@ -55,7 +55,7 @@ export default function LandingPage() {
               {/* Headline */}
               <motion.h1
                 variants={itemVariants}
-                className="text-5xl sm:text-7xl md:text-[88px] font-black tracking-tighter leading-[0.95] text-white mb-8"
+                className="text-5xl sm:text-7xl md:text-[88px] font-black tracking-tighter leading-[0.95] text-foreground mb-8"
               >
                 Hire an AI workforce
                 <br />
@@ -67,7 +67,7 @@ export default function LandingPage() {
               {/* Subheadline */}
               <motion.p
                 variants={itemVariants}
-                className="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed font-medium"
+                className="text-silver text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed font-medium"
               >
                 Deploy autonomous operatives that handle support, sales, and workflows 24/7. 
                 Built for teams that move fast and ship faster.
@@ -81,16 +81,16 @@ export default function LandingPage() {
                 <Show when="signed-in">
                   <Link
                     href="/onboarding"
-                    className="group bg-white text-black hover:bg-zinc-200 px-8 py-4 rounded-full text-sm font-bold transition-all active:scale-[0.98] flex items-center gap-2"
+                    className="group bg-foreground text-background hover:opacity-90 px-8 py-4 rounded-full text-sm font-bold transition-all active:scale-[0.98] flex items-center gap-2"
                   >
                     Deploy an Operative
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                   <Link
-                    href="/marketplace"
-                    className="group flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-zinc-300 hover:text-white border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/50 transition-all"
+                    href="/dashboard"
+                    className="group flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-silver hover:text-foreground border border-foreground/[0.12] hover:border-foreground/[0.2] hover:bg-foreground/[0.04] transition-all"
                   >
-                    Explore Modules
+                    View Dashboard
                   </Link>
                 </Show>
                 <Show when="signed-out">
@@ -99,18 +99,18 @@ export default function LandingPage() {
                     fallbackRedirectUrl="/onboarding"
                     signUpFallbackRedirectUrl="/onboarding"
                   >
-                    <button className="group bg-white text-black hover:bg-zinc-200 px-8 py-4 rounded-full text-sm font-bold transition-all active:scale-[0.98] flex items-center gap-2 cursor-pointer">
+                    <button                    className="group bg-foreground text-background hover:opacity-90 px-8 py-4 rounded-full text-sm font-bold transition-all active:scale-[0.98] flex items-center gap-2 cursor-pointer">
                       Start free
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                   </SignInButton>
                   <SignInButton
                     mode="modal"
-                    fallbackRedirectUrl="/marketplace"
-                    signUpFallbackRedirectUrl="/marketplace"
+                    fallbackRedirectUrl="/dashboard"
+                    signUpFallbackRedirectUrl="/dashboard"
                   >
-                    <button className="group flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-zinc-300 hover:text-white border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/50 transition-all cursor-pointer">
-                      Explore Modules
+                    <button                    className="group flex items-center justify-center gap-2 px-8 py-4 rounded-full text-sm font-bold text-silver hover:text-foreground border border-foreground/[0.12] hover:border-foreground/[0.2] hover:bg-foreground/[0.04] transition-all cursor-pointer">
+                      View Dashboard
                     </button>
                   </SignInButton>
                 </Show>
@@ -119,7 +119,7 @@ export default function LandingPage() {
               {/* Trust signals */}
               <motion.p
                 variants={itemVariants}
-                className="text-sm text-zinc-500 flex items-center justify-center gap-2"
+                className="text-sm text-silver flex items-center justify-center gap-2"
               >
                 <ShieldCheck className="w-4 h-4 text-emerald-500" />
                 No credit card required · Enterprise-grade security · Deploy in minutes
@@ -134,17 +134,17 @@ export default function LandingPage() {
         </div>
 
         {/* How it works */}
-        <div className="border-t border-zinc-900/50">
+        <div className="border-t border-foreground/[0.06]">
           <HowItWorks />
         </div>
 
         {/* Use cases */}
-        <div className="border-t border-zinc-900/50">
+        <div className="border-t border-foreground/[0.06]">
           <UseCases />
         </div>
 
         {/* Final CTA */}
-        <section className="relative py-28 md:py-40 overflow-hidden border-t border-zinc-900/50">
+        <section className="relative py-28 md:py-40 overflow-hidden border-t border-foreground/[0.06]">
           <div className="max-w-4xl mx-auto px-5 sm:px-6 text-center relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -152,18 +152,18 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease }}
             >
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter mb-6 text-white leading-tight">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter mb-6 text-foreground leading-tight">
                 Ready to scale?
               </h2>
-              <p className="text-zinc-400 text-lg md:text-xl font-medium max-w-xl mx-auto mb-12">
+              <p className="text-silver text-lg md:text-xl font-medium max-w-xl mx-auto mb-12">
                 Your first operative pays for itself instantly. Start free today.
               </p>
 
               <div className="flex flex-col items-center gap-8">
                 <Show when="signed-in">
                   <Link
-                    href="/onboarding"
-                    className="bg-white text-black hover:bg-zinc-200 px-10 py-4 rounded-full text-base font-bold transition-all active:scale-[0.98] shadow-lg shadow-white/10"
+                    href="/dashboard"
+                    className="bg-foreground text-background hover:opacity-90 px-10 py-4 rounded-full text-base font-bold transition-all active:scale-[0.98] shadow-lg shadow-foreground/10"
                   >
                     Enter the Console
                   </Link>
@@ -174,7 +174,7 @@ export default function LandingPage() {
                     fallbackRedirectUrl="/onboarding"
                     signUpFallbackRedirectUrl="/onboarding"
                   >
-                    <button className="bg-white text-black hover:bg-zinc-200 px-10 py-4 rounded-full text-base font-bold transition-all active:scale-[0.98] shadow-lg shadow-white/10 cursor-pointer">
+                    <button                    className="bg-foreground text-background hover:opacity-90 px-10 py-4 rounded-full text-base font-bold transition-all active:scale-[0.98] shadow-lg shadow-foreground/10 cursor-pointer">
                       Start free
                     </button>
                   </SignInButton>
