@@ -217,7 +217,7 @@ export default function Navbar() {
   // RENDER OPTION B: Authenticated Workspace View (Dual Sidebars: Left Wide Sidebar + Right Slim Dock)
   return (
     <>
-      <aside className={cn(
+      <aside style={{ viewTransitionName: 'site-sidebar' }} className={cn(
         "fixed top-0 left-0 h-full border-r border-foreground/[0.08] dark:border-white/[0.08] bg-background/80 dark:bg-black/60 backdrop-blur-2xl z-40 hidden lg:flex flex-col justify-between select-none shadow-sm",
         mounted && "transition-all duration-200 ease-in-out",
         (mounted && isCollapsed) ? "w-16 p-2.5 py-4" : "w-64 p-4"
@@ -353,7 +353,7 @@ export default function Navbar() {
       </aside>
 
       {/* 2. RIGHT SLIM ACTION DOCK */}
-      <aside className="fixed top-0 right-0 h-full w-16 border-l border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col p-3 py-6 items-center justify-between select-none">
+      <aside style={{ viewTransitionName: 'site-dock' }} className="fixed top-0 right-0 h-full w-16 border-l border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col p-3 py-6 items-center justify-between select-none">
 
         {/* Center Icons Menu with Tooltips */}
         <nav className="flex flex-col gap-3">
@@ -402,7 +402,7 @@ export default function Navbar() {
       </aside>
 
       {/* 3. MOBILE HEADER (lg:hidden fallback) */}
-      <nav className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3 border-b lg:hidden bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]">
+      <nav style={{ viewTransitionName: 'site-mobile-nav' }} className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3 border-b lg:hidden bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]">
         <div className="flex justify-between items-center px-2 md:px-4 max-w-full">
           <Link href="/" className="group flex items-center">
             <span className="text-base font-black tracking-[-0.04em] text-foreground flex items-center gap-1">
