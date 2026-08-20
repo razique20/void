@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/lib/useToast';
 import Link from 'next/link';
 
 export default function LeadsPage() {
@@ -40,14 +41,9 @@ export default function LeadsPage() {
   const [webhookUrl, setWebhookUrl] = useState('');
   const [savingWebhook, setSavingWebhook] = useState(false);
   const [showWebhookPanel, setShowWebhookPanel] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const { showToast, Toast } = useToast();
   const [sub, setSub] = useState<any>(null);
   const [loadingSub, setLoadingSub] = useState(true);
-
-  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  };
 
   useEffect(() => {
     fetch('/api/subscription')
@@ -266,25 +262,7 @@ export default function LeadsPage() {
   return (
     <div className="space-y-8 font-sans antialiased">
       
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 15, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 15, scale: 0.95 }}
-            className={cn(
-              "fixed bottom-8 right-8 z-[100] px-4 py-3 rounded-xl border flex items-center gap-2.5 backdrop-blur-xl shadow-2xl text-xs font-semibold",
-              toast.type === 'error' 
-                ? 'bg-red-500/10 border-red-500/20 text-red-500' 
-                : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
-            )}
-          >
-            <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", toast.type === 'error' ? 'bg-red-500' : 'bg-emerald-500')} />
-            {toast.message}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {Toast}
 
       <motion.div 
         variants={containerVariants}

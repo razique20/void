@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/lib/useToast';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { 
   BookOpen, 
@@ -43,7 +44,7 @@ export default function TrainingPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [showSandbox, setShowSandbox] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const { showToast, Toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Ingested data & stats
@@ -54,11 +55,6 @@ export default function TrainingPage() {
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [eventLogs, setEventLogs] = useState<any[]>([]);
-
-  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  };
 
   const addEventLog = (message: string, type: 'info' | 'success' | 'error' = 'info') => {
     const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
@@ -246,25 +242,7 @@ export default function TrainingPage() {
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
           <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
-          {/* Toast Notification */}
-          <AnimatePresence>
-            {toast && (
-              <motion.div
-                initial={{ opacity: 0, y: 15, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 15, scale: 0.95 }}
-                className={cn(
-                  "fixed bottom-8 right-8 z-50 px-4 py-3 rounded-xl border flex items-center gap-2.5 backdrop-blur-xl shadow-2xl text-xs font-semibold",
-                  toast.type === 'error' 
-                    ? 'bg-red-500/10 border-red-500/20 text-red-500' 
-                    : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
-                )}
-              >
-                <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", toast.type === 'error' ? 'bg-red-500' : 'bg-emerald-500')} />
-                {toast.message}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {Toast}
 
           <main className="flex-1 overflow-y-auto px-4 md:px-12 py-8 md:py-10 pb-24 md:pb-10 relative z-10">
             <motion.div 

@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/lib/useToast';
 
 declare global {
   interface Window {
@@ -42,7 +43,7 @@ export default function CredentialsPage() {
   const [webhookUrl, setWebhookUrl] = useState('');
   const [savingWebhook, setSavingWebhook] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const { showToast, Toast } = useToast();
 
   const [waAccessToken, setWaAccessToken] = useState('');
   const [waPhoneNumberId, setWaPhoneNumberId] = useState('');
@@ -51,11 +52,6 @@ export default function CredentialsPage() {
   const [savingWhatsapp, setSavingWhatsapp] = useState(false);
   const [fbSdkReady, setFbSdkReady] = useState(false);
   const [fbLoggingIn, setFbLoggingIn] = useState(false);
-
-  const showToast = useCallback((message: string, type: 'success' | 'error' = 'success') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  }, []);
 
   const initFacebookSDK = useCallback(() => {
     window.fbAsyncInit = function () {
@@ -238,25 +234,7 @@ export default function CredentialsPage() {
       <div className="absolute top-[-5%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[20%] right-[-10%] w-[30%] h-[30%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
-      {/* Toast Alert */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 15, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 15, scale: 0.95 }}
-            className={cn(
-              "fixed bottom-8 right-8 z-[100] px-4 py-3 rounded-xl border flex items-center gap-2.5 backdrop-blur-xl shadow-2xl text-xs font-semibold",
-              toast.type === 'error'
-                ? 'bg-red-500/10 border-red-500/20 text-red-500'
-                : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
-            )}
-          >
-            <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", toast.type === 'error' ? 'bg-red-500' : 'bg-emerald-500')} />
-            {toast.message}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {Toast}
 
       {/* Header Banner */}
       <div className="relative overflow-hidden bg-foreground/[0.015] dark:bg-white/[0.008] rounded-[28px] p-7 md:p-10 border border-foreground/[0.06] dark:border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-6 group backdrop-blur-md">

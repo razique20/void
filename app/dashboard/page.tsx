@@ -24,6 +24,7 @@ import {
   Shield,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/lib/useToast';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 
@@ -36,13 +37,8 @@ export default function DashboardPage() {
   const [chartData, setChartData] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'online' | 'whatsapp' | 'telegram'>('all');
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const { showToast, Toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  };
 
   const fetchData = async (silent = false) => {
     if (!silent) setLoading(true);
@@ -142,25 +138,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 font-sans antialiased">
 
-      {/* Floating Status Toast */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 15, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 15, scale: 0.95 }}
-            className={cn(
-              "fixed bottom-8 right-8 z-50 px-4 py-3 rounded-xl border flex items-center gap-2.5 backdrop-blur-xl shadow-2xl text-xs font-semibold",
-              toast.type === 'error' 
-                ? 'bg-red-500/10 border-red-500/20 text-red-500' 
-                : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
-            )}
-          >
-            <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", toast.type === 'error' ? 'bg-red-500' : 'bg-emerald-500')} />
-            {toast.message}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {Toast}
 
       <motion.div 
         variants={containerVariants}

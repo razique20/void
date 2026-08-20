@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/lib/useToast';
 import { detectProviderFromEmail } from '@/lib/emailProviders';
 import Link from 'next/link';
 
@@ -84,8 +85,7 @@ export default function EmailWorkspacePage() {
   const [connectingAccount, setConnectingAccount] = useState(false);
   const [connectionError, setConnectionError] = useState('');
 
-  // Toast status
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const { showToast, Toast } = useToast();
 
   // Resizable layout state (Panel 1 width & Panel 2 width)
   const containerRef = useRef<HTMLDivElement>(null);
@@ -147,11 +147,6 @@ export default function EmailWorkspacePage() {
       window.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isResizing1, isResizing2, panel1Width]);
-
-  const showToast = (message: string, type: 'success' | 'error' = 'success') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  };
 
   // Google OAuth URL redirect success/error query parameters check on mount
   useEffect(() => {
@@ -527,25 +522,7 @@ export default function EmailWorkspacePage() {
       <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
-      {/* Floating Notifications */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 15, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 15, scale: 0.95 }}
-            className={cn(
-              "fixed bottom-8 right-8 z-[100] px-4 py-3 rounded-xl border flex items-center gap-2.5 backdrop-blur-xl shadow-2xl text-xs font-semibold",
-              toast.type === 'error' 
-                ? 'bg-red-500/10 border-red-500/20 text-red-500' 
-                : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500'
-            )}
-          >
-            <span className={cn("w-1.5 h-1.5 rounded-full animate-pulse", toast.type === 'error' ? 'bg-red-500' : 'bg-emerald-500')} />
-            {toast.message}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {Toast}
 
       {/* PANEL 1: SIDEBAR (Mailboxes/Folders list) */}
       <div 

@@ -37,6 +37,7 @@ import SystemTourModal from './SystemTourModal';
 // Module-level memory cache for instant render during SPA navigation
 let cachedNavbarSub: any = null;
 let cachedNavbarConfig: any = null;
+let cachedMounted = false; // survives SPA remounts so transitions stay enabled
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -47,7 +48,7 @@ export default function Navbar() {
   const [config, setConfig] = useState<any>(cachedNavbarConfig);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(cachedMounted);
   const pathname = usePathname();
 
   const isWorkspace = pathname !== '/' && !pathname.startsWith('/sign-in') && !pathname.startsWith('/sign-up') && !pathname.startsWith('/admin');
@@ -87,6 +88,7 @@ export default function Navbar() {
     // Use requestAnimationFrame to ensure the initial paint is complete
     // before enabling transitions, preventing the flash/blink
     requestAnimationFrame(() => {
+      cachedMounted = true;
       setMounted(true);
     });
   }, []);
@@ -141,6 +143,10 @@ export default function Navbar() {
   }, [isOpen]);
 
   useEffect(() => {
+    // Skip fetch entirely if module cache is warm (survives SPA navigation).
+    // This prevents the menu from flickering/relashing on every page change.
+    if (cachedNavbarSub && cachedNavbarConfig) return;
+
     fetch('/api/subscription')
       .then(res => res.json())
       .then(data => {
@@ -165,7 +171,9 @@ export default function Navbar() {
   }, []);
 
   const hasFeature = (feature: string) => {
-    if (!sub || !sub.features) return false;
+    // Default to true while data is loading to prevent menu items
+    // from flickering between locked/unlocked on every navigation
+    if (!sub || !sub.features) return true;
     return sub.features.includes(feature);
   };
 
@@ -176,6 +184,8 @@ export default function Navbar() {
   };
 
   // Categorized Left Sidebar Links
+  // Use stable feature flags: default to permissive (show items) while data loads
+  // to prevent menu items from blinking/relashing on navigation
   const menuCategories = [
     {
       title: 'Core Intelligence',
@@ -189,12 +199,11 @@ export default function Navbar() {
     {
       title: 'Workspaces & CRM',
       links: [
-        ...(config?.featureFlags?.leadManagement !== false || pathname === '/dashboard/leads' 
-          ? [{ label: 'Leads CRM', href: '/dashboard/leads', icon: Database, locked: !hasFeature('lead_capture') }] 
-          : []),
+        // Always show Leads CRM link; locked state is handled by hasFeature
+        { label: 'Leads CRM', href: '/dashboard/leads', icon: Database, locked: !hasFeature('lead_capture') },
         { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
         { label: 'AI Email Hub', href: '/dashboard/email', icon: Mail, locked: !hasFeature('email_agent') }
-      ].filter(Boolean)
+      ]
     }
   ];
 
