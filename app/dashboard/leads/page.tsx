@@ -27,9 +27,11 @@ import {
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';
+import { useData } from '@/lib/DataContext';
 import Link from 'next/link';
 
 export default function LeadsPage() {
+  const { sub, loading: loadingSub } = useData();
   const [leads, setLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -42,22 +44,13 @@ export default function LeadsPage() {
   const [savingWebhook, setSavingWebhook] = useState(false);
   const [showWebhookPanel, setShowWebhookPanel] = useState(false);
   const { showToast, Toast } = useToast();
-  const [sub, setSub] = useState<any>(null);
-  const [loadingSub, setLoadingSub] = useState(true);
 
   useEffect(() => {
-    fetch('/api/subscription')
-      .then(res => res.json())
-      .then(data => {
-        setSub(data);
-        if (data.features?.includes('lead_capture')) {
-          fetchLeads();
-          fetchWebhookConfig();
-        }
-      })
-      .catch(console.error)
-      .finally(() => setLoadingSub(false));
-  }, []);
+    if (!loadingSub && sub?.features?.includes('lead_capture')) {
+      fetchLeads();
+      fetchWebhookConfig();
+    }
+  }, [sub, loadingSub]);
 
   const fetchWebhookConfig = async () => {
     try {

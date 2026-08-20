@@ -24,17 +24,17 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useParams, useRouter } from 'next/navigation';
+import { useData } from '@/lib/DataContext';
 import Link from 'next/link';
 
 export default function ChannelsPage() {
   const params = useParams();
   const router = useRouter();
   const operativeId = params.id as string;
+  const { config, sub } = useData();
 
   const [operative, setOperative] = useState<any>(null);
   const [actions, setActions] = useState<any[]>([]);
-  const [config, setConfig] = useState<any>(null);
-  const [sub, setSub] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -46,15 +46,11 @@ export default function ChannelsPage() {
   useEffect(() => {
     Promise.all([
       fetch(`/api/workers/${operativeId}`).then(res => res.json()),
-      fetch('/api/admin/config').then(res => res.json()),
-      fetch('/api/subscription').then(res => res.json()),
       fetch('/api/user/whatsapp-credentials').then(res => res.json()).catch(() => ({ credentials: [] })),
       fetch('/api/workers').then(res => res.json()).catch(() => [])
-    ]).then(([workerData, configData, subData, credsData, workersData]) => {
+    ]).then(([workerData, credsData, workersData]) => {
       setOperative(workerData);
       setActions(workerData.actions || []);
-      setConfig(configData);
-      setSub(subData);
       setSavedCredentials(credsData.credentials || []);
       setAllWorkers(Array.isArray(workersData) ? workersData : []);
       if (workerData.channels?.whatsapp?.apiKey && !workerData.channels?.whatsapp?.credentialId) {

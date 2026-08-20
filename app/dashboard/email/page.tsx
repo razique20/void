@@ -30,12 +30,12 @@ import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';
 import { detectProviderFromEmail } from '@/lib/emailProviders';
+import { useData } from '@/lib/DataContext';
 import Link from 'next/link';
 
 export default function EmailWorkspacePage() {
-  // Subscription states
-  const [sub, setSub] = useState<any>(null);
-  const [loadingSub, setLoadingSub] = useState(true);
+  // Subscription from shared context
+  const { sub, loading: loadingSub } = useData();
 
   // Accounts state
   const [accounts, setAccounts] = useState<any[]>([]);
@@ -162,19 +162,12 @@ export default function EmailWorkspacePage() {
     }
   }, []);
 
-  // 1. Fetch user subscription first
+  // Fetch email accounts when subscription is loaded and feature is available
   useEffect(() => {
-    fetch('/api/subscription')
-      .then(res => res.json())
-      .then(data => {
-        setSub(data);
-        if (data.features?.includes('email_agent')) {
-          fetchAccounts();
-        }
-      })
-      .catch(err => console.error('Subscription check error:', err))
-      .finally(() => setLoadingSub(false));
-  }, []);
+    if (!loadingSub && sub?.features?.includes('email_agent')) {
+      fetchAccounts();
+    }
+  }, [sub, loadingSub]);
 
   // 2. Fetch email accounts
   const fetchAccounts = async () => {

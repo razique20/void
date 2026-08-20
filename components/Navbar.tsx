@@ -33,19 +33,14 @@ import {
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from './theme-toggle';
 import SystemTourModal from './SystemTourModal';
+import { useData } from '@/lib/DataContext';
 
-// Module-level memory cache for instant render during SPA navigation
-let cachedNavbarSub: any = null;
-let cachedNavbarConfig: any = null;
 let cachedMounted = false; // survives SPA remounts so transitions stay enabled
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   
-  // Initialize from module cache only — localStorage is deferred to useEffect
-  // Module cache survives SPA navigation (no flicker), but is null on cold start (SSR-safe)
-  const [sub, setSub] = useState<any>(cachedNavbarSub);
-  const [config, setConfig] = useState<any>(cachedNavbarConfig);
+  const { sub, config, hasFeature } = useData();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mounted, setMounted] = useState(cachedMounted);
@@ -61,28 +56,6 @@ export default function Navbar() {
       setIsCollapsed(true);
       document.documentElement.classList.add('sidebar-collapsed');
       document.body.classList.add('sidebar-collapsed');
-    }
-
-    // Hydrate sub/config from localStorage if not already in module cache
-    if (!cachedNavbarSub) {
-      try {
-        const stored = localStorage.getItem('void_navbar_sub');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          cachedNavbarSub = parsed;
-          setSub(parsed);
-        }
-      } catch (e) {}
-    }
-    if (!cachedNavbarConfig) {
-      try {
-        const stored = localStorage.getItem('void_navbar_config');
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          cachedNavbarConfig = parsed;
-          setConfig(parsed);
-        }
-      } catch (e) {}
     }
 
     // Use requestAnimationFrame to ensure the initial paint is complete
@@ -142,40 +115,7 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    // Skip fetch entirely if module cache is warm (survives SPA navigation).
-    // This prevents the menu from flickering/relashing on every page change.
-    if (cachedNavbarSub && cachedNavbarConfig) return;
 
-    fetch('/api/subscription')
-      .then(res => res.json())
-      .then(data => {
-        cachedNavbarSub = data;
-        setSub(data);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('void_navbar_sub', JSON.stringify(data));
-        }
-      })
-      .catch(console.error);
-
-    fetch('/api/admin/config')
-      .then(res => res.json())
-      .then(data => {
-        cachedNavbarConfig = data;
-        setConfig(data);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('void_navbar_config', JSON.stringify(data));
-        }
-      })
-      .catch(console.error);
-  }, []);
-
-  const hasFeature = (feature: string) => {
-    // Default to true while data is loading to prevent menu items
-    // from flickering between locked/unlocked on every navigation
-    if (!sub || !sub.features) return true;
-    return sub.features.includes(feature);
-  };
 
   const isTabActive = (href: string) => {
     if (href === '/') return pathname === '/';

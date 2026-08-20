@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkThemeProvider } from "@/components/clerk-theme-provider";
+import { DataProvider } from "@/lib/DataContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -57,7 +58,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ClerkThemeProvider>
-            {children}
+            <DataProvider>
+              {children}
+            </DataProvider>
           </ClerkThemeProvider>
         </ThemeProvider>
       </body>

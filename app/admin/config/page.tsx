@@ -3,29 +3,32 @@
 import { useEffect, useState } from 'react';
 import { Database, Plus, CheckCircle2, ShieldCheck, Cpu } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useData } from '@/lib/DataContext';
 
 export default function NeuralConfigPage() {
+  const { config: sharedConfig } = useData();
   const [providers, setProviders] = useState<any[]>([]);
-  const [globalConfig, setGlobalConfig] = useState<any>(null);
+  const [globalConfig, setGlobalConfig] = useState<any>(sharedConfig);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Sync local state when shared config loads
   useEffect(() => {
-    Promise.all([
-      fetch('/api/admin/providers').then(res => res.json()),
-      fetch('/api/admin/config').then(res => res.json())
-    ]).then(([providersData, configData]) => {
-      if (providersData?.error) {
-        setError(providersData.error);
-      } else if (configData?.error) {
-        setError(configData.error);
-      } else {
-        setProviders(providersData);
-        setGlobalConfig(configData);
-      }
-    })
-    .catch(err => setError(err.message))
-    .finally(() => setLoading(false));
+    if (sharedConfig && !globalConfig) setGlobalConfig(sharedConfig);
+  }, [sharedConfig]);
+
+  useEffect(() => {
+    fetch('/api/admin/providers')
+      .then(res => res.json())
+      .then(data => {
+        if (data?.error) {
+          setError(data.error);
+        } else {
+          setProviders(data);
+        }
+      })
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
   if (error) {

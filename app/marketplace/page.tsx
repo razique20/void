@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import MobileBottomNav from '@/components/MobileBottomNav';
@@ -8,25 +8,12 @@ import { ShoppingBag, Zap, Mic, Sparkles, Lock, ArrowRight, Bot, Globe, ShieldCh
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';
+import { useData } from '@/lib/DataContext';
 
 export default function MarketplacePage() {
-  const [config, setConfig] = useState<any>(null);
-  const [sub, setSub] = useState<any>(null);
+  const { sub, config, loading: loadingSub } = useData();
   const { showToast, Toast } = useToast();
   const [activeCategory, setActiveCategory] = useState<'all' | 'agents' | 'integrations' | 'tools'>('all');
-
-  const [loadingSub, setLoadingSub] = useState(true);
-
-  useEffect(() => {
-    Promise.all([
-      fetch('/api/admin/config').then(res => res.json()),
-      fetch('/api/subscription').then(res => res.json())
-    ]).then(([configData, subData]) => {
-      setConfig(configData);
-      setSub(subData);
-    }).catch(console.error)
-      .finally(() => setLoadingSub(false));
-  }, []);
 
   const hasMarketplaceFeature = sub?.features?.includes('marketplace');
   const isActionAgentsEnabled = config?.featureFlags?.actionAgents !== false;

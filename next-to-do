@@ -1,6 +1,6 @@
 # VOID Platform — System Audit & Next Steps
 
-Last updated: August 19, 2026
+Last updated: August 20, 2026
 
 ---
 
@@ -75,16 +75,16 @@ These pages still use older, less polished layouts:
 
 ## 🟡 MEDIUM PRIORITY — Code Quality & Architecture
 
-### 14. `components/Sidebar.tsx` is dead code — remove it
-- The `Sidebar` component is no longer used anywhere. The `Navbar` component renders the sidebar inline. Remove `components/Sidebar.tsx` to avoid confusion.
+### 14. ~~`components/Sidebar.tsx` is dead code — remove it~~ ✅
+- ~~The `Sidebar` component is no longer used anywhere. The `Navbar` component renders the sidebar inline. Remove `components/Sidebar.tsx` to avoid confusion.~~ **Removed in commit ff6824c.**
 
-### 15. Duplicate toast/notification pattern across every page
-- Every page re-implements the same toast notification pattern: `const [toast, setToast] = useState<{message, type}>`, `showToast()`, and the `AnimatePresence` motion div.
-- **Fix**: Extract to a reusable `<Toast />` component or a lightweight toast hook (`useToast()`) in `lib/`.
+### 15. ~~Duplicate toast/notification pattern across every page~~ ✅
+- ~~Every page re-implements the same toast notification pattern: `const [toast, setToast] = useState<{message, type}>`, `showToast()`, and the `AnimatePresence` motion div.~~
+- ~~**Fix**: Extract to a reusable `<Toast />` component or a lightweight toast hook (`useToast()`) in `lib/`.~~ **Extracted to `lib/useToast.tsx` and migrated across 10 pages in commit ff6824c.**
 
-### 16. Duplicate data fetching patterns
-- Multiple pages fetch `/api/subscription` and `/api/admin/config` independently with their own caching logic.
-- **Fix**: Create a shared context provider (e.g., `SubscriptionProvider`) or a SWR/React Query setup for centralized data fetching with caching.
+### 16. ~~Duplicate data fetching patterns~~ ✅
+- ~~Multiple pages fetch `/api/subscription` and `/api/admin/config` independently with their own caching logic.~~
+- ~~**Fix**: Create a shared context provider (e.g., `SubscriptionProvider`) or a SWR/React Query setup for centralized data fetching with caching.~~ **Created `lib/DataContext.tsx` with module-level caching + localStorage backup. Wrapped app in `<DataProvider>`. Refactored 8 files (Navbar, MobileBottomNav, billing, leads, live, email, marketplace, operatives/channels, admin/config) to use `useData()`. Both endpoints now fetched from a single source.**
 
 ### 17. `any` types everywhere
 - Almost every `useState` and API response uses `any[]` or `any`. No TypeScript interfaces for API responses.
@@ -103,9 +103,9 @@ These pages still use older, less polished layouts:
 - No security headers, no image optimization config, no redirects/rewrites configured.
 - **Fix**: Add: `securityHeaders`, `images.remotePatterns`, `experimental.optimizePackageImports`, and any necessary `rewrites` for the proxy.
 
-### 21. No loading.tsx or error.tsx for any route
-- Next.js supports `loading.tsx` and `error.tsx` per-route for instant loading states and graceful error handling.
-- **Fix**: Add these files to: `/dashboard`, `/training`, `/create-worker`, `/billing`, `/chat`, `/dashboard/live`.
+### 21. ~~No loading.tsx or error.tsx for any route~~ ✅
+- ~~Next.js supports `loading.tsx` and `error.tsx` per-route for instant loading states and graceful error handling.~~
+- ~~**Fix**: Add these files to: `/dashboard`, `/training`, `/create-worker`, `/billing`, `/chat`, `/dashboard/live`.~~ **Added `loading.tsx` for `/dashboard/live`. Created `error.tsx` for `/dashboard`, `/training`, `/create-worker`, `/billing`, `/chat`, `/dashboard/live`, and a root `app/error.tsx` fallback. All using consistent VOID design system (red-500 accent, rounded-[24px] icon, RefreshCw reset button). Total: 14 loading.tsx + 7 error.tsx files.**
 
 ### 22. No metadata/SEO for sub-pages
 - Only `app/layout.tsx` has a global `<title>` and `<description>`. Individual pages don't export metadata.
@@ -127,8 +127,8 @@ These pages still use older, less polished layouts:
 - Navigation between pages has no transition animation. Each page does a hard render.
 - **Fix**: Add Next.js `loading.tsx` skeletons per route and consider View Transitions API for smoother navigation.
 
-### 26. Font setup could be optimized
-- Only `Inter` is loaded. Consider adding a monospace font (e.g., `JetBrains Mono`) for code blocks, terminal logs, and credential pages since `--font-mono` is aliased to Inter.
+### 26. ~~Font setup could be optimized~~ ✅
+- ~~Only `Inter` is loaded. Consider adding a monospace font (e.g., `JetBrains Mono`) for code blocks, terminal logs, and credential pages since `--font-mono` is aliased to Inter.~~ **JetBrains Mono is already loaded in `app/layout.tsx` with `--font-jetbrains-mono` variable.**
 
 ### 27. No favicon manifest / PWA support
 - Has `favicon.ico` and `icon.svg` but no `manifest.json` for PWA installability.
@@ -174,4 +174,4 @@ These pages still use older, less polished layouts:
 
 ---
 
-*Generated by system audit — 42 actionable items identified*
+*Generated by system audit — 42 actionable items identified (5 completed ✅)*

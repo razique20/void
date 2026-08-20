@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import { Check, Loader2, CreditCard, Sparkles, Circle, MessageCircle, Shield, Zap, Crown, Star, ArrowRight, ChevronRight } from 'lucide-react';
@@ -8,6 +8,7 @@ import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';
 import { useUser } from '@clerk/nextjs';
+import { useData } from '@/lib/DataContext';
 
 const plans = [
   {
@@ -94,17 +95,10 @@ const plans = [
 
 export default function BillingPage() {
   const [upgrading, setUpgrading] = useState<string | null>(null);
-  const [sub, setSub] = useState<any>(null);
   const [selectedPlanId, setSelectedPlanId] = useState('pro');
   const { showToast, Toast } = useToast();
   const { user } = useUser();
-
-  useEffect(() => {
-    fetch('/api/subscription')
-      .then(res => res.json())
-      .then(data => setSub(data))
-      .catch(console.error);
-  }, []);
+  const { sub } = useData();
 
   const handleSubscribe = (planId: string) => {
     const plan = plans.find(p => p.id === planId);

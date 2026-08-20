@@ -33,8 +33,10 @@ import {
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';
+import { useData } from '@/lib/DataContext';
 
 export default function LiveChatPage() {
+  const { sub, loading: loadingSub } = useData();
   const [conversations, setConversations] = useState<any[]>([]);
   const [selectedChat, setSelectedChat] = useState<any>(null);
   const [reply, setReply] = useState('');
@@ -46,9 +48,6 @@ export default function LiveChatPage() {
   const [activeFilter, setActiveFilter] = useState<'all' | 'ai' | 'takeover'>('all');
   const { showToast, Toast } = useToast();
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  const [sub, setSub] = useState<any>(null);
-  const [loadingSub, setLoadingSub] = useState(true);
 
   const fetchConversations = async () => {
     try {
@@ -67,19 +66,12 @@ export default function LiveChatPage() {
   };
 
   useEffect(() => {
-    fetch('/api/subscription')
-      .then(res => res.json())
-      .then(data => {
-        setSub(data);
-        if (data.features?.includes('mission_control')) {
-          fetchConversations();
-          const interval = setInterval(fetchConversations, 5000); // Poll every 5s
-          return () => clearInterval(interval);
-        }
-      })
-      .catch(console.error)
-      .finally(() => setLoadingSub(false));
-  }, []);
+    if (!loadingSub && sub?.features?.includes('mission_control')) {
+      fetchConversations();
+      const interval = setInterval(fetchConversations, 5000); // Poll every 5s
+      return () => clearInterval(interval);
+    }
+  }, [sub, loadingSub]);
 
   useEffect(() => {
     if (scrollRef.current) {

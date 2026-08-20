@@ -17,25 +17,12 @@ import {
   Key
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-import { useEffect } from 'react';
+import { useData } from '@/lib/DataContext';
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const [isMoreOpen, setIsMoreOpen] = useState(false);
-  const [sub, setSub] = useState<any>(null);
-
-  useEffect(() => {
-    fetch('/api/subscription')
-      .then(res => res.json())
-      .then(data => setSub(data))
-      .catch(console.error);
-  }, []);
-
-  const hasFeature = (feature: string) => {
-    if (!sub || !sub.features) return false;
-    return sub.features.includes(feature);
-  };
+  const { hasFeature } = useData();
 
   const mainRoutes = [
     { label: 'Home', icon: LayoutDashboard, href: '/dashboard' },
