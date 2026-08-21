@@ -31,58 +31,6 @@ const reveal: Variants = {
 
 const viewport = { once: true, margin: '-60px' } as const;
 
-/* ------------------------------------------------------------------ */
-/* Logo Cloud — Scrolling trust logos                                  */
-/* ------------------------------------------------------------------ */
-const LOGOS = [
-  { name: 'Vercel', tagline: 'Ship faster' },
-  { name: 'Stripe', tagline: 'Payments infrastructure' },
-  { name: 'Notion', tagline: 'Connected workspace' },
-  { name: 'Linear', tagline: 'Issue tracking' },
-  { name: 'Figma', tagline: 'Design platform' },
-  { name: 'Supabase', tagline: 'Open source Firebase' },
-  { name: 'Railway', tagline: 'Infrastructure' },
-  { name: 'Clerk', tagline: 'Authentication' },
-];
-
-export function LogoCloud() {
-  return (
-    <section aria-label="Trusted by leading companies" className="py-12 md:py-16 overflow-hidden bg-zinc-950">
-      <div className="max-w-6xl mx-auto px-5 sm:px-6 mb-8">
-        <p className="text-center text-xs font-semibold text-zinc-400 uppercase tracking-[0.2em]">
-          Trusted by 2,400+ teams worldwide
-        </p>
-      </div>
-      <div className="relative">
-        {/* Gradient masks */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-zinc-950 to-transparent z-10" />
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-zinc-950 to-transparent z-10" />
-
-        {/* Scrolling logos */}
-        <div className="flex animate-marquee">
-          {[...LOGOS, ...LOGOS, ...LOGOS].map((logo, i) => (
-            <div
-              key={`${logo.name}-${i}`}
-              className="flex-shrink-0 mx-10 md:mx-14 flex items-center gap-3 h-12"
-            >
-              <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center">
-                <span className="text-xs font-black text-emerald-400">{logo.name.charAt(0)}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-bold text-zinc-300 tracking-wide whitespace-nowrap">
-                  {logo.name}
-                </span>
-                <span className="text-[10px] text-zinc-600 whitespace-nowrap">
-                  {logo.tagline}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /* Metrics Band — Concrete performance numbers (light background)     */

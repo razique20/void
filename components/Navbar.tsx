@@ -182,12 +182,12 @@ export default function Navbar() {
   // RENDER OPTION A: Public Header (Landing Page or Auth flows)
   if (!isWorkspace) {
     return (
-      <nav className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]">
+      <nav className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b bg-black/60 dark:bg-black/60 backdrop-blur-xl border-white/10 dark:border-white/10 shadow-[0_2px_15px_rgba(0,0,0,0.15)]">
         <div className="flex justify-between items-center px-2 md:px-4 max-w-7xl mx-auto">
           <Link href="/" className="group flex items-center">
-            <span className="text-lg md:text-xl font-extrabold tracking-[-0.04em] text-foreground flex items-center gap-1">
+            <span className="text-lg md:text-xl font-extrabold tracking-[-0.04em] text-white flex items-center gap-1">
               VOID
-              <span className="w-1.5 h-1.5 rounded-full bg-apple-blue mt-0.5 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-0.5 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
             </span>
           </Link>
 
@@ -195,7 +195,7 @@ export default function Navbar() {
             <Show when="signed-in">
               <Link 
                 href="/dashboard" 
-                className="text-[10px] uppercase tracking-wider font-extrabold px-4 py-2 bg-foreground text-background rounded-xl hover:opacity-90 transition-all shadow-sm"
+                className="text-[10px] uppercase tracking-wider font-extrabold px-4 py-2 bg-white text-black rounded-xl hover:opacity-90 transition-all shadow-sm"
               >
                 Console
               </Link>
@@ -206,7 +206,7 @@ export default function Navbar() {
             <Show when="signed-out">
               <Link 
                 href="/sign-in" 
-                className="text-[10px] uppercase tracking-wider font-extrabold text-silver hover:text-foreground hover:bg-bg-surface px-3.5 py-2 rounded-xl transition-all"
+                className="text-[10px] uppercase tracking-wider font-extrabold text-zinc-400 hover:text-white hover:bg-white/10 px-3.5 py-2 rounded-xl transition-all"
               >
                 Sign In
               </Link>

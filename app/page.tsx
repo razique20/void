@@ -3,7 +3,6 @@
 import Footer from '@/components/Footer';
 import {
   MetricsBand,
-  LogoCloud,
   Testimonials,
   HowItWorks,
   UseCases,
@@ -186,9 +185,6 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-
-        {/* Logo Cloud — Dark background */}
-        <LogoCloud />
 
         {/* Metrics Band — Light background */}
         <MetricsBand />
