@@ -191,7 +191,7 @@ export default function OnboardingPage() {
       {/* Step indicators */}
       <div className="flex items-center justify-between relative">
         {/* Connecting track */}
-        <div className="absolute top-5 left-0 right-0 h-[2px] bg-foreground/[0.06] dark:bg-white/[0.06] -z-0" />
+        <div className="absolute top-5 left-0 right-0 h-[2px] bg-bg-border -z-0" />
         <div
           className="absolute top-5 left-0 h-[2px] bg-apple-blue transition-all duration-700 ease-out -z-0"
           style={{ width: `${progressPercent}%` }}
@@ -215,7 +215,7 @@ export default function OnboardingPage() {
                     ? 'bg-apple-blue border-apple-blue text-white'
                     : isCurrent
                       ? 'bg-foreground border-foreground text-background shadow-[0_0_24px_rgba(var(--apple-blue),0.25)]'
-                      : 'bg-background border-foreground/[0.08] dark:border-white/[0.08] text-silver'
+                      : 'bg-background border-border-strong text-silver'
                 )}
               >
                 {isComplete ? (
@@ -314,7 +314,7 @@ export default function OnboardingPage() {
                     onChange={e => update({ companyName: e.target.value })}
                     onKeyDown={e => e.key === 'Enter' && handleNameSubmit()}
                     placeholder="e.g. CareSync Medical, Apex Realty"
-                    className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-6 py-4 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-apple-blue/30 focus:border-apple-blue/40 transition-all text-foreground placeholder:text-silver/30"
+                    className="w-full bg-bg-elevated border border-border-strong rounded-2xl px-6 py-4 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-apple-blue/30 focus:border-apple-blue/40 transition-all text-foreground placeholder:text-silver/30"
                   />
                 </div>
 
@@ -362,7 +362,7 @@ export default function OnboardingPage() {
                         'p-4 rounded-2xl text-left transition-all border flex items-center gap-4 duration-200 cursor-pointer',
                         isSelected
                           ? 'bg-foreground text-background border-transparent shadow-md'
-                          : 'bg-foreground/[0.02] dark:bg-white/[0.02] border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.05] dark:hover:bg-white/[0.04] text-foreground hover:border-foreground/[0.1] dark:hover:border-white/[0.1]'
+                          : 'bg-bg-surface border-border-default hover:bg-bg-hover text-foreground hover:border-border-hover dark:hover:border-white/[0.1]'
                       )}
                     >
                       <div
@@ -370,7 +370,7 @@ export default function OnboardingPage() {
                           'w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border transition-all',
                           isSelected
                             ? 'bg-background/20 border-background/20'
-                            : 'bg-foreground/[0.03] dark:bg-white/[0.03] border-foreground/[0.06] dark:border-white/[0.06]'
+                            : 'bg-bg-elevated border-border-default'
                         )}
                       >
                         <IndIcon className={cn('w-5 h-5', isSelected ? 'text-background' : ind.color)} />
@@ -392,7 +392,7 @@ export default function OnboardingPage() {
               <div className="flex gap-3">
                 <button
                   onClick={goPrev}
-                  className="flex-1 py-4 rounded-2xl bg-foreground/[0.04] dark:bg-white/[0.04] text-foreground font-bold hover:bg-foreground/[0.08] dark:hover:bg-white/[0.08] transition-all cursor-pointer"
+                  className="flex-1 py-4 rounded-2xl bg-bg-active text-foreground font-bold hover:bg-bg-strong dark:hover:bg-white/[0.08] transition-all cursor-pointer"
                 >
                   Back
                 </button>
@@ -427,10 +427,10 @@ export default function OnboardingPage() {
                   className="text-center space-y-8 py-8"
                 >
                   <div className="relative mx-auto w-24 h-24">
-                    <div className="w-24 h-24 bg-apple-blue/15 rounded-[32px] flex items-center justify-center">
+                    <div className="w-24 h-24 bg-apple-blue/15 rounded-2xl flex items-center justify-center">
                       <Sparkles className="w-12 h-12 text-apple-blue animate-pulse" />
                     </div>
-                    <div className="absolute inset-0 border-2 border-apple-blue/20 rounded-[32px] animate-ping opacity-30" />
+                    <div className="absolute inset-0 border-2 border-apple-blue/20 rounded-2xl animate-ping opacity-30" />
                   </div>
                   <div className="space-y-3">
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
@@ -466,7 +466,7 @@ export default function OnboardingPage() {
                         value={state.agentName}
                         onChange={e => update({ agentName: e.target.value })}
                         placeholder="e.g. CareSync Support, LogiTrack Agent"
-                        className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-6 py-4 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-apple-blue/30 focus:border-apple-blue/40 transition-all text-foreground placeholder:text-silver/30"
+                        className="w-full bg-bg-elevated border border-border-strong rounded-2xl px-6 py-4 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-apple-blue/30 focus:border-apple-blue/40 transition-all text-foreground placeholder:text-silver/30"
                       />
                     </div>
 
@@ -486,7 +486,7 @@ export default function OnboardingPage() {
                                 'p-4 rounded-2xl text-left transition-all border duration-200 cursor-pointer',
                                 isSelected
                                   ? 'bg-foreground text-background border-transparent shadow-md'
-                                  : 'bg-foreground/[0.02] dark:bg-white/[0.02] border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.05] dark:hover:bg-white/[0.04] text-foreground hover:border-foreground/[0.1] dark:hover:border-white/[0.1]'
+                                  : 'bg-bg-surface border-border-default hover:bg-bg-hover text-foreground hover:border-border-hover dark:hover:border-white/[0.1]'
                               )}
                             >
                               <ToneIcon className={cn('w-4 h-4 mb-2', isSelected ? 'text-background' : 'text-silver')} />
@@ -500,7 +500,7 @@ export default function OnboardingPage() {
                     <div className="flex gap-3">
                       <button
                         onClick={goPrev}
-                        className="flex-1 py-4 rounded-2xl bg-foreground/[0.04] dark:bg-white/[0.04] text-foreground font-bold hover:bg-foreground/[0.08] dark:hover:bg-white/[0.08] transition-all cursor-pointer"
+                        className="flex-1 py-4 rounded-2xl bg-bg-active text-foreground font-bold hover:bg-bg-strong dark:hover:bg-white/[0.08] transition-all cursor-pointer"
                       >
                         Back
                       </button>

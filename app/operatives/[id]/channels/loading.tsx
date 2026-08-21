@@ -14,7 +14,7 @@ export default function ChannelsLoading() {
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="p-6 rounded-2xl border border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.015] dark:bg-white/[0.008] space-y-4"
+            className="p-6 rounded-2xl border border-border-default bg-bg-subtle-alt space-y-4"
           >
             <div className="flex items-center gap-3">
               <Skeleton className="h-10 w-10 rounded-xl" />

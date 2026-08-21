@@ -77,10 +77,10 @@ export default function AdminDashboard() {
             <Activity className="w-5 h-5 text-silver" />
             Recent Deployments
           </h2>
-          <div className="bg-foreground/5 rounded-[32px] overflow-hidden">
+          <div className="bg-foreground/5 rounded-2xl overflow-hidden">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-foreground/5 bg-foreground/[0.02]">
+                <tr className="border-b border-foreground/5 bg-bg-surface">
                   <th className="px-6 py-4 text-xs font-semibold text-silver uppercase">Operative</th>
                   <th className="px-6 py-4 text-xs font-semibold text-silver uppercase">Tone</th>
                   <th className="px-6 py-4 text-xs font-semibold text-silver uppercase text-right">Status</th>
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
               </thead>
               <tbody className="divide-y divide-foreground/5">
                 {loading ? [1,2,3].map(i => <tr key={i} className="animate-pulse h-16 bg-foreground/5" />) : data?.recentWorkers?.map((worker: any) => (
-                  <tr key={worker._id} className="group hover:bg-foreground/[0.02] transition-colors">
+                  <tr key={worker._id} className="group hover:bg-bg-surface transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-foreground/5 rounded-lg flex items-center justify-center"><Bot className="w-4 h-4 text-silver" /></div>
@@ -105,7 +105,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="space-y-8">
-          <div className="bg-foreground/5 rounded-[32px] p-8 space-y-6">
+          <div className="bg-foreground/5 rounded-2xl p-8 space-y-6">
             <h3 className="text-lg font-bold">System Insights</h3>
             <div className="space-y-4">
               <InsightItem label="API Connectivity" status={data?.system?.apiConnectivity || 'Checking...'} color={data?.system?.apiConnectivity === 'Optimal' ? 'text-emerald-500' : 'text-amber-500'} />
@@ -121,7 +121,7 @@ export default function AdminDashboard() {
 
 function StatCard({ icon: Icon, label, value, loading }: any) {
   return (
-    <div className="bg-foreground/5 rounded-[32px] p-7 transition-all group">
+    <div className="bg-foreground/5 rounded-2xl p-7 transition-all group">
       <div className="w-10 h-10 bg-foreground/5 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
         <Icon className="w-5 h-5 text-silver" />
       </div>

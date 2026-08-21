@@ -192,7 +192,7 @@ export default function ChatPage() {
             >
 
               {/* Top Header Row */}
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-foreground/[0.06] dark:border-white/[0.06] pb-4 shrink-0">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border-default pb-4 shrink-0">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
                     <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
@@ -216,14 +216,14 @@ export default function ChatPage() {
                   <button
                     onClick={() => fetchWorkers(true)}
                     disabled={isRefreshing}
-                    className="p-2.5 bg-foreground/[0.03] dark:bg-white/[0.03] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl transition-all disabled:opacity-50 text-silver hover:text-foreground"
+                    className="p-2.5 bg-bg-elevated hover:bg-bg-border dark:hover:bg-white/[0.06] border border-border-default rounded-xl transition-all disabled:opacity-50 text-silver hover:text-foreground"
                     title="Refresh Fleet"
                   >
                     <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin text-foreground")} />
                   </button>
                   <button
                     onClick={handleResetChat}
-                    className="px-3.5 py-2 bg-foreground/[0.03] dark:bg-white/[0.03] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl text-xs font-semibold text-silver hover:text-foreground transition-all flex items-center gap-1.5"
+                    className="px-3.5 py-2 bg-bg-elevated hover:bg-bg-border dark:hover:bg-white/[0.06] border border-border-default rounded-xl text-xs font-semibold text-silver hover:text-foreground transition-all flex items-center gap-1.5"
                   >
                     <Trash2 className="w-3.5 h-3.5" /> Reset Chat
                   </button>
@@ -233,7 +233,7 @@ export default function ChatPage() {
                       "px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border",
                       showTelemetry 
                         ? "bg-apple-blue/10 border-apple-blue/30 text-apple-blue" 
-                        : "bg-foreground/[0.03] dark:bg-white/[0.03] border-foreground/[0.06] dark:border-white/[0.06] text-silver hover:text-foreground"
+                        : "bg-bg-elevated border-border-default text-silver hover:text-foreground"
                     )}
                   >
                     <Cpu className="w-3.5 h-3.5" />
@@ -246,7 +246,7 @@ export default function ChatPage() {
               <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0 items-stretch">
                 
                 {/* LEFT: Operative Selector List (3/12) */}
-                <div className="hidden lg:flex lg:col-span-3 flex-col bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-4 space-y-4 overflow-hidden">
+                <div className="hidden lg:flex lg:col-span-3 flex-col bg-bg-subtle border border-border-default rounded-2xl p-4 space-y-4 overflow-hidden">
                   <div className="space-y-3 shrink-0">
                     <div className="flex justify-between items-center">
                       <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
@@ -268,7 +268,7 @@ export default function ChatPage() {
                         placeholder="Search fleet..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl pl-9 pr-3 py-1.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
+                        className="w-full bg-bg-elevated border border-border-default rounded-xl pl-9 pr-3 py-1.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
                       />
                     </div>
                   </div>
@@ -277,7 +277,7 @@ export default function ChatPage() {
                   <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                     {filteredWorkers.length === 0 ? (
                       <div className="flex flex-col items-center justify-center py-8 text-center">
-                        <div className="w-10 h-10 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl flex items-center justify-center mb-3">
+                        <div className="w-10 h-10 bg-bg-elevated border border-border-strong rounded-xl flex items-center justify-center mb-3">
                           <Bot className="w-5 h-5 text-silver" />
                         </div>
                         <p className="text-xs font-semibold text-foreground">{searchQuery ? 'No matches' : 'No operatives yet'}</p>
@@ -309,15 +309,15 @@ export default function ChatPage() {
                             className={cn(
                               "w-full p-3 rounded-xl border text-left transition-all flex items-start gap-3 group relative cursor-pointer",
                               isSelected 
-                                ? "bg-foreground/[0.05] dark:bg-white/[0.05] border-foreground/[0.15] dark:border-white/[0.15] shadow-sm" 
-                                : "bg-foreground/[0.015] dark:bg-white/[0.01] border-foreground/[0.04] dark:border-white/[0.04] hover:bg-foreground/[0.03] dark:hover:bg-white/[0.02]"
+                                ? "bg-bg-hover border-border-hover shadow-sm" 
+                                : "bg-bg-subtle-alt border-border-subtle hover:bg-bg-elevated"
                             )}
                           >
                             <div className={cn(
                               "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border transition-colors mt-0.5",
                               isSelected 
                                 ? "bg-foreground text-background border-transparent" 
-                                : "bg-foreground/[0.03] dark:bg-white/[0.03] border-foreground/[0.08] dark:border-white/[0.08] text-silver group-hover:text-foreground"
+                                : "bg-bg-elevated border-border-strong text-silver group-hover:text-foreground"
                             )}>
                               <Bot className="w-4 h-4" />
                             </div>
@@ -357,14 +357,14 @@ export default function ChatPage() {
 
                 {/* CENTER: Main Live Chat Window (6/12 or 9/12 depending on Telemetry toggle) */}
                 <div className={cn(
-                  "flex flex-col bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl min-h-0 overflow-hidden relative transition-all duration-300",
+                  "flex flex-col bg-bg-subtle border border-border-default rounded-2xl min-h-0 overflow-hidden relative transition-all duration-300",
                   showTelemetry ? "lg:col-span-6" : "lg:col-span-9"
                 )}>
                   
                   {/* Chat Top Header */}
-                  <div className="px-5 py-3.5 border-b border-foreground/[0.04] dark:border-white/[0.04] flex justify-between items-center bg-foreground/[0.01] dark:bg-white/[0.005] shrink-0">
+                  <div className="px-5 py-3.5 border-b border-border-subtle flex justify-between items-center bg-bg-subtle shrink-0">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-lg flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 bg-bg-elevated border border-border-strong rounded-lg flex items-center justify-center shrink-0">
                         <Bot className="w-4 h-4 text-foreground" />
                       </div>
                       <div>
@@ -393,7 +393,7 @@ export default function ChatPage() {
                           setMessages([]);
                           setConversationId(null);
                         }}
-                        className="bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-3 py-1.5 text-xs text-foreground font-semibold focus:outline-none"
+                        className="bg-bg-active border border-border-strong rounded-xl px-3 py-1.5 text-xs text-foreground font-semibold focus:outline-none"
                       >
                         {workers.map(w => (
                           <option key={w._id} value={w._id} className="bg-background text-foreground">{w.name}</option>
@@ -412,7 +412,7 @@ export default function ChatPage() {
                         {workers.length === 0 ? (
                           /* No workers at all */
                           <>
-                            <div className="w-14 h-14 rounded-2xl bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] flex items-center justify-center">
+                            <div className="w-14 h-14 rounded-2xl bg-bg-elevated border border-border-strong flex items-center justify-center">
                               <Bot className="w-7 h-7 text-silver" />
                             </div>
                             <div className="space-y-1 max-w-sm">
@@ -431,7 +431,7 @@ export default function ChatPage() {
                         ) : (
                           /* Workers exist, no messages yet */
                           <>
-                            <div className="w-14 h-14 rounded-2xl bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] flex items-center justify-center">
+                            <div className="w-14 h-14 rounded-2xl bg-bg-elevated border border-border-strong flex items-center justify-center">
                               <BrainCircuit className="w-7 h-7 text-silver animate-pulse" />
                             </div>
                             <div className="space-y-1 max-w-sm">
@@ -448,7 +448,7 @@ export default function ChatPage() {
                                 <button
                                   key={i}
                                   onClick={() => handleSend(undefined, prompt)}
-                                  className="p-3 bg-foreground/[0.02] dark:bg-white/[0.015] hover:bg-foreground/[0.04] dark:hover:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl text-left text-[11px] font-medium text-silver hover:text-foreground transition-all flex items-start gap-2 group"
+                                  className="p-3 bg-bg-surface hover:bg-bg-active border border-border-default rounded-xl text-left text-[11px] font-medium text-silver hover:text-foreground transition-all flex items-start gap-2 group"
                                 >
                                   <Sparkles className="w-3 h-3 text-apple-blue shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
                                   <span className="line-clamp-2">{prompt}</span>
@@ -474,7 +474,7 @@ export default function ChatPage() {
                                 "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border text-xs mt-0.5",
                                 isUser 
                                   ? "bg-foreground text-background border-transparent" 
-                                  : "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground"
+                                  : "bg-bg-active border-border-default text-foreground"
                               )}>
                                 {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                               </div>
@@ -488,7 +488,7 @@ export default function ChatPage() {
                                   "p-4 rounded-2xl text-xs leading-relaxed border relative group shadow-sm font-sans",
                                   isUser 
                                     ? "bg-foreground text-background border-transparent rounded-tr-none" 
-                                    : "bg-foreground/[0.03] dark:bg-white/[0.02] border-foreground/[0.06] dark:border-white/[0.06] text-foreground rounded-tl-none"
+                                    : "bg-bg-elevated border-border-default text-foreground rounded-tl-none"
                                 )}>
                                   <p className="whitespace-pre-wrap break-words">{msg.content}</p>
 
@@ -513,10 +513,10 @@ export default function ChatPage() {
 
                     {loading && (
                       <div className="flex gap-3 mr-auto animate-pulse">
-                        <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-lg bg-bg-active border border-border-default flex items-center justify-center">
                           <Bot className="w-4 h-4 text-foreground" />
                         </div>
-                        <div className="bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] px-4 py-3 rounded-2xl rounded-tl-none flex items-center gap-2">
+                        <div className="bg-bg-elevated border border-border-default px-4 py-3 rounded-2xl rounded-tl-none flex items-center gap-2">
                           <Loader2 className="w-3.5 h-3.5 animate-spin text-silver" />
                           <span className="text-xs text-silver font-medium">Neural processing...</span>
                         </div>
@@ -525,7 +525,7 @@ export default function ChatPage() {
                   </div>
 
                   {/* Input Form Bar */}
-                  <div className="p-4 border-t border-foreground/[0.04] dark:border-white/[0.04] bg-foreground/[0.01] dark:bg-white/[0.005] shrink-0">
+                  <div className="p-4 border-t border-border-subtle bg-bg-subtle shrink-0">
                     <form onSubmit={(e) => handleSend(e)} className="space-y-2">
                       <div className="relative flex items-center">
                         <input
@@ -534,7 +534,7 @@ export default function ChatPage() {
                           placeholder={selectedWorker ? `Message ${activeWorkerObj?.name}...` : 'Select an operative to begin...'}
                           value={input}
                           onChange={(e) => setInput(e.target.value)}
-                          className="w-full bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl pl-4 pr-12 py-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all font-medium"
+                          className="w-full bg-bg-elevated border border-border-strong rounded-xl pl-4 pr-12 py-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all font-medium"
                         />
                         <button
                           disabled={!input.trim() || loading || !selectedWorker}
@@ -561,7 +561,7 @@ export default function ChatPage() {
                   <div className="hidden lg:flex lg:col-span-3 flex-col space-y-4 overflow-y-auto custom-scrollbar">
                     
                     {/* Persona Card */}
-                    <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-4 space-y-3">
+                    <div className="bg-bg-subtle border border-border-default rounded-2xl p-4 space-y-3">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-purple-500/10 border border-purple-500/20 rounded-lg flex items-center justify-center shrink-0">
                           <BrainCircuit className="w-4 h-4 text-purple-500" />
@@ -574,7 +574,7 @@ export default function ChatPage() {
 
                       {activeWorkerObj ? (
                         <div className="space-y-2 text-xs">
-                          <div className="p-2.5 bg-foreground/[0.02] dark:bg-white/[0.015] rounded-xl border border-foreground/[0.04] dark:border-white/[0.04] space-y-1">
+                          <div className="p-2.5 bg-bg-surface rounded-xl border border-border-subtle space-y-1">
                             <span className="text-[9px] font-bold uppercase tracking-wider text-silver">Personality Brief</span>
                             <p className="text-[11px] text-foreground/80 leading-relaxed font-sans line-clamp-4">
                               {activeWorkerObj.personality || 'Standard support behavior protocol.'}
@@ -582,11 +582,11 @@ export default function ChatPage() {
                           </div>
 
                           <div className="grid grid-cols-2 gap-2 text-[10px]">
-                            <div className="p-2 bg-foreground/[0.02] dark:bg-white/[0.015] rounded-lg border border-foreground/[0.04] dark:border-white/[0.04]">
+                            <div className="p-2 bg-bg-surface rounded-lg border border-border-subtle">
                               <span className="text-silver block">Tone</span>
                               <span className="font-bold text-foreground capitalize">{activeWorkerObj.tone}</span>
                             </div>
-                            <div className="p-2 bg-foreground/[0.02] dark:bg-white/[0.015] rounded-lg border border-foreground/[0.04] dark:border-white/[0.04]">
+                            <div className="p-2 bg-bg-surface rounded-lg border border-border-subtle">
                               <span className="text-silver block">Language</span>
                               <span className="font-bold text-foreground capitalize">{activeWorkerObj.language}</span>
                             </div>
@@ -598,7 +598,7 @@ export default function ChatPage() {
                     </div>
 
                     {/* Capabilities Matrix */}
-                    <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-4 space-y-3">
+                    <div className="bg-bg-subtle border border-border-default rounded-2xl p-4 space-y-3">
                       <h3 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center justify-between">
                         Capabilities
                         <Zap className="w-3.5 h-3.5 text-apple-blue" />
@@ -628,7 +628,7 @@ export default function ChatPage() {
                             detail: `${workerTrainingStats?.totalChunks ?? 0} chunks`
                           },
                         ].map((cap, i) => (
-                          <div key={i} className="flex justify-between items-center p-2 rounded-lg bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.04] dark:border-white/[0.04] text-xs">
+                          <div key={i} className="flex justify-between items-center p-2 rounded-lg bg-bg-surface border border-border-subtle text-xs">
                             <div className="flex items-center gap-2">
                               <cap.icon className="w-3.5 h-3.5 text-silver" />
                               <span className="font-medium text-silver text-[11px]">{cap.label}</span>
@@ -637,7 +637,7 @@ export default function ChatPage() {
                               "text-[9px] font-bold px-1.5 py-0.5 rounded uppercase",
                               cap.active 
                                 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/15" 
-                                : "bg-foreground/[0.04] dark:bg-white/[0.04] text-silver"
+                                : "bg-bg-active text-silver"
                             )}>
                               {cap.detail || (cap.active ? 'Active' : 'Off')}
                             </span>

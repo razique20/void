@@ -4,7 +4,7 @@ export default function DashboardLoading() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       {/* Header Row */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-foreground/[0.06] dark:border-white/[0.06] pb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-border-default pb-6">
         <div className="space-y-2">
           <Skeleton className="h-7 w-48" />
           <Skeleton className="h-3.5 w-72" />
@@ -13,7 +13,7 @@ export default function DashboardLoading() {
       </div>
 
       {/* Stats Strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-foreground/[0.04] dark:bg-white/[0.04] rounded-2xl overflow-hidden border border-foreground/[0.06] dark:border-white/[0.06]">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-bg-active rounded-2xl overflow-hidden border border-border-default">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="bg-background px-5 py-4 space-y-2">
             <Skeleton className="h-2.5 w-20" />

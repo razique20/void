@@ -114,10 +114,10 @@ export default function SystemLogsPage() {
       </div>
 
       {/* Main Console Hub */}
-      <div className="glass border border-foreground/[0.04] dark:border-white/[0.05] rounded-[28px] overflow-hidden relative z-10 flex flex-col min-h-[500px]">
+      <div className="glass border border-border-subtle rounded-[28px] overflow-hidden relative z-10 flex flex-col min-h-[500px]">
         
         {/* Controls Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 border-b border-foreground/[0.04] dark:border-white/[0.04] bg-card/10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 border-b border-border-subtle bg-card/10">
           
           {/* Search Box */}
           <div className="relative flex-1 max-w-md w-full">
@@ -127,7 +127,7 @@ export default function SystemLogsPage() {
               placeholder="Search by source or message text..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/5 dark:border-white/5 rounded-2xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver text-foreground"
+              className="w-full bg-bg-elevated border border-foreground/5 dark:border-white/5 rounded-2xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver text-foreground"
             />
             {searchQuery && (
               <button 
@@ -227,7 +227,7 @@ export default function SystemLogsPage() {
         </div>
 
         {/* Footer Pagination Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-5 border-t border-foreground/[0.04] dark:border-white/[0.04] bg-card/10">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-5 border-t border-border-subtle bg-card/10">
           
           <div className="text-xs font-semibold text-silver">
             Showing <span className="text-foreground">{filteredLogs.length}</span> log frames • <span className="text-foreground">{totalLogs}</span> total logged events
@@ -237,7 +237,7 @@ export default function SystemLogsPage() {
             <button
               onClick={handlePrevPage}
               disabled={page <= 1 || loading}
-              className="p-2.5 bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-xl hover:bg-foreground/5 disabled:opacity-40 transition-all text-foreground"
+              className="p-2.5 bg-bg-surface border border-foreground/5 dark:border-white/5 rounded-xl hover:bg-foreground/5 disabled:opacity-40 transition-all text-foreground"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -247,7 +247,7 @@ export default function SystemLogsPage() {
             <button
               onClick={handleNextPage}
               disabled={page >= totalPages || loading}
-              className="p-2.5 bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/5 dark:border-white/5 rounded-xl hover:bg-foreground/5 disabled:opacity-40 transition-all text-foreground"
+              className="p-2.5 bg-bg-surface border border-foreground/5 dark:border-white/5 rounded-xl hover:bg-foreground/5 disabled:opacity-40 transition-all text-foreground"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

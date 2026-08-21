@@ -8,9 +8,9 @@ export default function LiveLoading() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
       {/* 1. Sidebar - Chat List */}
-      <div className="w-80 flex flex-col bg-foreground/[0.01] dark:bg-white/[0.005] border-r border-foreground/[0.06] dark:border-white/[0.06] shrink-0 backdrop-blur-md">
+      <div className="w-80 flex flex-col bg-bg-subtle border-r border-border-default shrink-0 backdrop-blur-md">
         {/* Sidebar Header */}
-        <div className="p-5 border-b border-foreground/[0.06] dark:border-white/[0.06] shrink-0 space-y-3.5">
+        <div className="p-5 border-b border-border-default shrink-0 space-y-3.5">
           <div className="flex justify-between items-center">
             <Skeleton className="h-4 w-36" />
             <Skeleton className="h-3 w-16" />
@@ -34,7 +34,7 @@ export default function LiveLoading() {
       {/* 2. Main Chat Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Chat Header */}
-        <div className="h-16 border-b border-foreground/[0.06] dark:border-white/[0.06] px-6 flex items-center gap-4 shrink-0">
+        <div className="h-16 border-b border-border-default px-6 flex items-center gap-4 shrink-0">
           <Skeleton className="h-4 w-32" />
           <Skeleton className="h-3 w-20" />
           <div className="ml-auto flex gap-2">
@@ -53,13 +53,13 @@ export default function LiveLoading() {
         </div>
 
         {/* Input Bar */}
-        <div className="p-4 border-t border-foreground/[0.06] dark:border-white/[0.06]">
+        <div className="p-4 border-t border-border-default">
           <Skeleton className="h-12 w-full rounded-xl" />
         </div>
       </div>
 
       {/* 3. Right Drawer */}
-      <div className="w-80 border-l border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] p-5 space-y-5 shrink-0 hidden xl:block">
+      <div className="w-80 border-l border-border-default bg-bg-subtle p-5 space-y-5 shrink-0 hidden xl:block">
         <Skeleton className="h-5 w-32" />
         <Skeleton className="h-28 w-full rounded-2xl" />
         <Skeleton className="h-5 w-24" />

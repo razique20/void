@@ -148,7 +148,7 @@ export default function DashboardPage() {
       >
         
         {/* Header Row */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-foreground/[0.06] dark:border-white/[0.06] pb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-border-default pb-6">
           <div className="space-y-1">
             <div className="flex items-center gap-3">
               <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
@@ -170,7 +170,7 @@ export default function DashboardPage() {
             <button
               onClick={() => fetchData(true)}
               disabled={isRefreshing}
-              className="p-2.5 bg-foreground/[0.03] dark:bg-white/[0.03] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl transition-all disabled:opacity-50 text-silver hover:text-foreground"
+              className="p-2.5 bg-bg-elevated hover:bg-bg-border dark:hover:bg-white/[0.06] border border-border-default rounded-xl transition-all disabled:opacity-50 text-silver hover:text-foreground"
               title="Refresh"
             >
               <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin text-foreground")} />
@@ -185,7 +185,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-foreground/[0.04] dark:bg-white/[0.04] rounded-2xl overflow-hidden border border-foreground/[0.06] dark:border-white/[0.06]">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-bg-active rounded-2xl overflow-hidden border border-border-default">
           {[
             { label: 'Total Messages', value: stats?.totalMessages || 0, trend: stats?.interactionTrend },
             { label: 'Active Chats', value: stats?.activeChats || 0 },
@@ -214,7 +214,7 @@ export default function DashboardPage() {
           <div className="lg:col-span-8 space-y-5">
             
             {/* Filter Bar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] p-1.5 rounded-xl">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-bg-surface border border-border-default p-1.5 rounded-xl">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-silver" />
                 <input
@@ -244,7 +244,7 @@ export default function DashboardPage() {
                       "px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all",
                       activeFilter === tab.id
                         ? "bg-foreground text-background"
-                        : "text-silver hover:text-foreground hover:bg-foreground/[0.04] dark:hover:bg-white/[0.04]"
+                        : "text-silver hover:text-foreground hover:bg-bg-active"
                     )}
                   >
                     {tab.label}
@@ -257,12 +257,12 @@ export default function DashboardPage() {
             {loading ? (
               <div className="space-y-3">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="h-[72px] bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl animate-pulse" />
+                  <div key={i} className="h-[72px] bg-bg-surface border border-border-subtle rounded-xl animate-pulse" />
                 ))}
               </div>
             ) : filteredWorkers.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] border-dashed rounded-2xl text-center">
-                <div className="w-12 h-12 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl flex items-center justify-center mb-3">
+              <div className="flex flex-col items-center justify-center py-20 bg-bg-subtle border border-border-default border-dashed rounded-2xl text-center">
+                <div className="w-12 h-12 bg-bg-elevated border border-border-strong rounded-xl flex items-center justify-center mb-3">
                   <Bot className="w-5 h-5 text-silver" />
                 </div>
                 <h3 className="text-sm font-semibold text-foreground">No operatives found</h3>
@@ -278,11 +278,11 @@ export default function DashboardPage() {
                       layout
                       variants={rowVariants}
                       key={worker._id}
-                      className="group bg-foreground/[0.01] dark:bg-white/[0.005] hover:bg-foreground/[0.03] dark:hover:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/[0.1] dark:hover:border-white/[0.1] rounded-xl px-5 py-4 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3"
+                      className="group bg-bg-subtle hover:bg-bg-elevated border border-border-default hover:border-border-hover dark:hover:border-white/[0.1] rounded-xl px-5 py-4 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3"
                     >
                       {/* Left: Identity */}
                       <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                        <div className="w-9 h-9 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-lg flex items-center justify-center shrink-0 group-hover:border-foreground/[0.12] dark:group-hover:border-white/[0.12] transition-colors">
+                        <div className="w-9 h-9 bg-bg-elevated border border-border-strong rounded-lg flex items-center justify-center shrink-0 group-hover:border-border-hover dark:group-hover:border-white/[0.12] transition-colors">
                           <Bot className="w-4 h-4 text-silver group-hover:text-foreground transition-colors" />
                         </div>
 
@@ -305,7 +305,7 @@ export default function DashboardPage() {
                                 <span className="text-[7px] font-extrabold bg-sky-500/10 text-sky-600 dark:text-sky-400 px-1.5 py-0.5 rounded border border-sky-500/10 uppercase tracking-wider">TG</span>
                               )}
                               {!worker.channels?.whatsapp?.isActive && !worker.channels?.telegram?.isActive && (
-                                <span className="text-[7px] font-extrabold bg-foreground/[0.04] dark:bg-white/[0.04] text-silver px-1.5 py-0.5 rounded uppercase tracking-wider">WEB</span>
+                                <span className="text-[7px] font-extrabold bg-bg-active text-silver px-1.5 py-0.5 rounded uppercase tracking-wider">WEB</span>
                               )}
                             </div>
                           </div>
@@ -326,33 +326,33 @@ export default function DashboardPage() {
                       <div className="flex items-center gap-1 shrink-0 self-end md:self-center opacity-70 group-hover:opacity-100 transition-opacity">
                         <Link
                           href="/chat"
-                          className="px-2.5 py-1.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] hover:border-foreground/[0.1] dark:hover:border-white/[0.1] text-silver hover:text-foreground rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1"
+                          className="px-2.5 py-1.5 bg-bg-elevated border border-border-default hover:bg-bg-border dark:hover:bg-white/[0.06] hover:border-border-hover dark:hover:border-white/[0.1] text-silver hover:text-foreground rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1"
                         >
                           <MessageSquare className="w-3 h-3" />
                           <span className="hidden sm:inline">Chat</span>
                         </Link>
                         <Link
                           href="/training"
-                          className="px-2.5 py-1.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] hover:border-foreground/[0.1] dark:hover:border-white/[0.1] text-silver hover:text-foreground rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1"
+                          className="px-2.5 py-1.5 bg-bg-elevated border border-border-default hover:bg-bg-border dark:hover:bg-white/[0.06] hover:border-border-hover dark:hover:border-white/[0.1] text-silver hover:text-foreground rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1"
                         >
                           <BookOpen className="w-3 h-3" />
                           <span className="hidden sm:inline">Brain</span>
                         </Link>
                         <Link
                           href={`/operatives/${worker._id}/channels`}
-                          className="p-1.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] text-silver hover:text-foreground rounded-lg transition-all"
+                          className="p-1.5 bg-bg-elevated border border-border-default hover:bg-bg-border dark:hover:bg-white/[0.06] text-silver hover:text-foreground rounded-lg transition-all"
                         >
                           <Settings className="w-3 h-3" />
                         </Link>
                         <button
                           onClick={() => setShareWorker(worker)}
-                          className="p-1.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] text-silver hover:text-foreground rounded-lg transition-all"
+                          className="p-1.5 bg-bg-elevated border border-border-default hover:bg-bg-border dark:hover:bg-white/[0.06] text-silver hover:text-foreground rounded-lg transition-all"
                         >
                           <Share2 className="w-3 h-3" />
                         </button>
                         <button
                           onClick={() => handleDelete(worker._id, worker.name)}
-                          className="p-1.5 bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.04] dark:border-white/[0.04] hover:bg-red-500/10 hover:border-red-500/20 text-silver/50 hover:text-red-500 rounded-lg transition-all"
+                          className="p-1.5 bg-bg-surface border border-border-subtle hover:bg-red-500/10 hover:border-red-500/20 text-silver/50 hover:text-red-500 rounded-lg transition-all"
                         >
                           <Trash2 className="w-3 h-3" />
                         </button>
@@ -368,7 +368,7 @@ export default function DashboardPage() {
           <div className="lg:col-span-4 space-y-5">
             
             {/* Activity Chart */}
-            <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-4">
+            <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Activity</h3>
@@ -379,7 +379,7 @@ export default function DashboardPage() {
 
               <div className="h-40 w-full">
                 {loading ? (
-                  <div className="w-full h-full bg-foreground/[0.02] dark:bg-white/[0.02] rounded-xl animate-pulse" />
+                  <div className="w-full h-full bg-bg-surface rounded-xl animate-pulse" />
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
@@ -412,7 +412,7 @@ export default function DashboardPage() {
             </div>
 
             {/* System Telemetry */}
-            <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-4">
+            <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-4">
               <h3 className="text-xs font-bold uppercase tracking-wider text-silver">System</h3>
               
               <div className="space-y-3">
@@ -421,7 +421,7 @@ export default function DashboardPage() {
                   { icon: Wifi, label: 'Heartbeat', value: 'Active', color: 'text-emerald-600 dark:text-emerald-400' },
                   { icon: Shield, label: 'Active Gateways', value: `${gatewayCount} / ${workers.length}`, color: '' },
                 ].map((row, i) => (
-                  <div key={i} className={cn("flex justify-between items-center text-xs", i < 2 && "border-b border-foreground/[0.04] dark:border-white/[0.04] pb-2.5")}>
+                  <div key={i} className={cn("flex justify-between items-center text-xs", i < 2 && "border-b border-border-subtle pb-2.5")}>
                     <div className="flex items-center gap-2">
                       <row.icon className="w-3.5 h-3.5 text-silver" />
                       <span className="font-medium text-silver">{row.label}</span>
@@ -433,7 +433,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Terminal Log */}
-            <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-3">
+            <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-3">
               <div className="flex justify-between items-center">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
                   <Terminal className="w-3.5 h-3.5" />
@@ -447,7 +447,7 @@ export default function DashboardPage() {
                 </Link>
               </div>
 
-              <div className="bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl p-3 font-mono text-[10px] text-silver space-y-1.5 max-h-40 overflow-y-auto">
+              <div className="bg-bg-surface border border-border-subtle rounded-xl p-3 font-mono text-[10px] text-silver space-y-1.5 max-h-40 overflow-y-auto">
                 {stats?.systemLogs && stats.systemLogs.length > 0 ? (
                   stats.systemLogs.map((log: any) => {
                     const logTime = new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
@@ -491,7 +491,7 @@ export default function DashboardPage() {
               initial={{ opacity: 0, scale: 0.96, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 8 }}
-              className="bg-background border border-foreground/[0.08] dark:border-white/[0.08] w-full max-w-md rounded-2xl p-6 shadow-2xl relative z-10 space-y-5"
+              className="bg-background border border-border-strong w-full max-w-md rounded-2xl p-6 shadow-2xl relative z-10 space-y-5"
             >
               <div className="flex justify-between items-start">
                 <div>
@@ -511,11 +511,11 @@ export default function DashboardPage() {
                       type="text"
                       readOnly
                       value={`${typeof window !== 'undefined' ? window.location.origin : ''}/share/${shareWorker._id}`}
-                      className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-foreground font-mono focus:outline-none"
+                      className="w-full bg-bg-elevated border border-border-strong rounded-xl px-3 py-2.5 text-xs text-foreground font-mono focus:outline-none"
                     />
                     <button
                       onClick={() => copyText(`${typeof window !== 'undefined' ? window.location.origin : ''}/share/${shareWorker._id}`)}
-                      className="p-2.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] rounded-xl text-silver hover:text-foreground transition-all shrink-0"
+                      className="p-2.5 bg-bg-elevated border border-border-strong hover:bg-bg-border dark:hover:bg-white/[0.06] rounded-xl text-silver hover:text-foreground transition-all shrink-0"
                     >
                       <Copy className="w-3.5 h-3.5" />
                     </button>
@@ -529,11 +529,11 @@ export default function DashboardPage() {
                       readOnly
                       rows={3}
                       value={`<script src="${typeof window !== 'undefined' ? window.location.origin : ''}/proxy.ts" data-worker-id="${shareWorker._id}"></script>`}
-                      className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-3 py-2.5 text-[10px] text-foreground font-mono focus:outline-none resize-none"
+                      className="w-full bg-bg-elevated border border-border-strong rounded-xl px-3 py-2.5 text-[10px] text-foreground font-mono focus:outline-none resize-none"
                     />
                     <button
                       onClick={() => copyText(`<script src="${typeof window !== 'undefined' ? window.location.origin : ''}/proxy.ts" data-worker-id="${shareWorker._id}"></script>`)}
-                      className="p-2.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] rounded-xl text-silver hover:text-foreground transition-all shrink-0"
+                      className="p-2.5 bg-bg-elevated border border-border-strong hover:bg-bg-border dark:hover:bg-white/[0.06] rounded-xl text-silver hover:text-foreground transition-all shrink-0"
                     >
                       <Copy className="w-3.5 h-3.5" />
                     </button>
@@ -542,7 +542,7 @@ export default function DashboardPage() {
               </div>
 
               <div className="pt-1 flex justify-end">
-                <button onClick={() => setShareWorker(null)} className="px-4 py-2 bg-foreground/[0.04] dark:bg-white/[0.04] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] text-foreground rounded-xl text-xs font-semibold transition-all border border-foreground/[0.06] dark:border-white/[0.06]">
+                <button onClick={() => setShareWorker(null)} className="px-4 py-2 bg-bg-active hover:bg-bg-border dark:hover:bg-white/[0.06] text-foreground rounded-xl text-xs font-semibold transition-all border border-border-default">
                   Done
                 </button>
               </div>

@@ -222,7 +222,7 @@ export default function SystemTourModal({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className="relative max-w-2xl w-full bg-zinc-950 border border-zinc-800 rounded-[32px] shadow-2xl overflow-hidden z-10 text-foreground"
+          className="relative max-w-2xl w-full bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-10 text-foreground"
         >
           {/* Background Ambient Glow */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />

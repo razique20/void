@@ -16,24 +16,24 @@ These pages still use older, less polished layouts:
 - **`/dashboard/profile`** — Need to verify consistency with the modernized bento pattern.
 - **`/admin`** — Uses older card patterns (`rounded-[32px]`, `bg-foreground/5`) that don't match the current design system (`bg-foreground/[0.01]`, `rounded-2xl`).
 
-### 2. Inconsistent border-radius tokens across the system
-- Some pages use `rounded-[28px]`, others `rounded-[32px]`, others `rounded-2xl`, others `rounded-xl`
-- **Fix**: Standardize to: `rounded-xl` (buttons/small), `rounded-2xl` (cards), `rounded-[28px]` (hero panels) — document and apply consistently.
+### 2. ~~Inconsistent border-radius tokens across the system~~ ✅
+- ~~Some pages use `rounded-[28px]`, others `rounded-[32px]`, others `rounded-2xl`, others `rounded-xl`~~
+- ~~**Fix**: Standardize to: `rounded-xl` (buttons/small), `rounded-2xl` (cards), `rounded-[28px]` (hero panels) — document and apply consistently.~~ **Standardized to 3-tier radius scale documented in `globals.css`: `rounded-xl` (0.75rem — buttons, tags, small elements), `rounded-2xl` (1rem — cards, modals, panels), `rounded-[28px]` (hero panels, featured cards). Replaced 26× `rounded-[32px]` → `rounded-2xl`, 25× `rounded-[24px]` → `rounded-2xl`, 5× `rounded-[40px]` → `rounded-[28px]`, 7× `rounded-3xl` → `rounded-[28px]`, and 3× `rounded-[12/16/20px]` → `rounded-xl` across all files.
 
-### 3. Inconsistent background opacity tokens
-- Dashboard uses `bg-foreground/[0.01]`, `bg-foreground/[0.02]`, `bg-foreground/[0.03]`, `bg-foreground/[0.04]`
-- Support/Credentials use `bg-foreground/[0.015]`, `bg-foreground/[0.008]`
-- **Fix**: Define a strict opacity scale in CSS (e.g., `--card-bg`, `--card-bg-hover`, `--card-bg-active`) and use it everywhere.
+### 3. ~~Inconsistent background opacity tokens~~ ✅
+- ~~Dashboard uses `bg-foreground/[0.01]`, `bg-foreground/[0.02]`, `bg-foreground/[0.03]`, `bg-foreground/[0.04]`~~
+- ~~Support/Credentials use `bg-foreground/[0.015]`, `bg-foreground/[0.008]`~~
+- ~~**Fix**: Define a strict opacity scale in CSS (e.g., `--card-bg`, `--card-bg-hover`, `--card-bg-active`) and use it everywhere.~~ **Defined 9 semantic background tokens (`--bg-subtle` through `--bg-toggle`) and 4 border tokens (`--border-subtle` through `--border-hover`) in `globals.css` using `color-mix(in srgb, var(--foreground) X%, transparent)` so they automatically adapt across all themes. Registered in `@theme` as `bg-bg-surface`, `border-border-default`, etc. Replaced ~350 hardcoded `bg-foreground/[...]` values, ~130 `dark:bg-white/[...]` overrides, ~50 `border-foreground/[...]` values, and ~20 `dark:border-white/[...]` overrides across 20+ files. Removed all redundant dark mode overrides since the CSS variables handle both modes.
 
 ### 4. Public Navbar (landing) is disconnected from workspace navbar
 - The public navbar uses `bg-background/45 backdrop-blur-xl` but the landing page hardcodes `bg-[#030304]` — the navbar glass effect doesn't blend with the dark landing background.
 - **Fix**: Add a `navbar-theme="dark"` prop or detect landing page and apply matching dark glass.
 
-### 5. Footer branding inconsistency
-- Mobile menu footer shows "V" monogram with "Aethyl Research v1.0"
-- Sidebar shows "VOID AUTONOMOUS OS by Aethyl"
-- Landing page Footer shows "VOID" with a dot
-- **Fix**: Unify brand mark across all touchpoints — pick one treatment and apply it everywhere.
+### 5. ~~Footer branding inconsistency~~ ✅
+- ~~Mobile menu footer shows "V" monogram with "Aethyl Research v1.0"~~
+- ~~Sidebar shows "VOID AUTONOMOUS OS by Aethyl"~~
+- ~~Landing page Footer shows "VOID" with a dot~~
+- ~~**Fix**: Unify brand mark across all touchpoints — pick one treatment and apply it everywhere.~~ **Unified to sidebar treatment: "VOID ●" + "AUTONOMOUS OS by Aethyl" in mobile menu footer, and "**VOID**. An Aethyl company." in landing page Footer.**
 
 ---
 
@@ -115,9 +115,8 @@ These pages still use older, less polished layouts:
 
 ## 🟢 LOW PRIORITY — Polish & Optimization
 
-### 23. Hardcoded dark theme on landing page
-- Landing page forces `className="dark"` on the root div. If user has light theme in the workspace, the landing always shows dark.
-- **Consider**: Respect the user's theme preference on the landing page too.
+### 23. ~~Hardcoded dark theme on landing page~~ ✅
+- ~~Landing page forces `className="dark"` on the root div. If user has light theme in the workspace, the landing always shows dark.~~ **Landing page redesigned with go-lifted.com inspired sections: scrolling LogoCloud marquee, Testimonials carousel with stats, WhyChoose feature grid, TrustBadges compliance section. Removed hardcoded dark class, now respects theme system.**
 
 ### 24. Unused imports across files
 - Several pages import icons they don't use (e.g., `Navbar` imports `Sliders`, `Activity`, `Cpu`, `Building2` but doesn't use them all).
@@ -170,8 +169,8 @@ These pages still use older, less polished layouts:
 
 41. Making the light theme more colorful like modern CRMs ✅ (item 23 — consider multi-theme color palettes)
 
-42. Theme inspiration from go-lifted.com ✅ (already partially applied in landing page redesign)
+42. ~~Theme inspiration from go-lifted.com~~ ✅ **Landing page fully redesigned inspired by go-lifted.com: scrolling logo cloud, testimonial carousel with large stats, 2×3 feature grid, trust/compliance badges section. All using VOID design system tokens.**
 
 ---
 
-*Generated by system audit — 42 actionable items identified (9 completed ✅)*
+*Generated by system audit — 42 actionable items identified (12 completed ✅)*

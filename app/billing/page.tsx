@@ -154,7 +154,7 @@ export default function BillingPage() {
               
               {/* Heading */}
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg text-[9px] font-bold text-silver uppercase tracking-widest mb-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-bg-elevated border border-border-default rounded-lg text-[9px] font-bold text-silver uppercase tracking-widest mb-4">
                   <CreditCard className="w-3 h-3" />
                   Agency Subscription
                 </div>
@@ -180,7 +180,7 @@ export default function BillingPage() {
                         "text-left px-4 py-3.5 rounded-xl transition-all duration-200 flex items-center gap-3 border relative overflow-hidden group cursor-pointer",
                         isActive
                           ? "bg-foreground text-background border-transparent shadow-md"
-                          : "bg-foreground/[0.02] dark:bg-white/[0.01] border-foreground/[0.06] dark:border-white/[0.06] text-foreground hover:bg-foreground/[0.04] dark:hover:bg-white/[0.03]"
+                          : "bg-bg-surface border-border-default text-foreground hover:bg-bg-active"
                       )}
                     >
                       <div className={cn(
@@ -213,16 +213,16 @@ export default function BillingPage() {
 
               {/* Current Plan Capacity */}
               {sub && (
-                <div className="p-5 rounded-2xl bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06]">
+                <div className="p-5 rounded-2xl bg-bg-surface border border-border-default">
                   <div className="flex justify-between items-center mb-3">
                     <p className="text-[9px] text-silver uppercase tracking-widest font-bold">Fleet Capacity</p>
-                    <span className="text-[9px] font-bold text-foreground bg-foreground/[0.04] dark:bg-white/[0.04] px-2 py-0.5 rounded">{sub.plan}</span>
+                    <span className="text-[9px] font-bold text-foreground bg-bg-active px-2 py-0.5 rounded">{sub.plan}</span>
                   </div>
                   <div className="flex justify-between items-end mb-2">
                     <p className="text-xs font-semibold text-foreground">Operatives Deployed</p>
                     <p className="text-xs font-bold"><span className="text-foreground">{sub.usedWorkers}</span> <span className="text-silver">/ {sub.maxWorkers}</span></p>
                   </div>
-                  <div className="h-2 w-full bg-foreground/[0.06] dark:bg-white/[0.06] rounded-full overflow-hidden">
+                  <div className="h-2 w-full bg-bg-border rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(100, Math.max(0, (sub.usedWorkers / sub.maxWorkers) * 100))}%` }}
@@ -243,7 +243,7 @@ export default function BillingPage() {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.25, ease: 'easeOut' }}
-                  className="bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] p-8 w-full max-w-xl relative transition-all duration-500 flex flex-col justify-between backdrop-blur-3xl shadow-sm min-h-[480px]"
+                  className="bg-bg-subtle-alt border border-border-default rounded-[28px] p-8 w-full max-w-xl relative transition-all duration-500 flex flex-col justify-between backdrop-blur-3xl shadow-sm min-h-[480px]"
                 >
                   {/* Popular Badge */}
                   {selectedPlan.popular && (
@@ -305,8 +305,8 @@ export default function BillingPage() {
                       selectedPlan.popular && !isDisabled
                         ? "bg-foreground text-background border-transparent hover:opacity-90 hover:scale-[1.01] active:scale-[0.99]" 
                         : isDisabled
-                          ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-silver cursor-not-allowed"
-                          : "bg-transparent text-foreground border-foreground/[0.1] dark:border-white/[0.1] hover:bg-foreground hover:text-background hover:border-transparent hover:scale-[1.01] active:scale-[0.99]"
+                          ? "bg-bg-active border-border-default text-silver cursor-not-allowed"
+                          : "bg-transparent text-foreground border-border-hover hover:bg-foreground hover:text-background hover:border-transparent hover:scale-[1.01] active:scale-[0.99]"
                     )}
                   >
                     {isCurrentPlan ? (

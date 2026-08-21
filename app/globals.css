@@ -14,6 +14,29 @@
   --emerald-glow: rgba(16, 185, 129, 0.12);
   --text-gradient-start: #0f172a;
   --text-gradient-end: #10b981;
+
+  /* Background opacity scale — single source of truth */
+  --bg-subtle: color-mix(in srgb, var(--foreground) 1%, transparent);
+  --bg-subtle-alt: color-mix(in srgb, var(--foreground) 1.5%, transparent);
+  --bg-surface: color-mix(in srgb, var(--foreground) 2%, transparent);
+  --bg-elevated: color-mix(in srgb, var(--foreground) 3%, transparent);
+  --bg-active: color-mix(in srgb, var(--foreground) 4%, transparent);
+  --bg-hover: color-mix(in srgb, var(--foreground) 5%, transparent);
+  --bg-strong: color-mix(in srgb, var(--foreground) 8%, transparent);
+  --bg-border: color-mix(in srgb, var(--foreground) 6%, transparent);
+  --bg-toggle: color-mix(in srgb, var(--foreground) 10%, transparent);
+
+  /* Border opacity scale */
+  --border-subtle: color-mix(in srgb, var(--foreground) 4%, transparent);
+  --border-default: color-mix(in srgb, var(--foreground) 6%, transparent);
+  --border-strong: color-mix(in srgb, var(--foreground) 8%, transparent);
+  --border-hover: color-mix(in srgb, var(--foreground) 10%, transparent);
+
+  /* Border-radius scale
+   * rounded-xl     = buttons, tags, small elements
+   * rounded-2xl    = cards, modals, panels
+   * rounded-[28px] = hero panels, featured cards
+   */
 }
 
 .dark {
@@ -125,6 +148,23 @@
   --color-apple-blue: var(--apple-blue);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
+
+  /* Semantic background tokens */
+  --color-bg-subtle: var(--bg-subtle);
+  --color-bg-subtle-alt: var(--bg-subtle-alt);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-active: var(--bg-active);
+  --color-bg-hover: var(--bg-hover);
+  --color-bg-strong: var(--bg-strong);
+  --color-bg-border: var(--bg-border);
+  --color-bg-toggle: var(--bg-toggle);
+
+  /* Semantic border tokens */
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+  --color-border-hover: var(--border-hover);
 }
 
 @utility animate-marquee {

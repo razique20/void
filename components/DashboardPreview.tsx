@@ -64,7 +64,7 @@ export default function DashboardPreview() {
   }, []);
 
   return (
-    <div className="relative bg-foreground/[0.03] dark:bg-foreground/[0.01] border border-foreground/5 rounded-[24px] md:rounded-[40px] overflow-hidden shadow-[0_0_80px_-20px_rgba(59,130,246,0.1)] w-full flex flex-col md:grid md:grid-cols-12 md:h-[420px] backdrop-blur-3xl">
+    <div className="relative bg-bg-elevated dark:bg-bg-subtle border border-foreground/5 rounded-2xl md:rounded-[28px] overflow-hidden shadow-[0_0_80px_-20px_rgba(59,130,246,0.1)] w-full flex flex-col md:grid md:grid-cols-12 md:h-[420px] backdrop-blur-3xl">
       {/* Background Ambience Glow */}
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-apple-blue/5 via-transparent to-transparent opacity-50 pointer-events-none" />
 

@@ -26,7 +26,9 @@ export default function Footer() {
         </nav>
 
         <p className="text-xs text-zinc-600">
-          © {new Date().getFullYear()} VOID. An{' '}
+          © {new Date().getFullYear()}{' '}
+          <span className="font-bold text-zinc-400">VOID</span>
+          .{' '}
           <a 
             href="https://www.aethyl.com/" 
             target="_blank" 

@@ -189,7 +189,7 @@ export default function ChannelsPage() {
                 <div className="h-10 w-64 bg-foreground/5 rounded-2xl animate-pulse" />
                 <div className="h-5 w-48 bg-foreground/5 rounded-xl animate-pulse mt-3" />
               </div>
-              <div className="h-64 bg-foreground/[0.02] rounded-[32px] animate-pulse" />
+              <div className="h-64 bg-bg-surface rounded-2xl animate-pulse" />
             </div>
           </main>
       </div>
@@ -278,10 +278,10 @@ export default function ChannelsPage() {
                   
                   {/* WhatsApp Business Card */}
                   <div className={cn(
-                    "bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] overflow-hidden transition-all duration-300",
+                    "bg-bg-surface border border-border-default rounded-[28px] overflow-hidden transition-all duration-300",
                     !hasWhatsApp && "opacity-60"
                   )}>
-                    <div className="p-6 flex items-center justify-between border-b border-foreground/[0.04] dark:border-white/[0.04]">
+                    <div className="p-6 flex items-center justify-between border-b border-border-subtle">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500 shrink-0">
                           <Phone className="w-5.5 h-5.5" />
@@ -306,11 +306,11 @@ export default function ChannelsPage() {
                           defaultChecked={hasWhatsApp && operative.channels?.whatsapp?.isActive}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-foreground/[0.1] dark:bg-white/[0.1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500" />
+                        <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500" />
                       </label>
                     </div>
 
-                    <div className={cn("p-6 bg-foreground/[0.01] dark:bg-white/[0.005] space-y-4", !hasWhatsApp && "pointer-events-none opacity-50")}>
+                    <div className={cn("p-6 bg-bg-subtle space-y-4", !hasWhatsApp && "pointer-events-none opacity-50")}>
                       {isShared && (
                         <div className={cn(
                           "p-4 rounded-2xl border text-xs font-semibold leading-relaxed flex flex-col gap-1.5",
@@ -341,7 +341,7 @@ export default function ChannelsPage() {
                           )}
                         </div>
                       )}
-                      <div className="flex gap-2 border-b border-foreground/[0.04] dark:border-white/[0.04] pb-4">
+                      <div className="flex gap-2 border-b border-border-subtle pb-4">
                         <button
                           type="button"
                           disabled={!hasWhatsApp}
@@ -350,7 +350,7 @@ export default function ChannelsPage() {
                             "px-4 py-2 text-xs font-bold rounded-xl transition-all border",
                             useVault 
                               ? "bg-foreground text-background border-transparent" 
-                              : "text-silver border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.02]"
+                              : "text-silver border-border-default hover:bg-bg-surface"
                           )}
                         >
                           Select Saved Credential
@@ -363,7 +363,7 @@ export default function ChannelsPage() {
                             "px-4 py-2 text-xs font-bold rounded-xl transition-all border",
                             !useVault 
                               ? "bg-foreground text-background border-transparent" 
-                              : "text-silver border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.02]"
+                              : "text-silver border-border-default hover:bg-bg-surface"
                           )}
                         >
                           Manual Entry (BYOC)
@@ -382,7 +382,7 @@ export default function ChannelsPage() {
                               name="wa_credentialId"
                               disabled={!hasWhatsApp}
                               defaultValue={operative.channels?.whatsapp?.credentialId || ''}
-                              className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs focus:border-emerald-500 focus:outline-none text-foreground font-medium"
+                              className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-emerald-500 focus:outline-none text-foreground font-medium"
                             >
                               <option value="">-- Choose saved credential --</option>
                               {savedCredentials.map((c: any) => (
@@ -404,7 +404,7 @@ export default function ChannelsPage() {
                               type="password"
                               autoComplete="new-password"
                               placeholder="EAAQ..."
-                              className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-emerald-500 focus:outline-none text-foreground"
+                              className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-emerald-500 focus:outline-none text-foreground"
                             />
                           </div>
                           <div className="space-y-1.5">
@@ -414,7 +414,7 @@ export default function ChannelsPage() {
                               disabled={!hasWhatsApp}
                               defaultValue={operative.channels?.whatsapp?.phoneNumberId}
                               placeholder="1234567890"
-                              className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-emerald-500 focus:outline-none text-foreground"
+                              className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-emerald-500 focus:outline-none text-foreground"
                             />
                           </div>
                         </div>
@@ -424,10 +424,10 @@ export default function ChannelsPage() {
 
                   {/* Telegram Bot Card */}
                   <div className={cn(
-                    "bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] overflow-hidden transition-all duration-300",
+                    "bg-bg-surface border border-border-default rounded-[28px] overflow-hidden transition-all duration-300",
                     !hasTelegram && "opacity-60"
                   )}>
-                    <div className="p-6 flex items-center justify-between border-b border-foreground/[0.04] dark:border-white/[0.04]">
+                    <div className="p-6 flex items-center justify-between border-b border-border-subtle">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-sky-500/10 border border-sky-500/10 rounded-2xl flex items-center justify-center text-sky-500 shrink-0">
                           <Send className="w-5.5 h-5.5" />
@@ -452,10 +452,10 @@ export default function ChannelsPage() {
                           defaultChecked={hasTelegram && operative.channels?.telegram?.isActive}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-foreground/[0.1] dark:bg-white/[0.1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500" />
+                        <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500" />
                       </label>
                     </div>
-                    <div className={cn("p-6 bg-foreground/[0.01] dark:bg-white/[0.005] space-y-2", !hasTelegram && "pointer-events-none opacity-50")}>
+                    <div className={cn("p-6 bg-bg-subtle space-y-2", !hasTelegram && "pointer-events-none opacity-50")}>
                       <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot Token</label>
                       <input 
                         name="tg_token" 
@@ -464,17 +464,17 @@ export default function ChannelsPage() {
                         type="password"
                         autoComplete="new-password"
                         placeholder="123456789:ABCdefGhIjkLmNoPq..."
-                        className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-sky-500 focus:outline-none text-foreground"
+                        className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-sky-500 focus:outline-none text-foreground"
                       />
                     </div>
                   </div>
 
                   {/* Slack Workspace Card */}
                   <div className={cn(
-                    "bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] overflow-hidden transition-all duration-300",
+                    "bg-bg-surface border border-border-default rounded-[28px] overflow-hidden transition-all duration-300",
                     !hasSlack && "opacity-60"
                   )}>
-                    <div className="p-6 flex items-center justify-between border-b border-foreground/[0.04] dark:border-white/[0.04]">
+                    <div className="p-6 flex items-center justify-between border-b border-border-subtle">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 shrink-0">
                           <Hash className="w-5.5 h-5.5" />
@@ -499,10 +499,10 @@ export default function ChannelsPage() {
                           defaultChecked={hasSlack && operative.channels?.slack?.isActive}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-foreground/[0.1] dark:bg-white/[0.1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500" />
+                        <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500" />
                       </label>
                     </div>
-                    <div className={cn("p-6 bg-foreground/[0.01] dark:bg-white/[0.005] grid grid-cols-1 md:grid-cols-2 gap-4", !hasSlack && "pointer-events-none opacity-50")}>
+                    <div className={cn("p-6 bg-bg-subtle grid grid-cols-1 md:grid-cols-2 gap-4", !hasSlack && "pointer-events-none opacity-50")}>
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot User OAuth Token</label>
                         <input 
@@ -511,7 +511,7 @@ export default function ChannelsPage() {
                           defaultValue={operative.channels?.slack?.botToken}
                           type="password"
                           placeholder="xoxb-your-token"
-                          className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-purple-500 focus:outline-none text-foreground"
+                          className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-purple-500 focus:outline-none text-foreground"
                         />
                       </div>
                       <div className="space-y-1.5">
@@ -522,7 +522,7 @@ export default function ChannelsPage() {
                           defaultValue={operative.channels?.slack?.signingSecret}
                           type="password"
                           placeholder="Secret key"
-                          className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-purple-500 focus:outline-none text-foreground"
+                          className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-purple-500 focus:outline-none text-foreground"
                         />
                       </div>
                     </div>
@@ -541,8 +541,8 @@ export default function ChannelsPage() {
                 <div className="space-y-4">
                   
                   {/* System Guard */}
-                  <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] overflow-hidden">
-                    <div className="p-6 flex items-center justify-between border-b border-foreground/[0.04] dark:border-white/[0.04]">
+                  <div className="bg-bg-surface border border-border-default rounded-[28px] overflow-hidden">
+                    <div className="p-6 flex items-center justify-between border-b border-border-subtle">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-rose-500/10 border border-rose-500/10 rounded-2xl flex items-center justify-center text-rose-500 shrink-0">
                           <ShieldCheck className="w-5.5 h-5.5" />
@@ -559,16 +559,16 @@ export default function ChannelsPage() {
                           defaultChecked={operative.tools?.systemGuard?.isActive}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-foreground/[0.1] dark:bg-white/[0.1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500" />
+                        <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500" />
                       </label>
                     </div>
-                    <div className="p-6 bg-foreground/[0.01] dark:bg-white/[0.005] grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-6 bg-bg-subtle grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Alert Threshold</label>
                         <select 
                           name="tool_guard_threshold"
                           defaultValue={operative.tools?.systemGuard?.alertThreshold || 'error'}
-                          className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs focus:border-rose-500 focus:outline-none text-foreground font-medium"
+                          className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-rose-500 focus:outline-none text-foreground font-medium"
                         >
                           <option value="error">Critical Errors Only</option>
                           <option value="warning">All Warnings & Errors</option>
@@ -580,7 +580,7 @@ export default function ChannelsPage() {
                           name="tool_guard_phone"
                           defaultValue={operative.tools?.systemGuard?.alertPhoneNumber}
                           placeholder="e.g. +15550199"
-                          className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs focus:border-rose-500 focus:outline-none text-foreground"
+                          className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-rose-500 focus:outline-none text-foreground"
                         />
                       </div>
                     </div>
@@ -588,10 +588,10 @@ export default function ChannelsPage() {
 
                   {/* Email Agent */}
                   <div className={cn(
-                    "bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] overflow-hidden transition-all duration-300",
+                    "bg-bg-surface border border-border-default rounded-[28px] overflow-hidden transition-all duration-300",
                     !hasEmail && "opacity-60"
                   )}>
-                    <div className="p-6 flex items-center justify-between border-b border-foreground/[0.04] dark:border-white/[0.04]">
+                    <div className="p-6 flex items-center justify-between border-b border-border-subtle">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 shrink-0">
                           <Mail className="w-5.5 h-5.5" />
@@ -616,35 +616,35 @@ export default function ChannelsPage() {
                           defaultChecked={hasEmail && operative.tools?.emailAgent?.isActive}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-foreground/[0.1] dark:bg-white/[0.1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500" />
+                        <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500" />
                       </label>
                     </div>
-                    <div className={cn("p-6 bg-foreground/[0.01] dark:bg-white/[0.005] grid grid-cols-1 md:grid-cols-2 gap-4", !hasEmail && "pointer-events-none opacity-50")}>
+                    <div className={cn("p-6 bg-bg-subtle grid grid-cols-1 md:grid-cols-2 gap-4", !hasEmail && "pointer-events-none opacity-50")}>
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">SMTP Host</label>
-                        <input name="tool_email_host" disabled={!hasEmail} defaultValue={operative.tools?.emailAgent?.host} placeholder="smtp.gmail.com" className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs focus:border-amber-500 focus:outline-none text-foreground" />
+                        <input name="tool_email_host" disabled={!hasEmail} defaultValue={operative.tools?.emailAgent?.host} placeholder="smtp.gmail.com" className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-amber-500 focus:outline-none text-foreground" />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Port</label>
-                        <input name="tool_email_port" disabled={!hasEmail} defaultValue={operative.tools?.emailAgent?.port || '465'} placeholder="465" className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs focus:border-amber-500 focus:outline-none text-foreground" />
+                        <input name="tool_email_port" disabled={!hasEmail} defaultValue={operative.tools?.emailAgent?.port || '465'} placeholder="465" className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-amber-500 focus:outline-none text-foreground" />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Username / Email</label>
-                        <input name="tool_email_user" disabled={!hasEmail} defaultValue={operative.tools?.emailAgent?.user} placeholder="user@domain.com" className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs focus:border-amber-500 focus:outline-none text-foreground" />
+                        <input name="tool_email_user" disabled={!hasEmail} defaultValue={operative.tools?.emailAgent?.user} placeholder="user@domain.com" className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-amber-500 focus:outline-none text-foreground" />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Password / App Code</label>
-                        <input name="tool_email_pass" type="password" disabled={!hasEmail} defaultValue={operative.tools?.emailAgent?.pass} placeholder="••••••••" className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs focus:border-amber-500 focus:outline-none text-foreground" />
+                        <input name="tool_email_pass" type="password" disabled={!hasEmail} defaultValue={operative.tools?.emailAgent?.pass} placeholder="••••••••" className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-amber-500 focus:outline-none text-foreground" />
                       </div>
                     </div>
                   </div>
 
                   {/* Cal.com */}
                   <div className={cn(
-                    "bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] overflow-hidden transition-all duration-300",
+                    "bg-bg-surface border border-border-default rounded-[28px] overflow-hidden transition-all duration-300",
                     !hasCalcom && "opacity-60"
                   )}>
-                    <div className="p-6 flex items-center justify-between border-b border-foreground/[0.04] dark:border-white/[0.04]">
+                    <div className="p-6 flex items-center justify-between border-b border-border-subtle">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 shrink-0">
                           <CheckCircle2 className="w-5.5 h-5.5" />
@@ -669,21 +669,21 @@ export default function ChannelsPage() {
                           defaultChecked={hasCalcom && operative.tools?.calcom?.isActive}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-foreground/[0.1] dark:bg-white/[0.1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500" />
+                        <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500" />
                       </label>
                     </div>
-                    <div className={cn("p-6 bg-foreground/[0.01] dark:bg-white/[0.005] grid grid-cols-1 md:grid-cols-3 gap-4", !hasCalcom && "pointer-events-none opacity-50")}>
+                    <div className={cn("p-6 bg-bg-subtle grid grid-cols-1 md:grid-cols-3 gap-4", !hasCalcom && "pointer-events-none opacity-50")}>
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">API Key</label>
-                        <input name="tool_calcom_apikey" type="password" disabled={!hasCalcom} defaultValue={operative.tools?.calcom?.apiKey} placeholder="cal_..." className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-purple-500 focus:outline-none text-foreground" />
+                        <input name="tool_calcom_apikey" type="password" disabled={!hasCalcom} defaultValue={operative.tools?.calcom?.apiKey} placeholder="cal_..." className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-purple-500 focus:outline-none text-foreground" />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Cal.com Username</label>
-                        <input name="tool_calcom_username" disabled={!hasCalcom} defaultValue={operative.tools?.calcom?.username} placeholder="john-doe" className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs focus:border-purple-500 focus:outline-none text-foreground" />
+                        <input name="tool_calcom_username" disabled={!hasCalcom} defaultValue={operative.tools?.calcom?.username} placeholder="john-doe" className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-purple-500 focus:outline-none text-foreground" />
                       </div>
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Event Type ID</label>
-                        <input name="tool_calcom_eventid" disabled={!hasCalcom} defaultValue={operative.tools?.calcom?.eventTypeId} placeholder="123456" className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs focus:border-purple-500 focus:outline-none text-foreground" />
+                        <input name="tool_calcom_eventid" disabled={!hasCalcom} defaultValue={operative.tools?.calcom?.eventTypeId} placeholder="123456" className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-purple-500 focus:outline-none text-foreground" />
                       </div>
                     </div>
                   </div>
@@ -710,7 +710,7 @@ export default function ChannelsPage() {
                 </div>
                 
                 {!(isActionAgentsEnabled && hasActions) ? (
-                  <div className="relative bg-red-500/[0.01] border border-red-500/10 rounded-[32px] p-10 overflow-hidden flex flex-col items-center justify-center text-center">
+                  <div className="relative bg-red-500/[0.01] border border-red-500/10 rounded-2xl p-10 overflow-hidden flex flex-col items-center justify-center text-center">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/[0.02] rounded-full blur-2xl pointer-events-none" />
                     <div className="w-14 h-14 bg-red-500/10 rounded-2xl border border-red-500/10 flex items-center justify-center text-red-500 mb-4 shrink-0">
                       <Lock className="w-6 h-6 animate-pulse" />
@@ -723,14 +723,14 @@ export default function ChannelsPage() {
                 ) : (
                   <div className="space-y-4">
                     {actions.length === 0 ? (
-                      <div className="bg-foreground/[0.02] dark:bg-white/[0.01] rounded-[28px] border border-foreground/[0.06] dark:border-white/[0.06] p-8 text-center border-dashed">
+                      <div className="bg-bg-surface rounded-[28px] border border-border-default p-8 text-center border-dashed">
                         <Zap className="w-8 h-8 text-silver/40 mx-auto mb-3" />
                         <p className="text-[11px] text-silver font-medium">No actions bound to this agent yet. Click "Add Webhook Trigger" to define one.</p>
                       </div>
                     ) : (
                       actions.map((action, index) => (
-                        <div key={index} className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] overflow-hidden group transition-colors">
-                          <div className="p-6 flex items-center justify-between border-b border-foreground/[0.04] dark:border-white/[0.04]">
+                        <div key={index} className="bg-bg-surface border border-border-default rounded-[28px] overflow-hidden group transition-colors">
+                          <div className="p-6 flex items-center justify-between border-b border-border-subtle">
                             <div className="flex items-center gap-4 flex-1">
                               <div className="w-10 h-10 bg-apple-blue/10 rounded-xl flex items-center justify-center text-apple-blue shrink-0">
                                 <Zap className="w-5 h-5" />
@@ -750,14 +750,14 @@ export default function ChannelsPage() {
                               <X className="w-4 h-4 text-silver group-hover/delete:text-red-500" />
                             </button>
                           </div>
-                          <div className="p-6 bg-foreground/[0.01] dark:bg-white/[0.005] grid grid-cols-1 gap-4">
+                          <div className="p-6 bg-bg-subtle grid grid-cols-1 gap-4">
                             <div className="space-y-1.5">
                               <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Natural Description (Tells AI when to trigger)</label>
                               <input 
                                 value={action.description}
                                 onChange={(e) => updateAction(index, 'description', e.target.value)}
                                 placeholder="Trigger when the client requests a package return or credit back..."
-                                className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs focus:outline-none text-foreground placeholder:text-foreground/40" 
+                                className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:outline-none text-foreground placeholder:text-foreground/40" 
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -766,7 +766,7 @@ export default function ChannelsPage() {
                                 value={action.webhookUrl}
                                 onChange={(e) => updateAction(index, 'webhookUrl', e.target.value)}
                                 placeholder="https://api.domain.com/webhooks/refund"
-                                className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl px-4 py-3.5 text-xs font-mono focus:outline-none text-foreground placeholder:text-foreground/40" 
+                                className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs font-mono focus:outline-none text-foreground placeholder:text-foreground/40" 
                               />
                             </div>
                           </div>

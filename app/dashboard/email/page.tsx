@@ -479,8 +479,8 @@ export default function EmailWorkspacePage() {
         <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
-        <div className="max-w-md mx-auto text-center py-16 px-6 bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[32px] backdrop-blur-3xl shadow-sm relative z-10">
-          <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-[24px] flex items-center justify-center mx-auto mb-6">
+        <div className="max-w-md mx-auto text-center py-16 px-6 bg-bg-subtle-alt border border-border-default rounded-2xl backdrop-blur-3xl shadow-sm relative z-10">
+          <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Lock className="w-6 h-6 text-red-500" />
           </div>
           <h2 className="text-xl font-bold mb-3 text-foreground">AI Email Hub Locked</h2>
@@ -502,7 +502,7 @@ export default function EmailWorkspacePage() {
     <div 
       ref={containerRef}
       className={cn(
-        "h-[calc(100vh-100px)] w-full flex overflow-hidden bg-background text-foreground transition-colors duration-300 relative rounded-2xl border border-foreground/[0.06] dark:border-white/[0.06]",
+        "h-[calc(100vh-100px)] w-full flex overflow-hidden bg-background text-foreground transition-colors duration-300 relative rounded-2xl border border-border-default",
         (isResizing1 || isResizing2) && "select-none cursor-col-resize"
       )}
     >
@@ -520,26 +520,26 @@ export default function EmailWorkspacePage() {
       {/* PANEL 1: SIDEBAR (Mailboxes/Folders list) */}
       <div 
         style={{ width: `${panel1Width}px` }} 
-        className="flex flex-col bg-foreground/[0.01] dark:bg-white/[0.005] border-r border-foreground/[0.06] dark:border-white/[0.06] shrink-0 backdrop-blur-md relative group"
+        className="flex flex-col bg-bg-subtle border-r border-border-default shrink-0 backdrop-blur-md relative group"
       >
         {/* Account Switcher Header */}
-        <div className="p-4 border-b border-foreground/[0.06] dark:border-white/[0.06] space-y-3">
+        <div className="p-4 border-b border-border-default space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold text-silver uppercase tracking-wider">Mail Account</span>
             <button 
               onClick={() => setShowSettingsModal(true)}
-              className="text-silver hover:text-foreground p-1 hover:bg-foreground/[0.04] dark:hover:bg-white/[0.04] rounded-lg transition-colors cursor-pointer"
+              className="text-silver hover:text-foreground p-1 hover:bg-bg-active rounded-lg transition-colors cursor-pointer"
             >
               <Settings className="w-3.5 h-3.5" />
             </button>
           </div>
           
           {loadingAccounts ? (
-            <div className="h-9 w-full bg-foreground/[0.03] dark:bg-white/[0.03] animate-pulse rounded-lg" />
+            <div className="h-9 w-full bg-bg-elevated animate-pulse rounded-lg" />
           ) : accounts.length === 0 ? (
             <button 
               onClick={() => setShowSettingsModal(true)}
-              className="w-full text-center py-2 border border-dashed border-foreground/[0.1] rounded-lg text-xs font-bold text-apple-blue hover:bg-apple-blue/5 transition-colors cursor-pointer"
+              className="w-full text-center py-2 border border-dashed border-border-hover rounded-lg text-xs font-bold text-apple-blue hover:bg-apple-blue/5 transition-colors cursor-pointer"
             >
               Connect Email
             </button>
@@ -551,7 +551,7 @@ export default function EmailWorkspacePage() {
                 setPage(1);
                 setSelectedEmail(null);
               }}
-              className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-2 text-xs font-semibold text-foreground focus:outline-none"
+              className="w-full bg-bg-elevated border border-border-default rounded-xl px-3 py-2 text-xs font-semibold text-foreground focus:outline-none"
             >
               {accounts.map(acc => (
                 <option key={acc._id} value={acc._id} className="bg-background">
@@ -604,8 +604,8 @@ export default function EmailWorkspacePage() {
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer",
                   isActive 
-                    ? "bg-foreground/[0.04] dark:bg-white/[0.04] text-foreground border-l-2 border-apple-blue font-bold shadow-sm" 
-                    : "text-silver hover:text-foreground hover:bg-foreground/[0.02] dark:hover:bg-white/[0.02]"
+                    ? "bg-bg-active text-foreground border-l-2 border-apple-blue font-bold shadow-sm" 
+                    : "text-silver hover:text-foreground hover:bg-bg-surface"
                 )}
               >
                 <Icon className={cn("w-4 h-4", isActive ? "text-apple-blue" : "text-silver")} />
@@ -616,7 +616,7 @@ export default function EmailWorkspacePage() {
         </div>
 
         {/* Footer brand details */}
-        <div className="p-4 border-t border-foreground/[0.04] dark:border-white/[0.04] text-center">
+        <div className="p-4 border-t border-border-subtle text-center">
           <p className="text-[9px] font-mono text-silver/60">SECURE UPLINK ACTIVE</p>
         </div>
       </div>
@@ -625,7 +625,7 @@ export default function EmailWorkspacePage() {
       <div 
         onMouseDown={startResizing1}
         className={cn(
-          "w-1.5 hover:w-2 bg-transparent hover:bg-apple-blue/50 active:bg-apple-blue transition-all cursor-col-resize z-20 shrink-0 border-r border-foreground/[0.04] dark:border-white/[0.04] flex items-center justify-center group",
+          "w-1.5 hover:w-2 bg-transparent hover:bg-apple-blue/50 active:bg-apple-blue transition-all cursor-col-resize z-20 shrink-0 border-r border-border-subtle flex items-center justify-center group",
           isResizing1 && "bg-apple-blue w-2"
         )}
         title="Drag to resize folder sidebar"
@@ -637,12 +637,12 @@ export default function EmailWorkspacePage() {
       <div 
         style={{ width: `${panel2Width}px` }}
         className={cn(
-          "shrink-0 flex flex-col bg-background/50 border-r border-foreground/[0.06] dark:border-white/[0.06]",
+          "shrink-0 flex flex-col bg-background/50 border-r border-border-default",
           selectedEmail ? "hidden md:flex" : "flex"
         )}
       >
         {/* Search header bar */}
-        <div className="p-4 border-b border-foreground/[0.06] dark:border-white/[0.06] flex items-center gap-3 shrink-0">
+        <div className="p-4 border-b border-border-default flex items-center gap-3 shrink-0">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-silver" />
             <input
@@ -653,14 +653,14 @@ export default function EmailWorkspacePage() {
                 setSearchQuery(e.target.value);
                 setPage(1);
               }}
-              className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl pl-10 pr-4 py-2 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
+              className="w-full bg-bg-elevated border border-border-default rounded-xl pl-10 pr-4 py-2 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
             />
           </div>
 
           <button
             onClick={() => fetchEmails(true)}
             disabled={syncingInboxState || !selectedAccountId}
-            className="p-2 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] transition-colors disabled:opacity-50 cursor-pointer"
+            className="p-2 bg-bg-elevated border border-border-default rounded-xl hover:bg-bg-border dark:hover:bg-white/[0.06] transition-colors disabled:opacity-50 cursor-pointer"
             title="Force Fetch / Refresh Mailbox"
           >
             <RefreshCw className={cn("w-4 h-4 text-silver", syncingInboxState && "animate-spin text-apple-blue")} />
@@ -672,7 +672,7 @@ export default function EmailWorkspacePage() {
           {loadingEmails && emails.length === 0 ? (
             <div className="space-y-2">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-16 w-full bg-foreground/[0.02] dark:bg-white/[0.02] animate-pulse rounded-xl" />
+                <div key={i} className="h-16 w-full bg-bg-surface animate-pulse rounded-xl" />
               ))}
             </div>
           ) : emails.length === 0 ? (
@@ -698,8 +698,8 @@ export default function EmailWorkspacePage() {
                   className={cn(
                     "p-3 rounded-xl border transition-all duration-200 cursor-pointer relative group flex gap-3.5 hover:shadow-md",
                     !email.isRead 
-                      ? "bg-foreground/[0.02] dark:bg-white/[0.015] border-foreground/[0.08] dark:border-white/[0.08]" 
-                      : "bg-transparent border-transparent hover:bg-foreground/[0.015] dark:hover:bg-white/[0.01]",
+                      ? "bg-bg-surface border-border-strong" 
+                      : "bg-transparent border-transparent hover:bg-bg-subtle-alt",
                     isSelected && "border-apple-blue bg-apple-blue/[0.04] dark:bg-apple-blue/[0.06] shadow-sm"
                   )}
                 >
@@ -751,20 +751,20 @@ export default function EmailWorkspacePage() {
 
         {/* Footer controls pagination */}
         {totalPages > 1 && (
-          <div className="p-3 border-t border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-between text-xs text-silver font-medium shrink-0">
+          <div className="p-3 border-t border-border-default flex items-center justify-between text-xs text-silver font-medium shrink-0">
             <span>{emails.length} of {totalEmails} emails</span>
             <div className="flex gap-2">
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="p-1.5 border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg disabled:opacity-50 hover:bg-foreground/[0.02] dark:hover:bg-white/[0.02] cursor-pointer"
+                className="p-1.5 border border-border-default rounded-lg disabled:opacity-50 hover:bg-bg-surface cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="p-1.5 border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg disabled:opacity-50 hover:bg-foreground/[0.02] dark:hover:bg-white/[0.02] cursor-pointer"
+                className="p-1.5 border border-border-default rounded-lg disabled:opacity-50 hover:bg-bg-surface cursor-pointer"
               >
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
@@ -777,7 +777,7 @@ export default function EmailWorkspacePage() {
       <div 
         onMouseDown={startResizing2}
         className={cn(
-          "w-1.5 hover:w-2 bg-transparent hover:bg-apple-blue/50 active:bg-apple-blue transition-all cursor-col-resize z-20 shrink-0 border-r border-foreground/[0.04] dark:border-white/[0.04] flex items-center justify-center group hidden md:flex",
+          "w-1.5 hover:w-2 bg-transparent hover:bg-apple-blue/50 active:bg-apple-blue transition-all cursor-col-resize z-20 shrink-0 border-r border-border-subtle flex items-center justify-center group hidden md:flex",
           isResizing2 && "bg-apple-blue w-2"
         )}
         title="Drag to resize conversation list"
@@ -793,11 +793,11 @@ export default function EmailWorkspacePage() {
         {selectedEmail ? (
           <>
             {/* Header / Actions toolbar */}
-            <div className="p-4 border-b border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-between shrink-0">
+            <div className="p-4 border-b border-border-default flex items-center justify-between shrink-0">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setSelectedEmail(null)}
-                  className="md:hidden p-2 rounded-lg hover:bg-foreground/[0.04] dark:hover:bg-white/[0.04] cursor-pointer"
+                  className="md:hidden p-2 rounded-lg hover:bg-bg-active cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
@@ -808,21 +808,21 @@ export default function EmailWorkspacePage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleReplySetup(false)}
-                  className="p-2 hover:bg-foreground/[0.04] dark:hover:bg-white/[0.04] rounded-lg transition-colors cursor-pointer text-silver hover:text-foreground"
+                  className="p-2 hover:bg-bg-active rounded-lg transition-colors cursor-pointer text-silver hover:text-foreground"
                   title="Reply"
                 >
                   <Reply className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => handleUpdateFlags(selectedEmail._id, { isStarred: !selectedEmail.isStarred })}
-                  className="p-2 hover:bg-foreground/[0.04] dark:hover:bg-white/[0.04] rounded-lg transition-colors cursor-pointer text-silver hover:text-foreground"
+                  className="p-2 hover:bg-bg-active rounded-lg transition-colors cursor-pointer text-silver hover:text-foreground"
                   title="Star Email"
                 >
                   <Star className={cn("w-4 h-4", selectedEmail.isStarred ? "text-amber-500 fill-amber-500" : "text-silver")} />
                 </button>
                 <button
                   onClick={() => handleDeleteEmail(selectedEmail._id)}
-                  className="p-2 hover:bg-foreground/[0.04] dark:hover:bg-white/[0.04] rounded-lg transition-colors cursor-pointer text-silver hover:text-red-500"
+                  className="p-2 hover:bg-bg-active rounded-lg transition-colors cursor-pointer text-silver hover:text-red-500"
                   title="Delete Email"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -834,7 +834,7 @@ export default function EmailWorkspacePage() {
             <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6">
               
               {/* Header card details */}
-              <div className="bg-foreground/[0.015] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-4 shadow-sm">
+              <div className="bg-bg-subtle-alt border border-border-default rounded-2xl p-5 space-y-4 shadow-sm">
                 
                 {/* Subject */}
                 <h1 className="text-base font-bold text-foreground tracking-tight leading-snug">
@@ -842,7 +842,7 @@ export default function EmailWorkspacePage() {
                 </h1>
 
                 {/* Sender/Receiver details info */}
-                <div className="flex items-start justify-between gap-4 border-t border-foreground/[0.04] dark:border-white/[0.04] pt-4">
+                <div className="flex items-start justify-between gap-4 border-t border-border-subtle pt-4">
                   <div className="flex gap-3">
                     <div className="w-8 h-8 rounded-full bg-apple-blue/15 flex items-center justify-center shrink-0 border border-apple-blue/20">
                       <User className="w-4 h-4 text-apple-blue" />
@@ -869,7 +869,7 @@ export default function EmailWorkspacePage() {
               </div>
 
               {/* Neural/AI Assistant panel box */}
-              <div className="border border-purple-500/15 bg-purple-500/[0.02] rounded-3xl p-5 space-y-4">
+              <div className="border border-purple-500/15 bg-purple-500/[0.02] rounded-[28px] p-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-purple-500 animate-pulse" />
@@ -975,13 +975,13 @@ export default function EmailWorkspacePage() {
 
               {/* Attachments rendering lists */}
               {selectedEmail.attachments?.length > 0 && (
-                <div className="border-t border-foreground/[0.06] dark:border-white/[0.06] pt-6 space-y-3">
+                <div className="border-t border-border-default pt-6 space-y-3">
                   <h4 className="text-xs font-bold text-silver uppercase tracking-wider">Attachments ({selectedEmail.attachments.length})</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {selectedEmail.attachments.map((att: any, idx: number) => (
                       <div 
                         key={idx}
-                        className="flex items-center justify-between p-3 bg-foreground/[0.015] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl text-xs"
+                        className="flex items-center justify-between p-3 bg-bg-subtle-alt border border-border-default rounded-xl text-xs"
                       >
                         <span className="font-medium truncate max-w-[150px]">{att.filename}</span>
                         <div className="flex gap-2">
@@ -1014,9 +1014,9 @@ export default function EmailWorkspacePage() {
       {/* COMPOSE EMAIL MODAL */}
       {showComposeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm">
-          <div className="w-full max-w-lg bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-3xl overflow-hidden shadow-2xl">
+          <div className="w-full max-w-lg bg-background border border-border-strong rounded-[28px] overflow-hidden shadow-2xl">
             {/* Modal Header */}
-            <div className="p-5 border-b border-foreground/[0.06] dark:border-white/[0.06] flex justify-between items-center">
+            <div className="p-5 border-b border-border-default flex justify-between items-center">
               <h2 className="text-sm font-bold flex items-center gap-2">
                 <Plus className="w-4 h-4 text-apple-blue" />
                 New Conversation
@@ -1039,7 +1039,7 @@ export default function EmailWorkspacePage() {
                   placeholder="recipient@example.com"
                   value={composeTo}
                   onChange={(e) => setComposeTo(e.target.value)}
-                  className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none"
+                  className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none"
                 />
               </div>
 
@@ -1050,7 +1050,7 @@ export default function EmailWorkspacePage() {
                   placeholder="cc@example.com"
                   value={composeCc}
                   onChange={(e) => setComposeCc(e.target.value)}
-                  className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none"
+                  className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none"
                 />
               </div>
 
@@ -1062,7 +1062,7 @@ export default function EmailWorkspacePage() {
                   placeholder="Project update details..."
                   value={composeSubject}
                   onChange={(e) => setComposeSubject(e.target.value)}
-                  className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none"
+                  className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none"
                 />
               </div>
 
@@ -1074,7 +1074,7 @@ export default function EmailWorkspacePage() {
                   placeholder="Draft your message content here..."
                   value={composeBody}
                   onChange={(e) => setComposeBody(e.target.value)}
-                  className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none resize-none"
+                  className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none resize-none"
                 />
               </div>
 
@@ -1082,7 +1082,7 @@ export default function EmailWorkspacePage() {
                 <button
                   type="button"
                   onClick={() => setShowComposeModal(false)}
-                  className="px-4 py-2 border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl text-xs font-bold text-silver hover:bg-foreground/[0.02] dark:hover:bg-white/[0.02] cursor-pointer"
+                  className="px-4 py-2 border border-border-default rounded-xl text-xs font-bold text-silver hover:bg-bg-surface cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1103,8 +1103,8 @@ export default function EmailWorkspacePage() {
       {/* SETTINGS / CONNECT NEW ACCOUNT MODAL */}
       {showSettingsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm">
-          <div className="w-full max-w-lg bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-3xl overflow-hidden shadow-2xl">
-            <div className="p-5 border-b border-foreground/[0.06] dark:border-white/[0.06] flex justify-between items-center">
+          <div className="w-full max-w-lg bg-background border border-border-strong rounded-[28px] overflow-hidden shadow-2xl">
+            <div className="p-5 border-b border-border-default flex justify-between items-center">
               <h2 className="text-sm font-bold flex items-center gap-2">
                 <Settings className="w-4 h-4 text-apple-blue" />
                 Connected Email Accounts
@@ -1121,10 +1121,10 @@ export default function EmailWorkspacePage() {
               
               {/* Google OAuth Quick Connect Option */}
               <div className="space-y-3">
-                <h3 className="text-xs font-extrabold uppercase tracking-widest text-silver border-b border-foreground/[0.06] dark:border-white/[0.06] pb-2">Quick Connect</h3>
+                <h3 className="text-xs font-extrabold uppercase tracking-widest text-silver border-b border-border-default pb-2">Quick Connect</h3>
                 <Link
                   href="/api/email/oauth/google"
-                  className="w-full flex items-center justify-center gap-2.5 bg-foreground/[0.03] dark:bg-white/[0.03] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] border border-foreground/[0.08] dark:border-white/[0.08] py-2.5 rounded-xl text-xs font-bold transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-sm text-foreground"
+                  className="w-full flex items-center justify-center gap-2.5 bg-bg-elevated hover:bg-bg-border dark:hover:bg-white/[0.06] border border-border-strong py-2.5 rounded-xl text-xs font-bold transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-sm text-foreground"
                 >
                   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                     <path
@@ -1150,7 +1150,7 @@ export default function EmailWorkspacePage() {
 
               {/* Form to connect new account */}
               <form onSubmit={handleAddAccount} className="space-y-4">
-                <h3 className="text-xs font-extrabold uppercase tracking-widest text-silver border-b border-foreground/[0.06] dark:border-white/[0.06] pb-2">Manual IMAP/SMTP Connection</h3>
+                <h3 className="text-xs font-extrabold uppercase tracking-widest text-silver border-b border-border-default pb-2">Manual IMAP/SMTP Connection</h3>
 
                 {connectionError && (
                   <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-xs font-semibold flex items-center gap-2">
@@ -1180,7 +1180,7 @@ export default function EmailWorkspacePage() {
                       placeholder="e.g. Sales Gmail"
                       value={newAccountLabel}
                       onChange={(e) => setNewAccountLabel(e.target.value)}
-                      className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
+                      className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
                     />
                   </div>
                   <div className="space-y-1">
@@ -1191,7 +1191,7 @@ export default function EmailWorkspacePage() {
                       placeholder="user@example.com"
                       value={newAccountEmail}
                       onChange={(e) => handleEmailChange(e.target.value)}
-                      className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
+                      className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
                     />
                   </div>
                 </div>
@@ -1205,7 +1205,7 @@ export default function EmailWorkspacePage() {
                       placeholder="email or username"
                       value={newAccountUsername}
                       onChange={(e) => setNewAccountUsername(e.target.value)}
-                      className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
+                      className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
                     />
                   </div>
                   <div className="space-y-1">
@@ -1216,7 +1216,7 @@ export default function EmailWorkspacePage() {
                       placeholder="••••••••••••"
                       value={newAccountPassword}
                       onChange={(e) => setNewAccountPassword(e.target.value)}
-                      className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
+                      className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
                     />
                   </div>
                 </div>
@@ -1247,7 +1247,7 @@ export default function EmailWorkspacePage() {
                           placeholder="imap.gmail.com"
                           value={newAccountImapHost}
                           onChange={(e) => setNewAccountImapHost(e.target.value)}
-                          className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
+                          className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
@@ -1258,7 +1258,7 @@ export default function EmailWorkspacePage() {
                           placeholder="993"
                           value={newAccountImapPort}
                           onChange={(e) => setNewAccountImapPort(e.target.value)}
-                          className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
+                          className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
                         />
                       </div>
                     </div>
@@ -1272,7 +1272,7 @@ export default function EmailWorkspacePage() {
                           placeholder="smtp.gmail.com"
                           value={newAccountSmtpHost}
                           onChange={(e) => setNewAccountSmtpHost(e.target.value)}
-                          className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
+                          className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
                         />
                       </div>
                       <div className="space-y-1">
@@ -1283,7 +1283,7 @@ export default function EmailWorkspacePage() {
                           placeholder="465"
                           value={newAccountSmtpPort}
                           onChange={(e) => setNewAccountSmtpPort(e.target.value)}
-                          className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
+                          className="w-full bg-bg-surface border border-border-default rounded-xl px-3 py-1.5 text-xs text-foreground focus:outline-none"
                         />
                       </div>
                     </div>
@@ -1301,7 +1301,7 @@ export default function EmailWorkspacePage() {
               </form>
 
               {/* Connected accounts list */}
-              <div className="space-y-3 pt-4 border-t border-foreground/[0.06] dark:border-white/[0.06]">
+              <div className="space-y-3 pt-4 border-t border-border-default">
                 <h3 className="text-xs font-extrabold uppercase tracking-widest text-silver">Connected Accounts ({accounts.length})</h3>
                 {accounts.length === 0 ? (
                   <p className="text-xs text-silver">No connected email accounts.</p>
@@ -1310,7 +1310,7 @@ export default function EmailWorkspacePage() {
                     {accounts.map(acc => (
                       <div 
                         key={acc._id}
-                        className="flex items-center justify-between p-3 bg-foreground/[0.015] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl text-xs"
+                        className="flex items-center justify-between p-3 bg-bg-subtle-alt border border-border-default rounded-xl text-xs"
                       >
                         <div className="min-w-0">
                           <p className="font-bold truncate text-foreground">{acc.label}</p>

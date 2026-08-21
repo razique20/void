@@ -131,11 +131,11 @@ export default function UserDirectoryPage() {
         </div>
       </div>
 
-      <div className="bg-foreground/5 rounded-[32px] overflow-hidden shadow-2xl">
+      <div className="bg-foreground/5 rounded-2xl overflow-hidden shadow-2xl">
         <div className="overflow-x-auto custom-scrollbar">
           <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
-              <tr className="border-b border-foreground/5 bg-foreground/[0.02]">
+              <tr className="border-b border-foreground/5 bg-bg-surface">
                 <th className="px-6 md:px-8 py-5 md:py-6 text-[10px] font-bold text-silver uppercase tracking-widest">Architect ID</th>
                 <th className="px-6 md:px-8 py-5 md:py-6 text-[10px] font-bold text-silver uppercase tracking-widest">Active Workers</th>
                 <th className="px-6 md:px-8 py-5 md:py-6 text-[10px] font-bold text-silver uppercase tracking-widest">Last Deployment</th>
@@ -156,7 +156,7 @@ export default function UserDirectoryPage() {
               </tr>
             ) : (
               filteredUsers.map((user) => (
-                <tr key={user.clerkId} className="group hover:bg-foreground/[0.02] transition-colors">
+                <tr key={user.clerkId} className="group hover:bg-bg-surface transition-colors">
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 bg-foreground/5 rounded-full flex items-center justify-center">
@@ -214,7 +214,7 @@ export default function UserDirectoryPage() {
       {/* Management Modal */}
       {selectedUser && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/60 backdrop-blur-sm overflow-hidden pt-20 md:pt-0">
-          <div className="bg-background rounded-[32px] w-full max-w-md shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="bg-background rounded-2xl w-full max-w-md shadow-2xl flex flex-col max-h-[90vh]">
             <div className="p-8 pb-4 border-b border-foreground/5 flex items-center justify-between shrink-0">
               <h2 className="text-2xl font-bold text-foreground">Manage Architect</h2>
               <button 

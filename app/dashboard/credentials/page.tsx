@@ -237,10 +237,10 @@ export default function CredentialsPage() {
       {Toast}
 
       {/* Header Banner */}
-      <div className="relative overflow-hidden bg-foreground/[0.015] dark:bg-white/[0.008] rounded-[28px] p-7 md:p-10 border border-foreground/[0.06] dark:border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-6 group backdrop-blur-md">
+      <div className="relative overflow-hidden bg-bg-subtle-alt rounded-[28px] p-7 md:p-10 border border-border-default flex flex-col md:flex-row items-center justify-between gap-6 group backdrop-blur-md">
         <div className="absolute top-0 right-0 w-72 h-72 bg-apple-blue/5 rounded-full blur-[100px] pointer-events-none group-hover:bg-apple-blue/8 transition-colors" />
         <div className="space-y-3 max-w-xl text-center md:text-left relative z-10">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg text-[9px] font-bold uppercase tracking-widest text-silver">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-bg-elevated border border-border-default rounded-lg text-[9px] font-bold uppercase tracking-widest text-silver">
             <Shield className="w-3 h-3 text-apple-blue" />
             Integrations &amp; Setup Center
           </div>
@@ -251,13 +251,13 @@ export default function CredentialsPage() {
             Configure external messaging channels, email protocols, scheduling platforms, and automated workflow triggers.
           </p>
         </div>
-        <div className="w-16 h-16 bg-foreground/[0.04] dark:bg-white/[0.03] rounded-2xl flex items-center justify-center border border-foreground/[0.06] dark:border-white/[0.06] shrink-0 group-hover:scale-105 transition-transform duration-300 relative z-10">
+        <div className="w-16 h-16 bg-bg-active rounded-2xl flex items-center justify-center border border-border-default shrink-0 group-hover:scale-105 transition-transform duration-300 relative z-10">
           <Key className="w-8 h-8 text-silver" />
         </div>
       </div>
 
       {/* Tab Selector */}
-      <div className="flex flex-wrap p-1 bg-foreground/[0.03] dark:bg-white/[0.02] rounded-xl border border-foreground/[0.06] dark:border-white/[0.06] gap-1 relative z-10">
+      <div className="flex flex-wrap p-1 bg-bg-elevated rounded-xl border border-border-default gap-1 relative z-10">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -269,7 +269,7 @@ export default function CredentialsPage() {
                 "flex-1 min-w-[110px] flex items-center justify-center gap-2 py-2.5 rounded-lg text-[10px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer",
                 isActive
                   ? "bg-foreground text-background shadow-sm"
-                  : "text-silver hover:text-foreground hover:bg-foreground/[0.03] dark:hover:bg-white/[0.02]"
+                  : "text-silver hover:text-foreground hover:bg-bg-elevated"
               )}
             >
               <Icon className={cn("w-3.5 h-3.5", isActive ? "text-background" : tab.color)} />
@@ -280,7 +280,7 @@ export default function CredentialsPage() {
       </div>
 
       {/* Tab Panels */}
-      <div className="bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] p-6 md:p-8 shadow-sm relative min-h-[380px] backdrop-blur-md z-10">
+      <div className="bg-bg-subtle-alt border border-border-default rounded-[28px] p-6 md:p-8 shadow-sm relative min-h-[380px] backdrop-blur-md z-10">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -312,7 +312,7 @@ export default function CredentialsPage() {
                         Link your **Google Calendar** or **Outlook Calendar** under the **Apps** section.
                       </li>
                       <li>
-                        Locate your **Username** in your profile settings (e.g. <code className="px-1 py-0.5 bg-foreground/[0.04] dark:bg-white/[0.04] rounded text-rose-400 font-mono text-[10px]">john-doe</code>).
+                        Locate your **Username** in your profile settings (e.g. <code className="px-1 py-0.5 bg-bg-active rounded text-rose-400 font-mono text-[10px]">john-doe</code>).
                       </li>
                       <li>
                         Create an **Event Type** and copy its **ID** from the URL bar.
@@ -320,17 +320,17 @@ export default function CredentialsPage() {
                     </ol>
                   </div>
 
-                  <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-4">
+                  <div className="bg-bg-surface border border-border-default rounded-2xl p-5 space-y-4">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">Operative Injection Guide</h3>
                     <p className="text-xs text-silver/70 leading-relaxed font-medium">
                       To activate this capability, visit the operative&apos;s **Neural Tools** tab, enable **Cal.com**, and configure:
                     </p>
                     <div className="space-y-2.5 font-mono text-xs">
-                      <div className="p-3.5 bg-background border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl flex justify-between items-center">
+                      <div className="p-3.5 bg-background border border-border-default rounded-xl flex justify-between items-center">
                         <span className="text-rose-400 font-bold text-[10px]">Username</span>
                         <span className="text-silver text-[10px]">john-doe</span>
                       </div>
-                      <div className="p-3.5 bg-background border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl flex justify-between items-center">
+                      <div className="p-3.5 bg-background border border-border-default rounded-xl flex justify-between items-center">
                         <span className="text-rose-400 font-bold text-[10px]">Event ID</span>
                         <span className="text-silver text-[10px]">123456</span>
                       </div>
@@ -364,10 +364,10 @@ export default function CredentialsPage() {
                         Search for the official <a href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">BotFather</a> bot on Telegram.
                       </li>
                       <li>
-                        Send the command: <code className="px-1 py-0.5 bg-foreground/[0.04] dark:bg-white/[0.04] rounded text-sky-400 font-mono text-[10px]">/newbot</code>
+                        Send the command: <code className="px-1 py-0.5 bg-bg-active rounded text-sky-400 font-mono text-[10px]">/newbot</code>
                       </li>
                       <li>
-                        Set a display name and username ending in <code className="px-1 py-0.5 bg-foreground/[0.04] dark:bg-white/[0.04] rounded text-sky-400 font-mono text-[10px]">bot</code> or <code className="px-1 py-0.5 bg-foreground/[0.04] dark:bg-white/[0.04] rounded text-sky-400 font-mono text-[10px]">_bot</code>.
+                        Set a display name and username ending in <code className="px-1 py-0.5 bg-bg-active rounded text-sky-400 font-mono text-[10px]">bot</code> or <code className="px-1 py-0.5 bg-bg-active rounded text-sky-400 font-mono text-[10px]">_bot</code>.
                       </li>
                       <li>
                         Copy the generated **HTTP API Token** and enter it into the Operative settings.
@@ -375,7 +375,7 @@ export default function CredentialsPage() {
                     </ol>
                   </div>
 
-                  <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-4">
+                  <div className="bg-bg-surface border border-border-default rounded-2xl p-5 space-y-4">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver flex items-center gap-1.5">
                       <Terminal className="w-3.5 h-3.5 text-sky-400" />
                       Webhook Binding Shell Hook
@@ -383,13 +383,13 @@ export default function CredentialsPage() {
                     <p className="text-xs text-silver/70 leading-relaxed font-medium">
                       Telegram webhooks must be manually bound using this API handshake request:
                     </p>
-                    <div className="p-3.5 bg-background border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl font-mono text-[10px] flex items-start justify-between gap-3 relative pt-8">
+                    <div className="p-3.5 bg-background border border-border-default rounded-xl font-mono text-[10px] flex items-start justify-between gap-3 relative pt-8">
                       <pre className="text-silver leading-relaxed overflow-x-auto whitespace-pre-wrap flex-1 text-[9px]">
                         {`curl -F "url=https://void-rho-navy.vercel.app/api/webhooks/telegram?id=OPERATIVE_ID" https://api.telegram.org/bot<TOKEN>/setWebhook`}
                       </pre>
                       <button
                         onClick={() => copyToClipboard('curl -F "url=https://void-rho-navy.vercel.app/api/webhooks/telegram?id=OPERATIVE_ID" https://api.telegram.org/bot<TOKEN>/setWebhook', 'tg_curl')}
-                        className="p-1.5 hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg shrink-0 absolute right-2.5 top-2.5 transition-colors cursor-pointer"
+                        className="p-1.5 hover:bg-bg-hover border border-border-default rounded-lg shrink-0 absolute right-2.5 top-2.5 transition-colors cursor-pointer"
                       >
                         {copiedText === 'tg_curl' ? <Check className="w-3 h-3 text-sky-500" /> : <Copy className="w-3 h-3 text-silver/60" />}
                       </button>
@@ -415,26 +415,26 @@ export default function CredentialsPage() {
                   <div className="space-y-5">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">Common SMTP Host Configurations</h3>
                     <div className="space-y-3">
-                      <div className="p-4 bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl space-y-1.5">
+                      <div className="p-4 bg-bg-surface border border-border-default rounded-xl space-y-1.5">
                         <span className="text-[9px] font-bold text-amber-500 uppercase tracking-wider block">Gmail / Google Workspace</span>
                         <p className="text-xs text-foreground/80 font-medium">Host: <span className="font-mono text-silver text-[10px]">smtp.gmail.com</span> · Port: <span className="font-mono text-silver text-[10px]">465 (SSL)</span> or <span className="font-mono text-silver text-[10px]">587 (TLS)</span></p>
                         <p className="text-[10px] text-silver/50 italic font-medium leading-relaxed">Note: You must enable 2FA and generate an **App Password** for login.</p>
                       </div>
-                      <div className="p-4 bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl space-y-1.5">
+                      <div className="p-4 bg-bg-surface border border-border-default rounded-xl space-y-1.5">
                         <span className="text-[9px] font-bold text-amber-500 uppercase tracking-wider block">SendGrid</span>
                         <p className="text-xs text-foreground/80 font-medium">Host: <span className="font-mono text-silver text-[10px]">smtp.sendgrid.net</span> · Port: <span className="font-mono text-silver text-[10px]">587</span> · User: <span className="font-mono text-silver text-[10px]">apikey</span></p>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-4">
+                  <div className="bg-bg-surface border border-border-default rounded-2xl p-5 space-y-4">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver flex items-center gap-1.5">
                       <HelpCircle className="w-3.5 h-3.5 text-amber-500" />
                       SMTP Security Best Practices
                     </h3>
                     <ul className="text-xs text-silver/80 space-y-3 list-disc pl-4 leading-relaxed">
                       <li>Never save your primary password! Always generate dedicated app tokens or developer-scoped sub-user keys.</li>
-                      <li>Ensure ports match security protocols (Port <code className="px-1 py-0.5 bg-foreground/[0.04] dark:bg-white/[0.04] rounded font-mono text-[10px]">465</code> is dedicated to implicit SSL, Port <code className="px-1 py-0.5 bg-foreground/[0.04] dark:bg-white/[0.04] rounded font-mono text-[10px]">587</code> maps to STARTTLS).</li>
+                      <li>Ensure ports match security protocols (Port <code className="px-1 py-0.5 bg-bg-active rounded font-mono text-[10px]">465</code> is dedicated to implicit SSL, Port <code className="px-1 py-0.5 bg-bg-active rounded font-mono text-[10px]">587</code> maps to STARTTLS).</li>
                       <li>Test delivery using standard outbound configurations before activating tools.</li>
                     </ul>
                   </div>
@@ -472,7 +472,7 @@ export default function CredentialsPage() {
                               value={webhookUrl}
                               onChange={(e) => setWebhookUrl(e.target.value)}
                               placeholder="https://hooks.zapier.com/hooks/catch/..."
-                              className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl py-3 pl-10 pr-4 text-xs font-mono text-foreground focus:outline-none focus:border-indigo-500/40 transition-colors"
+                              className="w-full bg-background border border-border-strong rounded-xl py-3 pl-10 pr-4 text-xs font-mono text-foreground focus:outline-none focus:border-indigo-500/40 transition-colors"
                             />
                           </div>
                           <button
@@ -492,9 +492,9 @@ export default function CredentialsPage() {
                     </div>
                   </div>
 
-                  <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-4 overflow-hidden">
+                  <div className="bg-bg-surface border border-border-default rounded-2xl p-5 space-y-4 overflow-hidden">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">Lead Sync Payload Sample</h3>
-                    <pre className="p-3.5 bg-background border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl font-mono text-[9px] text-silver overflow-x-auto leading-relaxed max-h-52 custom-scrollbar">
+                    <pre className="p-3.5 bg-background border border-border-default rounded-xl font-mono text-[9px] text-silver overflow-x-auto leading-relaxed max-h-52 custom-scrollbar">
                       {`{
   "event": "lead_captured",
   "architectId": "user_2aC...",
@@ -684,7 +684,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl p-5 space-y-4">
+            <div className="bg-bg-surface border border-border-strong rounded-2xl p-5 space-y-4">
               <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">
                 {editingId ? 'Edit Credential' : 'New Credential'}
               </h3>
@@ -695,7 +695,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
                     type="text"
                     value={formLabel}
                     onChange={(e) => setFormLabel(e.target.value)}
-                    className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs focus:border-emerald-500/40 outline-none"
+                    className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs focus:border-emerald-500/40 outline-none"
                     placeholder="e.g. Sales Line, Support"
                   />
                 </div>
@@ -705,7 +705,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
                     type="text"
                     value={formWabaId}
                     onChange={(e) => setFormWabaId(e.target.value)}
-                    className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-mono focus:border-emerald-500/40 outline-none"
+                    className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-mono focus:border-emerald-500/40 outline-none"
                     placeholder="0987654321 (optional)"
                   />
                 </div>
@@ -718,7 +718,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
                   type="password"
                   value={formToken}
                   onChange={(e) => setFormToken(e.target.value)}
-                  className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-mono focus:border-emerald-500/40 outline-none"
+                  className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-mono focus:border-emerald-500/40 outline-none"
                   placeholder="EAAQ..."
                 />
               </div>
@@ -728,7 +728,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
                   type="text"
                   value={formPhoneId}
                   onChange={(e) => setFormPhoneId(e.target.value)}
-                  className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-mono focus:border-emerald-500/40 outline-none"
+                  className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-mono focus:border-emerald-500/40 outline-none"
                   placeholder="1234567890"
                 />
               </div>
@@ -742,7 +742,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
                 </button>
                 <button
                   onClick={resetForm}
-                  className="px-5 py-3 bg-foreground/[0.04] dark:bg-white/[0.04] text-foreground text-xs font-bold rounded-xl hover:bg-foreground/[0.08] transition-colors cursor-pointer"
+                  className="px-5 py-3 bg-bg-active text-foreground text-xs font-bold rounded-xl hover:bg-bg-strong transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -775,7 +775,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
               layout
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl p-4 flex items-center justify-between gap-4 group hover:border-emerald-500/20 transition-colors"
+              className="bg-bg-surface border border-border-default rounded-xl p-4 flex items-center justify-between gap-4 group hover:border-emerald-500/20 transition-colors"
             >
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div className="w-9 h-9 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center shrink-0">
@@ -793,7 +793,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
               <div className="flex items-center gap-1.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => startEdit(cred)}
-                  className="p-2 hover:bg-foreground/[0.05] rounded-lg transition-colors cursor-pointer"
+                  className="p-2 hover:bg-bg-hover rounded-lg transition-colors cursor-pointer"
                   title="Edit"
                 >
                   <Pencil className="w-3.5 h-3.5 text-silver" />
@@ -817,15 +817,15 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
       )}
 
       {/* Webhook Info */}
-      <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-3">
+      <div className="bg-bg-surface border border-border-default rounded-2xl p-5 space-y-3">
         <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">Webhook Configuration</h3>
         <div className="space-y-3">
           <p className="text-xs text-silver/70 leading-relaxed font-medium">Ensure you point your Meta App webhook callback to your platform.</p>
-          <div className="p-3 bg-background border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl font-mono text-xs flex items-center justify-between gap-3 overflow-hidden">
+          <div className="p-3 bg-background border border-border-default rounded-xl font-mono text-xs flex items-center justify-between gap-3 overflow-hidden">
             <span className="truncate text-silver text-[10px]">https://void-rho-navy.vercel.app/api/webhooks/whatsapp?id=OPERATIVE_ID</span>
             <button
               onClick={() => copyToClipboard('https://void-rho-navy.vercel.app/api/webhooks/whatsapp?id=OPERATIVE_ID', 'wa_url')}
-              className="p-1.5 hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg shrink-0 transition-colors cursor-pointer"
+              className="p-1.5 hover:bg-bg-hover border border-border-default rounded-lg shrink-0 transition-colors cursor-pointer"
             >
               {copiedText === 'wa_url' ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-silver/60" />}
             </button>

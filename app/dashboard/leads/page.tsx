@@ -235,8 +235,8 @@ export default function LeadsPage() {
         <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
-        <div className="max-w-md mx-auto text-center py-16 px-6 bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[32px] backdrop-blur-3xl shadow-sm relative z-10">
-          <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-[24px] flex items-center justify-center mx-auto mb-6">
+        <div className="max-w-md mx-auto text-center py-16 px-6 bg-bg-subtle-alt border border-border-default rounded-2xl backdrop-blur-3xl shadow-sm relative z-10">
+          <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <Lock className="w-6 h-6 text-red-500" />
           </div>
           <h2 className="text-xl font-bold mb-3 text-foreground">Leads CRM Locked</h2>
@@ -267,7 +267,7 @@ export default function LeadsPage() {
       >
 
         {/* Header Row */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-foreground/[0.06] dark:border-white/[0.06] pb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-border-default pb-6">
           <div className="space-y-1">
             <div className="flex items-center gap-3">
               <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
@@ -291,7 +291,7 @@ export default function LeadsPage() {
             <button
               onClick={handleRefresh}
               disabled={refreshing || loading}
-              className="p-2.5 bg-foreground/[0.03] dark:bg-white/[0.03] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl transition-all disabled:opacity-50 text-silver hover:text-foreground"
+              className="p-2.5 bg-bg-elevated hover:bg-bg-border dark:hover:bg-white/[0.06] border border-border-default rounded-xl transition-all disabled:opacity-50 text-silver hover:text-foreground"
               title="Refresh Pipeline"
             >
               <RefreshCw className={cn("w-3.5 h-3.5", refreshing && "animate-spin text-foreground")} />
@@ -302,7 +302,7 @@ export default function LeadsPage() {
                 "px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 border",
                 showWebhookPanel 
                   ? "bg-apple-blue/10 border-apple-blue/30 text-apple-blue" 
-                  : "bg-foreground/[0.03] dark:bg-white/[0.03] border-foreground/[0.06] dark:border-white/[0.06] text-silver hover:text-foreground"
+                  : "bg-bg-elevated border-border-default text-silver hover:text-foreground"
               )}
             >
               <Database className="w-3.5 h-3.5" />
@@ -327,7 +327,7 @@ export default function LeadsPage() {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-3">
+              <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-3">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 bg-apple-blue/10 border border-apple-blue/20 rounded-lg flex items-center justify-center shrink-0">
                     <Database className="w-4 h-4 text-apple-blue" />
@@ -344,7 +344,7 @@ export default function LeadsPage() {
                     placeholder="https://hooks.zapier.com/hooks/catch/..."
                     value={webhookUrl}
                     onChange={(e) => setWebhookUrl(e.target.value)}
-                    className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-2 text-xs font-mono text-foreground focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver/40"
+                    className="w-full bg-bg-elevated border border-border-strong rounded-xl px-4 py-2 text-xs font-mono text-foreground focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver/40"
                   />
                   <button
                     onClick={handleSaveWebhook}
@@ -360,7 +360,7 @@ export default function LeadsPage() {
         </AnimatePresence>
 
         {/* Stats Strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-foreground/[0.04] dark:bg-white/[0.04] rounded-2xl overflow-hidden border border-foreground/[0.06] dark:border-white/[0.06]">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-bg-active rounded-2xl overflow-hidden border border-border-default">
           {[
             { label: 'Total Pipeline Leads', value: leads.length, trend: 'Captured' },
             { label: 'New / Pending', value: newCount },
@@ -391,7 +391,7 @@ export default function LeadsPage() {
         <div className="space-y-5">
           
           {/* Filter Bar */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] p-1.5 rounded-xl">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-bg-surface border border-border-default p-1.5 rounded-xl">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-silver" />
               <input
@@ -422,7 +422,7 @@ export default function LeadsPage() {
                     "px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all",
                     activeFilter === tab.id
                       ? "bg-foreground text-background"
-                      : "text-silver hover:text-foreground hover:bg-foreground/[0.04] dark:hover:bg-white/[0.04]"
+                      : "text-silver hover:text-foreground hover:bg-bg-active"
                   )}
                 >
                   {tab.label}
@@ -435,12 +435,12 @@ export default function LeadsPage() {
           {loading ? (
             <div className="space-y-2">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-16 bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl animate-pulse" />
+                <div key={i} className="h-16 bg-bg-surface border border-border-subtle rounded-xl animate-pulse" />
               ))}
             </div>
           ) : filteredLeads.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] border-dashed rounded-2xl text-center">
-              <div className="w-12 h-12 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl flex items-center justify-center mb-3">
+            <div className="flex flex-col items-center justify-center py-20 bg-bg-subtle border border-border-default border-dashed rounded-2xl text-center">
+              <div className="w-12 h-12 bg-bg-elevated border border-border-strong rounded-xl flex items-center justify-center mb-3">
                 <FileText className="w-5 h-5 text-silver" />
               </div>
               <h3 className="text-sm font-semibold text-foreground">{search ? 'No leads match your search' : 'No leads in pipeline yet'}</h3>
@@ -459,7 +459,7 @@ export default function LeadsPage() {
                   </Link>
                   <Link
                     href="/chat"
-                    className="inline-flex items-center justify-center gap-1.5 bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.06] dark:border-white/[0.06] text-foreground px-5 py-2.5 rounded-xl text-[11px] font-bold hover:bg-foreground/[0.08] dark:hover:bg-white/[0.08] transition-all"
+                    className="inline-flex items-center justify-center gap-1.5 bg-bg-active border border-border-default text-foreground px-5 py-2.5 rounded-xl text-[11px] font-bold hover:bg-bg-strong dark:hover:bg-white/[0.08] transition-all"
                   >
                     <MessageSquare className="w-3.5 h-3.5" /> Start Chat
                   </Link>
@@ -478,11 +478,11 @@ export default function LeadsPage() {
                       variants={itemVariants}
                       key={lead._id}
                       onClick={() => { setSelectedLead(lead); setNotes(lead.data?.manual_notes || ''); }}
-                      className="group bg-foreground/[0.01] dark:bg-white/[0.005] hover:bg-foreground/[0.03] dark:hover:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] hover:border-foreground/[0.1] dark:hover:border-white/[0.1] rounded-xl px-5 py-3.5 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 cursor-pointer"
+                      className="group bg-bg-subtle hover:bg-bg-elevated border border-border-default hover:border-border-hover dark:hover:border-white/[0.1] rounded-xl px-5 py-3.5 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 cursor-pointer"
                     >
                       {/* Left: Contact Info */}
                       <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                        <div className="w-9 h-9 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-lg flex items-center justify-center shrink-0 text-xs font-bold text-foreground group-hover:border-foreground/[0.12] dark:group-hover:border-white/[0.12] transition-colors">
+                        <div className="w-9 h-9 bg-bg-elevated border border-border-strong rounded-lg flex items-center justify-center shrink-0 text-xs font-bold text-foreground group-hover:border-border-hover dark:group-hover:border-white/[0.12] transition-colors">
                           {lead.contactInfo?.name ? lead.contactInfo.name.substring(0, 2).toUpperCase() : 'LD'}
                         </div>
 
@@ -497,7 +497,7 @@ export default function LeadsPage() {
                             )}
 
                             {/* Source Badge */}
-                            <span className="text-[8px] font-extrabold uppercase bg-foreground/[0.04] dark:bg-white/[0.04] text-silver px-1.5 py-0.5 rounded tracking-wider">
+                            <span className="text-[8px] font-extrabold uppercase bg-bg-active text-silver px-1.5 py-0.5 rounded tracking-wider">
                               {lead.source || 'Web Chat'}
                             </span>
                           </div>
@@ -534,7 +534,7 @@ export default function LeadsPage() {
                           value={lead.status || 'new'}
                           onChange={(e) => handleUpdateStatus(lead._id, e.target.value)}
                           className={cn(
-                            "bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg text-[10px] font-bold uppercase py-1 px-2.5 focus:outline-none cursor-pointer appearance-none",
+                            "bg-bg-elevated border border-border-default rounded-lg text-[10px] font-bold uppercase py-1 px-2.5 focus:outline-none cursor-pointer appearance-none",
                             lead.status === 'exported' ? "text-emerald-500 border-emerald-500/20" : lead.status === 'junk' ? "text-red-500 border-red-500/20" : "text-apple-blue border-apple-blue/20"
                           )}
                         >
@@ -578,10 +578,10 @@ export default function LeadsPage() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-              className="relative w-full max-w-md bg-background border-l border-foreground/[0.08] dark:border-white/[0.08] shadow-2xl h-full flex flex-col z-10"
+              className="relative w-full max-w-md bg-background border-l border-border-strong shadow-2xl h-full flex flex-col z-10"
             >
               {/* Drawer Header */}
-              <div className="p-6 border-b border-foreground/[0.06] dark:border-white/[0.06] flex justify-between items-center bg-foreground/[0.01] dark:bg-white/[0.005]">
+              <div className="p-6 border-b border-border-default flex justify-between items-center bg-bg-subtle">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-apple-blue/10 border border-apple-blue/20 rounded-lg flex items-center justify-center font-bold text-xs text-apple-blue">
                     {selectedLead.contactInfo?.name ? selectedLead.contactInfo.name.substring(0, 2).toUpperCase() : 'LD'}
@@ -603,7 +603,7 @@ export default function LeadsPage() {
               <div className="p-6 flex-1 overflow-y-auto space-y-6 custom-scrollbar">
                 
                 {/* Contact Identity Box */}
-                <div className="bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-3">
+                <div className="bg-bg-surface border border-border-default rounded-2xl p-5 space-y-3">
                   <h3 className="text-base font-bold text-foreground">
                     {selectedLead.contactInfo?.name || 'Unnamed Lead'}
                   </h3>
@@ -633,7 +633,7 @@ export default function LeadsPage() {
                 {/* Intent Summary */}
                 <div className="space-y-2">
                   <h4 className="text-[10px] font-bold uppercase tracking-wider text-silver">Captured Intent & Need</h4>
-                  <div className="bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl p-4 text-xs leading-relaxed text-foreground font-sans">
+                  <div className="bg-bg-surface border border-border-default rounded-xl p-4 text-xs leading-relaxed text-foreground font-sans">
                     {selectedLead.interest || 'No intent description logged.'}
                   </div>
                 </div>
@@ -646,7 +646,7 @@ export default function LeadsPage() {
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Add manual notes or call follow-up details..."
-                    className="w-full bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl p-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all resize-none font-sans"
+                    className="w-full bg-bg-surface border border-border-default rounded-xl p-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all resize-none font-sans"
                   />
                   <button
                     onClick={handleSaveNotes}
@@ -660,7 +660,7 @@ export default function LeadsPage() {
                 {/* Raw Pipeline Data */}
                 <div className="space-y-2">
                   <h4 className="text-[10px] font-bold uppercase tracking-wider text-silver">Raw Metadata Telemetry</h4>
-                  <pre className="bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl p-4 text-[10px] font-mono text-silver leading-relaxed overflow-x-auto max-h-48 custom-scrollbar">
+                  <pre className="bg-bg-elevated border border-border-default rounded-xl p-4 text-[10px] font-mono text-silver leading-relaxed overflow-x-auto max-h-48 custom-scrollbar">
                     {JSON.stringify(selectedLead.data || {}, null, 2)}
                   </pre>
                 </div>
@@ -668,7 +668,7 @@ export default function LeadsPage() {
               </div>
 
               {/* Drawer Footer Actions */}
-              <div className="p-4 border-t border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] flex items-center justify-between">
+              <div className="p-4 border-t border-border-default bg-bg-subtle flex items-center justify-between">
                 <button
                   onClick={() => handleDeleteLead(selectedLead._id)}
                   className="px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-500/10 rounded-xl transition-all border border-red-500/20 flex items-center gap-1.5"
@@ -677,7 +677,7 @@ export default function LeadsPage() {
                 </button>
                 <button
                   onClick={() => setSelectedLead(null)}
-                  className="px-4 py-2 bg-foreground/[0.04] dark:bg-white/[0.04] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] text-foreground rounded-xl text-xs font-semibold transition-all border border-foreground/[0.06] dark:border-white/[0.06]"
+                  className="px-4 py-2 bg-bg-active hover:bg-bg-border dark:hover:bg-white/[0.06] text-foreground rounded-xl text-xs font-semibold transition-all border border-border-default"
                 >
                   Done
                 </button>

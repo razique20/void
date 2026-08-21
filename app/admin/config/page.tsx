@@ -111,7 +111,7 @@ export default function NeuralConfigPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Feature Toggles */}
-        <div className="bg-foreground/5 rounded-[32px] p-8 space-y-6 h-fit">
+        <div className="bg-foreground/5 rounded-2xl p-8 space-y-6 h-fit">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-apple-blue/10 rounded-xl flex items-center justify-center text-apple-blue">
               <ShieldCheck className="w-5 h-5" />
@@ -130,7 +130,7 @@ export default function NeuralConfigPage() {
         </div>
 
         {/* Form */}
-        <div className="bg-foreground/5 rounded-[32px] p-8 space-y-6 h-fit">
+        <div className="bg-foreground/5 rounded-2xl p-8 space-y-6 h-fit">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-10 h-10 bg-foreground/10 rounded-xl flex items-center justify-center text-foreground">
               <Plus className="w-5 h-5" />
@@ -162,16 +162,16 @@ export default function NeuralConfigPage() {
         <h2 className="text-sm font-bold text-silver uppercase tracking-widest px-2">Active Infrastructure</h2>
         <div className="space-y-4">
           {loading ? (
-            [1, 2].map(i => <div key={i} className="h-24 bg-foreground/5 rounded-3xl animate-pulse" />)
+            [1, 2].map(i => <div key={i} className="h-24 bg-foreground/5 rounded-[28px] animate-pulse" />)
           ) : providers.length === 0 ? (
-            <div className="p-12 bg-foreground/5 rounded-[32px] text-center text-silver">
+            <div className="p-12 bg-foreground/5 rounded-2xl text-center text-silver">
               <Cpu className="w-12 h-12 mx-auto mb-4 opacity-20" />
               <p>No providers configured.</p>
             </div>
           ) : (
             providers.map((p) => (
               <div key={p._id} className={cn(
-                "p-6 rounded-[32px] transition-all relative group",
+                "p-6 rounded-2xl transition-all relative group",
                 p.isDefault ? "bg-foreground/10" : "bg-foreground/5 hover:bg-foreground/10"
               )}>
                 <div className="flex justify-between items-start mb-4">

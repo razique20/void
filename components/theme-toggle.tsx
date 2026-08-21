@@ -15,7 +15,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <div className="w-9 h-9 rounded-xl bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06]" />
+      <div className="w-9 h-9 rounded-xl bg-bg-elevated border border-border-default" />
     )
   }
 
@@ -26,7 +26,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="relative w-9 h-9 flex items-center justify-center rounded-xl bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.04] transition-all cursor-pointer"
+      className="relative w-9 h-9 flex items-center justify-center rounded-xl bg-bg-elevated border border-border-default hover:bg-bg-border transition-all cursor-pointer"
       aria-label="Toggle light/dark theme"
     >
       <AnimatePresence mode="wait" initial={false}>

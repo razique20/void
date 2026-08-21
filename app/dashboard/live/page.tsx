@@ -245,8 +245,8 @@ export default function LiveChatPage() {
         <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
-        <div className="max-w-md mx-auto text-center py-20 px-6 bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[32px] backdrop-blur-3xl shadow-sm relative z-10">
-          <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-[24px] flex items-center justify-center mx-auto mb-6">
+        <div className="max-w-md mx-auto text-center py-20 px-6 bg-bg-subtle-alt border border-border-default rounded-2xl backdrop-blur-3xl shadow-sm relative z-10">
+          <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <X className="w-6 h-6 text-red-500" />
           </div>
           <h2 className="text-xl font-bold mb-3 text-foreground">Mission Control Locked</h2>
@@ -274,10 +274,10 @@ export default function LiveChatPage() {
       {Toast}
 
       {/* 1. Sidebar - Chat List (w-80) */}
-      <div className="w-80 flex flex-col bg-foreground/[0.01] dark:bg-white/[0.005] border-r border-foreground/[0.06] dark:border-white/[0.06] shrink-0 backdrop-blur-md z-20">
+      <div className="w-80 flex flex-col bg-bg-subtle border-r border-border-default shrink-0 backdrop-blur-md z-20">
         
         {/* Sidebar Header */}
-        <div className="p-5 border-b border-foreground/[0.06] dark:border-white/[0.06] shrink-0 space-y-3.5">
+        <div className="p-5 border-b border-border-default shrink-0 space-y-3.5">
           <div className="flex justify-between items-center">
             <h1 className="text-sm font-bold flex items-center gap-2 text-foreground">
               <span className="w-2 h-2 rounded-full bg-emerald-500 relative flex shrink-0">
@@ -296,12 +296,12 @@ export default function LiveChatPage() {
               placeholder="Search active sessions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl pl-9 pr-3 py-1.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
+              className="w-full bg-bg-elevated border border-border-default rounded-xl pl-9 pr-3 py-1.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
             />
           </div>
 
           {/* Filter segment tabs */}
-          <div className="flex p-0.5 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-lg">
+          <div className="flex p-0.5 bg-bg-elevated border border-border-subtle rounded-lg">
             {[
               { id: 'all', label: `All (${conversations.length})` },
               { id: 'ai', label: `AI (${aiCount})` },
@@ -340,8 +340,8 @@ export default function LiveChatPage() {
                   className={cn(
                     "w-full p-3.5 flex items-start gap-3 rounded-xl border text-left relative overflow-hidden transition-all duration-200 cursor-pointer group",
                     isSelected
-                      ? "bg-foreground/[0.05] dark:bg-white/[0.05] border-foreground/[0.12] dark:border-white/[0.12] shadow-sm"
-                      : "border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01]"
+                      ? "bg-bg-hover border-border-hover shadow-sm"
+                      : "border-transparent hover:bg-bg-surface"
                   )}
                 >
                   {/* Status Indicator Band */}
@@ -351,7 +351,7 @@ export default function LiveChatPage() {
                   )} />
 
                   {/* Channel icon */}
-                  <div className="w-8 h-8 rounded-lg bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-bg-elevated border border-border-strong flex items-center justify-center shrink-0">
                     {chat.channel === 'whatsapp' ? <Smartphone className="w-4 h-4 text-emerald-500" /> : 
                      chat.channel === 'telegram' ? <Send className="w-4 h-4 text-sky-500" /> : 
                      chat.channel === 'email' ? <Mail className="w-4 h-4 text-amber-500" /> :
@@ -371,7 +371,7 @@ export default function LiveChatPage() {
                       {lastMsg ? lastMsg.content : 'No transmissions yet'}
                     </p>
                     <div className="flex items-center gap-1.5 mt-2">
-                      <span className="text-[8px] px-1.5 py-0.5 bg-foreground/[0.04] dark:bg-white/[0.04] rounded text-silver font-mono border border-foreground/[0.04] dark:border-white/[0.04]">
+                      <span className="text-[8px] px-1.5 py-0.5 bg-bg-active rounded text-silver font-mono border border-border-subtle">
                         {chat.workerId?.name}
                       </span>
                       {chat.isPaused && (
@@ -394,9 +394,9 @@ export default function LiveChatPage() {
           <div className="flex flex-col h-full overflow-hidden">
             
             {/* Header bar */}
-            <div className="px-6 py-4 border-b border-foreground/[0.06] dark:border-white/[0.06] bg-background/40 backdrop-blur-xl flex justify-between items-center shrink-0 z-10">
+            <div className="px-6 py-4 border-b border-border-default bg-background/40 backdrop-blur-xl flex justify-between items-center shrink-0 z-10">
               <div className="flex items-center gap-3.5 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-center shrink-0 font-bold text-xs text-foreground">
+                <div className="w-9 h-9 rounded-xl bg-bg-active border border-border-default flex items-center justify-center shrink-0 font-bold text-xs text-foreground">
                   {(selectedChat.displayName || selectedChat.externalId || '?')[0].toUpperCase()}
                 </div>
                 <div className="min-w-0">
@@ -446,7 +446,7 @@ export default function LiveChatPage() {
                     "p-2 rounded-xl transition-all border shrink-0",
                     showDrawer
                       ? 'bg-purple-500/10 border-purple-500/30 text-purple-500'
-                      : 'bg-foreground/[0.03] dark:bg-white/[0.03] border-foreground/[0.06] dark:border-white/[0.06] text-silver hover:text-foreground'
+                      : 'bg-bg-elevated border-border-default text-silver hover:text-foreground'
                   )}
                   title="Toggle Cognitive Memory"
                 >
@@ -486,7 +486,7 @@ export default function LiveChatPage() {
                       <div className={cn(
                         "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border text-xs mt-0.5",
                         isAI 
-                          ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground" 
+                          ? "bg-bg-active border-border-default text-foreground" 
                           : "bg-foreground text-background border-transparent"
                       )}>
                         {isAI ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
@@ -503,7 +503,7 @@ export default function LiveChatPage() {
                         <div className={cn(
                           "p-4 rounded-2xl text-xs leading-relaxed border relative group shadow-sm font-sans",
                           isAI
-                            ? "bg-foreground/[0.02] dark:bg-white/[0.015] border-foreground/[0.06] dark:border-white/[0.06] text-foreground rounded-tl-none"
+                            ? "bg-bg-surface border-border-default text-foreground rounded-tl-none"
                             : "bg-foreground text-background border-transparent rounded-tr-none"
                         )}>
                           <p className="whitespace-pre-wrap break-words">{m.content}</p>
@@ -523,12 +523,12 @@ export default function LiveChatPage() {
             </div>
 
             {/* Input / Form overlay controller */}
-            <div className="p-5 border-t border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] shrink-0 relative">
+            <div className="p-5 border-t border-border-default bg-bg-subtle shrink-0 relative">
               
               {/* Autopilot Locked state overlay */}
               {!selectedChat.isPaused && (
                 <div className="absolute inset-0 bg-background/60 dark:bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-30 transition-all">
-                  <div className="p-4 bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl shadow-xl flex flex-col sm:flex-row items-center gap-3.5 max-w-md text-center sm:text-left">
+                  <div className="p-4 bg-background border border-border-strong rounded-2xl shadow-xl flex flex-col sm:flex-row items-center gap-3.5 max-w-md text-center sm:text-left">
                     <div className="w-10 h-10 bg-purple-500/10 border border-purple-500/20 rounded-xl flex items-center justify-center shrink-0">
                       <Sparkles className="w-5 h-5 text-purple-500" />
                     </div>
@@ -555,7 +555,7 @@ export default function LiveChatPage() {
                     placeholder="Compose manual override message..."
                     value={reply}
                     onChange={(e) => setReply(e.target.value)}
-                    className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl pl-4 pr-12 py-3.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all font-medium shadow-sm"
+                    className="w-full bg-background border border-border-strong rounded-xl pl-4 pr-12 py-3.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all font-medium shadow-sm"
                   />
                   <button
                     disabled={!reply.trim() || loading}
@@ -578,7 +578,7 @@ export default function LiveChatPage() {
           </div>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-6 space-y-6 relative">
-            <div className="w-16 h-16 rounded-[24px] bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-center animate-pulse">
+            <div className="w-16 h-16 rounded-2xl bg-bg-elevated border border-border-default flex items-center justify-center animate-pulse">
               <MessageSquare className="w-7 h-7 text-silver" />
             </div>
             <div className="space-y-1">
@@ -599,12 +599,12 @@ export default function LiveChatPage() {
             animate={{ width: 320, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-            className="border-l border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] overflow-hidden flex flex-col shrink-0 z-20"
+            className="border-l border-border-default bg-bg-subtle overflow-hidden flex flex-col shrink-0 z-20"
           >
             <div className="w-80 flex flex-col h-full">
               
               {/* Drawer Header */}
-              <div className="p-5 border-b border-foreground/[0.06] dark:border-white/[0.06] flex justify-between items-center shrink-0 bg-foreground/[0.01] dark:bg-white/[0.005]">
+              <div className="p-5 border-b border-border-default flex justify-between items-center shrink-0 bg-bg-subtle">
                 <h3 className="font-bold text-xs text-foreground flex items-center gap-2 uppercase tracking-wider">
                   <BookOpen className="w-4 h-4 text-purple-500" />
                   Cognitive Memory
@@ -632,7 +632,7 @@ export default function LiveChatPage() {
                           type="text"
                           value={editNameValue}
                           onChange={(e) => setEditNameValue(e.target.value)}
-                          className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-lg px-2 py-1 text-xs text-foreground focus:outline-none"
+                          className="w-full bg-background border border-border-strong rounded-lg px-2 py-1 text-xs text-foreground focus:outline-none"
                           autoFocus
                         />
                         <button
@@ -668,7 +668,7 @@ export default function LiveChatPage() {
                 {/* Cognitive Profile card */}
                 <div className="space-y-2">
                   <h5 className="text-[9px] font-bold text-silver uppercase tracking-wider">Cognitive Profile</h5>
-                  <div className="p-4 bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl">
+                  <div className="p-4 bg-bg-surface border border-border-default rounded-2xl">
                     {selectedChat.memorySummary ? (
                       <p className="text-xs text-foreground/80 leading-relaxed font-sans">
                         {selectedChat.memorySummary}
@@ -687,7 +687,7 @@ export default function LiveChatPage() {
                   {selectedChat.facts && selectedChat.facts.length > 0 ? (
                     <div className="flex flex-wrap gap-1.5">
                       {selectedChat.facts.map((fact: string, idx: number) => (
-                        <span key={idx} className="text-[10px] px-2.5 py-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg text-foreground/80 font-medium">
+                        <span key={idx} className="text-[10px] px-2.5 py-1 bg-bg-elevated border border-border-default rounded-lg text-foreground/80 font-medium">
                           {fact}
                         </span>
                       ))}
@@ -700,12 +700,12 @@ export default function LiveChatPage() {
                 {/* Technical Telemetry */}
                 <div className="space-y-2">
                   <h5 className="text-[9px] font-bold text-silver uppercase tracking-wider">Session Telemetry</h5>
-                  <div className="space-y-2 text-xs p-3.5 bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl">
-                    <div className="flex justify-between py-1 border-b border-foreground/[0.04] dark:border-white/[0.04]">
+                  <div className="space-y-2 text-xs p-3.5 bg-bg-surface border border-border-default rounded-2xl">
+                    <div className="flex justify-between py-1 border-b border-border-subtle">
                       <span className="text-silver">Channel</span>
                       <span className="font-bold text-foreground uppercase">{selectedChat.channel}</span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-foreground/[0.04] dark:border-white/[0.04]">
+                    <div className="flex justify-between py-1 border-b border-border-subtle">
                       <span className="text-silver">Uplink Address</span>
                       <span className="font-semibold font-mono text-[10px] text-foreground truncate max-w-[120px]" title={selectedChat.externalId}>
                         {selectedChat.externalId}

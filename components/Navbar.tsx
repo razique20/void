@@ -206,7 +206,7 @@ export default function Navbar() {
             <Show when="signed-out">
               <Link 
                 href="/sign-in" 
-                className="text-[10px] uppercase tracking-wider font-extrabold text-silver hover:text-foreground hover:bg-foreground/[0.02] px-3.5 py-2 rounded-xl transition-all"
+                className="text-[10px] uppercase tracking-wider font-extrabold text-silver hover:text-foreground hover:bg-bg-surface px-3.5 py-2 rounded-xl transition-all"
               >
                 Sign In
               </Link>
@@ -221,14 +221,14 @@ export default function Navbar() {
   return (
     <>
       <aside style={{ viewTransitionName: 'site-sidebar' }} className={cn(
-        "fixed top-0 left-0 h-full border-r border-foreground/[0.08] dark:border-white/[0.08] bg-background/80 dark:bg-black/60 backdrop-blur-2xl z-40 hidden lg:flex flex-col justify-between select-none shadow-sm",
+        "fixed top-0 left-0 h-full border-r border-border-strong bg-background/80 dark:bg-black/60 backdrop-blur-2xl z-40 hidden lg:flex flex-col justify-between select-none shadow-sm",
         mounted && "transition-all duration-200 ease-in-out",
         (mounted && isCollapsed) ? "w-16 p-2.5 py-4" : "w-64 p-4"
       )}>
         <div className="space-y-5">
           {/* Modernized Brand & Platform Status Header */}
           <div className={cn(
-            "pb-3.5 pt-1 border-b border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-between px-1 transition-all",
+            "pb-3.5 pt-1 border-b border-border-default flex items-center justify-between px-1 transition-all",
             (mounted && isCollapsed) && "justify-center px-0 pb-3"
           )}>
             <Link href="/" className="group flex items-center gap-2 transition-transform hover:scale-[1.02]">
@@ -264,7 +264,7 @@ export default function Navbar() {
                     <span className="text-[9px] font-black text-silver/70 uppercase tracking-widest">
                       {cat.title}
                     </span>
-                    <div className="flex-1 h-[1px] bg-foreground/[0.06] dark:bg-white/[0.06]" />
+                    <div className="flex-1 h-[1px] bg-bg-border" />
                   </div>
                 )}
                 <nav className="space-y-1">
@@ -286,10 +286,10 @@ export default function Navbar() {
                           "flex items-center rounded-xl text-xs font-bold transition-all border relative group",
                           (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3.5 py-2.5",
                           isLocked
-                            ? "border-foreground/[0.04] dark:border-white/[0.04] cursor-not-allowed opacity-50 bg-foreground/[0.01] dark:bg-white/[0.005] text-silver/40"
+                            ? "border-border-subtle cursor-not-allowed opacity-50 bg-bg-subtle text-silver/40"
                             : isActive
                               ? "bg-emerald-500/[0.08] dark:bg-emerald-500/[0.12] border-emerald-500/30 text-emerald-500 dark:text-emerald-400 font-extrabold shadow-sm cursor-pointer"
-                              : "bg-foreground/[0.015] dark:bg-white/[0.01] border-foreground/[0.05] dark:border-white/[0.05] text-silver hover:border-emerald-500/20 hover:bg-emerald-500/[0.03] hover:text-foreground cursor-pointer"
+                              : "bg-bg-subtle-alt border-border-subtle text-silver hover:border-emerald-500/20 hover:bg-emerald-500/[0.03] hover:text-foreground cursor-pointer"
                         )}
                       >
                         <Icon className={cn(
@@ -324,7 +324,7 @@ export default function Navbar() {
         <div className="space-y-2.5 pt-2">
           {/* Telemetry status card */}
           {(!mounted || !isCollapsed) && (
-            <div className="p-3 bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl space-y-2">
+            <div className="p-3 bg-bg-surface border border-border-strong rounded-2xl space-y-2">
               <div className="flex justify-between items-center text-[9px] font-mono text-silver/70">
                 <span className="font-extrabold tracking-wider">SYSTEM ACTIVE</span>
                 <span className="text-emerald-500 dark:text-emerald-400 font-bold flex items-center gap-1">
@@ -334,7 +334,7 @@ export default function Navbar() {
                   99.9%
                 </span>
               </div>
-              <div className="h-1.5 w-full bg-foreground/[0.06] dark:bg-white/[0.06] rounded-full overflow-hidden border border-foreground/[0.02] dark:border-white/[0.02]">
+              <div className="h-1.5 w-full bg-bg-border rounded-full overflow-hidden border border-border-subtle">
                 <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 w-[92%] rounded-full" />
               </div>
             </div>
@@ -344,7 +344,7 @@ export default function Navbar() {
           <button
             onClick={toggleCollapse}
             className={cn(
-              "flex items-center justify-center rounded-xl border border-foreground/[0.08] dark:border-white/[0.08] bg-foreground/[0.02] dark:bg-white/[0.015] hover:bg-foreground/[0.05] dark:hover:bg-white/[0.03] text-silver hover:text-foreground transition-all cursor-pointer shadow-xs",
+              "flex items-center justify-center rounded-xl border border-border-strong bg-bg-surface hover:bg-bg-hover text-silver hover:text-foreground transition-all cursor-pointer shadow-xs",
               (mounted && isCollapsed) ? "w-10 h-10 mx-auto" : "w-full py-2.5 gap-2"
             )}
             aria-label={(mounted && isCollapsed) ? "Expand sidebar" : "Collapse sidebar"}
@@ -356,7 +356,7 @@ export default function Navbar() {
       </aside>
 
       {/* 2. RIGHT SLIM ACTION DOCK */}
-      <aside style={{ viewTransitionName: 'site-dock' }} className="fixed top-0 right-0 h-full w-16 border-l border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.01] dark:bg-white/[0.005] backdrop-blur-xl z-40 hidden lg:flex flex-col p-3 py-6 items-center justify-between select-none">
+      <aside style={{ viewTransitionName: 'site-dock' }} className="fixed top-0 right-0 h-full w-16 border-l border-border-default bg-bg-subtle backdrop-blur-xl z-40 hidden lg:flex flex-col p-3 py-6 items-center justify-between select-none">
 
         {/* Center Icons Menu with Tooltips */}
         <nav className="flex flex-col gap-3">
@@ -379,10 +379,10 @@ export default function Navbar() {
                 className={cn(
                   "relative group w-10 h-10 rounded-xl flex items-center justify-center transition-all border cursor-pointer",
                   isActive
-                    ? "bg-foreground/[0.04] dark:bg-white/[0.04] border-foreground/[0.06] dark:border-white/[0.06] text-foreground shadow-sm"
+                    ? "bg-bg-active border-border-default text-foreground shadow-sm"
                     : link.locked
-                      ? "text-silver/40 border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground/60"
-                      : "text-silver border-transparent hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] hover:text-foreground"
+                      ? "text-silver/40 border-transparent hover:bg-bg-surface hover:text-foreground/60"
+                      : "text-silver border-transparent hover:bg-bg-surface hover:text-foreground"
                 )}
               >
                 <Icon className={cn("w-4.5 h-4.5", isActive ? "text-apple-blue" : "text-silver")} />
@@ -427,7 +427,7 @@ export default function Navbar() {
             <ThemeToggle />
             <button 
               onClick={() => setIsOpen(!isOpen)}
-              className="text-foreground hover:text-foreground/85 transition-colors p-1.5 rounded-xl bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.04] dark:border-white/[0.04] cursor-pointer"
+              className="text-foreground hover:text-foreground/85 transition-colors p-1.5 rounded-xl bg-bg-elevated border border-border-subtle cursor-pointer"
             >
               {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -443,7 +443,7 @@ export default function Navbar() {
         <div className="flex-1 flex flex-col justify-center gap-8 max-h-[75vh] overflow-y-auto w-full px-4 pt-16">
           {/* Core Workspaces Section */}
           <div className="space-y-4">
-            <p className="text-[9px] font-bold text-silver uppercase tracking-widest border-b border-foreground/[0.06] dark:border-white/[0.06] pb-2">Core Workspaces</p>
+            <p className="text-[9px] font-bold text-silver uppercase tracking-widest border-b border-border-default pb-2">Core Workspaces</p>
             <div className="flex flex-col gap-3">
               {leftLinks.map((link) => {
                 const Icon = link.icon;
@@ -474,7 +474,7 @@ export default function Navbar() {
           
           {/* System Utilities Section */}
           <div className="space-y-4">
-            <p className="text-[9px] font-bold text-silver uppercase tracking-widest border-b border-foreground/[0.06] dark:border-white/[0.06] pb-2">System Utilities</p>
+            <p className="text-[9px] font-bold text-silver uppercase tracking-widest border-b border-border-default pb-2">System Utilities</p>
             <div className="flex flex-col gap-3">
               {rightLinks.map((link) => {
                 const Icon = link.icon;
@@ -508,11 +508,14 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Footer */}
-        <div className="text-center w-full space-y-2 pb-6 border-t border-foreground/[0.04] dark:border-white/[0.04] pt-4">
-          <div className="w-8 h-8 glass border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg flex items-center justify-center mx-auto shadow-sm">
-            <span className="text-foreground text-xs font-black">V</span>
-          </div>
-          <p className="text-[8px] font-extrabold text-silver uppercase tracking-[0.4em]">Aethyl Research v1.0</p>
+        <div className="text-center w-full space-y-2 pb-6 border-t border-border-subtle pt-4">
+          <Link href="/" className="inline-flex items-center gap-1.5">
+            <span className="font-black text-sm tracking-wide text-foreground">VOID</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
+          </Link>
+          <p className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-silver/60 uppercase">
+            AUTONOMOUS OS <span className="text-emerald-400/80 font-normal lowercase tracking-normal">by Aethyl</span>
+          </p>
         </div>
       </div>
 

@@ -72,7 +72,7 @@ export default function AdminTicketsPage() {
 
   if (error) {
     return (
-      <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-3xl text-center">
+      <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-[28px] text-center">
         <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-4" />
         <h2 className="text-xl font-bold text-red-500 mb-2">Access Denied</h2>
         <p className="text-red-400">{error}</p>
@@ -97,7 +97,7 @@ export default function AdminTicketsPage() {
 
       <div className="grid grid-cols-1 gap-4">
         {tickets.map(ticket => (
-          <div key={ticket._id} className="bg-foreground/5 rounded-[24px] p-6 transition-colors">
+          <div key={ticket._id} className="bg-foreground/5 rounded-2xl p-6 transition-colors">
             <div className="flex flex-col md:flex-row justify-between items-start gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
@@ -133,7 +133,7 @@ export default function AdminTicketsPage() {
         ))}
 
         {tickets.length === 0 && (
-          <div className="text-center py-20 bg-foreground/5 rounded-[32px]">
+          <div className="text-center py-20 bg-foreground/5 rounded-2xl">
             <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-4 opacity-50" />
             <h3 className="text-lg font-bold text-foreground">Inbox Zero</h3>
             <p className="text-silver mt-2 text-sm">No support tickets found.</p>
@@ -144,7 +144,7 @@ export default function AdminTicketsPage() {
       {/* Response Modal */}
       {selectedTicket && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-background w-full max-w-lg rounded-[32px] p-8 shadow-2xl animate-in zoom-in-95">
+          <div className="bg-background w-full max-w-lg rounded-2xl p-8 shadow-2xl animate-in zoom-in-95">
             <h2 className="text-2xl font-bold text-foreground mb-2">Respond to Ticket</h2>
             <p className="text-sm text-silver mb-6">Replying to <span className="text-foreground font-medium">{selectedTicket.userEmail}</span></p>
             

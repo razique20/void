@@ -82,7 +82,7 @@ export default function UpgradeModal({ isOpen, onClose, featureName, featureDesc
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 8 }}
             transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="relative w-[380px] bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-[32px] shadow-2xl overflow-hidden"
+            className="relative w-[380px] bg-background border border-border-strong rounded-2xl shadow-2xl overflow-hidden"
           >
             {/* Ambient glow */}
             <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-apple-blue/5 blur-[80px] rounded-full pointer-events-none" />
@@ -97,7 +97,7 @@ export default function UpgradeModal({ isOpen, onClose, featureName, featureDesc
 
             <div className="relative z-10 p-8 text-center flex flex-col items-center justify-center h-[380px] space-y-5 overflow-hidden">
               {/* Icon */}
-              <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-[24px] flex items-center justify-center shrink-0">
+              <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center shrink-0">
                 <Lock className="w-7 h-7 text-red-500" />
               </div>
 
@@ -112,7 +112,7 @@ export default function UpgradeModal({ isOpen, onClose, featureName, featureDesc
               </div>
 
               {/* Plan badge */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-full shrink-0">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-bg-elevated border border-border-default rounded-full shrink-0">
                 <Crown className="w-3 h-3 text-amber-500" />
                 <span className="text-[10px] font-bold text-silver uppercase tracking-wider">
                   Requires {plan} Plan

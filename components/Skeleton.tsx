@@ -7,7 +7,7 @@ export function Skeleton({
   return (
     <div
       className={cn(
-        "animate-pulse rounded-xl bg-foreground/[0.04] dark:bg-white/[0.04]",
+        "animate-pulse rounded-xl bg-bg-active",
         className
       )}
       {...props}

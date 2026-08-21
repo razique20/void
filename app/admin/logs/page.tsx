@@ -119,7 +119,7 @@ export default function SystemLogsPage() {
       </div>
 
       {/* Tabs / Filter Controls */}
-      <div className="flex p-1 bg-foreground/5 rounded-[16px] max-w-lg">
+      <div className="flex p-1 bg-foreground/5 rounded-xl max-w-lg">
         {[
           { id: 'all', label: 'All' },
           { id: 'error', label: 'Errors' },
@@ -131,7 +131,7 @@ export default function SystemLogsPage() {
             key={tab.id}
             type="button"
             onClick={() => setActiveTab(tab.id as any)}
-            className={`flex-1 py-2 rounded-[12px] text-[11px] font-bold transition-all ${
+            className={`flex-1 py-2 rounded-xl text-[11px] font-bold transition-all ${
               activeTab === tab.id 
                 ? 'bg-foreground text-background shadow-xl' 
                 : 'text-silver hover:text-foreground'
@@ -149,7 +149,7 @@ export default function SystemLogsPage() {
           placeholder="Filter logs by message, source or type..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-foreground/5 rounded-[20px] py-4 pl-12 pr-6 text-sm text-foreground placeholder:text-silver/30 focus:outline-none focus:ring-1 focus:ring-apple-blue/50 transition-all"
+          className="w-full bg-foreground/5 rounded-xl py-4 pl-12 pr-6 text-sm text-foreground placeholder:text-silver/30 focus:outline-none focus:ring-1 focus:ring-apple-blue/50 transition-all"
         />
         {search && (
           <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-foreground/5 rounded-full">
@@ -162,12 +162,12 @@ export default function SystemLogsPage() {
         {loading ? (
           [1, 2, 3, 4].map(i => <div key={i} className="h-20 bg-foreground/5 rounded-2xl animate-pulse" />)
         ) : error ? (
-           <div className="p-8 text-center bg-red-500/5 rounded-3xl">
+           <div className="p-8 text-center bg-red-500/5 rounded-[28px]">
               <p className="text-red-500 font-bold mb-2">Access Restricted</p>
               <p className="text-silver text-sm">{error}</p>
            </div>
         ) : filteredLogs.length === 0 ? (
-          <div className="p-20 text-center text-silver bg-foreground/5 rounded-[32px]">
+          <div className="p-20 text-center text-silver bg-foreground/5 rounded-2xl">
             No logs matching your search.
           </div>
         ) : (

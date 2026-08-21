@@ -21,7 +21,7 @@ export default function OnboardingLoading() {
         </div>
 
         {/* Form Card */}
-        <div className="space-y-6 p-8 rounded-[28px] border border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.015] dark:bg-white/[0.008]">
+        <div className="space-y-6 p-8 rounded-[28px] border border-border-default bg-bg-subtle-alt">
           <div className="space-y-2">
             <Skeleton className="h-7 w-56 mx-auto rounded-lg" />
             <Skeleton className="h-3.5 w-72 mx-auto rounded-lg" />

@@ -73,7 +73,7 @@ export default function MarketplaceEditor() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Creator Form */}
-        <div className="bg-foreground/5 rounded-[32px] p-8 space-y-6 h-fit">
+        <div className="bg-foreground/5 rounded-2xl p-8 space-y-6 h-fit">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-apple-blue/10 rounded-xl flex items-center justify-center text-apple-blue">
               <Star className="w-5 h-5" />
@@ -118,9 +118,9 @@ export default function MarketplaceEditor() {
           <h2 className="text-sm font-bold text-silver uppercase tracking-widest px-2">Live Templates</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {loading ? (
-              [1, 2].map(i => <div key={i} className="h-48 bg-foreground/5 rounded-[32px] animate-pulse" />)
+              [1, 2].map(i => <div key={i} className="h-48 bg-foreground/5 rounded-2xl animate-pulse" />)
             ) : templates.map((t) => (
-              <div key={t._id} className="p-6 bg-foreground/5 rounded-[32px] group relative">
+              <div key={t._id} className="p-6 bg-foreground/5 rounded-2xl group relative">
                 <div className="flex justify-between items-start mb-4">
                   <div className="w-12 h-12 bg-foreground/5 rounded-2xl flex items-center justify-center">
                     <Bot className="w-6 h-6 text-foreground" />

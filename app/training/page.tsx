@@ -248,7 +248,7 @@ export default function TrainingPage() {
             >
 
               {/* Header Row */}
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-foreground/[0.06] dark:border-white/[0.06] pb-6">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-border-default pb-6">
                 <div className="space-y-1">
                   <div className="flex items-center gap-3">
                     <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
@@ -272,7 +272,7 @@ export default function TrainingPage() {
                   <button
                     onClick={() => loadInitialData()}
                     disabled={isRefreshing}
-                    className="p-2.5 bg-foreground/[0.03] dark:bg-white/[0.03] hover:bg-foreground/[0.06] dark:hover:bg-white/[0.06] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl transition-all disabled:opacity-50 text-silver hover:text-foreground"
+                    className="p-2.5 bg-bg-elevated hover:bg-bg-border dark:hover:bg-white/[0.06] border border-border-default rounded-xl transition-all disabled:opacity-50 text-silver hover:text-foreground"
                     title="Refresh Datasets"
                   >
                     <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin text-foreground")} />
@@ -293,7 +293,7 @@ export default function TrainingPage() {
               </div>
 
               {/* Stats Strip */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-foreground/[0.04] dark:bg-white/[0.04] rounded-2xl overflow-hidden border border-foreground/[0.06] dark:border-white/[0.06]">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-bg-active rounded-2xl overflow-hidden border border-border-default">
                 {[
                   { label: 'Total Neural Chunks', value: trainingStats.totalChunks ?? 0, trend: 'Active' },
                   { label: 'Target Operatives', value: workers.length, trend: '' },
@@ -317,8 +317,8 @@ export default function TrainingPage() {
 
               {/* Empty State: No Operatives */}
               {workers.length === 0 && !isRefreshing && (
-                <div className="flex flex-col items-center justify-center py-16 bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] border-dashed rounded-2xl text-center">
-                  <div className="w-14 h-14 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-2xl flex items-center justify-center mb-4">
+                <div className="flex flex-col items-center justify-center py-16 bg-bg-subtle border border-border-default border-dashed rounded-2xl text-center">
+                  <div className="w-14 h-14 bg-bg-elevated border border-border-strong rounded-2xl flex items-center justify-center mb-4">
                     <Bot className="w-7 h-7 text-silver" />
                   </div>
                   <h3 className="text-sm font-bold text-foreground">No operatives deployed yet</h3>
@@ -342,7 +342,7 @@ export default function TrainingPage() {
                 <div className="lg:col-span-8 space-y-6">
                   
                   {/* Card 1: Target Operative Selector */}
-                  <motion.div variants={itemVariants} className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 md:p-6 space-y-4">
+                  <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 space-y-4">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 bg-purple-500/10 border border-purple-500/15 rounded-lg flex items-center justify-center shrink-0">
@@ -355,7 +355,7 @@ export default function TrainingPage() {
                       </div>
                       {activeWorkerObj && (
                         <div className="hidden sm:flex items-center gap-2">
-                          <span className="text-[10px] font-bold text-foreground/70 bg-foreground/[0.03] dark:bg-white/[0.03] px-2.5 py-1 rounded-md border border-foreground/[0.06] dark:border-white/[0.06] capitalize">
+                          <span className="text-[10px] font-bold text-foreground/70 bg-bg-elevated px-2.5 py-1 rounded-md border border-border-default capitalize">
                             {activeWorkerObj.tone}
                           </span>
                           <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/15">
@@ -369,7 +369,7 @@ export default function TrainingPage() {
                       <select 
                         value={selectedWorker}
                         onChange={(e) => setSelectedWorker(e.target.value)}
-                        className="w-full bg-foreground/[0.02] dark:bg-white/[0.02] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold text-foreground focus:outline-none focus:border-purple-500/40 transition-all cursor-pointer appearance-none"
+                        className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold text-foreground focus:outline-none focus:border-purple-500/40 transition-all cursor-pointer appearance-none"
                       >
                         {workers.length === 0 ? (
                           <option value="">No operatives available</option>
@@ -386,11 +386,11 @@ export default function TrainingPage() {
                   </motion.div>
 
                   {/* Card 2: Ingestion Workspace */}
-                  <motion.div variants={itemVariants} className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 md:p-6 space-y-6">
+                  <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 space-y-6">
                     <form onSubmit={handleTrain} className="space-y-6">
                       
                       {/* Mode Segment Bar */}
-                      <div className="flex justify-between items-center border-b border-foreground/[0.04] dark:border-white/[0.04] pb-4">
+                      <div className="flex justify-between items-center border-b border-border-subtle pb-4">
                         <div>
                           <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-2">
                             <Database className="w-3.5 h-3.5 text-apple-blue" />
@@ -400,7 +400,7 @@ export default function TrainingPage() {
                         </div>
 
                         {/* Mode Pills */}
-                        <div className="flex p-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl gap-0.5">
+                        <div className="flex p-1 bg-bg-elevated border border-border-subtle rounded-xl gap-0.5">
                           {[
                             { id: 'text', icon: Type, label: 'Text Snippet' },
                             { id: 'file', icon: FileUp, label: 'Document' },
@@ -414,7 +414,7 @@ export default function TrainingPage() {
                                 "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all",
                                 mode === m.id
                                   ? "bg-foreground text-background shadow-sm"
-                                  : "text-silver hover:text-foreground hover:bg-foreground/[0.04] dark:hover:bg-white/[0.04]"
+                                  : "text-silver hover:text-foreground hover:bg-bg-active"
                               )}
                             >
                               <m.icon className="w-3.5 h-3.5" />
@@ -438,7 +438,7 @@ export default function TrainingPage() {
                                   "px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all border",
                                   source === t
                                     ? "bg-purple-500/10 border-purple-500/30 text-purple-500"
-                                    : "bg-foreground/[0.02] dark:bg-white/[0.02] border-foreground/[0.06] dark:border-white/[0.06] text-silver hover:text-foreground"
+                                    : "bg-bg-surface border-border-default text-silver hover:text-foreground"
                                 )}
                               >
                                 {t}
@@ -450,7 +450,7 @@ export default function TrainingPage() {
                             required
                             rows={7}
                             placeholder="Paste custom knowledge base entries, standard operating procedures (SOPs), or product FAQs here..."
-                            className="w-full bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl p-4 text-xs font-mono leading-relaxed text-foreground placeholder:text-silver/40 focus:outline-none focus:border-purple-500/40 transition-all resize-none"
+                            className="w-full bg-bg-surface border border-border-default rounded-xl p-4 text-xs font-mono leading-relaxed text-foreground placeholder:text-silver/40 focus:outline-none focus:border-purple-500/40 transition-all resize-none"
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                           />
@@ -465,7 +465,7 @@ export default function TrainingPage() {
                       {/* Mode Panel 2: Document Upload */}
                       {mode === 'file' && (
                         <div className="space-y-3">
-                          <div className="border-2 border-dashed border-foreground/[0.08] dark:border-white/[0.08] hover:border-purple-500/30 bg-foreground/[0.01] dark:bg-white/[0.005] rounded-xl p-8 transition-all relative group flex flex-col items-center justify-center text-center">
+                          <div className="border-2 border-dashed border-border-strong hover:border-purple-500/30 bg-bg-subtle rounded-xl p-8 transition-all relative group flex flex-col items-center justify-center text-center">
                             <input
                               type="file"
                               accept=".pdf,.docx,.csv,.txt"
@@ -493,7 +493,7 @@ export default function TrainingPage() {
                               </div>
                             ) : (
                               <div className="flex flex-col items-center gap-3">
-                                <div className="w-12 h-12 bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                                <div className="w-12 h-12 bg-bg-elevated border border-border-strong rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
                                   <CloudUpload className="w-6 h-6 text-silver group-hover:text-foreground transition-colors" />
                                 </div>
                                 <div>
@@ -511,7 +511,7 @@ export default function TrainingPage() {
                       {/* Mode Panel 3: Website Crawl */}
                       {mode === 'website' && (
                         <div className="space-y-4">
-                          <div className="bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl p-5 space-y-3">
+                          <div className="bg-bg-surface border border-border-default rounded-xl p-5 space-y-3">
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 bg-sky-500/10 border border-sky-500/20 rounded-lg flex items-center justify-center shrink-0">
                                 <Globe className="w-4 h-4 text-sky-500" />
@@ -525,7 +525,7 @@ export default function TrainingPage() {
                             <input
                               type="url"
                               placeholder="https://docs.company.com/knowledge-base"
-                              className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-lg px-4 py-2.5 text-xs font-mono text-foreground focus:outline-none focus:border-purple-500/40 transition-all placeholder:text-silver/40"
+                              className="w-full bg-background border border-border-strong rounded-lg px-4 py-2.5 text-xs font-mono text-foreground focus:outline-none focus:border-purple-500/40 transition-all placeholder:text-silver/40"
                               value={url}
                               onChange={(e) => setUrl(e.target.value)}
                             />
@@ -560,8 +560,8 @@ export default function TrainingPage() {
                   </motion.div>
 
                   {/* Card 3: Ingested Knowledge Memory Bank */}
-                  <motion.div variants={itemVariants} className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 md:p-6 space-y-5">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-foreground/[0.04] dark:border-white/[0.04] pb-4">
+                  <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 space-y-5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border-subtle pb-4">
                       <div>
                         <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-2">
                           <Layers className="w-3.5 h-3.5 text-purple-500" />
@@ -577,7 +577,7 @@ export default function TrainingPage() {
                           placeholder="Search ingested memory..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full bg-foreground/[0.03] dark:bg-white/[0.03] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg pl-9 pr-4 py-1.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
+                          className="w-full bg-bg-elevated border border-border-default rounded-lg pl-9 pr-4 py-1.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
                         />
                         {searchQuery && (
                           <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-silver hover:text-foreground">
@@ -589,7 +589,7 @@ export default function TrainingPage() {
 
                     {/* Chunks List */}
                     {filteredEntries.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center py-14 border border-foreground/[0.06] dark:border-white/[0.06] border-dashed rounded-xl text-center">
+                      <div className="flex flex-col items-center justify-center py-14 border border-border-default border-dashed rounded-xl text-center">
                         <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/15 rounded-xl flex items-center justify-center mb-3">
                           <BrainCircuit className="w-6 h-6 text-purple-500" />
                         </div>
@@ -609,7 +609,7 @@ export default function TrainingPage() {
                             </button>
                             <button
                               onClick={() => setMode('file')}
-                              className="px-4 py-2 bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.06] dark:border-white/[0.06] text-foreground rounded-xl text-[11px] font-bold hover:bg-foreground/[0.08] dark:hover:bg-white/[0.08] transition-all flex items-center gap-1.5 cursor-pointer"
+                              className="px-4 py-2 bg-bg-active border border-border-default text-foreground rounded-xl text-[11px] font-bold hover:bg-bg-strong dark:hover:bg-white/[0.08] transition-all flex items-center gap-1.5 cursor-pointer"
                             >
                               <FileUp className="w-3 h-3" /> Upload Document
                             </button>
@@ -623,7 +623,7 @@ export default function TrainingPage() {
                           return (
                             <div
                               key={entry._id}
-                              className="group bg-foreground/[0.015] dark:bg-white/[0.01] hover:bg-foreground/[0.03] dark:hover:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-xl p-3.5 transition-all flex items-start justify-between gap-3"
+                              className="group bg-bg-subtle-alt hover:bg-bg-elevated border border-border-default rounded-xl p-3.5 transition-all flex items-start justify-between gap-3"
                             >
                               <div className="space-y-1.5 min-w-0 flex-1">
                                 <div className="flex items-center gap-2">
@@ -664,7 +664,7 @@ export default function TrainingPage() {
                 <div className="lg:col-span-4 space-y-6">
                   
                   {/* Card 1: Vector DB Engine Telemetry */}
-                  <motion.div variants={itemVariants} className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-4">
+                  <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-4">
                     <div className="flex justify-between items-center">
                       <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Vector Telemetry</h3>
                       <Sparkles className="w-3.5 h-3.5 text-purple-500" />
@@ -677,7 +677,7 @@ export default function TrainingPage() {
                         { icon: Database, label: 'Window Size', value: '1,000 chars', color: '' },
                         { icon: Layers, label: 'Overlap Margin', value: '200 chars', color: '' },
                       ].map((row, i) => (
-                        <div key={i} className={cn("flex justify-between items-center text-xs", i < 3 && "border-b border-foreground/[0.04] dark:border-white/[0.04] pb-2.5")}>
+                        <div key={i} className={cn("flex justify-between items-center text-xs", i < 3 && "border-b border-border-subtle pb-2.5")}>
                           <div className="flex items-center gap-2">
                             <row.icon className="w-3.5 h-3.5 text-silver" />
                             <span className="font-medium text-silver">{row.label}</span>
@@ -689,11 +689,11 @@ export default function TrainingPage() {
                   </motion.div>
 
                   {/* Card 2: Interactive Test Sandbox */}
-                  <motion.div variants={itemVariants} className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl overflow-hidden">
+                  <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl overflow-hidden">
                     <button
                       type="button"
                       onClick={() => setShowSandbox(!showSandbox)}
-                      className="p-5 flex justify-between items-center w-full focus:outline-none hover:bg-foreground/[0.02] dark:hover:bg-white/[0.01] transition-colors"
+                      className="p-5 flex justify-between items-center w-full focus:outline-none hover:bg-bg-surface transition-colors"
                     >
                       <div className="flex items-center gap-2">
                         <MessageSquare className="w-4 h-4 text-purple-500" />
@@ -706,7 +706,7 @@ export default function TrainingPage() {
                     </button>
 
                     <div className={cn(
-                      "transition-all duration-500 ease-in-out overflow-hidden border-t border-foreground/[0.04] dark:border-white/[0.04]",
+                      "transition-all duration-500 ease-in-out overflow-hidden border-t border-border-subtle",
                       showSandbox ? "max-h-[450px] opacity-100" : "max-h-0 opacity-0"
                     )}>
                       {selectedWorker ? (
@@ -722,7 +722,7 @@ export default function TrainingPage() {
                   </motion.div>
 
                   {/* Card 3: Neural Event Log (Terminal Viewer) */}
-                  <motion.div variants={itemVariants} className="bg-foreground/[0.01] dark:bg-white/[0.005] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl p-5 space-y-3">
+                  <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-3">
                     <div className="flex justify-between items-center">
                       <h3 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
                         <Terminal className="w-3.5 h-3.5" />
@@ -731,7 +731,7 @@ export default function TrainingPage() {
                       <span className="text-[9px] font-bold text-purple-500 uppercase tracking-wider">Live Log</span>
                     </div>
 
-                    <div className="bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.04] dark:border-white/[0.04] rounded-xl p-3 font-mono text-[10px] text-silver space-y-1.5 max-h-44 overflow-y-auto">
+                    <div className="bg-bg-surface border border-border-subtle rounded-xl p-3 font-mono text-[10px] text-silver space-y-1.5 max-h-44 overflow-y-auto">
                       {eventLogs.length > 0 ? (
                         eventLogs.map((log) => {
                           let dotColor = "bg-purple-500";

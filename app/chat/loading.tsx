@@ -4,7 +4,7 @@ export default function ChatLoading() {
   return (
     <div className="flex h-full animate-in fade-in duration-300">
       {/* Sidebar: Worker List */}
-      <div className="w-72 border-r border-foreground/[0.06] dark:border-white/[0.06] p-4 space-y-3 hidden md:block">
+      <div className="w-72 border-r border-border-default p-4 space-y-3 hidden md:block">
         <Skeleton className="h-10 w-full rounded-xl" />
         {[1, 2, 3, 4].map((i) => (
           <Skeleton key={i} className="h-14 w-full rounded-xl" />
@@ -14,7 +14,7 @@ export default function ChatLoading() {
       {/* Chat Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="h-16 border-b border-foreground/[0.06] dark:border-white/[0.06] px-6 flex items-center gap-3">
+        <div className="h-16 border-b border-border-default px-6 flex items-center gap-3">
           <Skeleton className="h-4 w-32" />
           <Skeleton className="h-3 w-16" />
         </div>
@@ -29,7 +29,7 @@ export default function ChatLoading() {
         </div>
 
         {/* Input */}
-        <div className="p-4 border-t border-foreground/[0.06] dark:border-white/[0.06]">
+        <div className="p-4 border-t border-border-default">
           <Skeleton className="h-12 w-full rounded-xl" />
         </div>
       </div>

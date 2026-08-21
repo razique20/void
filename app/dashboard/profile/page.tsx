@@ -106,8 +106,8 @@ export default function ProfilePage() {
     <div className="max-w-4xl mx-auto space-y-8 relative z-10">
             
             {/* Header */}
-            <div className="space-y-1.5 border-b border-foreground/[0.06] dark:border-white/[0.06] pb-6">
-              <span className="px-2.5 py-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg text-[9px] font-bold text-silver uppercase tracking-widest flex items-center gap-1.5 w-fit">
+            <div className="space-y-1.5 border-b border-border-default pb-6">
+              <span className="px-2.5 py-1 bg-bg-elevated border border-border-default rounded-lg text-[9px] font-bold text-silver uppercase tracking-widest flex items-center gap-1.5 w-fit">
                 <User className="w-3.5 h-3.5 text-emerald-500" />
                 Profile
               </span>
@@ -120,7 +120,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Sub-Navigation Tabs */}
-            <div className="flex gap-2 p-1.5 bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl w-fit">
+            <div className="flex gap-2 p-1.5 bg-bg-surface border border-border-default rounded-2xl w-fit">
               <button
                 type="button"
                 onClick={() => setActiveTab('business')}
@@ -177,7 +177,7 @@ export default function ProfilePage() {
               <form onSubmit={handleSaveForm} className="space-y-6">
                 
                 {/* Industry Selection */}
-                <div className="bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[24px] space-y-4 shadow-sm">
+                <div className="bg-bg-subtle-alt border border-border-default p-6 rounded-2xl space-y-4 shadow-sm">
                   <div className="flex justify-between items-center">
                     <div>
                       <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
@@ -204,14 +204,14 @@ export default function ProfilePage() {
                             "p-4 rounded-xl text-left transition-all border flex items-start gap-4 duration-200 cursor-pointer relative",
                             isSelected 
                               ? "bg-foreground text-background border-transparent shadow-md ring-2 ring-emerald-500/50" 
-                              : "bg-foreground/[0.015] dark:bg-white/[0.008] border-foreground/[0.06] dark:border-white/[0.06] hover:bg-foreground/[0.04] dark:hover:bg-white/[0.03]"
+                              : "bg-bg-subtle-alt border-border-default hover:bg-bg-active"
                           )}
                         >
                           <div className={cn(
                             "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border",
                             isSelected 
                               ? "bg-background/25 border-background/20" 
-                              : "bg-foreground/[0.03] dark:bg-white/[0.03] border-foreground/[0.06] dark:border-white/[0.06]"
+                              : "bg-bg-elevated border-border-default"
                           )}>
                             <IndIcon className={cn("w-5 h-5", isSelected ? "text-background" : ind.color)} />
                           </div>
@@ -231,7 +231,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Organization Specifications */}
-                <div className="bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[24px] space-y-4 shadow-sm">
+                <div className="bg-bg-subtle-alt border border-border-default p-6 rounded-2xl space-y-4 shadow-sm">
                   <div>
                     <h3 className="text-sm font-bold text-foreground">02 / Business Specifications</h3>
                     <p className="text-xs text-silver mt-0.5 font-medium">Default metadata used during AI generation.</p>
@@ -246,7 +246,7 @@ export default function ProfilePage() {
                         value={companyName}
                         onChange={(e) => setCompanyName(e.target.value)}
                         placeholder="e.g. CareSync Medical"
-                        className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500/40 focus:border-emerald-500/40 text-foreground"
+                        className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500/40 focus:border-emerald-500/40 text-foreground"
                       />
                     </div>
 
@@ -258,7 +258,7 @@ export default function ProfilePage() {
                         value={hours}
                         onChange={(e) => setHours(e.target.value)}
                         placeholder="e.g. Mon-Fri 8 AM - 6 PM"
-                        className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500/40 focus:border-emerald-500/40 text-foreground"
+                        className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500/40 focus:border-emerald-500/40 text-foreground"
                       />
                     </div>
 
@@ -270,7 +270,7 @@ export default function ProfilePage() {
                         value={contact}
                         onChange={(e) => setContact(e.target.value)}
                         placeholder="e.g. +1 (555) 0199 or support@company.com"
-                        className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500/40 focus:border-emerald-500/40 text-foreground"
+                        className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-emerald-500/40 focus:border-emerald-500/40 text-foreground"
                       />
                     </div>
                   </div>
@@ -294,7 +294,7 @@ export default function ProfilePage() {
               <div className="space-y-6">
                 
                 {/* Account Details */}
-                <div className="bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[24px] space-y-6 shadow-sm">
+                <div className="bg-bg-subtle-alt border border-border-default p-6 rounded-2xl space-y-6 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
@@ -309,7 +309,7 @@ export default function ProfilePage() {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06]">
+                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-bg-surface border border-border-default">
                     {user?.imageUrl ? (
                       <img src={user.imageUrl} alt="Avatar" className="w-14 h-14 rounded-2xl object-cover border border-emerald-500/30 shadow-md" />
                     ) : (
@@ -328,7 +328,7 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Username & Password Auth Section */}
-                  <div className="border-t border-foreground/[0.06] dark:border-white/[0.06] pt-5 space-y-4">
+                  <div className="border-t border-border-default pt-5 space-y-4">
                     <div className="flex justify-between items-center">
                       <div>
                         <h4 className="text-xs font-bold text-foreground flex items-center gap-2">
@@ -339,7 +339,7 @@ export default function ProfilePage() {
                       </div>
                     </div>
 
-                    <div className="p-4 bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl space-y-3">
+                    <div className="p-4 bg-bg-surface border border-border-default rounded-2xl space-y-3">
                       <div className="flex items-center justify-between text-xs font-semibold">
                         <span className="text-silver">Username &amp; Password Security</span>
                         <span className="text-emerald-500 font-bold">Enabled</span>
@@ -367,7 +367,7 @@ export default function ProfilePage() {
             {activeTab === 'system' && (
               <form onSubmit={handleSaveForm} className="space-y-6">
                 
-                <div className="bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] p-6 rounded-[24px] space-y-6 shadow-sm">
+                <div className="bg-bg-subtle-alt border border-border-default p-6 rounded-2xl space-y-6 shadow-sm">
                   <div>
                     <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                       <Sliders className="w-4 h-4 text-emerald-500" />
@@ -382,7 +382,7 @@ export default function ProfilePage() {
                       <select
                         value={defaultTone}
                         onChange={(e) => setDefaultTone(e.target.value)}
-                        className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-emerald-500/40 text-foreground"
+                        className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-emerald-500/40 text-foreground"
                       >
                         <option value="professional">Professional (Formal &amp; Polished)</option>
                         <option value="friendly">Friendly (Warm &amp; Accessible)</option>
@@ -396,7 +396,7 @@ export default function ProfilePage() {
                       <select
                         value={defaultLang}
                         onChange={(e) => setDefaultLang(e.target.value)}
-                        className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-emerald-500/40 text-foreground"
+                        className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-emerald-500/40 text-foreground"
                       >
                         {['English', 'Spanish', 'French', 'German', 'Portuguese', 'Arabic', 'Hindi'].map(lang => (
                           <option key={lang} value={lang}>{lang}</option>
@@ -404,7 +404,7 @@ export default function ProfilePage() {
                       </select>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-foreground/[0.02] dark:bg-white/[0.015] border border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-between">
+                    <div className="p-4 rounded-2xl bg-bg-surface border border-border-default flex items-center justify-between">
                       <div className="space-y-0.5">
                         <div className="text-xs font-bold text-foreground">Real-Time Operational Alerts</div>
                         <div className="text-[11px] text-silver font-medium">Receive browser notifications when operatives resolve customer inquiries.</div>

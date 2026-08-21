@@ -45,7 +45,7 @@ export default function MarketplacePage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pt-6 relative z-10">
               <div>
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="px-2.5 py-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg text-[9px] font-bold text-silver uppercase tracking-widest flex items-center gap-1.5">
+                  <div className="px-2.5 py-1 bg-bg-elevated border border-border-default rounded-lg text-[9px] font-bold text-silver uppercase tracking-widest flex items-center gap-1.5">
                     <Layers className="w-3 h-3" />
                     Synthesis Hub
                   </div>
@@ -62,7 +62,7 @@ export default function MarketplacePage() {
               </div>
 
               {/* Category Filter */}
-              <div className="flex p-0.5 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg shrink-0">
+              <div className="flex p-0.5 bg-bg-elevated border border-border-default rounded-lg shrink-0">
                 {[
                   { id: 'all', label: 'All Modules' },
                   { id: 'agents', label: 'Agents' },
@@ -91,7 +91,7 @@ export default function MarketplacePage() {
                 <span className="text-xs font-bold text-silver animate-pulse">Verifying access credentials...</span>
               </div>
             ) : !hasMarketplaceFeature ? (
-              <div className="max-w-md mx-auto text-center py-20 px-6 bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] backdrop-blur-3xl shadow-sm relative z-10">
+              <div className="max-w-md mx-auto text-center py-20 px-6 bg-bg-subtle-alt border border-border-default rounded-[28px] backdrop-blur-3xl shadow-sm relative z-10">
                 <div className="w-14 h-14 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-5">
                   <Lock className="w-6 h-6 text-red-500" />
                 </div>
@@ -118,7 +118,7 @@ export default function MarketplacePage() {
                 <motion.div 
                   variants={itemVariants}
                   className={cn(
-                    "md:col-span-4 md:row-span-2 group relative bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] p-8 lg:p-10 transition-all duration-500 overflow-hidden flex flex-col justify-between backdrop-blur-3xl shadow-sm hover:border-foreground/[0.1] dark:hover:border-white/[0.1]",
+                    "md:col-span-4 md:row-span-2 group relative bg-bg-subtle-alt border border-border-default rounded-[28px] p-8 lg:p-10 transition-all duration-500 overflow-hidden flex flex-col justify-between backdrop-blur-3xl shadow-sm hover:border-border-hover dark:hover:border-white/[0.1]",
                     !isActionAgentsEnabled && "opacity-50 grayscale"
                   )}
                 >
@@ -158,13 +158,13 @@ export default function MarketplacePage() {
                           <ArrowRight className="w-3.5 h-3.5" />
                        </Link>
                      ) : (
-                       <button className="bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.06] dark:border-white/[0.06] text-silver px-6 py-3 rounded-xl text-xs font-bold cursor-not-allowed">
+                       <button className="bg-bg-active border border-border-default text-silver px-6 py-3 rounded-xl text-xs font-bold cursor-not-allowed">
                           Service Unavailable
                        </button>
                      )}
                      <div className="flex -space-x-2.5">
                         {[1,2,3].map(i => (
-                          <div key={i} className="w-8 h-8 rounded-lg bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.08] dark:border-white/[0.08] flex items-center justify-center overflow-hidden">
+                          <div key={i} className="w-8 h-8 rounded-lg bg-bg-active border border-border-strong flex items-center justify-center overflow-hidden">
                              <Bot className="w-4 h-4 text-silver" />
                           </div>
                         ))}
@@ -179,7 +179,7 @@ export default function MarketplacePage() {
                 <motion.div 
                   variants={itemVariants}
                   className={cn(
-                    "md:col-span-2 md:row-span-1 group relative bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] p-7 transition-all duration-500 overflow-hidden flex flex-col justify-between backdrop-blur-3xl shadow-sm hover:border-foreground/[0.1] dark:hover:border-white/[0.1]",
+                    "md:col-span-2 md:row-span-1 group relative bg-bg-subtle-alt border border-border-default rounded-[28px] p-7 transition-all duration-500 overflow-hidden flex flex-col justify-between backdrop-blur-3xl shadow-sm hover:border-border-hover dark:hover:border-white/[0.1]",
                     !(config?.featureFlags?.neuralVoice !== false) && "opacity-50 grayscale"
                   )}
                 >
@@ -194,7 +194,7 @@ export default function MarketplacePage() {
                   </div>
                   <div className="mt-5 flex items-center justify-between">
                      <button 
-                      className="text-[10px] font-bold text-silver bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.06] dark:border-white/[0.06] px-4 py-2 rounded-lg cursor-not-allowed transition-all"
+                      className="text-[10px] font-bold text-silver bg-bg-active border border-border-default px-4 py-2 rounded-lg cursor-not-allowed transition-all"
                      >
                        {config?.featureFlags?.neuralVoice !== false ? 'Configure' : 'Research Phase'}
                      </button>
@@ -206,7 +206,7 @@ export default function MarketplacePage() {
                 <motion.div 
                   variants={itemVariants}
                   className={cn(
-                    "md:col-span-2 md:row-span-1 group relative bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] p-7 transition-all duration-500 overflow-hidden flex flex-col justify-between backdrop-blur-3xl shadow-sm hover:border-foreground/[0.1] dark:hover:border-white/[0.1]",
+                    "md:col-span-2 md:row-span-1 group relative bg-bg-subtle-alt border border-border-default rounded-[28px] p-7 transition-all duration-500 overflow-hidden flex flex-col justify-between backdrop-blur-3xl shadow-sm hover:border-border-hover dark:hover:border-white/[0.1]",
                     !(config?.featureFlags?.vision !== false) && "opacity-50 grayscale"
                   )}
                 >
@@ -232,7 +232,7 @@ export default function MarketplacePage() {
                 <motion.div 
                   variants={itemVariants}
                   className={cn(
-                    "md:col-span-6 md:row-span-1 group relative bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] p-7 transition-all duration-500 overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 backdrop-blur-3xl shadow-sm hover:border-foreground/[0.1] dark:hover:border-white/[0.1]",
+                    "md:col-span-6 md:row-span-1 group relative bg-bg-subtle-alt border border-border-default rounded-[28px] p-7 transition-all duration-500 overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 backdrop-blur-3xl shadow-sm hover:border-border-hover dark:hover:border-white/[0.1]",
                     !(config?.featureFlags?.leadManagement !== false && sub?.features?.includes('lead_capture')) && "opacity-50 grayscale"
                   )}
                 >
@@ -261,7 +261,7 @@ export default function MarketplacePage() {
             )}
 
             {/* Bottom Request Module Banner */}
-            <div className="mt-16 mb-4 p-10 bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] text-center relative overflow-hidden backdrop-blur-md z-10 shadow-sm">
+            <div className="mt-16 mb-4 p-10 bg-bg-subtle-alt border border-border-default rounded-[28px] text-center relative overflow-hidden backdrop-blur-md z-10 shadow-sm">
                <div className="relative z-10">
                   <Globe className="w-8 h-8 text-foreground/10 mx-auto mb-4" />
                   <h2 className="text-lg font-bold mb-2 text-foreground">Request a Module.</h2>

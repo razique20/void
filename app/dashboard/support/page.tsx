@@ -101,7 +101,7 @@ export default function SupportPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 relative z-10">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="px-2.5 py-1 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-lg text-[9px] font-bold text-silver uppercase tracking-widest flex items-center gap-1.5">
+            <span className="px-2.5 py-1 bg-bg-elevated border border-border-default rounded-lg text-[9px] font-bold text-silver uppercase tracking-widest flex items-center gap-1.5">
               <LifeBuoy className="w-3 h-3" />
               Helpdesk Node
             </span>
@@ -114,7 +114,7 @@ export default function SupportPage() {
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-none mb-3 text-foreground">Support.</h1>
           <p className="text-silver text-xs font-medium max-w-md leading-relaxed">Raise requests and get technical assistance from Synthesis Lab.</p>
           {user && (
-            <p className="text-[10px] text-silver font-mono mt-2.5 flex items-center gap-1.5 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] px-2.5 py-1 rounded-lg w-fit">
+            <p className="text-[10px] text-silver font-mono mt-2.5 flex items-center gap-1.5 bg-bg-elevated border border-border-default px-2.5 py-1 rounded-lg w-fit">
               <span className="text-[9px] uppercase font-bold text-silver/50">User ID:</span>
               <span>{user.id}</span>
             </p>
@@ -137,7 +137,7 @@ export default function SupportPage() {
           { label: 'Open', value: openCount, color: 'text-amber-500' },
           { label: 'Resolved', value: resolvedCount, color: 'text-emerald-500' },
         ].map((stat) => (
-          <div key={stat.label} className="p-4 bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl text-center">
+          <div key={stat.label} className="p-4 bg-bg-subtle-alt border border-border-default rounded-2xl text-center">
             <p className="text-[9px] text-silver uppercase tracking-widest font-bold mb-1">{stat.label}</p>
             <p className={cn("text-xl font-bold", stat.color)}>{loading ? '—' : stat.value}</p>
           </div>
@@ -152,7 +152,7 @@ export default function SupportPage() {
             animate={{ opacity: 1, height: 'auto', scale: 1 }}
             exit={{ opacity: 0, height: 0, scale: 0.98 }}
             transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-            className="bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] p-6 md:p-8 rounded-[28px] space-y-5 relative z-10 backdrop-blur-md overflow-hidden"
+            className="bg-bg-subtle-alt border border-border-default p-6 md:p-8 rounded-[28px] space-y-5 relative z-10 backdrop-blur-md overflow-hidden"
           >
             <div className="flex justify-between items-center">
               <h2 className="text-base font-bold text-foreground flex items-center gap-2">
@@ -161,7 +161,7 @@ export default function SupportPage() {
               </h2>
               <button 
                 onClick={() => setShowForm(false)} 
-                className="p-1.5 hover:bg-foreground/[0.05] dark:hover:bg-white/[0.05] rounded-lg text-silver hover:text-foreground transition-colors"
+                className="p-1.5 hover:bg-bg-hover rounded-lg text-silver hover:text-foreground transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -183,7 +183,7 @@ export default function SupportPage() {
                   value={subject}
                   onChange={e => setSubject(e.target.value)}
                   placeholder="Brief summary of the issue"
-                  className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3.5 text-xs outline-none text-foreground focus:border-apple-blue/40 transition-all font-medium"
+                  className="w-full bg-background border border-border-strong rounded-xl px-4 py-3.5 text-xs outline-none text-foreground focus:border-apple-blue/40 transition-all font-medium"
                 />
               </div>
               <div className="space-y-1.5">
@@ -194,7 +194,7 @@ export default function SupportPage() {
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   placeholder="Provide detailed information..."
-                  className="w-full bg-background border border-foreground/[0.08] dark:border-white/[0.08] rounded-xl px-4 py-3.5 text-xs outline-none resize-none text-foreground focus:border-apple-blue/40 transition-all font-medium h-36"
+                  className="w-full bg-background border border-border-strong rounded-xl px-4 py-3.5 text-xs outline-none resize-none text-foreground focus:border-apple-blue/40 transition-all font-medium h-36"
                 />
               </div>
               <button 
@@ -216,12 +216,12 @@ export default function SupportPage() {
         {loading ? (
           <div className="animate-pulse space-y-3">
             {[1, 2].map(i => (
-              <div key={i} className="h-28 bg-foreground/[0.03] dark:bg-white/[0.02] border border-foreground/[0.06] dark:border-white/[0.06] rounded-2xl" />
+              <div key={i} className="h-28 bg-bg-elevated border border-border-default rounded-2xl" />
             ))}
           </div>
         ) : tickets.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] rounded-[28px] text-center">
-            <div className="w-12 h-12 rounded-xl bg-foreground/[0.04] dark:bg-white/[0.04] border border-foreground/[0.06] dark:border-white/[0.06] flex items-center justify-center mb-4">
+          <div className="flex flex-col items-center justify-center py-16 bg-bg-subtle-alt border border-border-default rounded-[28px] text-center">
+            <div className="w-12 h-12 rounded-xl bg-bg-active border border-border-default flex items-center justify-center mb-4">
               <HelpCircle className="w-6 h-6 text-silver" />
             </div>
             <h3 className="text-sm font-semibold text-foreground">No Tickets Found</h3>
@@ -238,7 +238,7 @@ export default function SupportPage() {
               <motion.div 
                 key={ticket._id} 
                 variants={itemVariants}
-                className="bg-foreground/[0.015] dark:bg-white/[0.008] border border-foreground/[0.06] dark:border-white/[0.06] p-5 rounded-2xl shadow-sm backdrop-blur-md hover:border-foreground/[0.1] dark:hover:border-white/[0.1] transition-colors"
+                className="bg-bg-subtle-alt border border-border-default p-5 rounded-2xl shadow-sm backdrop-blur-md hover:border-border-hover dark:hover:border-white/[0.1] transition-colors"
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
                   <div>
@@ -258,7 +258,7 @@ export default function SupportPage() {
                   </div>
                 </div>
                 
-                <div className="bg-foreground/[0.02] dark:bg-white/[0.01] border border-foreground/[0.04] dark:border-white/[0.04] p-4 rounded-xl">
+                <div className="bg-bg-surface border border-border-subtle p-4 rounded-xl">
                   <p className="text-xs text-foreground/80 leading-relaxed whitespace-pre-wrap font-medium">{ticket.description}</p>
                 </div>
 

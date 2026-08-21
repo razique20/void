@@ -4,7 +4,7 @@ export default function LeadsLoading() {
   return (
     <div className="max-w-6xl mx-auto space-y-8 px-4 md:px-12 py-8 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="space-y-3 border-b border-foreground/[0.06] dark:border-white/[0.06] pb-6">
+      <div className="space-y-3 border-b border-border-default pb-6">
         <Skeleton className="h-7 w-40" />
         <Skeleton className="h-3.5 w-72" />
       </div>

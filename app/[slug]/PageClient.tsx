@@ -207,7 +207,7 @@ export default function PageClient({ slug }: { slug: string }) {
             animate="visible"
             className="lg:col-span-6 flex flex-col gap-6"
           >
-            <div className="glass p-8 rounded-[32px] border border-foreground/5">
+            <div className="glass p-8 rounded-2xl border border-foreground/5">
               <p className="text-[15px] leading-relaxed text-foreground/80 font-medium">
                 {content.description}
               </p>
@@ -219,7 +219,7 @@ export default function PageClient({ slug }: { slug: string }) {
                 <motion.div 
                   key={idx}
                   variants={itemVariants}
-                  className="glass p-8 rounded-[32px] flex items-start gap-6 border border-foreground/5 group hover:border-foreground/10 transition-all duration-300"
+                  className="glass p-8 rounded-2xl flex items-start gap-6 border border-foreground/5 group hover:border-foreground/10 transition-all duration-300"
                 >
                   <div className="w-12 h-12 bg-apple-blue/10 rounded-xl flex items-center justify-center shrink-0 text-apple-blue group-hover:scale-110 transition-transform duration-300">
                     <Icon className="w-6 h-6" />
@@ -302,7 +302,7 @@ function ArchitectureSandbox() {
   };
 
   return (
-    <div className="glass rounded-[40px] p-8 border border-foreground/5 overflow-hidden relative">
+    <div className="glass rounded-[28px] p-8 border border-foreground/5 overflow-hidden relative">
       <div className="flex items-center justify-between mb-8 border-b border-foreground/5 pb-4">
         <div>
           <span className="text-[10px] font-bold text-apple-blue uppercase tracking-widest block mb-1">Latency Telemetry</span>
@@ -329,7 +329,7 @@ function ArchitectureSandbox() {
       </div>
 
       {/* Latency counter display */}
-      <div className="flex items-center gap-6 mb-10 bg-foreground/[0.02] border border-foreground/5 p-6 rounded-2xl">
+      <div className="flex items-center gap-6 mb-10 bg-bg-surface border border-foreground/5 p-6 rounded-2xl">
         <div className="text-center shrink-0">
           <div className="text-[11px] font-bold uppercase tracking-widest text-silver mb-1">Ingress</div>
           <div className="text-3xl font-bold font-mono">
@@ -438,7 +438,7 @@ function PrivacySandbox() {
   };
 
   return (
-    <div className="glass rounded-[40px] p-8 border border-foreground/5 relative">
+    <div className="glass rounded-[28px] p-8 border border-foreground/5 relative">
       <div className="flex items-center justify-between mb-8 border-b border-foreground/5 pb-4">
         <div>
           <span className="text-[10px] font-bold text-apple-blue uppercase tracking-widest block mb-1">Privacy Guard</span>
@@ -453,7 +453,7 @@ function PrivacySandbox() {
       </div>
 
       {/* Ephemeral keys card */}
-      <div className="bg-foreground/[0.02] border border-foreground/5 p-6 rounded-2xl mb-8 flex items-center justify-between">
+      <div className="bg-bg-surface border border-foreground/5 p-6 rounded-2xl mb-8 flex items-center justify-between">
         <div>
           <div className="text-[10px] font-bold uppercase tracking-widest text-silver mb-1">Tunnel Key Ingress</div>
           <div className="font-mono text-xs text-foreground font-bold tracking-wider">vd_eph_tunnel_8c3289ba10fe9c</div>
@@ -578,7 +578,7 @@ function NeuralHubSandbox() {
   };
 
   return (
-    <div className="glass rounded-[40px] p-8 border border-foreground/5 relative">
+    <div className="glass rounded-[28px] p-8 border border-foreground/5 relative">
       <div className="flex items-center justify-between mb-8 border-b border-foreground/5 pb-4">
         <div>
           <span className="text-[10px] font-bold text-apple-blue uppercase tracking-widest block mb-1">Orchestration Grid</span>
@@ -605,7 +605,7 @@ function NeuralHubSandbox() {
       <div className="grid grid-cols-3 gap-4 mb-8">
         
         {/* Active Agents */}
-        <div className="bg-foreground/[0.02] border border-foreground/5 p-4 rounded-2xl text-center">
+        <div className="bg-bg-surface border border-foreground/5 p-4 rounded-2xl text-center">
           <div className="text-[9px] font-bold text-silver uppercase tracking-wider mb-1">Active Fleet</div>
           <div className="text-2xl font-bold flex items-center justify-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -614,7 +614,7 @@ function NeuralHubSandbox() {
         </div>
 
         {/* Latency */}
-        <div className="bg-foreground/[0.02] border border-foreground/5 p-4 rounded-2xl text-center">
+        <div className="bg-bg-surface border border-foreground/5 p-4 rounded-2xl text-center">
           <div className="text-[9px] font-bold text-silver uppercase tracking-wider mb-1">Avg Latency</div>
           <div className="text-2xl font-bold font-mono">
             {latency}
@@ -623,7 +623,7 @@ function NeuralHubSandbox() {
         </div>
 
         {/* LPU Load */}
-        <div className="bg-foreground/[0.02] border border-foreground/5 p-4 rounded-2xl text-center">
+        <div className="bg-bg-surface border border-foreground/5 p-4 rounded-2xl text-center">
           <div className="text-[9px] font-bold text-silver uppercase tracking-wider mb-1">LPU Load</div>
           <div className="text-2xl font-bold font-mono">
             {load}%
@@ -712,7 +712,7 @@ function UplinkSandbox() {
   };
 
   return (
-    <div className="glass rounded-[40px] p-8 border border-foreground/5 relative">
+    <div className="glass rounded-[28px] p-8 border border-foreground/5 relative">
       {/* Sandbox Header */}
       <div className="flex items-center justify-between mb-6 border-b border-foreground/5 pb-4">
         <div>

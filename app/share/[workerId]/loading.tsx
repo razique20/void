@@ -12,7 +12,7 @@ export default function ShareLoading() {
         </div>
 
         {/* Chat Preview */}
-        <div className="space-y-4 p-6 rounded-2xl border border-foreground/[0.06] dark:border-white/[0.06] bg-foreground/[0.015] dark:bg-white/[0.008]">
+        <div className="space-y-4 p-6 rounded-2xl border border-border-default bg-bg-subtle-alt">
           {[1, 2].map((i) => (
             <div key={i} className={`flex ${i === 2 ? "justify-end" : "justify-start"}`}>
               <Skeleton className={`h-10 ${i === 2 ? "w-36" : "w-48"} rounded-2xl`} />
