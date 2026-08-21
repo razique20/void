@@ -91,7 +91,7 @@ export default function MarketplacePage() {
                 <span className="text-xs font-bold text-silver animate-pulse">Verifying access credentials...</span>
               </div>
             ) : !hasMarketplaceFeature ? (
-              <div className="max-w-md mx-auto text-center py-20 px-6 bg-bg-subtle-alt border border-border-default rounded-[28px] backdrop-blur-3xl shadow-sm relative z-10">
+              <div className="max-w-md mx-auto text-center py-20 px-6 bg-bg-subtle-alt border border-border-default rounded-2xl shadow-sm relative z-10">
                 <div className="w-14 h-14 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-5">
                   <Lock className="w-6 h-6 text-red-500" />
                 </div>

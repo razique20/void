@@ -31,7 +31,7 @@ const FEATURE_details: Record<string, { icon: any; color: string; description: s
     icon: Zap,
     color: 'text-purple-500',
     description: 'Connect email for autonomous agent sending.',
-    requiredPlan: 'Pro',
+    requiredPlan: 'Enterprise',
   },
   'Marketplace': {
     icon: Crown,
