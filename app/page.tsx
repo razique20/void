@@ -14,8 +14,126 @@ import Link from 'next/link';
 import { ChevronRight, ShieldCheck, ArrowRight, Play } from 'lucide-react';
 import { motion, Variants, Easing } from 'framer-motion';
 import { Show, SignInButton } from '@clerk/nextjs';
+import { useEffect } from 'react';
+
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://void.ai';
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'VOID',
+  url: SITE_URL,
+  logo: `${SITE_URL}/icon.svg`,
+  description:
+    'Deploy autonomous AI operatives that handle support, sales, and customer workflows 24/7.',
+  sameAs: [],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'sales',
+    availableLanguage: 'English',
+  },
+};
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'VOID',
+  url: SITE_URL,
+  description:
+    'Hire an AI workforce that never sleeps. Deploy autonomous operatives that handle support, sales, and workflows 24/7.',
+};
+
+const softwareApplicationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'VOID',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  url: SITE_URL,
+  description:
+    'Deploy autonomous AI operatives that handle support, sales, and customer workflows 24/7. Scale your team with intelligent agents.',
+  offers: {
+    '@type': 'AggregateOffer',
+    lowPrice: '0',
+    highPrice: '2599',
+    priceCurrency: 'USD',
+    offerCount: '4',
+  },
+  featureList: [
+    'AI Operative Deployment',
+    'Knowledge Base Training',
+    'WhatsApp & Telegram Integration',
+    'Lead Capture & CRM Sync',
+    'Custom Webhook Actions',
+    'Multi-channel Agency Control',
+  ],
+};
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is VOID?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'VOID is an AI workforce platform that lets you deploy autonomous operatives to handle customer support, sales, and business workflows 24/7.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How much does VOID cost?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'VOID offers a free tier to get started, with Pro plans at $199/mo, Enterprise at $699/mo, and Elite at $2,599/mo for high-scale agencies.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What channels does VOID support?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'VOID supports WhatsApp, Telegram, web chat widgets, and email — all manageable from a single dashboard.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I train my AI operative with my own data?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. You can upload documents (PDF, DOCX, CSV, TXT), paste text snippets, or crawl web pages to build a custom knowledge base for each operative.',
+      },
+    },
+  ],
+};
 
 export default function LandingPage() {
+  useEffect(() => {
+    const scripts = [
+      { id: 'ld-org', data: organizationJsonLd },
+      { id: 'ld-website', data: websiteJsonLd },
+      { id: 'ld-software', data: softwareApplicationJsonLd },
+      { id: 'ld-faq', data: faqJsonLd },
+    ];
+
+    scripts.forEach(({ id, data }) => {
+      const existing = document.getElementById(id);
+      if (existing) return;
+      const script = document.createElement('script');
+      script.id = id;
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(data);
+      document.head.appendChild(script);
+    });
+
+    return () => {
+      scripts.forEach(({ id }) => {
+        const el = document.getElementById(id);
+        if (el) el.remove();
+      });
+    };
+  }, []);
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {

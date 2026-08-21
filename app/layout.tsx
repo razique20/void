@@ -18,8 +18,61 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VOID | The Silent AI Workforce",
-  description: "Deploy autonomous AI agents from the VOID.",
+  title: {
+    default: "VOID — Hire an AI Workforce That Never Sleeps",
+    template: "%s | VOID",
+  },
+  description:
+    "Deploy autonomous AI operatives that handle support, sales, and customer workflows 24/7. Scale your team with intelligent agents that work globally, autonomously, and seamlessly.",
+  keywords: [
+    "AI agents",
+    "AI workforce",
+    "autonomous AI",
+    "customer support AI",
+    "sales automation",
+    "AI chatbot",
+    "AI customer service",
+    "business automation",
+    "AI operatives",
+    "deploy AI",
+  ],
+  authors: [{ name: "VOID" }],
+  creator: "VOID",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://void.ai",
+    siteName: "VOID",
+    title: "VOID — Hire an AI Workforce That Never Sleeps",
+    description:
+      "Deploy autonomous AI operatives that handle support, sales, and customer workflows 24/7.",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "VOID — The Silent AI Workforce",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "VOID — Hire an AI Workforce That Never Sleeps",
+    description:
+      "Deploy autonomous AI operatives that handle support, sales, and customer workflows 24/7.",
+    images: ["/og.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({
@@ -55,8 +108,8 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col antialiased bg-background text-foreground transition-colors duration-300">
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
-          enableSystem
+          defaultTheme="light"
+          forcedTheme="light"
           disableTransitionOnChange
         >
           <ClerkThemeProvider>

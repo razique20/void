@@ -1,36 +1,36 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbfdfd;
-  --foreground: #0f172a;
-  --sidebar: rgba(251, 253, 253, 0.65);
-  --sidebar-border: rgba(16, 185, 129, 0.08);
-  --card: rgba(255, 255, 255, 0.95);
-  --card-border: rgba(16, 185, 129, 0.1);
-  --primary: #10b981;
-  --silver: #64748b;
+  --background: #ffffff;
+  --foreground: #0c1222;
+  --sidebar: #0a0a0c;
+  --sidebar-border: rgba(16, 185, 129, 0.2);
+  --card: #111827;
+  --card-border: rgba(16, 185, 129, 0.2);
+  --primary: #059669;
+  --silver: #9ca3af;
   --apple-blue: #10b981;
   --emerald-primary: #10b981;
-  --emerald-glow: rgba(16, 185, 129, 0.12);
-  --text-gradient-start: #0f172a;
-  --text-gradient-end: #10b981;
+  --emerald-glow: rgba(16, 185, 129, 0.25);
+  --text-gradient-start: #0c1222;
+  --text-gradient-end: #059669;
 
-  /* Background opacity scale — single source of truth */
-  --bg-subtle: color-mix(in srgb, var(--foreground) 1%, transparent);
-  --bg-subtle-alt: color-mix(in srgb, var(--foreground) 1.5%, transparent);
-  --bg-surface: color-mix(in srgb, var(--foreground) 2%, transparent);
-  --bg-elevated: color-mix(in srgb, var(--foreground) 3%, transparent);
-  --bg-active: color-mix(in srgb, var(--foreground) 4%, transparent);
-  --bg-hover: color-mix(in srgb, var(--foreground) 5%, transparent);
-  --bg-strong: color-mix(in srgb, var(--foreground) 8%, transparent);
-  --bg-border: color-mix(in srgb, var(--foreground) 6%, transparent);
-  --bg-toggle: color-mix(in srgb, var(--foreground) 10%, transparent);
+  /* Background scale — light with subtle emerald tint */
+  --bg-subtle: #f8faf9;
+  --bg-subtle-alt: #f5f9f7;
+  --bg-surface: #f0f5f2;
+  --bg-elevated: #e8f0eb;
+  --bg-active: #ddeae2;
+  --bg-hover: #d2e5da;
+  --bg-strong: #b8d9c6;
+  --bg-border: rgba(16, 185, 129, 0.10);
+  --bg-toggle: #b8d9c6;
 
-  /* Border opacity scale */
-  --border-subtle: color-mix(in srgb, var(--foreground) 4%, transparent);
-  --border-default: color-mix(in srgb, var(--foreground) 6%, transparent);
-  --border-strong: color-mix(in srgb, var(--foreground) 8%, transparent);
-  --border-hover: color-mix(in srgb, var(--foreground) 10%, transparent);
+  /* Border scale — visible with emerald tint */
+  --border-subtle: rgba(16, 185, 129, 0.12);
+  --border-default: rgba(16, 185, 129, 0.18);
+  --border-strong: rgba(16, 185, 129, 0.28);
+  --border-hover: rgba(16, 185, 129, 0.38);
 
   /* Border-radius scale
    * rounded-xl     = buttons, tags, small elements
@@ -39,93 +39,91 @@
    */
 }
 
-.dark {
-  --background: #030304;
-  --foreground: #f3f4f6;
-  --sidebar: rgba(3, 7, 18, 0.45);
-  --sidebar-border: rgba(243, 244, 246, 0.04);
-  --card: rgba(17, 24, 39, 0.95);
-  --card-border: rgba(16, 185, 129, 0.12);
-  --primary: #10b981;
-  --silver: #9ca3af;
-  --apple-blue: #10b981;
-  --emerald-primary: #10b981;
-  --emerald-glow: rgba(16, 185, 129, 0.2);
-  --text-gradient-start: #ffffff;
-  --text-gradient-end: #10b981;
-}
+
 
 /* --- Emerald Matrix Theme --- */
 [data-color-theme="emerald"] {
   --apple-blue: #10b981;
-  --background: #fbfdfc;
-  --foreground: #111827;
-  --sidebar: rgba(251, 253, 252, 0.65);
-  --sidebar-border: rgba(16, 185, 129, 0.08);
-  --card: rgba(255, 255, 255, 0.95);
-  --primary: #10b981;
-  --text-gradient-start: #0f172a;
+  --background: #f7fdfa;
+  --foreground: #0a1a14;
+  --sidebar: #051410;
+  --sidebar-border: rgba(16, 185, 129, 0.2);
+  --card: #0a1a14;
+  --card-border: rgba(16, 185, 129, 0.2);
+  --primary: #059669;
+  --text-gradient-start: #0a1a14;
   --text-gradient-end: #059669;
+  --bg-subtle: #f0faf5;
+  --bg-subtle-alt: #eaf8f0;
+  --bg-surface: #e4f5eb;
+  --bg-elevated: #dcf1e4;
+  --bg-active: #d0edda;
+  --bg-hover: #c5e9d1;
+  --bg-strong: #b0e1c1;
+  --bg-border: rgba(16, 185, 129, 0.10);
+  --bg-toggle: #b0e1c1;
+  --border-subtle: rgba(16, 185, 129, 0.12);
+  --border-default: rgba(16, 185, 129, 0.18);
+  --border-strong: rgba(16, 185, 129, 0.26);
+  --border-hover: rgba(16, 185, 129, 0.36);
 }
-.dark[data-color-theme="emerald"] {
-  --apple-blue: #10b981;
-  --background: #051410;
-  --foreground: #d1fae5;
-  --sidebar: rgba(5, 20, 16, 0.45);
-  --sidebar-border: rgba(209, 250, 229, 0.04);
-  --card: rgba(10, 36, 28, 0.95);
-  --primary: #d1fae5;
-  --text-gradient-start: #ffffff;
-  --text-gradient-end: #059669;
-}
+
 
 /* --- Royal Velvet Theme --- */
 [data-color-theme="purple"] {
   --apple-blue: #8b5cf6;
-  --background: #faf5ff;
-  --foreground: #2e1065;
-  --sidebar: rgba(250, 245, 255, 0.45);
-  --sidebar-border: rgba(46, 16, 101, 0.04);
-  --card: rgba(243, 235, 252, 0.95);
-  --primary: #2e1065;
-  --text-gradient-start: #2e1065;
-  --text-gradient-end: #c084fc;
-}
-.dark[data-color-theme="purple"] {
-  --apple-blue: #a78bfa;
-  --background: #0b0718;
-  --foreground: #f3e8ff;
-  --sidebar: rgba(11, 7, 24, 0.45);
-  --sidebar-border: rgba(243, 232, 255, 0.04);
-  --card: rgba(23, 17, 49, 0.95);
-  --primary: #f3e8ff;
-  --text-gradient-start: #ffffff;
+  --background: #fafaff;
+  --foreground: #1e0a4a;
+  --sidebar: #0b0718;
+  --sidebar-border: rgba(139, 92, 246, 0.2);
+  --card: #1a0e3e;
+  --card-border: rgba(139, 92, 246, 0.2);
+  --primary: #7c3aed;
+  --text-gradient-start: #1e0a4a;
   --text-gradient-end: #7c3aed;
+  --bg-subtle: #f5f3ff;
+  --bg-subtle-alt: #f0edfe;
+  --bg-surface: #ebe7fd;
+  --bg-elevated: #e4dffb;
+  --bg-active: #dbd5fa;
+  --bg-hover: #d1c9f8;
+  --bg-strong: #bfb3f4;
+  --bg-border: rgba(139, 92, 246, 0.10);
+  --bg-toggle: #bfb3f4;
+  --border-subtle: rgba(139, 92, 246, 0.10);
+  --border-default: rgba(139, 92, 246, 0.16);
+  --border-strong: rgba(139, 92, 246, 0.24);
+  --border-hover: rgba(139, 92, 246, 0.34);
 }
+
 
 /* --- Sunset Amber Theme --- */
 [data-color-theme="amber"] {
   --apple-blue: #f59e0b;
-  --background: #fffbeb;
-  --foreground: #451a03;
-  --sidebar: rgba(255, 253, 235, 0.45);
-  --sidebar-border: rgba(69, 26, 3, 0.04);
-  --card: rgba(254, 243, 199, 0.95);
-  --primary: #451a03;
-  --text-gradient-start: #451a03;
-  --text-gradient-end: #fbbf24;
-}
-.dark[data-color-theme="amber"] {
-  --apple-blue: #fbbf24;
-  --background: #0f0b07;
-  --foreground: #fef3c7;
-  --sidebar: rgba(15, 11, 7, 0.45);
-  --sidebar-border: rgba(254, 243, 199, 0.04);
-  --card: rgba(30, 21, 12, 0.95);
-  --primary: #fef3c7;
-  --text-gradient-start: #ffffff;
+  --background: #fffcf5;
+  --foreground: #3a1600;
+  --sidebar: #1a0e00;
+  --sidebar-border: rgba(245, 158, 11, 0.2);
+  --card: #2a1a00;
+  --card-border: rgba(245, 158, 11, 0.2);
+  --primary: #d97706;
+  --text-gradient-start: #3a1600;
   --text-gradient-end: #d97706;
+  --bg-subtle: #fefbf0;
+  --bg-subtle-alt: #fef8e8;
+  --bg-surface: #fef4dd;
+  --bg-elevated: #fef0d0;
+  --bg-active: #fdebc2;
+  --bg-hover: #fde5b4;
+  --bg-strong: #fcd88a;
+  --bg-border: rgba(245, 158, 11, 0.10);
+  --bg-toggle: #fcd88a;
+  --border-subtle: rgba(245, 158, 11, 0.10);
+  --border-default: rgba(245, 158, 11, 0.16);
+  --border-strong: rgba(245, 158, 11, 0.24);
+  --border-hover: rgba(245, 158, 11, 0.34);
 }
+
 
 @keyframes marquee {
   from {
@@ -204,32 +202,22 @@ body {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--card-border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .popover-glass {
-  background: color-mix(in srgb, var(--background) 97%, transparent);
+  background: var(--card);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(120, 120, 128, 0.2);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-}
-
-.dark .popover-glass {
-  background: color-mix(in srgb, var(--background) 97%, transparent);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 24px 64px rgba(0, 0, 0, 0.2);
 }
 
 .glass-hover:hover {
   background: var(--card);
   border-color: var(--card-border);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
-}
-
-.dark .glass-hover:hover {
-  background: rgba(28, 28, 30, 0.9);
-  border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 12px 48px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 .apple-button {
@@ -239,13 +227,13 @@ body {
   border-radius: 980px;
   font-weight: 600;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.25);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3), 0 4px 16px rgba(16, 185, 129, 0.15);
 }
 
 .apple-button:hover {
   background: linear-gradient(135deg, #047857 0%, #059669 100%);
   transform: scale(1.02);
-  box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.35);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4), 0 8px 24px rgba(16, 185, 129, 0.2);
 }
 
 .apple-button-secondary {
@@ -272,12 +260,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 10px;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
 }
 
 @utility marquee-mask {

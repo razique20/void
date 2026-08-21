@@ -250,52 +250,36 @@ export default function LiveChatPage() {
 
   if (!sub?.features?.includes('mission_control')) {
     return (
-      <div className="flex flex-1 overflow-hidden pt-20">
-        <div className="flex flex-1 flex-col overflow-hidden relative">
-          <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-[0.04] pointer-events-none" />
-          <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
-
-          <main className="flex-1 overflow-y-auto px-4 md:px-12 py-8 md:py-10 pb-24 md:pb-10 relative z-10">
-            <div className="flex flex-col items-center justify-center py-20 bg-bg-subtle border border-border-default border-dashed rounded-2xl text-center max-w-md mx-auto">
-              <div className="w-14 h-14 bg-bg-elevated border border-border-strong rounded-2xl flex items-center justify-center mb-4">
-                <Shield className="w-7 h-7 text-silver" />
-              </div>
-              <h3 className="text-sm font-bold text-foreground">Mission Control Locked</h3>
-              <p className="text-silver text-xs max-w-xs mt-1.5 leading-relaxed">
-                Your current {sub?.plan || 'Free'} plan does not include Mission Control. Upgrade to Pro or higher to monitor and take over operative chats live.
-              </p>
-              <Link
-                href="/billing"
-                className="mt-5 inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-sm"
-              >
-                Upgrade Now <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </main>
+      <div className="flex flex-col items-center justify-center h-full px-6">
+        <div className="flex flex-col items-center justify-center py-20 bg-bg-subtle border border-border-default border-dashed rounded-2xl text-center max-w-md mx-auto">
+          <div className="w-14 h-14 bg-bg-elevated border border-border-strong rounded-2xl flex items-center justify-center mb-4">
+            <Shield className="w-7 h-7 text-silver" />
+          </div>
+          <h3 className="text-sm font-bold text-foreground">Mission Control Locked</h3>
+          <p className="text-silver text-xs max-w-xs mt-1.5 leading-relaxed">
+            Your current {sub?.plan || 'Free'} plan does not include Mission Control. Upgrade to Pro or higher to monitor and take over operative chats live.
+          </p>
+          <Link
+            href="/billing"
+            className="mt-5 inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-sm"
+          >
+            Upgrade Now <ChevronRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 overflow-hidden pt-20">
-      <div className="flex flex-1 flex-col overflow-hidden relative">
-        {/* Dot grid & ambient glows (matching training/dashboard) */}
-        <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-[0.04] pointer-events-none" />
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
-
-        {Toast}
-
-        <main className="flex-1 overflow-hidden relative z-10">
-          <div className="h-full flex">
+    <>
+      {Toast}
+      <div className="h-full flex overflow-hidden">
 
             {/* ── 1. Sidebar — Chat List (w-80) ── */}
             <div className="w-80 flex flex-col bg-bg-subtle border-r border-border-default shrink-0 z-20">
               
               {/* Sidebar Header (matching dashboard pattern) */}
-              <div className="p-5 border-b border-border-default shrink-0 space-y-3.5">
+              <div className="px-5 py-5 border-b border-border-default shrink-0 space-y-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <h1 className="text-sm font-bold text-foreground">War Room</h1>
@@ -322,7 +306,7 @@ export default function LiveChatPage() {
                 </div>
 
                 {/* Filter segment tabs */}
-                <div className="flex p-0.5 bg-bg-elevated border border-border-subtle rounded-lg">
+                <div className="flex p-1 bg-bg-elevated border border-border-subtle rounded-xl">
                   {[
                     { id: 'all', label: `All (${conversations.length})` },
                     { id: 'ai', label: `AI (${aiCount})` },
@@ -332,7 +316,7 @@ export default function LiveChatPage() {
                       key={tab.id}
                       onClick={() => setActiveFilter(tab.id as any)}
                       className={cn(
-                        "flex-1 text-center py-1.5 rounded text-[10px] font-bold transition-all",
+                        "flex-1 text-center py-2 rounded-lg text-[10px] font-bold transition-all",
                         activeFilter === tab.id
                           ? "bg-foreground text-background shadow-sm"
                           : "text-silver hover:text-foreground"
@@ -345,7 +329,7 @@ export default function LiveChatPage() {
               </div>
 
               {/* Conversation List */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
+              <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-3 space-y-2">
                 {filteredConversations.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-center px-4">
                     <div className="w-10 h-10 bg-bg-elevated border border-border-strong rounded-xl flex items-center justify-center mb-3">
@@ -365,7 +349,7 @@ export default function LiveChatPage() {
                         key={chat._id}
                         onClick={() => setSelectedChat(chat)}
                         className={cn(
-                          "w-full p-3.5 flex items-start gap-3 rounded-xl border text-left relative overflow-hidden transition-all duration-200 cursor-pointer group",
+                          "w-full p-4 flex items-start gap-3.5 rounded-xl border text-left relative overflow-hidden transition-all duration-200 cursor-pointer group",
                           isSelected
                             ? "bg-bg-hover border-border-hover shadow-sm"
                             : "border-transparent hover:bg-bg-surface"
@@ -373,12 +357,12 @@ export default function LiveChatPage() {
                       >
                         {/* Status Indicator Band */}
                         <div className={cn(
-                          "absolute left-0 top-0 bottom-0 w-1 rounded-r",
+                          "absolute left-0 top-1 bottom-1 w-[3px] rounded-full",
                           chat.isPaused ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
                         )} />
 
                         {/* Channel icon */}
-                        <div className="w-8 h-8 rounded-lg bg-bg-elevated border border-border-strong flex items-center justify-center shrink-0">
+                        <div className="w-9 h-9 rounded-xl bg-bg-elevated border border-border-strong flex items-center justify-center shrink-0">
                           {chat.channel === 'whatsapp' ? <Smartphone className="w-4 h-4 text-emerald-500" /> : 
                            chat.channel === 'telegram' ? <Send className="w-4 h-4 text-sky-500" /> : 
                            chat.channel === 'email' ? <Mail className="w-4 h-4 text-amber-500" /> :
@@ -386,7 +370,7 @@ export default function LiveChatPage() {
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <div className="flex justify-between items-center mb-0.5">
+                          <div className="flex justify-between items-center mb-1">
                             <span className="font-semibold text-xs truncate text-foreground">
                               {chat.displayName || chat.externalId}
                             </span>
@@ -397,7 +381,7 @@ export default function LiveChatPage() {
                           <p className="text-[11px] text-silver truncate leading-relaxed">
                             {lastMsg ? lastMsg.content : 'No transmissions yet'}
                           </p>
-                          <div className="flex items-center gap-1.5 mt-2">
+                          <div className="flex items-center gap-1.5 mt-2.5">
                             <span className="text-[8px] px-1.5 py-0.5 bg-bg-active rounded text-silver font-mono border border-border-subtle">
                               {chat.workerId?.name}
                             </span>
@@ -416,7 +400,7 @@ export default function LiveChatPage() {
             </div>
 
             {/* ── 2. Center Panel — Active Chat Screen ── */}
-            <div className="flex-1 flex flex-col min-w-0 relative">
+            <div className="flex-1 flex flex-col min-w-0 relative overflow-hidden">
               {selectedChat ? (
                 <div className="flex flex-col h-full overflow-hidden">
                   
@@ -757,9 +741,7 @@ export default function LiveChatPage() {
               )}
             </AnimatePresence>
 
-          </div>
-        </main>
       </div>
-    </div>
+    </>
   );
 }

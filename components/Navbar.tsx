@@ -31,7 +31,7 @@ import {
   Compass
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ThemeToggle } from './theme-toggle';
+
 import SystemTourModal from './SystemTourModal';
 import UpgradeModal from './UpgradeModal';
 import NotificationBell from './NotificationBell';
@@ -182,7 +182,7 @@ export default function Navbar() {
   // RENDER OPTION A: Public Header (Landing Page or Auth flows)
   if (!isWorkspace) {
     return (
-      <nav className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b bg-black/60 dark:bg-black/60 backdrop-blur-xl border-white/10 dark:border-white/10 shadow-[0_2px_15px_rgba(0,0,0,0.15)]">
+      <nav className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b bg-black/60 backdrop-blur-xl border-white/10 shadow-[0_2px_15px_rgba(0,0,0,0.15)]">
         <div className="flex justify-between items-center px-2 md:px-4 max-w-7xl mx-auto">
           <Link href="/" className="group flex items-center">
             <span className="text-lg md:text-xl font-extrabold tracking-[-0.04em] text-white flex items-center gap-1">
@@ -221,7 +221,7 @@ export default function Navbar() {
   return (
     <>
       <aside style={{ viewTransitionName: 'site-sidebar' }} className={cn(
-        "fixed top-0 left-0 h-full border-r border-border-strong bg-background/80 dark:bg-black/60 backdrop-blur-2xl z-40 hidden lg:flex flex-col justify-between select-none shadow-sm",
+        "fixed top-0 left-0 h-full border-r border-border-strong bg-[var(--sidebar)] backdrop-blur-2xl z-40 hidden lg:flex flex-col justify-between select-none shadow-sm",
         mounted && "transition-all duration-200 ease-in-out",
         (mounted && isCollapsed) ? "w-16 p-2.5 py-4" : "w-64 p-4"
       )}>
@@ -233,12 +233,12 @@ export default function Navbar() {
           )}>
             <Link href="/" className="group flex items-center gap-2 transition-transform hover:scale-[1.02]">
               <div className="flex flex-col">
-                <span className="font-black text-base tracking-wide text-foreground flex items-center gap-1.5 leading-none">
+                <span className="font-black text-base tracking-wide text-white flex items-center gap-1.5 leading-none">
                   VOID
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
                 </span>
                 {(!mounted || !isCollapsed) && (
-                  <span className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-silver/60 uppercase mt-1 flex items-center gap-1">
+                  <span className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-white/50 uppercase mt-1 flex items-center gap-1">
                     AUTONOMOUS OS <span className="text-emerald-400/80 font-normal lowercase tracking-normal">by Aethyl</span>
                   </span>
                 )}
@@ -261,10 +261,10 @@ export default function Navbar() {
               <div key={cat.title} className="space-y-1.5">
                 {(!mounted || !isCollapsed) && (
                   <div className="flex items-center gap-2 px-1">
-                    <span className="text-[9px] font-black text-silver/70 uppercase tracking-widest">
+                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">
                       {cat.title}
                     </span>
-                    <div className="flex-1 h-[1px] bg-bg-border" />
+                    <div className="flex-1 h-[1px] bg-white/10" />
                   </div>
                 )}
                 <nav className="space-y-1">
@@ -286,15 +286,15 @@ export default function Navbar() {
                           "flex items-center rounded-xl text-xs font-bold transition-all border relative group",
                           (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3.5 py-2.5",
                           isLocked
-                            ? "border-border-subtle cursor-not-allowed opacity-50 bg-bg-subtle text-silver/40"
+                            ? "border-white/10 cursor-not-allowed opacity-50 bg-white/5 text-white/30"
                             : isActive
-                              ? "bg-emerald-500/[0.08] dark:bg-emerald-500/[0.12] border-emerald-500/30 text-emerald-500 dark:text-emerald-400 font-extrabold shadow-sm cursor-pointer"
-                              : "bg-bg-subtle-alt border-border-subtle text-silver hover:border-emerald-500/20 hover:bg-emerald-500/[0.03] hover:text-foreground cursor-pointer"
+                              ? "bg-emerald-500/[0.15] border-emerald-500/30 text-emerald-400 font-extrabold shadow-sm cursor-pointer"
+                              : "bg-white/5 border-white/10 text-white/70 hover:border-emerald-500/20 hover:bg-emerald-500/[0.08] hover:text-white cursor-pointer"
                         )}
                       >
                         <Icon className={cn(
                           "w-4 h-4 shrink-0 transition-colors",
-                          isLocked ? "text-silver/40" : isActive ? "text-emerald-500" : "text-silver group-hover:text-emerald-500"
+                          isLocked ? "text-white/30" : isActive ? "text-emerald-400" : "text-white/60 group-hover:text-emerald-400"
                         )} />
                         {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
                         {isLocked && (!mounted || !isCollapsed) && <Lock className="w-3 h-3 text-silver/30" />}
@@ -306,7 +306,7 @@ export default function Navbar() {
                             "absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50",
                             isLocked
                               ? "bg-red-500 text-white"
-                              : "bg-foreground text-background dark:bg-white dark:text-black"
+                              : "bg-white text-black"
                           )}>
                             {link.label}{isLocked ? ' — UPGRADE' : ''}
                           </div>
@@ -324,17 +324,17 @@ export default function Navbar() {
         <div className="space-y-2.5 pt-2">
           {/* Telemetry status card */}
           {(!mounted || !isCollapsed) && (
-            <div className="p-3 bg-bg-surface border border-border-strong rounded-2xl space-y-2">
-              <div className="flex justify-between items-center text-[9px] font-mono text-silver/70">
+            <div className="p-3 bg-white/5 border border-white/10 rounded-2xl space-y-2">
+              <div className="flex justify-between items-center text-[9px] font-mono text-white/50">
                 <span className="font-extrabold tracking-wider">SYSTEM ACTIVE</span>
-                <span className="text-emerald-500 dark:text-emerald-400 font-bold flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 relative flex shrink-0">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
+                <span className="text-emerald-400 font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 relative flex shrink-0">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
                   </span>
                   99.9%
                 </span>
               </div>
-              <div className="h-1.5 w-full bg-bg-border rounded-full overflow-hidden border border-border-subtle">
+              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden border border-white/10">
                 <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 w-[92%] rounded-full" />
               </div>
             </div>
@@ -344,13 +344,13 @@ export default function Navbar() {
           <button
             onClick={toggleCollapse}
             className={cn(
-              "flex items-center justify-center rounded-xl border border-border-strong bg-bg-surface hover:bg-bg-hover text-silver hover:text-foreground transition-all cursor-pointer shadow-xs",
+              "flex items-center justify-center rounded-xl border border-white/15 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-all cursor-pointer shadow-xs",
               (mounted && isCollapsed) ? "w-10 h-10 mx-auto" : "w-full py-2.5 gap-2"
             )}
             aria-label={(mounted && isCollapsed) ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <PanelLeftClose className={cn("w-4 h-4 shrink-0 transition-transform duration-200 text-emerald-500 dark:text-emerald-400", (mounted && isCollapsed) && "rotate-180")} />
-            {(!mounted || !isCollapsed) && <span className="text-[9px] font-extrabold uppercase tracking-widest">Collapse Sidebar</span>}
+            <PanelLeftClose className={cn("w-4 h-4 shrink-0 transition-transform duration-200 text-emerald-400", (mounted && isCollapsed) && "rotate-180")} />
+            {(!mounted || !isCollapsed) && <span className="text-[9px] font-extrabold uppercase tracking-widest text-white/70">Collapse Sidebar</span>}
           </button>
         </div>
       </aside>
@@ -391,7 +391,7 @@ export default function Navbar() {
                 )}
                 
                 {/* Immersive Tooltip */}
-                <div className="absolute right-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background dark:bg-white dark:text-black text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-right shadow-xl pointer-events-none whitespace-nowrap">
+                <div className="absolute right-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-right shadow-xl pointer-events-none whitespace-nowrap">
                   {link.label}
                   {link.locked && " (LOCKED)"}
                 </div>
@@ -402,7 +402,6 @@ export default function Navbar() {
 
         {/* Bottom profile & settings elements */}
         <div className="flex flex-col items-center gap-4">
-          <ThemeToggle />
           <div className="scale-90">
             <UserButton />
           </div>
@@ -428,7 +427,7 @@ export default function Navbar() {
             <div className="scale-90 origin-right">
               <UserButton />
             </div>
-            <ThemeToggle />
+
             <button 
               onClick={() => setIsOpen(!isOpen)}
               className="text-foreground hover:text-foreground/85 transition-colors p-1.5 rounded-xl bg-bg-elevated border border-border-subtle cursor-pointer"
@@ -441,13 +440,13 @@ export default function Navbar() {
 
       {/* 4. MOBILE OVERLAY MENU */}
       <div className={cn(
-        "fixed inset-0 bg-background flex flex-col justify-between p-6 transition-all duration-500 lg:hidden z-[990]",
+        "fixed inset-0 bg-[#0a0a0c] flex flex-col justify-between p-6 transition-all duration-500 lg:hidden z-[990]",
         isOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
       )}>
         <div className="flex-1 flex flex-col justify-center gap-8 max-h-[75vh] overflow-y-auto w-full px-4 pt-16">
           {/* Core Workspaces Section */}
           <div className="space-y-4">
-            <p className="text-[9px] font-bold text-silver uppercase tracking-widest border-b border-border-default pb-2">Core Workspaces</p>
+            <p className="text-[9px] font-bold text-white/50 uppercase tracking-widest border-b border-white/10 pb-2">Core Workspaces</p>
             <div className="flex flex-col gap-3">
               {leftLinks.map((link) => {
                 const Icon = link.icon;
@@ -464,12 +463,12 @@ export default function Navbar() {
                     }}
                     className={cn(
                       "font-extrabold tracking-tight transition-all text-lg flex items-center gap-2.5",
-                      isTabActive(link.href) ? "text-foreground" : "text-silver hover:text-foreground"
+                      isTabActive(link.href) ? "text-white" : "text-white/60 hover:text-white"
                     )}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{link.label}</span>
-                    {link.locked && <Lock className="w-3.5 h-3.5 text-silver/40" />}
+                    {link.locked && <Lock className="w-3.5 h-3.5 text-white/30" />}
                   </Link>
                 );
               })}
@@ -477,8 +476,7 @@ export default function Navbar() {
           </div>
           
           {/* System Utilities Section */}
-          <div className="space-y-4">
-            <p className="text-[9px] font-bold text-silver uppercase tracking-widest border-b border-border-default pb-2">System Utilities</p>
+          <div className="space-y-4">                      <p className="text-[9px] font-bold text-white/50 uppercase tracking-widest border-b border-white/10 pb-2">System Utilities</p>
             <div className="flex flex-col gap-3">
               {rightLinks.map((link) => {
                 const Icon = link.icon;
@@ -498,12 +496,12 @@ export default function Navbar() {
                     }}
                     className={cn(
                       "font-extrabold tracking-tight transition-all text-base flex items-center gap-2.5",
-                      isTabActive(link.href) ? "text-foreground" : "text-silver hover:text-foreground"
+                      isTabActive(link.href) ? "text-white" : "text-white/60 hover:text-white"
                     )}
                   >
                     <Icon className="w-4.5 h-4.5" />
                     <span>{link.label}</span>
-                    {link.locked && <Lock className="w-3.5 h-3.5 text-silver/40" />}
+                    {link.locked && <Lock className="w-3.5 h-3.5 text-white/30" />}
                   </Link>
                 );
               })}
@@ -512,12 +510,12 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Footer */}
-        <div className="text-center w-full space-y-2 pb-6 border-t border-border-subtle pt-4">
+        <div className="text-center w-full space-y-2 pb-6 border-t border-white/10 pt-4">
           <Link href="/" className="inline-flex items-center gap-1.5">
-            <span className="font-black text-sm tracking-wide text-foreground">VOID</span>
+            <span className="font-black text-sm tracking-wide text-white">VOID</span>
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
           </Link>
-          <p className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-silver/60 uppercase">
+          <p className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-white/40 uppercase">
             AUTONOMOUS OS <span className="text-emerald-400/80 font-normal lowercase tracking-normal">by Aethyl</span>
           </p>
         </div>
