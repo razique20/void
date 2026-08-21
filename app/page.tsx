@@ -177,7 +177,7 @@ export default function LandingPage() {
                 {/* Headline — Left-aligned, large, no gradient */}
                 <motion.h1
                   variants={itemVariants}
-                  className="text-5xl sm:text-6xl lg:text-[68px] font-black tracking-tight leading-[1.05] text-white mb-6"
+                  className="text-5xl sm:text-6xl lg:text-[68px] font-black tracking-tight leading-[1.05] flow-text mb-6"
                 >
                   Hire an AI workforce
                   <br />
