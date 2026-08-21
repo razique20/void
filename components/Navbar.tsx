@@ -356,7 +356,7 @@ export default function Navbar() {
       </aside>
 
       {/* 2. RIGHT SLIM ACTION DOCK */}
-      <aside style={{ viewTransitionName: 'site-dock' }} className="fixed top-0 right-0 h-full w-16 border-l border-border-default bg-bg-subtle backdrop-blur-xl z-40 hidden lg:flex flex-col p-3 py-6 items-center justify-between select-none">
+      <aside style={{ viewTransitionName: 'site-dock' }} className="fixed top-0 right-0 h-full w-16 border-l border-border-default bg-bg-subtle z-40 hidden lg:flex flex-col p-3 py-6 items-center justify-between select-none">
 
         {/* Center Icons Menu with Tooltips */}
         <nav className="flex flex-col gap-3">
@@ -402,13 +402,17 @@ export default function Navbar() {
 
         {/* Bottom profile & settings elements */}
         <div className="flex flex-col items-center gap-4">
-          <NotificationBell />
           <ThemeToggle />
           <div className="scale-90">
             <UserButton />
           </div>
         </div>
       </aside>
+
+      {/* Notification Bell — rendered outside the aside so its dropdown isn't clipped */}
+      <div className="fixed bottom-[164px] right-0 w-16 z-50 hidden lg:flex justify-center">
+        <NotificationBell />
+      </div>
 
       {/* 3. MOBILE HEADER (lg:hidden fallback) */}
       <nav style={{ viewTransitionName: 'site-mobile-nav' }} className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3 border-b lg:hidden bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]">
