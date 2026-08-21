@@ -24,7 +24,7 @@ import {
   Shield,
   ChevronRight
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';
 
@@ -221,43 +221,73 @@ export default function CredentialsPage() {
 
   const activeTabData = tabs.find(t => t.id === activeTab);
 
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.04 },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 8 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { type: 'spring', stiffness: 400, damping: 30 },
+    },
+  };
+
   return (
-    <div className="max-w-5xl mx-auto space-y-8 text-foreground transition-all duration-300 relative pb-10">
-      {/* Facebook SDK */}
-      <Script
-        src="https://connect.facebook.net/en_US/sdk.js"
-        strategy="lazyOnload"
-        onLoad={initFacebookSDK}
-      />
+    <div className="flex flex-1 overflow-hidden pt-20">
+      <div className="flex flex-1 flex-col overflow-hidden relative">
+        {/* Facebook SDK */}
+        <Script
+          src="https://connect.facebook.net/en_US/sdk.js"
+          strategy="lazyOnload"
+          onLoad={initFacebookSDK}
+        />
 
-      {/* Background Ambience */}
-      <div className="absolute top-[-5%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[20%] right-[-10%] w-[30%] h-[30%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
+        {/* Dot grid & ambient glows (matching training/dashboard) */}
+        <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-[0.04] pointer-events-none" />
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
-      {Toast}
+        {Toast}
 
-      {/* Header Banner */}
-      <div className="relative overflow-hidden bg-bg-subtle-alt rounded-[28px] p-7 md:p-10 border border-border-default flex flex-col md:flex-row items-center justify-between gap-6 group backdrop-blur-md">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-apple-blue/5 rounded-full blur-[100px] pointer-events-none group-hover:bg-apple-blue/8 transition-colors" />
-        <div className="space-y-3 max-w-xl text-center md:text-left relative z-10">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-bg-elevated border border-border-default rounded-lg text-[9px] font-bold uppercase tracking-widest text-silver">
-            <Shield className="w-3 h-3 text-apple-blue" />
-            Integrations &amp; Setup Center
-          </div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight leading-none text-foreground">
-            Developer Credentials.
-          </h1>
-          <p className="text-silver text-xs font-medium leading-relaxed">
-            Configure external messaging channels, email protocols, scheduling platforms, and automated workflow triggers.
-          </p>
-        </div>
-        <div className="w-16 h-16 bg-bg-active rounded-2xl flex items-center justify-center border border-border-default shrink-0 group-hover:scale-105 transition-transform duration-300 relative z-10">
-          <Key className="w-8 h-8 text-silver" />
-        </div>
-      </div>
+        <main className="flex-1 overflow-y-auto px-4 md:px-12 py-8 md:py-10 pb-24 md:pb-10 relative z-10">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="max-w-7xl mx-auto space-y-8"
+          >
 
-      {/* Tab Selector */}
-      <div className="flex flex-wrap p-1 bg-bg-elevated rounded-xl border border-border-default gap-1 relative z-10">
+            {/* Header Row (matching dashboard/training) */}
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-border-default pb-6"
+            >
+              <div className="space-y-1">
+                <div className="flex items-center gap-3">
+                  <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
+                    Credentials & Integrations
+                  </h1>
+                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-500/15 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 relative flex shrink-0">
+                      <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
+                    </span>
+                    <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Setup Center</span>
+                  </div>
+                </div>
+                <p className="text-silver text-xs font-medium">
+                  Configure external messaging channels, email protocols, scheduling platforms, and automated workflow triggers.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Tab Selector */}
+            <motion.div variants={itemVariants} className="flex flex-wrap p-1 bg-bg-elevated rounded-xl border border-border-default gap-1">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -277,17 +307,17 @@ export default function CredentialsPage() {
             </button>
           );
         })}
-      </div>
+            </motion.div>
 
-      {/* Tab Panels */}
-      <div className="bg-bg-subtle-alt border border-border-default rounded-[28px] p-6 md:p-8 shadow-sm relative min-h-[380px] backdrop-blur-md z-10">
+            {/* Tab Panel (matching dashboard card style) */}
+            <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 relative min-h-[380px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
           >
             {activeTab === 'calcom' && (
               <div className="space-y-6">
@@ -515,6 +545,10 @@ export default function CredentialsPage() {
             )}
           </motion.div>
         </AnimatePresence>
+      </motion.div>
+
+          </motion.div>
+        </main>
       </div>
     </div>
   );

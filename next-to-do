@@ -1,6 +1,6 @@
 # VOID Platform — System Audit & Next Steps
 
-Last updated: August 20, 2026
+Last updated: August 21, 2026
 
 ---
 
@@ -8,11 +8,11 @@ Last updated: August 20, 2026
 
 ### 1. Pages that need redesign to match the dashboard/training premium style
 These pages still use older, less polished layouts:
-- **`/create-worker`** — Blueprint wizard is functional but visually heavier and inconsistent with the clean bento layout of `/training` and `/dashboard`. Needs a modern card-based stepper with consistent spacing, rounded-2xl borders, and the same framer-motion spring animations.
-- **`/billing`** — Uses `bg-background/45 backdrop-blur-xl` Navbar wrapper differently. The plan selector card styling is good but the overall page structure needs the same bento grid pattern as the dashboard.
-- **`/dashboard/live`** (Mission Control) — The 3-panel layout (sidebar + chat + memory drawer) works but uses slightly different card styling (`bg-foreground/[0.015]`) than the main dashboard (`bg-foreground/[0.01]`). Need to unify the opacity tokens.
-- **`/dashboard/support`** — Simplistic compared to other pages. Missing the consistent ambient glows, bento grid, and refined stats strip pattern. The ticket list cards use `rounded-[28px]` which doesn't match the `rounded-2xl` used elsewhere.
-- **`/dashboard/credentials`** — Uses a different background card radius (`rounded-[28px]`) and different header banner pattern than the standard bento approach. Tab styling is functional but the overall feel is disconnected.
+- **`/create-worker`** — ✅ **Redesigned.** Replaced dense header with clean dashboard-style header + live status pill. Added visual stepper progress bar. Standardized all cards to `bg-bg-subtle border border-border-default rounded-2xl`. Removed `backdrop-blur-3xl`. Updated spring animations to `stiffness: 400, damping: 30`. Added `AnimatePresence` enter/exit transitions for conditional steps. Right preview panel uses consistent card styling. Ambient glows and dot grid added.
+- **`/billing`** — ✅ **Redesigned.** Added dot grid + ambient glow overlays. Replaced header with dashboard-style `h1` + live plan status pill + subtitle. Converted layout to 12-col bento grid (5/12 left selector, 7/12 right detail). All cards now `bg-bg-subtle border border-border-default rounded-2xl`. Removed `backdrop-blur-3xl` and `rounded-[28px]` from detail card. Added `containerVariants`/`itemVariants` with `stiffness: 400, damping: 30`. Fleet Capacity card uses consistent stats row pattern. Updated loading skeleton to match new layout.
+- **`/dashboard/live`** (Mission Control) — ✅ **Redesigned.** Added dot grid overlay + ambient glows matching training/dashboard. Sidebar header replaced with dashboard-style h1 + live status pill + subtitle. Removed `backdrop-blur-md` from sidebar, `bg-background/40 backdrop-blur-xl` from center panel header. Right drawer uses consistent card styling. Locked state uses standard empty-state pattern. Spring animation updated to `stiffness: 400, damping: 30`. Loading skeleton updated.
+- **`/dashboard/support`** — ✅ **Redesigned.** Added outer flex wrapper + dot grid + ambient glows. Replaced old badge header with dashboard-style h1 + status pill + subtitle. Stats strip uses `gap-px bg-bg-active rounded-2xl` pattern. Converted to 12-col bento grid (8/12 tickets, 4/12 support info). All cards `bg-bg-subtle rounded-2xl` (was `bg-bg-subtle-alt rounded-[28px] backdrop-blur-md`). Added right column with Support Status telemetry, Quick Resources links, and urgent help info card. Spring animations updated to `stiffness: 400, damping: 30`. Empty state uses standard dashed border pattern.
+- **`/dashboard/credentials`** — ✅ **Redesigned.** Added outer flex wrapper + dot grid + ambient glows. Replaced header banner (`rounded-[28px] backdrop-blur-md`) with dashboard-style h1 + live status pill + subtitle. Tab panel changed from `rounded-[28px] backdrop-blur-md` to `rounded-2xl`. Added `containerVariants`/`itemVariants` with `stiffness: 400, damping: 30`. Max-width updated from `5xl` to `7xl`. Tab animation updated to spring.
 - **`/dashboard/profile`** — Need to verify consistency with the modernized bento pattern.
 - **`/admin`** — Uses older card patterns (`rounded-[32px]`, `bg-foreground/5`) that don't match the current design system (`bg-foreground/[0.01]`, `rounded-2xl`).
 
@@ -147,7 +147,7 @@ These pages still use older, less polished layouts:
 
 ## 📋 EXISTING TODO ITEMS (from original next-to-do — retained)
 
-31. Redesign `/create-worker`, `/billing`, `/dashboard/live`, `/dashboard/credentials`, and `/dashboard/support` to match `/training` and `/dashboard` style ✅ (covered in items 1-7 above)
+31. Redesign `/create-worker`, `/billing`, `/dashboard/live`, `/dashboard/credentials`, and `/dashboard/support` to match `/training` and `/dashboard` style ✅ **All 5 pages completed**: `/create-worker`, `/billing`, `/dashboard/live`, `/dashboard/credentials`, `/dashboard/support` (covered in items 1-7 above)
 
 32. Shift the navbar menu to left and right side of the screen based on best UX experience ✅ (already implemented as dual sidebar system — review for further optimization)
 
@@ -173,4 +173,6 @@ These pages still use older, less polished layouts:
 
 ---
 
-*Generated by system audit — 42 actionable items identified (12 completed ✅)*
+*Last updated: August 21, 2026 — /dashboard/support redesign completed (item 31 fully done!)*
+
+*Generated by system audit — 42 actionable items identified (17 completed ✅)*
