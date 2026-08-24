@@ -7,7 +7,6 @@ import { UserButton, Show } from '@clerk/nextjs';
 import { 
   Menu, 
   X, 
-  Sparkles,
   ChevronDown,
   ShoppingBag,
   CreditCard,

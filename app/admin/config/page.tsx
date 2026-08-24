@@ -149,7 +149,7 @@ export default function NeuralConfigPage() {
             </div>
             <div className="space-y-2">
               <label className="text-xs font-bold text-silver uppercase tracking-widest">Models (CSV)</label>
-              <textarea name="models" required placeholder="llama-3.3-70b-versatile, llama-3.1-8b-instant" className="w-full bg-foreground/5 rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-foreground/20 outline-none transition-all h-24 text-foreground placeholder:text-silver/30" />
+              <textarea name="models" required placeholder="openai/gpt-oss-20b, openai/gpt-oss-120b" className="w-full bg-foreground/5 rounded-xl px-4 py-3 text-sm focus:ring-1 focus:ring-foreground/20 outline-none transition-all h-24 text-foreground placeholder:text-silver/30" />
             </div>
             <button className="w-full py-4 bg-foreground text-background font-bold rounded-xl hover:opacity-90 transition-opacity">
               Inject Provider

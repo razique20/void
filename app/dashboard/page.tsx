@@ -16,7 +16,6 @@ import {
   ChevronRight,
   Trash2,
   Search,
-  Sparkles,
   RefreshCw,
   Cpu,
   Wifi,
@@ -374,7 +373,7 @@ export default function DashboardPage() {
                   <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Activity</h3>
                   <p className="text-[10px] text-silver/60 font-medium mt-0.5">7-day interaction volume</p>
                 </div>
-                <Sparkles className="w-3.5 h-3.5 text-silver/40" />
+                <Cpu className="w-3.5 h-3.5 text-silver/40" />
               </div>
 
               <div className="h-40 w-full">

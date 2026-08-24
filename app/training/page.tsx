@@ -19,7 +19,6 @@ import {
   ChevronRight,
   MessageSquare,
   Info,
-  Sparkles,
   Check,
   Cpu,
   Search,
@@ -308,7 +307,7 @@ export default function TrainingPage() {
                   <span className="text-lg font-bold text-foreground">{isRefreshing ? '—' : stat.value}</span>
                   {stat.trend && (
                     <span className="text-[9px] font-bold text-purple-500 flex items-center gap-0.5">
-                      <Sparkles className="w-2.5 h-2.5" />
+                      <Cpu className="w-2.5 h-2.5" />
                       {stat.trend}
                     </span>
                   )}
@@ -666,7 +665,7 @@ export default function TrainingPage() {
                 <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-4">
                   <div className="flex justify-between items-center">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Vector Telemetry</h3>
-                    <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+                    <Cpu className="w-3.5 h-3.5 text-purple-500" />
                   </div>
 
                   <div className="space-y-3">

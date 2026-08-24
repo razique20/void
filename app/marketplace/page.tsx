@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingBag, Zap, Mic, Sparkles, Lock, ArrowRight, Bot, Globe, ShieldCheck, Database, Circle, Search, Layers, Crown, Star } from 'lucide-react';
+import { ShoppingBag, Zap, Mic, Lock, ArrowRight, Bot, Globe, ShieldCheck, Database, Circle, Search, Layers, Crown, Star } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';

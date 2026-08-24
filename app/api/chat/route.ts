@@ -154,7 +154,7 @@ When a user asks for a task matching these descriptions, you MUST include the [A
 
     // 6. Dynamic Provider Selection
     let apiKey = process.env.GROQ_API_KEY;
-    let modelName = 'llama-3.3-70b-versatile';
+    let modelName = 'openai/gpt-oss-20b';
 
     const activeProvider = await AIProvider.findOne({ isActive: true, isDefault: true });
     if (activeProvider) {

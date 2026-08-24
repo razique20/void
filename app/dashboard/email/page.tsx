@@ -13,7 +13,7 @@ import {
   ChevronLeft, 
   ChevronRight, 
   Loader2, 
-  Sparkles, 
+
   Check, 
   CheckCircle, 
   RefreshCw, 
@@ -24,7 +24,8 @@ import {
   Settings,
   X,
   User,
-  ArrowLeft
+  ArrowLeft,
+  Cpu
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -872,7 +873,7 @@ export default function EmailWorkspacePage() {
               <div className="border border-purple-500/15 bg-purple-500/[0.02] rounded-[28px] p-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-purple-500 animate-pulse" />
+                    <Cpu className="w-4 h-4 text-purple-500 animate-pulse" />
                     <h3 className="text-xs font-bold text-purple-500 dark:text-purple-400 uppercase tracking-widest">Neural AI Assistant</h3>
                   </div>
                   {aiLoading && <Loader2 className="w-3.5 h-3.5 text-purple-500 animate-spin" />}
@@ -947,7 +948,7 @@ export default function EmailWorkspacePage() {
                     disabled={aiLoading}
                     className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-purple-500 hover:bg-purple-500/15 rounded-lg transition-colors cursor-pointer"
                   >
-                    <Sparkles className="w-3.5 h-3.5" />
+                    <Cpu className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -1161,7 +1162,7 @@ export default function EmailWorkspacePage() {
 
                 {detectedProviderName && (
                   <div className="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-500 dark:text-purple-300 rounded-xl text-[10px] font-bold flex items-start gap-2.5">
-                    <Sparkles className="w-3.5 h-3.5 mt-0.5 shrink-0 animate-pulse" />
+                    <Cpu className="w-3.5 h-3.5 mt-0.5 shrink-0 animate-pulse" />
                     <div>
                       <p className="font-extrabold uppercase tracking-wider">Settings Detected ({detectedProviderName})</p>
                       <p className="font-medium mt-0.5 opacity-90 leading-relaxed">

@@ -14,7 +14,6 @@ import {
   ExternalLink,
   Terminal,
   HelpCircle,
-  Sparkles,
   Link2,
   Circle,
   Loader2,
@@ -52,6 +51,50 @@ export default function CredentialsPage() {
   const [savingWhatsapp, setSavingWhatsapp] = useState(false);
   const [fbSdkReady, setFbSdkReady] = useState(false);
   const [fbLoggingIn, setFbLoggingIn] = useState(false);
+
+  // Telegram webhook state
+  const [tgOperatives, setTgOperatives] = useState<{ _id: string; name: string }[]>([]);
+  const [tgSelectedOperative, setTgSelectedOperative] = useState('');
+  const [tgRegistering, setTgRegistering] = useState(false);
+  const [tgWebhookStatus, setTgWebhookStatus] = useState<{ ok: boolean; message: string } | null>(null);
+
+  // Fetch operatives for Telegram webhook registration
+  useEffect(() => {
+    fetch('/api/workers')
+      .then((r) => r.json())
+      .then((data) => {
+        const workers = Array.isArray(data) ? data : data.workers || [];
+        setTgOperatives(workers.map((w: any) => ({ _id: w._id, name: w.name })));
+        if (workers.length > 0) setTgSelectedOperative(workers[0]._id);
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleRegisterTgWebhook = async () => {
+    if (!tgSelectedOperative) return;
+    setTgRegistering(true);
+    setTgWebhookStatus(null);
+    try {
+      const res = await fetch('/api/webhooks/telegram/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ workerId: tgSelectedOperative }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setTgWebhookStatus({ ok: true, message: data.message || 'Webhook registered!' });
+        showToast('Telegram webhook registered successfully', 'success');
+      } else {
+        setTgWebhookStatus({ ok: false, message: data.error || 'Failed to register webhook' });
+        showToast(data.error || 'Failed to register webhook', 'error');
+      }
+    } catch (err: any) {
+      setTgWebhookStatus({ ok: false, message: err.message || 'Network error' });
+      showToast('Failed to register webhook', 'error');
+    } finally {
+      setTgRegistering(false);
+    }
+  };
 
   const initFacebookSDK = useCallback(() => {
     window.fbAsyncInit = function () {
@@ -407,23 +450,58 @@ export default function CredentialsPage() {
 
                   <div className="bg-bg-surface border border-border-default rounded-2xl p-5 space-y-4">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver flex items-center gap-1.5">
-                      <Terminal className="w-3.5 h-3.5 text-sky-400" />
-                      Webhook Binding Shell Hook
+                      <Link2 className="w-3.5 h-3.5 text-sky-400" />
+                      Webhook Registration
                     </h3>
                     <p className="text-xs text-silver/70 leading-relaxed font-medium">
-                      Telegram webhooks must be manually bound using this API handshake request:
+                      Select an operative and register its webhook with Telegram. This happens automatically when you save from the Channels page, but you can re-register manually here.
                     </p>
-                    <div className="p-3.5 bg-background border border-border-default rounded-xl font-mono text-[10px] flex items-start justify-between gap-3 relative pt-8">
-                      <pre className="text-silver leading-relaxed overflow-x-auto whitespace-pre-wrap flex-1 text-[9px]">
-                        {`curl -F "url=https://void-rho-navy.vercel.app/api/webhooks/telegram?id=OPERATIVE_ID" https://api.telegram.org/bot<TOKEN>/setWebhook`}
-                      </pre>
-                      <button
-                        onClick={() => copyToClipboard('curl -F "url=https://void-rho-navy.vercel.app/api/webhooks/telegram?id=OPERATIVE_ID" https://api.telegram.org/bot<TOKEN>/setWebhook', 'tg_curl')}
-                        className="p-1.5 hover:bg-bg-hover border border-border-default rounded-lg shrink-0 absolute right-2.5 top-2.5 transition-colors cursor-pointer"
+
+                    <div className="space-y-3">
+                      <select
+                        value={tgSelectedOperative}
+                        onChange={(e) => setTgSelectedOperative(e.target.value)}
+                        className="w-full bg-background border border-border-default rounded-xl px-3 py-2.5 text-xs text-foreground outline-none focus:ring-1 focus:ring-sky-500/30"
                       >
-                        {copiedText === 'tg_curl' ? <Check className="w-3 h-3 text-sky-500" /> : <Copy className="w-3 h-3 text-silver/60" />}
+                        {tgOperatives.length === 0 && <option value="">No operatives found</option>}
+                        {tgOperatives.map((op) => (
+                          <option key={op._id} value={op._id}>{op.name}</option>
+                        ))}
+                      </select>
+
+                      <button
+                        onClick={handleRegisterTgWebhook}
+                        disabled={tgRegistering || !tgSelectedOperative}
+                        className={cn(
+                          'w-full px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer',
+                          tgRegistering
+                            ? 'bg-sky-500/20 text-sky-400 cursor-wait'
+                            : 'bg-sky-500 text-white hover:bg-sky-600'
+                        )}
+                      >
+                        {tgRegistering ? (
+                          <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Registering...</>
+                        ) : (
+                          <><Link2 className="w-3.5 h-3.5" /> Register Webhook</>
+                        )}
                       </button>
+
+                      {tgWebhookStatus && (
+                        <div className={cn(
+                          'p-3 rounded-xl text-xs font-medium flex items-start gap-2',
+                          tgWebhookStatus.ok
+                            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                            : 'bg-red-500/10 text-red-500 border border-red-500/20'
+                        )}>
+                          {tgWebhookStatus.ok ? <Check className="w-3.5 h-3.5 mt-0.5 shrink-0" /> : <Circle className="w-3.5 h-3.5 mt-0.5 shrink-0" />}
+                          <span>{tgWebhookStatus.message}</span>
+                        </div>
+                      )}
                     </div>
+
+                    <p className="text-[10px] text-silver/40 font-medium">
+                      Tip: Make sure NEXT_PUBLIC_APP_URL is set to your public domain (not localhost).
+                    </p>
                   </div>
                 </div>
               </div>

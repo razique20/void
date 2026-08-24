@@ -119,7 +119,7 @@ export async function POST(req: Request) {
         const { routeToOperative } = await import('@/lib/router');
         
         let apiKey = process.env.GROQ_API_KEY;
-        let modelName = 'llama-3.3-70b-versatile';
+        let modelName = 'openai/gpt-oss-20b';
         const activeProvider = await AIProvider.findOne({ isActive: true, isDefault: true });
         if (activeProvider) {
           apiKey = activeProvider.apiKey;
@@ -277,7 +277,7 @@ Once all conditions are met, execute the action by including the exact tag in yo
 
     // 5. Dynamic AI Provider
     let apiKey = process.env.GROQ_API_KEY;
-    let modelName = 'llama-3.3-70b-versatile';
+    let modelName = 'openai/gpt-oss-20b';
 
     const activeProvider = await AIProvider.findOne({ isActive: true, isDefault: true });
     if (activeProvider) {

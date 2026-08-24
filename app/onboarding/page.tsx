@@ -14,8 +14,9 @@ import {
   Store,
   Home,
   Hotel,
-  Sparkles,
+  Heart,
   User,
+  Cpu,
   Check,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -42,7 +43,7 @@ const INDUSTRIES = [
 
 const TONES = [
   { id: 'professional', label: 'Professional', icon: User },
-  { id: 'friendly', label: 'Friendly', icon: Sparkles },
+  { id: 'friendly', label: 'Friendly', icon: Heart },
   { id: 'witty', label: 'Witty', icon: Bot },
   { id: 'concise', label: 'Concise', icon: Check },
 ];
@@ -427,8 +428,7 @@ export default function OnboardingPage() {
                   className="text-center space-y-8 py-8"
                 >
                   <div className="relative mx-auto w-24 h-24">
-                    <div className="w-24 h-24 bg-apple-blue/15 rounded-2xl flex items-center justify-center">
-                      <Sparkles className="w-12 h-12 text-apple-blue animate-pulse" />
+                    <div className="w-24 h-24 bg-apple-blue/15 rounded-2xl flex items-center justify-center">                       <Cpu className="w-12 h-12 text-apple-blue" />
                     </div>
                     <div className="absolute inset-0 border-2 border-apple-blue/20 rounded-2xl animate-ping opacity-30" />
                   </div>
@@ -477,7 +477,6 @@ export default function OnboardingPage() {
                       <div className="grid grid-cols-2 gap-2.5">
                         {TONES.map(t => {
                           const isSelected = state.agentTone === t.id;
-                          const ToneIcon = t.icon;
                           return (
                             <button
                               key={t.id}
@@ -489,7 +488,6 @@ export default function OnboardingPage() {
                                   : 'bg-bg-surface border-border-default hover:bg-bg-hover text-foreground hover:border-border-hover dark:hover:border-white/[0.1]'
                               )}
                             >
-                              <ToneIcon className={cn('w-4 h-4 mb-2', isSelected ? 'text-background' : 'text-silver')} />
                               <div className="text-xs font-bold">{t.label}</div>
                             </button>
                           );

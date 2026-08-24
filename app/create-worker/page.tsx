@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import {
   Bot,
   Loader2,
-  Sparkles,
   Zap,
   Shield,
   Cpu,
@@ -483,7 +482,7 @@ export default function CreateWorkerPage() {
 
   const tones = [
     { id: 'professional', label: 'Professional', desc: 'Formal & Polished', icon: Shield, color: 'text-emerald-500' },
-    { id: 'friendly', label: 'Friendly', desc: 'Warm & Accessible', icon: Sparkles, color: 'text-amber-500' },
+    { id: 'friendly', label: 'Friendly', desc: 'Warm & Accessible', icon: Zap, color: 'text-amber-500' },
     { id: 'witty', label: 'Witty', desc: 'Sharp & Engaging', icon: Zap, color: 'text-sky-500' },
     { id: 'concise', label: 'Concise', desc: 'Fast & Direct', icon: Cpu, color: 'text-purple-500' },
   ];
@@ -614,8 +613,7 @@ export default function CreateWorkerPage() {
                 <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 space-y-4">
                   <div className="flex justify-between items-center">
                     <div>
-                      <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-2">
-                        <Sparkles className="w-3.5 h-3.5 text-apple-blue" />
+                      <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-2">                         <Cpu className="w-3.5 h-3.5 text-apple-blue" />
                         Sector Framework
                       </h2>
                       <p className="text-[10px] text-silver/60 font-medium mt-0.5">
@@ -627,37 +625,26 @@ export default function CreateWorkerPage() {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                     {filteredDepartments.map((dept) => {
                       const isSelected = selectedDepartment === dept.id;
-                      const DeptIcon = dept.icon;
                       return (
                         <button
                           key={dept.id}
                           type="button"
                           onClick={() => handleDepartmentSelect(dept.id)}
                           className={cn(
-                            'p-4 rounded-xl text-left transition-all border flex flex-col justify-between gap-3 min-h-[98px] cursor-pointer',
+                            'p-4 rounded-xl text-left transition-all border cursor-pointer',
                             isSelected
                               ? 'bg-foreground text-background border-transparent shadow-md'
                               : 'bg-bg-subtle-alt border-border-default hover:bg-bg-active text-foreground hover:border-border-hover dark:hover:border-white/[0.1]'
                           )}
                         >
+                          <div className="text-xs font-bold truncate">{dept.label}</div>
                           <div
                             className={cn(
-                              'w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border transition-all',
-                              isSelected ? 'bg-background/25 border-background/20' : 'bg-bg-elevated border-border-default'
+                              'text-[9px] font-medium mt-0.5 truncate',
+                              isSelected ? 'text-background/70' : 'text-silver/60'
                             )}
                           >
-                            <DeptIcon className={cn('w-3.5 h-3.5', isSelected ? 'text-background' : dept.color)} />
-                          </div>
-                          <div>
-                            <div className="text-xs font-bold truncate">{dept.label}</div>
-                            <div
-                              className={cn(
-                                'text-[9px] font-medium mt-0.5 truncate',
-                                isSelected ? 'text-background/70' : 'text-silver/60'
-                              )}
-                            >
-                              {dept.desc}
-                            </div>
+                            {dept.desc}
                           </div>
                         </button>
                       );
@@ -854,30 +841,26 @@ export default function CreateWorkerPage() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {tones.map((t) => {
                       const isSelected = formData.tone === t.id;
-                      const Icon = t.icon;
                       return (
                         <button
                           key={t.id}
                           type="button"
                           onClick={() => setFormData({ ...formData, tone: t.id })}
                           className={cn(
-                            'p-3.5 rounded-xl text-left transition-all border flex flex-col gap-3 cursor-pointer',
+                            'p-4 rounded-xl text-left transition-all border cursor-pointer',
                             isSelected
                               ? 'bg-foreground text-background border-transparent shadow-sm'
                               : 'bg-bg-subtle-alt border-border-default hover:bg-bg-active text-foreground hover:border-border-hover dark:hover:border-white/[0.1]'
                           )}
                         >
-                          <Icon className={cn('w-4 h-4', isSelected ? 'text-background' : t.color)} />
-                          <div>
-                            <div className="text-xs font-bold">{t.label}</div>
-                            <div
-                              className={cn(
-                                'text-[9px] font-medium mt-0.5',
-                                isSelected ? 'text-background/70' : 'text-silver/60'
-                              )}
-                            >
-                              {t.desc}
-                            </div>
+                          <div className="text-xs font-bold">{t.label}</div>
+                          <div
+                            className={cn(
+                              'text-[9px] font-medium mt-0.5',
+                              isSelected ? 'text-background/70' : 'text-silver/60'
+                            )}
+                          >
+                            {t.desc}
                           </div>
                         </button>
                       );

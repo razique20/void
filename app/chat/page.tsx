@@ -11,7 +11,6 @@ import {
   Copy, 
   Circle, 
   ChevronDown, 
-  Sparkles, 
   Check,
   Search,
   MessageSquare,
@@ -19,13 +18,13 @@ import {
   BookOpen,
   Shield,
   Zap,
+  Cpu,
   BrainCircuit,
   Layers,
   Mail,
   Calendar,
   UserCheck,
   Trash2,
-  Cpu,
   CornerDownLeft,
   Info,
   Plus
@@ -450,7 +449,7 @@ export default function ChatPage() {
                                   onClick={() => handleSend(undefined, prompt)}
                                   className="p-3 bg-bg-surface hover:bg-bg-active border border-border-default rounded-xl text-left text-[11px] font-medium text-silver hover:text-foreground transition-all flex items-start gap-2 group"
                                 >
-                                  <Sparkles className="w-3 h-3 text-apple-blue shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                                  <Zap className="w-3 h-3 text-apple-blue shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
                                   <span className="line-clamp-2">{prompt}</span>
                                 </button>
                               ))}

@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
     // 2. Load the dynamic Groq client configurations
     let apiKey = process.env.GROQ_API_KEY;
-    let modelName = 'llama-3.3-70b-versatile';
+    let modelName = 'openai/gpt-oss-20b';
 
     const activeProvider = await AIProvider.findOne({ isActive: true, isDefault: true });
     if (activeProvider) {

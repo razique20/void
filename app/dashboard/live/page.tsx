@@ -20,7 +20,6 @@ import {
   Info,
   Mail,
   Zap,
-  Sparkles,
   Search,
   Layers,
   Shield,
@@ -443,7 +442,7 @@ export default function LiveChatPage() {
                           </>
                         ) : (
                           <>
-                            <Sparkles className="w-3.5 h-3.5" />
+                            <Zap className="w-3.5 h-3.5" />
                             Autopilot Running
                           </>
                         )}
@@ -540,7 +539,7 @@ export default function LiveChatPage() {
                       <div className="absolute inset-0 bg-background/60 dark:bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-30 transition-all">
                         <div className="p-4 bg-background border border-border-strong rounded-2xl shadow-xl flex flex-col sm:flex-row items-center gap-3.5 max-w-md text-center sm:text-left">
                           <div className="w-10 h-10 bg-purple-500/10 border border-purple-500/20 rounded-xl flex items-center justify-center shrink-0">
-                            <Sparkles className="w-5 h-5 text-purple-500" />
+                            <Zap className="w-5 h-5 text-purple-500" />
                           </div>
                           <div className="space-y-1">
                             <h4 className="font-bold text-xs text-foreground">AI Autopilot Running</h4>

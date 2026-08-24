@@ -6,7 +6,6 @@ import {
   Check,
   Loader2,
   CreditCard,
-  Sparkles,
   MessageCircle,
   Shield,
   Zap,

@@ -15,11 +15,13 @@ import {
   X, 
   Hash, 
   Lock, 
-  Sparkles, 
   Activity, 
   Globe, 
   ArrowLeft,
-  ChevronRight
+  ChevronRight,
+  Link2,
+  Check,
+  Circle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useParams, useRouter } from 'next/navigation';
@@ -256,7 +258,7 @@ export default function ChannelsPage() {
                     Neural Configuration.
                   </h1>
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-apple-blue/10 border border-apple-blue/10 rounded-full text-[9px] font-bold text-apple-blue uppercase tracking-widest">
-                    <Sparkles className="w-2.5 h-2.5" /> {operative.name}
+                    {operative.name}
                   </span>
                 </div>
                 <p className="text-silver text-sm font-medium">
@@ -321,13 +323,13 @@ export default function ChannelsPage() {
                           <div className="flex items-center gap-2 font-bold uppercase tracking-wider text-[10px]">
                             {hasSmartRouting ? (
                               <>
-                                <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
-                                🧠 Smart Routing Active
+                                <Activity className="w-3.5 h-3.5 text-emerald-500" />
+                                Smart Routing Active
                               </>
                             ) : (
                               <>
                                 <Activity className="w-3.5 h-3.5 text-amber-500" />
-                                ⚠️ Smart Routing Inactive
+                                Smart Routing Inactive
                               </>
                             )}
                           </div>
@@ -455,17 +457,25 @@ export default function ChannelsPage() {
                         <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500" />
                       </label>
                     </div>
-                    <div className={cn("p-6 bg-bg-subtle space-y-2", !hasTelegram && "pointer-events-none opacity-50")}>
-                      <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot Token</label>
-                      <input 
-                        name="tg_token" 
-                        disabled={!hasTelegram}
-                        defaultValue={operative.channels?.telegram?.token}
-                        type="password"
-                        autoComplete="new-password"
-                        placeholder="123456789:ABCdefGhIjkLmNoPq..."
-                        className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-sky-500 focus:outline-none text-foreground"
-                      />
+                    <div className={cn("p-6 bg-bg-subtle space-y-3", !hasTelegram && "pointer-events-none opacity-50")}>
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot Token</label>
+                        <input 
+                          name="tg_token" 
+                          disabled={!hasTelegram}
+                          defaultValue={operative.channels?.telegram?.token}
+                          type="password"
+                          autoComplete="new-password"
+                          placeholder="123456789:ABCdefGhIjkLmNoPq..."
+                          className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-sky-500 focus:outline-none text-foreground"
+                        />
+                      </div>
+
+                      {operative.channels?.telegram?.token && (
+                        <div className="pt-2 border-t border-border-default space-y-2">
+                          <TelegramWebhookButton workerId={operative._id} />
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -805,6 +815,67 @@ export default function ChannelsPage() {
             </form>
           </div>
         </main>
+    </div>
+  );
+}
+
+function TelegramWebhookButton({ workerId }: { workerId: string }) {
+  const [registering, setRegistering] = useState(false);
+  const [status, setStatus] = useState<{ ok: boolean; message: string } | null>(null);
+
+  const handleRegister = async () => {
+    setRegistering(true);
+    setStatus(null);
+    try {
+      const res = await fetch('/api/webhooks/telegram/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ workerId }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setStatus({ ok: true, message: data.message || 'Webhook registered!' });
+      } else {
+        setStatus({ ok: false, message: data.error || 'Failed to register' });
+      }
+    } catch (err: any) {
+      setStatus({ ok: false, message: err.message || 'Network error' });
+    } finally {
+      setRegistering(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <button
+        type="button"
+        onClick={handleRegister}
+        disabled={registering}
+        className={cn(
+          'w-full px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer',
+          registering
+            ? 'bg-sky-500/20 text-sky-400 cursor-wait'
+            : 'bg-sky-500/10 text-sky-500 border border-sky-500/20 hover:bg-sky-500/20'
+        )}
+      >
+        {registering ? (
+          <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Registering...</>
+        ) : (
+          <><Link2 className="w-3.5 h-3.5" /> Register Webhook</>
+        )}
+      </button>
+
+      {status && (
+        <div className={cn(
+          'p-2.5 rounded-xl text-[10px] font-medium flex items-start gap-2',
+          status.ok
+            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+            : 'bg-red-500/10 text-red-500 border border-red-500/20'
+        )}>
+          {status.ok ? <Check className="w-3 h-3 mt-0.5 shrink-0" /> : <Circle className="w-3 h-3 mt-0.5 shrink-0" />}
+          <span>{status.message}</span>
+        </div>
+      )}
     </div>
   );
 }

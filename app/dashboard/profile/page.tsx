@@ -12,7 +12,6 @@ import {
   Hotel, 
   Check, 
   Save, 
-  Sparkles,
   User,
   Shield,
   KeyRound,
@@ -181,7 +180,7 @@ export default function ProfilePage() {
                   <div className="flex justify-between items-center">
                     <div>
                       <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-emerald-500" />
+                        <Building2 className="w-4 h-4 text-emerald-500" />
                         01 / Select Active Sector
                       </h3>
                       <p className="text-xs text-silver mt-0.5 font-medium">Select an industry to configure your operative templates.</p>
@@ -194,35 +193,24 @@ export default function ProfilePage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {INDUSTRIES.map((ind) => {
                       const isSelected = selectedIndustry === ind.id;
-                      const IndIcon = ind.icon;
                       return (
                         <button
                           key={ind.id}
                           type="button"
                           onClick={() => handleSelectIndustry(ind.id)}
                           className={cn(
-                            "p-4 rounded-xl text-left transition-all border flex items-start gap-4 duration-200 cursor-pointer relative",
+                            "p-4 rounded-xl text-left transition-all border duration-200 cursor-pointer relative",
                             isSelected 
                               ? "bg-foreground text-background border-transparent shadow-md ring-2 ring-emerald-500/50" 
                               : "bg-bg-subtle-alt border-border-default hover:bg-bg-active"
                           )}
                         >
-                          <div className={cn(
-                            "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 border",
-                            isSelected 
-                              ? "bg-background/25 border-background/20" 
-                              : "bg-bg-elevated border-border-default"
-                          )}>
-                            <IndIcon className={cn("w-5 h-5", isSelected ? "text-background" : ind.color)} />
+                          <div className="text-xs font-bold flex items-center justify-between">
+                            <span>{ind.label}</span>
+                            {isSelected && <Check className="w-4 h-4 text-emerald-400 shrink-0" />}
                           </div>
-                          <div className="space-y-1 flex-1">
-                            <div className="text-xs font-bold flex items-center justify-between">
-                              <span>{ind.label}</span>
-                              {isSelected && <Check className="w-4 h-4 text-emerald-400 shrink-0" />}
-                            </div>
-                            <div className={cn("text-[10px] font-medium leading-normal", isSelected ? "text-background/70" : "text-silver/60")}>
-                              {ind.desc}
-                            </div>
+                          <div className={cn("text-[10px] font-medium leading-normal mt-0.5", isSelected ? "text-background/70" : "text-silver/60")}>
+                            {ind.desc}
                           </div>
                         </button>
                       );

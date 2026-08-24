@@ -8,9 +8,7 @@ import {
   XCircle, 
   FileText, 
   ChevronRight, 
-  Check, 
-  Sparkles, 
-  Database, 
+  Check,  Database, 
   Circle, 
   RefreshCw,
   Trash2,
@@ -378,7 +376,6 @@ export default function LeadsPage() {
                 </span>
                 {stat.trend && !loading && (
                   <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
-                    <Sparkles className="w-2.5 h-2.5" />
                     {stat.trend}
                   </span>
                 )}
@@ -519,7 +516,7 @@ export default function LeadsPage() {
                         </p>
                         {lead.data?.manual_notes && (
                           <span className="text-[9px] font-bold text-purple-500 uppercase tracking-wider flex items-center gap-1 mt-0.5">
-                            <Sparkles className="w-2.5 h-2.5" /> Note Attached
+                            Note Attached
                           </span>
                         )}
                       </div>
