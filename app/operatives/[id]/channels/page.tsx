@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { 
   MessageSquare, 
@@ -43,6 +43,7 @@ export default function ChannelsPage() {
   const [savedCredentials, setSavedCredentials] = useState<any[]>([]);
   const [allWorkers, setAllWorkers] = useState<any[]>([]);
   const [useVault, setUseVault] = useState(true);
+  const tgTokenRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     Promise.all([
@@ -461,6 +462,7 @@ export default function ChannelsPage() {
                       <div className="space-y-2">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot Token</label>
                         <input 
+                          ref={tgTokenRef}
                           name="tg_token" 
                           disabled={!hasTelegram}
                           defaultValue={operative.channels?.telegram?.token}
@@ -473,7 +475,7 @@ export default function ChannelsPage() {
 
                       {operative.channels?.telegram?.token && (
                         <div className="pt-2 border-t border-border-default space-y-2">
-                          <TelegramWebhookButton workerId={operative._id} />
+                          <TelegramWebhookButton workerId={operative._id} tokenRef={tgTokenRef} />
                         </div>
                       )}
                     </div>
@@ -819,7 +821,7 @@ export default function ChannelsPage() {
   );
 }
 
-function TelegramWebhookButton({ workerId }: { workerId: string }) {
+function TelegramWebhookButton({ workerId, tokenRef }: { workerId: string; tokenRef: React.RefObject<HTMLInputElement | null> }) {
   const [registering, setRegistering] = useState(false);
   const [status, setStatus] = useState<{ ok: boolean; message: string } | null>(null);
 
@@ -827,10 +829,12 @@ function TelegramWebhookButton({ workerId }: { workerId: string }) {
     setRegistering(true);
     setStatus(null);
     try {
+      // Use the current input value (even if unsaved) to avoid stale DB tokens
+      const currentToken = tokenRef?.current?.value || '';
       const res = await fetch('/api/webhooks/telegram/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ workerId }),
+        body: JSON.stringify({ workerId, token: currentToken }),
       });
       const data = await res.json();
       if (res.ok) {

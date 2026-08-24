@@ -11,7 +11,7 @@ import Worker from '@/models/Worker';
  */
 export async function POST(req: Request) {
   try {
-    const { workerId } = await req.json();
+    const { workerId, token: bodyToken } = await req.json();
 
     if (!workerId) {
       return NextResponse.json({ error: 'workerId is required' }, { status: 400 });
@@ -24,9 +24,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Operative not found' }, { status: 404 });
     }
 
-    const tgToken = worker.channels?.telegram?.token;
+    // Accept token from body (unsaved input) or fall back to database
+    const tgToken = bodyToken || worker.channels?.telegram?.token;
     if (!tgToken) {
       return NextResponse.json({ error: 'No Telegram token saved for this operative' }, { status: 400 });
+    }
+
+    // Validate token format: should be numeric:alphanumeric
+    const tokenRegex = /^\d+:[A-Za-z0-9_-]+$/;
+    if (!tokenRegex.test(tgToken)) {
+      return NextResponse.json({
+        error: 'Invalid Telegram bot token format. Expected format: 1234567890:ABCdefGHIjklMNOpqrsTUVwxyz'
+      }, { status: 400 });
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
