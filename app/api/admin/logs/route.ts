@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import SystemLog from '@/models/SystemLog';
+import { auditLog } from '@/lib/auditLog';
 
 export async function GET() {
   try {
@@ -36,7 +37,16 @@ export async function DELETE() {
     }
 
     await connectDB();
+    const logCount = await SystemLog.countDocuments();
     await SystemLog.deleteMany({});
+
+    auditLog({
+      adminId: userId!,
+      action: 'logs.clear',
+      targetType: 'systemLog',
+      summary: `Cleared all system logs (${logCount} entries deleted)`,
+      details: { deletedCount: logCount },
+    });
 
     return NextResponse.json({ success: true, message: 'All logs cleared' });
   } catch (error) {

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Announcement from '@/models/Announcement';
+import { auditLog } from '@/lib/auditLog';
 
 // GET — List all announcements (admin) or active announcements (public)
 export async function GET(req: Request) {
@@ -66,6 +67,15 @@ export async function POST(req: Request) {
       expiresAt: expiresAt || null,
     });
 
+    auditLog({
+      adminId: userId,
+      action: 'announcement.create',
+      targetType: 'announcement',
+      targetId: (announcement as any)._id.toString(),
+      summary: `Created announcement "${title}" (${type || 'info'})`,
+      details: { title, type, expiresAt },
+    });
+
     return NextResponse.json(announcement, { status: 201 });
   } catch (error) {
     console.error('[ANNOUNCEMENTS_POST]', error);
@@ -94,6 +104,15 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
+    auditLog({
+      adminId: userId,
+      action: 'announcement.update',
+      targetType: 'announcement',
+      targetId: id,
+      summary: `Updated announcement ${id}: ${Object.keys(updates).join(', ')}`,
+      details: updates,
+    });
+
     return NextResponse.json(announcement);
   } catch (error) {
     console.error('[ANNOUNCEMENTS_PATCH]', error);
@@ -119,6 +138,15 @@ export async function DELETE(req: Request) {
     }
 
     await Announcement.findByIdAndDelete(id);
+
+    auditLog({
+      adminId: userId,
+      action: 'announcement.delete',
+      targetType: 'announcement',
+      targetId: id,
+      summary: `Deleted announcement ${id}`,
+    });
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('[ANNOUNCEMENTS_DELETE]', error);

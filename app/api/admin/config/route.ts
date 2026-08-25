@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import GlobalConfig from '@/models/GlobalConfig';
+import { auditLog } from '@/lib/auditLog';
 
 export async function GET() {
   try {
@@ -41,6 +42,14 @@ export async function PATCH(req: Request) {
       { $set: { featureFlags } },
       { new: true, upsert: true }
     );
+
+    auditLog({
+      adminId: userId,
+      action: 'config.featureFlags',
+      targetType: 'globalConfig',
+      summary: `Updated feature flags: ${Object.entries(featureFlags).map(([k, v]) => `${k}=${v}`).join(', ')}`,
+      details: { featureFlags },
+    });
 
     return NextResponse.json(config);
   } catch (error) {

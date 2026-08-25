@@ -1,18 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { 
+import { usePathname } from 'next/navigation';import { 
   ShieldCheck, 
   Database, 
   Users, 
   Activity, 
-  ShoppingBag,
-  MessageSquare,
-  ArrowLeft,
-  BarChart3,
-  HeartPulse,
-  Megaphone,
+  ShoppingBag, 
+  MessageSquare, 
+  ArrowLeft, 
+  BarChart3, 
+  HeartPulse, 
+  Megaphone, 
+  ScrollText,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -38,6 +38,7 @@ const navGroups = [
       { label: 'System Health', icon: HeartPulse, href: '/admin/health' },
       { label: 'Neural Config', icon: Database, href: '/admin/config' },
       { label: 'System Logs', icon: Activity, href: '/admin/logs' },
+      { label: 'Audit Log', icon: ScrollText, href: '/admin/audit' },
       { label: 'Announcements', icon: Megaphone, href: '/admin/announcements' },
     ],
   },

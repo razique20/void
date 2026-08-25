@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Worker from '@/models/Worker';
 import Subscription from '@/models/Subscription';
+import { auditLog } from '@/lib/auditLog';
 
 import User from '@/models/User';
 
@@ -97,6 +98,8 @@ export async function PATCH(req: Request) {
 
     await connectDB();
 
+    const changes: Record<string, any> = {};
+
     // Update Subscription if plan/status provided
     if (plan || status) {
       const subUpdate: any = {};
@@ -107,8 +110,12 @@ export async function PATCH(req: Request) {
         } else {
           subUpdate.periodEnd = null; // Clear periodEnd if set back to free
         }
+        changes.plan = plan;
       }
-      if (status) subUpdate.status = status;
+      if (status) {
+        subUpdate.status = status;
+        changes.status = status;
+      }
       
       await Subscription.findOneAndUpdate(
         { userId: clerkId },
@@ -124,7 +131,18 @@ export async function PATCH(req: Request) {
         { $set: { featureFlags } },
         { upsert: true }
       );
+      changes.featureFlags = featureFlags;
     }
+
+    const changeParts = Object.entries(changes).map(([k, v]) => `${k}=${typeof v === 'object' ? JSON.stringify(v) : v}`).join(', ');
+    auditLog({
+      adminId: currentUserId,
+      action: 'user.update',
+      targetType: 'user',
+      targetId: clerkId,
+      summary: `Updated user ${clerkId.slice(0, 12)}…: ${changeParts}`,
+      details: changes,
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

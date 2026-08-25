@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth, clerkClient } from '@clerk/nextjs/server';
+import { auditLog } from '@/lib/auditLog';
 
 export async function POST(req: Request) {
   try {
@@ -15,6 +16,14 @@ export async function POST(req: Request) {
     if (!targetUserId) {
       return NextResponse.json({ error: 'Missing targetUserId' }, { status: 400 });
     }
+
+    auditLog({
+      adminId: userId,
+      action: 'user.impersonate',
+      targetType: 'user',
+      targetId: targetUserId,
+      summary: `Started impersonation of user ${targetUserId.slice(0, 12)}…`,
+    });
 
     // Create an impersonation session using Clerk's client-side session token
     // We return the target user's ID so the frontend can redirect

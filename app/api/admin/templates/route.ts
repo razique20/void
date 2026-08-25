@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Worker from '@/models/Worker';
+import { auditLog } from '@/lib/auditLog';
 
 export async function POST(req: Request) {
   try {
@@ -21,6 +22,15 @@ export async function POST(req: Request) {
       personality,
       tone,
       isTemplate: true
+    });
+
+    auditLog({
+      adminId: userId,
+      action: 'template.create',
+      targetType: 'template',
+      targetId: (template as any)._id.toString(),
+      summary: `Published marketplace template "${name}" (${role}, tone: ${tone})`,
+      details: { name, role, tone },
     });
 
     return NextResponse.json(template);

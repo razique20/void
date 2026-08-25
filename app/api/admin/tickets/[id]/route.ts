@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Ticket from '@/models/Ticket';
 import { broadcast } from '@/lib/notifications';
+import { auditLog } from '@/lib/auditLog';
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -25,6 +26,17 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     if (!ticket) {
       return NextResponse.json({ error: 'Ticket not found' }, { status: 404 });
     }
+
+    auditLog({
+      adminId: currentUserId,
+      action: status === 'closed' ? 'ticket.close' : 'ticket.respond',
+      targetType: 'ticket',
+      targetId: id,
+      summary: status === 'closed'
+        ? `Closed ticket "${ticket.subject}" with response`
+        : `Responded to ticket "${ticket.subject}"`,
+      details: { status, responseLength: adminResponse?.length || 0 },
+    });
 
     // Broadcast real-time notification to the ticket owner
     if (adminResponse) {
