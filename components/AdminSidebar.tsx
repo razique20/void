@@ -10,7 +10,7 @@ import {
   ShoppingBag,
   MessageSquare,
   ArrowLeft,
-  Settings,
+  BarChart3,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -25,6 +25,7 @@ const navGroups = [
     title: 'Management',
     links: [
       { label: 'User Directory', icon: Users, href: '/admin/users' },
+      { label: 'Usage Analytics', icon: BarChart3, href: '/admin/usage' },
       { label: 'Support Tickets', icon: MessageSquare, href: '/admin/tickets' },
       { label: 'Marketplace', icon: ShoppingBag, href: '/admin/marketplace' },
     ],
