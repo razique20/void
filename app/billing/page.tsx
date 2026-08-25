@@ -9,7 +9,6 @@ import {
   MessageCircle,
   Shield,
   Zap,
-  Crown,
   Star,
   ChevronRight,
   RefreshCw,
@@ -106,27 +105,6 @@ const plans = [
     icon: Shield,
     accentColor: 'emerald',
   },
-  {
-    id: 'elite',
-    name: 'Elite',
-    price: '$999',
-    description: 'White-glove service with Smart Routing for high-scale agencies.',
-    features: [
-      'Unlimited AI Agents',
-      '100,000 messages/month',
-      'Smart Router (Multi-Agent per Number)',
-      'All Enterprise Features',
-      'Multi-channel Agency Control',
-      'White-glove Onboarding & Setup',
-      '24/7 Dedicated Priority Support',
-    ],
-    buttonText: 'Upgrade to Elite',
-    popular: false,
-    color: 'text-amber-500',
-    bgColor: 'bg-amber-500/10 border-amber-500/20',
-    icon: Crown,
-    accentColor: 'amber',
-  },
 ];
 
 /* ── Motion variants (matching training/dashboard) ────── */
@@ -187,7 +165,6 @@ export default function BillingPage() {
     starter: 1,
     pro: 2,
     enterprise: 3,
-    elite: 4,
   };
 
   const selectedPlan = plans.find((p) => p.id === selectedPlanId) || plans[1];

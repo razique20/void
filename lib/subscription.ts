@@ -38,15 +38,6 @@ export const PLANS = {
     overagePerMessage: 0.01,
     overagePerAgent: 9,
   },
-  elite: {
-    name: 'Elite',
-    maxWorkers: 999,
-    maxMessages: 100000,
-    features: ['advanced_rag', 'web_chat', 'whatsapp', 'telegram', 'memory', 'mission_control', 'marketplace', 'email_agent', 'actions_full', 'cal_booking', 'lead_capture', 'white_glove', 'priority_24_7', 'smart_routing'],
-    price: 999,
-    overagePerMessage: 0.005,
-    overagePerAgent: 0,
-  },
 };
 
 export async function getUserSubscription(userId: string) {
