@@ -9,6 +9,7 @@ import SystemLog from '@/models/SystemLog';
 import Groq from 'groq-sdk';
 import { getContactMemory, updateMemorySummary, buildMemoryPrompt } from '@/lib/memory';
 import { checkRateLimit } from '@/lib/rateLimit';
+import { checkMessageLimit, incrementMessageCount } from '@/lib/messageUsage';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
 
@@ -161,6 +162,15 @@ export async function POST(req: Request) {
 
     console.log(`[WHATSAPP DEBUG] Found Operative: ${operative.name}. Active Status: ${operative.channels?.whatsapp?.isActive}`);
 
+    // 1b. Monthly message limit check for the account owner
+    const { getUserSubscription } = await import('@/lib/subscription');
+    const sub = await getUserSubscription(operative.userId);
+    const { allowed } = await checkMessageLimit(operative.userId, sub.planInfo.maxMessages);
+    if (!allowed) {
+      console.log(`[WHATSAPP] Monthly message limit reached for ${operative.userId}. Dropping message.`);
+      return NextResponse.json({ status: 'ok' });
+    }
+
     // 2. Manage Conversation History & Check for Takeover
     let conversation = await Conversation.findOne({ 
       workerId: operative._id, 
@@ -231,8 +241,6 @@ export async function POST(req: Request) {
 
     // NEW: Lead Management Injection (Mirroring app/api/chat/route.ts)
     const userDoc = await User.findOne({ clerkId: operative.userId });
-    const { getUserSubscription } = await import('@/lib/subscription');
-    const sub = await getUserSubscription(operative.userId);
     const isLeadManagementEnabled = sub.planInfo.features.includes('lead_capture');
 
     if (isLeadManagementEnabled) {
@@ -396,11 +404,28 @@ Once all conditions are met, execute the action by including the exact tag in yo
             { architectId: operative.userId, operativeId: operative._id.toString() }
           );
 
+          // Broadcast real-time lead notification
+          broadcast(operative.userId, {
+            type: 'lead',
+            title: 'New WhatsApp Lead',
+            body: `${name.trim()} (${email.trim() || phone.trim() || customerPhone}) captured via WhatsApp by ${operative.name}.`,
+            href: '/dashboard/leads',
+            meta: { leadId: existingLead?._id, workerId: operative._id, source: 'WhatsApp' },
+          });
+
           // Strip the tag from the final WhatsApp message
           aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, "").trim();
         } catch (err) {
           console.error('[LEAD_CAPTURE_ERROR_WHATSAPP]', err);
           aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, "").trim();
+
+          // Broadcast system error notification
+          broadcast(operative.userId, {
+            type: 'system',
+            title: 'Lead Capture Failed',
+            body: `Failed to capture lead via WhatsApp: ${err instanceof Error ? err.message : 'Unknown error'}.`,
+            href: '/dashboard/leads',
+          });
         }
       } else {
          // If not enabled or no match, just strip tag
@@ -475,6 +500,14 @@ Once all conditions are met, execute the action by including the exact tag in yo
           userId: operative.userId,
           metadata: { error: waData, operativeId: operative._id }
         });
+
+        broadcast(operative.userId, {
+          type: 'system',
+          title: 'WhatsApp Delivery Failed',
+          body: `${operative.name} failed to deliver a reply to ${customerPhone}. Check your WhatsApp credentials.`,
+          href: '/dashboard/credentials',
+          meta: { workerId: operative._id, channel: 'whatsapp', error: waData },
+        });
       }
     } catch (waErr: any) {
       console.error(`[WHATSAPP] Network Error during delivery:`, waErr.message);
@@ -484,7 +517,18 @@ Once all conditions are met, execute the action by including the exact tag in yo
         message: waErr.message,
         metadata: { operativeId: operative._id }
       });
+
+      broadcast(operative.userId, {
+        type: 'system',
+        title: 'WhatsApp Network Error',
+        body: `Network error delivering WhatsApp message: ${waErr.message}.`,
+        href: '/dashboard/credentials',
+        meta: { workerId: operative._id, channel: 'whatsapp' },
+      });
     }
+
+    // Increment monthly message counter
+    incrementMessageCount(operative.userId).catch(() => {});
 
     return NextResponse.json({ status: 'ok' });
 

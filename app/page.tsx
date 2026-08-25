@@ -55,9 +55,9 @@ const softwareApplicationJsonLd = {
   offers: {
     '@type': 'AggregateOffer',
     lowPrice: '0',
-    highPrice: '2599',
+    highPrice: '999',
     priceCurrency: 'USD',
-    offerCount: '4',
+    offerCount: '5',
   },
   featureList: [
     'AI Agent Deployment',
@@ -86,7 +86,7 @@ const faqJsonLd = {
       name: 'How much does VOID cost?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'VOID offers a free tier to get started, with Pro plans at $199/mo, Enterprise at $699/mo, and Elite at $2,599/mo for high-scale agencies.',
+        text: 'VOID offers a free tier with 50 messages/month, Starter at $29/mo, Pro at $99/mo, Enterprise at $299/mo, and Elite at $999/mo for high-scale agencies. All plans include WhatsApp, Telegram, and web chat.',
       },
     },
     {

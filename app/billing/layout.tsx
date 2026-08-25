@@ -3,16 +3,16 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Billing & Plans',
   description:
-    'Choose the right plan for your AI workforce. Compare Free, Pro, Enterprise, and Elite tiers to unlock advanced agents, marketplace access, and premium support.',
+    'Choose the right plan for your AI workforce. Compare Free, Starter ($29), Pro ($99), Enterprise ($299), and Elite ($999) tiers with usage-based limits.',
   openGraph: {
     title: 'Billing & Plans | VOID',
     description:
-      'Choose the right plan for your AI workforce. Compare Free, Pro, Enterprise, and Elite tiers.',
+      'Choose the right plan for your AI workforce. Compare Free, Starter, Pro, Enterprise, and Elite tiers.',
   },
   twitter: {
     title: 'Billing & Plans | VOID',
     description:
-      'Choose the right plan for your AI workforce. Compare Free, Pro, Enterprise, and Elite tiers.',
+      'Choose the right plan for your AI workforce. Compare Free, Starter, Pro, Enterprise, and Elite tiers.',
   },
 };
 

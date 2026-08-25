@@ -10,6 +10,8 @@ import { sendOperativeEmail } from '@/lib/mailer';
 import SystemLog from '@/models/SystemLog';
 import { getContactMemory, updateMemorySummary, buildMemoryPrompt } from '@/lib/memory';
 import { checkRateLimit } from '@/lib/rateLimit';
+import { checkMessageLimit, incrementMessageCount } from '@/lib/messageUsage';
+import { getUserSubscription } from '@/lib/subscription';
 import Lead from '@/models/Lead';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
@@ -29,6 +31,17 @@ export async function POST(req: Request) {
       return new NextResponse('Rate limit exceeded. Please try again in an hour.', { status: 429 });
     }
 
+    // 0b. Monthly message limit check
+    const sub = await getUserSubscription(userId);
+    const { allowed, used, remaining } = await checkMessageLimit(userId, sub.planInfo.maxMessages);
+    if (!allowed) {
+      return NextResponse.json({
+        error: `Monthly message limit reached (${sub.planInfo.maxMessages}/mo). Please upgrade your plan.`,
+        limit: sub.planInfo.maxMessages,
+        used,
+      }, { status: 429 });
+    }
+
     await connectDB();
 
     // 1. Fetch Worker
@@ -40,8 +53,6 @@ export async function POST(req: Request) {
     // NEW: Fetch User Feature Flags
     const User = (await import('@/models/User')).default;
     const userDoc = await User.findOne({ clerkId: worker.userId });
-    const { getUserSubscription } = await import('@/lib/subscription');
-    const sub = await getUserSubscription(worker.userId);
     const isLeadManagementEnabled = sub.planInfo.features.includes('lead_capture');
 
     // 2. RAG Retrieval Logic
@@ -344,6 +355,9 @@ When a user asks for a task matching these descriptions, you MUST include the [A
     // 10. Update longitudinal memory (non-blocking — fire and forget)
     const dynamicGroqRef = dynamicGroq;
     updateMemorySummary(contactMemory, message, aiResponse, dynamicGroqRef, modelName);
+
+    // 10b. Increment monthly message counter
+    incrementMessageCount(userId).catch(() => {});
 
     // 11. Broadcast real-time notification for new conversation activity
     const isNewConversation = conversation.messages.length <= 2; // user msg + assistant reply

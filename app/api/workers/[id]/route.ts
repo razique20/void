@@ -30,48 +30,35 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     
     await connectDB();
 
-    // Feature Gating: Check if user has access to premium channels
-    if (body.channels?.whatsapp?.isActive || body.channels?.telegram?.isActive || body.channels?.slack?.isActive) {
+    // Validate uniqueness of WhatsApp phone number / credential assignment
+    if (body.channels?.whatsapp?.isActive) {
       const { getUserSubscription } = await import('@/lib/subscription');
       const sub = await getUserSubscription(userId);
       const features = sub.planInfo.features;
-      
-      if (body.channels?.whatsapp?.isActive) {
-        if (!features.includes('whatsapp')) {
-          return NextResponse.json({ error: `Your ${sub.planInfo.name} plan does not support WhatsApp integrations. Please upgrade.` }, { status: 403 });
+
+      const incomingCredId = body.channels.whatsapp.credentialId;
+      const incomingPhoneId = body.channels.whatsapp.phoneNumberId;
+
+      if (incomingCredId || incomingPhoneId) {
+        const dupQuery: any = {
+          userId,
+          _id: { $ne: id },
+          'channels.whatsapp.isActive': true
+        };
+
+        if (incomingCredId) {
+          dupQuery['channels.whatsapp.credentialId'] = incomingCredId;
+        } else {
+          dupQuery['channels.whatsapp.phoneNumberId'] = incomingPhoneId;
         }
 
-        // Validate uniqueness of phone number / credential assignment for non-Elite plans
-        const incomingCredId = body.channels.whatsapp.credentialId;
-        const incomingPhoneId = body.channels.whatsapp.phoneNumberId;
+        const duplicateWorker = await Worker.findOne(dupQuery);
 
-        if (incomingCredId || incomingPhoneId) {
-          const dupQuery: any = {
-            userId,
-            _id: { $ne: id },
-            'channels.whatsapp.isActive': true
-          };
-
-          if (incomingCredId) {
-            dupQuery['channels.whatsapp.credentialId'] = incomingCredId;
-          } else {
-            dupQuery['channels.whatsapp.phoneNumberId'] = incomingPhoneId;
-          }
-
-          const duplicateWorker = await Worker.findOne(dupQuery);
-
-          if (duplicateWorker && !features.includes('smart_routing')) {
-            return NextResponse.json({
-              error: `This WhatsApp number is already assigned to active agent "${duplicateWorker.name}". Multiple agents per number is an Elite-only feature. Please upgrade or deactivate WhatsApp on "${duplicateWorker.name}" first.`
-            }, { status: 400 });
-          }
+        if (duplicateWorker && !features.includes('smart_routing')) {
+          return NextResponse.json({
+            error: `This WhatsApp number is already assigned to active agent "${duplicateWorker.name}". Multiple agents per number is an Elite-only feature. Please upgrade or deactivate WhatsApp on "${duplicateWorker.name}" first.`
+          }, { status: 400 });
         }
-      }
-      if (body.channels?.telegram?.isActive && !features.includes('telegram')) {
-        return NextResponse.json({ error: `Your ${sub.planInfo.name} plan does not support Telegram integrations. Please upgrade.` }, { status: 403 });
-      }
-      if (body.channels?.slack?.isActive && !features.includes('slack')) {
-        return NextResponse.json({ error: `Your ${sub.planInfo.name} plan does not support Slack integrations. Please upgrade.` }, { status: 403 });
       }
     }
 

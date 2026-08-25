@@ -8,6 +8,7 @@ import SystemLog from '@/models/SystemLog';
 import Groq from 'groq-sdk';
 import { getContactMemory, updateMemorySummary, buildMemoryPrompt } from '@/lib/memory';
 import { checkRateLimit } from '@/lib/rateLimit';
+import { checkMessageLimit, incrementMessageCount } from '@/lib/messageUsage';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
 
@@ -97,6 +98,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ status: 'ok' });
     }
 
+    // 1b. Monthly message limit check
+    const { getUserSubscription } = await import('@/lib/subscription');
+    const sub = await getUserSubscription(operative.userId);
+    const { allowed } = await checkMessageLimit(operative.userId, sub.planInfo.maxMessages);
+    if (!allowed) {
+      console.log(`[TELEGRAM] Monthly message limit reached for ${operative.userId}. Dropping message.`);
+      return NextResponse.json({ status: 'ok' });
+    }
+
     if (!operative.channels?.telegram?.isActive) {
       console.log(`[TELEGRAM] Operative ${operative.name} is not active for Telegram.`);
       return NextResponse.json({ status: 'ok' });
@@ -140,8 +150,6 @@ export async function POST(req: Request) {
     // NEW: Lead Management Injection
     const User = (await import('@/models/User')).default;
     const userDoc = await User.findOne({ clerkId: operative.userId });
-    const { getUserSubscription } = await import('@/lib/subscription');
-    const sub = await getUserSubscription(operative.userId);
     const isLeadManagementEnabled = sub.planInfo.features.includes('lead_capture');
 
     if (isLeadManagementEnabled) {
@@ -301,11 +309,28 @@ When a user asks for a task matching these descriptions, include the [ACTION: na
             { architectId: operative.userId, operativeId: operative._id.toString() }
           );
 
+          // Broadcast real-time lead notification
+          broadcast(operative.userId, {
+            type: 'lead',
+            title: 'New Telegram Lead',
+            body: `${name.trim()} (${email.trim() || phone.trim() || chatId}) captured via Telegram by ${operative.name}.`,
+            href: '/dashboard/leads',
+            meta: { leadId: existingLead?._id, workerId: operative._id, source: 'Telegram' },
+          });
+
           // Strip the tag from the final message
           aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, "").trim();
         } catch (err) {
           console.error('[LEAD_CAPTURE_ERROR_TELEGRAM]', err);
           aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, "").trim();
+
+          // Broadcast system error notification
+          broadcast(operative.userId, {
+            type: 'system',
+            title: 'Lead Capture Failed',
+            body: `Failed to capture lead via Telegram: ${err instanceof Error ? err.message : 'Unknown error'}.`,
+            href: '/dashboard/leads',
+          });
         }
       } else {
          aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, "").trim();
@@ -381,10 +406,29 @@ When a user asks for a task matching these descriptions, include the [ACTION: na
           userId: operative.userId,
           metadata: { error: errorData, operativeId: operative._id }
         });
+
+        broadcast(operative.userId, {
+          type: 'system',
+          title: 'Telegram Delivery Failed',
+          body: `${operative.name} failed to reply to ${userName}: ${errorData.description || 'Unknown error'}.`,
+          href: '/dashboard/credentials',
+          meta: { workerId: operative._id, channel: 'telegram', error: errorData },
+        });
       }
     } catch (tgErr: any) {
       console.error(`[TELEGRAM] Fetch Error:`, tgErr.message);
+
+      broadcast(operative.userId, {
+        type: 'system',
+        title: 'Telegram Network Error',
+        body: `Network error delivering Telegram message: ${tgErr.message}.`,
+        href: '/dashboard/credentials',
+        meta: { workerId: operative._id, channel: 'telegram' },
+      });
     }
+
+    // Increment monthly message counter
+    incrementMessageCount(operative.userId).catch(() => {});
 
     return NextResponse.json({ status: 'ok' });
 
