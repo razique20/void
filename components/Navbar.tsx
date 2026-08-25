@@ -50,9 +50,6 @@ export default function Navbar() {
   const isAdmin = pathname.startsWith('/admin');
   const isWorkspace = pathname !== '/' && !pathname.startsWith('/sign-in') && !pathname.startsWith('/sign-up') && !isAdmin;
 
-  // Hide navbar entirely on admin pages (admin has its own sidebar)
-  if (isAdmin) return null;
-
   // Hydrate from localStorage + enable transitions after first paint
   useEffect(() => {
     // Hydrate collapsed state from localStorage
@@ -168,6 +165,10 @@ export default function Navbar() {
       }
     }
   }, [isWorkspace]);
+
+  // Hide navbar entirely on admin pages (admin has its own sidebar)
+  // IMPORTANT: this early return must come AFTER all hooks
+  if (isAdmin) return null;
 
   // Flat left links for mobile menu
   const leftLinks = menuCategories.flatMap(c => c.links);
