@@ -61,8 +61,8 @@ export default function ChatPage() {
         }
       }
     } catch (err) {
-      console.error('Failed to fetch operatives', err);
-      showToast('Failed to load operatives', 'error');
+      console.error('Failed to fetch agents', err);
+      showToast('Failed to load agents', 'error');
     } finally {
       setIsRefreshing(false);
     }
@@ -241,16 +241,16 @@ export default function ChatPage() {
                 </div>
               </div>
 
-              {/* Main Bento Layout (3-Column Split: Operatives Drawer | Chat Window | Telemetry Sidebar) */}
+              {/* Main Bento Layout (3-Column Split: Agents Drawer | Chat Window | Telemetry Sidebar) */}
               <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0 items-stretch">
                 
-                {/* LEFT: Operative Selector List (3/12) */}
+                {/* LEFT: Agent Selector List (3/12) */}
                 <div className="hidden lg:flex lg:col-span-3 flex-col bg-bg-subtle border border-border-default rounded-2xl p-4 space-y-4 overflow-hidden">
                   <div className="space-y-3 shrink-0">
                     <div className="flex justify-between items-center">
                       <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
                         <Bot className="w-3.5 h-3.5 text-apple-blue" />
-                        Operatives ({workers.length})
+                        Agents ({workers.length})
                       </h2>
                       <Link 
                         href="/create-worker" 
@@ -272,23 +272,23 @@ export default function ChatPage() {
                     </div>
                   </div>
 
-                  {/* Operatives Cards */}
+                  {/* Agent Cards */}
                   <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                     {filteredWorkers.length === 0 ? (
                       <div className="flex flex-col items-center justify-center py-8 text-center">
                         <div className="w-10 h-10 bg-bg-elevated border border-border-strong rounded-xl flex items-center justify-center mb-3">
                           <Bot className="w-5 h-5 text-silver" />
                         </div>
-                        <p className="text-xs font-semibold text-foreground">{searchQuery ? 'No matches' : 'No operatives yet'}</p>
+                        <p className="text-xs font-semibold text-foreground">{searchQuery ? 'No matches' : 'No agents yet'}</p>
                         <p className="text-[10px] text-silver mt-1 max-w-[180px] leading-relaxed">
-                          {searchQuery ? 'Try a different search term.' : 'Deploy an operative to start live testing.'}
+                          {searchQuery ? 'Try a different search term.' : 'Deploy an agent to start live testing.'}
                         </p>
                         {!searchQuery && (
                           <Link
                             href="/create-worker"
                             className="mt-3 inline-flex items-center gap-1.5 bg-foreground text-background px-3 py-1.5 rounded-lg text-[10px] font-bold hover:opacity-90 transition-all"
                           >
-                            <Plus className="w-3 h-3" /> Deploy Operative
+                            <Plus className="w-3 h-3" /> Deploy Agent
                           </Link>
                         )}
                       </div>
@@ -369,7 +369,7 @@ export default function ChatPage() {
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="font-semibold text-xs text-foreground">
-                            {activeWorkerObj ? activeWorkerObj.name : 'Select Operative'}
+                            {activeWorkerObj ? activeWorkerObj.name : 'Select Agent'}
                           </h3>
                           {activeWorkerObj && (
                             <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/15 uppercase">
@@ -415,7 +415,7 @@ export default function ChatPage() {
                               <Bot className="w-7 h-7 text-silver" />
                             </div>
                             <div className="space-y-1 max-w-sm">
-                              <h3 className="text-sm font-semibold text-foreground">No operatives to chat with</h3>
+                              <h3 className="text-sm font-semibold text-foreground">No agents to chat with</h3>
                               <p className="text-silver text-xs font-medium">
                                 Deploy your first AI agent to start live conversations and test its intelligence.
                               </p>
@@ -424,7 +424,7 @@ export default function ChatPage() {
                               href="/create-worker"
                               className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-sm"
                             >
-                              <Plus className="w-3.5 h-3.5" /> Deploy Operative
+                              <Plus className="w-3.5 h-3.5" /> Deploy Agent
                             </Link>
                           </>
                         ) : (
@@ -435,7 +435,7 @@ export default function ChatPage() {
                             </div>
                             <div className="space-y-1 max-w-sm">
                               <h3 className="text-sm font-semibold text-foreground">
-                                {activeWorkerObj ? `Handshake with ${activeWorkerObj.name}` : 'Select an Operative'}
+                                {activeWorkerObj ? `Handshake with ${activeWorkerObj.name}` : 'Select an Agent'}
                               </h3>
                               <p className="text-silver text-xs font-medium">
                                 Type a transmission or pick a starter prompt below to test your agent&apos;s neural model.
@@ -480,7 +480,7 @@ export default function ChatPage() {
 
                               <div className="space-y-1 min-w-0">
                                 <div className={cn("flex items-center gap-2 text-[10px] text-silver font-medium", isUser && "justify-end")}>
-                                  <span>{isUser ? 'Architect' : activeWorkerObj?.name || 'Operative'}</span>
+                                  <span>{isUser ? 'Architect' : activeWorkerObj?.name || 'Agent'}</span>
                                 </div>
 
                                 <div className={cn(
@@ -530,7 +530,7 @@ export default function ChatPage() {
                         <input
                           disabled={!selectedWorker || loading}
                           type="text"
-                          placeholder={selectedWorker ? `Message ${activeWorkerObj?.name}...` : 'Select an operative to begin...'}
+                          placeholder={selectedWorker ? `Message ${activeWorkerObj?.name}...` : 'Select an agent to begin...'}
                           value={input}
                           onChange={(e) => setInput(e.target.value)}
                           className="w-full bg-bg-elevated border border-border-strong rounded-xl pl-4 pr-12 py-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all font-medium"
@@ -555,7 +555,7 @@ export default function ChatPage() {
 
                 </div>
 
-                {/* RIGHT: Operative Telemetry Inspector (3/12) */}
+                {/* RIGHT: Agent Telemetry Inspector (3/12) */}
                 {showTelemetry && (
                   <div className="hidden lg:flex lg:col-span-3 flex-col space-y-4 overflow-y-auto custom-scrollbar">
                     
@@ -592,7 +592,7 @@ export default function ChatPage() {
                           </div>
                         </div>
                       ) : (
-                        <p className="text-xs text-silver">No operative selected</p>
+                        <p className="text-xs text-silver">No agent selected</p>
                       )}
                     </div>
 
@@ -652,7 +652,7 @@ export default function ChatPage() {
                         <h4 className="font-bold text-xs text-purple-400 uppercase tracking-wider">Calibration</h4>
                       </div>
                       <p className="text-[10px] text-purple-300/80 leading-relaxed">
-                        To add knowledge documents or configure channel webhooks for this operative:
+                        To add knowledge documents or configure channel webhooks for this agent:
                       </p>
                       <div className="flex gap-2 pt-1">
                         <Link 

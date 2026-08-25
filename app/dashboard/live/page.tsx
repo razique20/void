@@ -256,7 +256,7 @@ export default function LiveChatPage() {
           </div>
           <h3 className="text-sm font-bold text-foreground">Mission Control Locked</h3>
           <p className="text-silver text-xs max-w-xs mt-1.5 leading-relaxed">
-            Your current {sub?.plan || 'Free'} plan does not include Mission Control. Upgrade to Pro or higher to monitor and take over operative chats live.
+            Your current {sub?.plan || 'Free'} plan does not include Mission Control. Upgrade to Pro or higher to monitor and take over agent chats live.
           </p>
           <Link
             href="/billing"
@@ -289,7 +289,7 @@ export default function LiveChatPage() {
                       <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Live</span>
                     </div>
                   </div>
-                  <p className="text-[10px] text-silver font-medium">Monitor and intercept operative conversations.</p>
+                  <p className="text-[10px] text-silver font-medium">Monitor and intercept agent conversations.</p>
                 </div>
 
                 {/* Search bar */}
@@ -336,7 +336,7 @@ export default function LiveChatPage() {
                     </div>
                     <p className="text-xs font-semibold text-foreground">{searchQuery ? 'No matching feeds' : 'No active sessions'}</p>
                     <p className="text-[10px] text-silver mt-1 leading-relaxed">
-                      {searchQuery ? 'Try adjusting your search.' : 'Awaiting network traffic from your operatives...'}
+                      {searchQuery ? 'Try adjusting your search.' : 'Awaiting network traffic from your agents...'}
                     </p>
                   </div>
                 ) : (

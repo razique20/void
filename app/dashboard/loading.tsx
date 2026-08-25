@@ -24,7 +24,7 @@ export default function DashboardLoading() {
 
       {/* Two-Column Bento */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* LEFT: Operatives Table */}
+        {/* LEFT: Agents Table */}
         <div className="lg:col-span-8 space-y-5">
           <Skeleton className="h-11 w-full rounded-xl" />
           <div className="space-y-3">

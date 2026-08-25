@@ -98,7 +98,7 @@ export default function SystemLogsPage() {
               Console Logs
             </h1>
             <p className="text-silver text-sm font-medium mt-1">
-              Deep telemetry streams and execution trace for your autonomous operatives.
+              Deep telemetry streams and execution trace for your autonomous agents.
             </p>
           </div>
           

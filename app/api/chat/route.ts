@@ -199,7 +199,7 @@ When a user asks for a task matching these descriptions, you MUST include the [A
           await SystemLog.create({
             type: 'handshake',
             source: 'EMAIL_AGENT',
-            message: `Operative ${worker.name} sent an email to ${to}`,
+            message: `Agent ${worker.name} sent an email to ${to}`,
             userId: worker.userId,
             metadata: { operativeId: worker._id, subject }
           });
@@ -208,6 +208,13 @@ When a user asks for a task matching these descriptions, you MUST include the [A
         } catch (emailErr: any) {
           console.error('[EMAIL_TOOL_ERROR]', emailErr);
           aiResponse = aiResponse.replace(/\[SEND_EMAIL:.*?\]/, `(Error: I tried to send the email but my connection failed: ${emailErr.message})`);
+
+          broadcast(userId, {
+            type: 'system',
+            title: 'Email Delivery Failed',
+            body: `${worker.name} failed to send an email: ${emailErr.message}.`,
+            href: '/dashboard/credentials',
+          });
         }
       }
     }
@@ -296,9 +303,26 @@ When a user asks for a task matching these descriptions, you MUST include the [A
           );
 
           aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, `(System: Lead captured for ${name.trim()})`);
+
+          // Broadcast real-time lead notification
+          broadcast(userId, {
+            type: 'lead',
+            title: 'New Lead Captured',
+            body: `${name.trim()} (${email.trim() || phone.trim()}) captured via Web Chat by ${worker.name}.`,
+            href: '/dashboard/leads',
+            meta: { leadId: existingLead?._id, workerId: worker._id, source: 'Web Chat' },
+          });
         } catch (err) {
           console.error('[LEAD_CAPTURE_ERROR]', err);
           aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, `(System: Lead capture failed)`);
+
+          // Broadcast system error notification
+          broadcast(userId, {
+            type: 'system',
+            title: 'Lead Capture Failed',
+            body: `Failed to capture lead via Web Chat: ${err instanceof Error ? err.message : 'Unknown error'}.`,
+            href: '/dashboard/leads',
+          });
         }
       }
     }

@@ -30,9 +30,9 @@ const plans = [
     id: 'free',
     name: 'Free (Tryout)',
     price: '$0',
-    description: 'Get started with one operative and the essentials.',
+    description: 'Get started with one agent and the essentials.',
     features: [
-      '1 AI Operative',
+      '1 AI Agent',
       'Knowledge Base (PDF, DOCX, CSV, TXT)',
       'Embeddable Web Chat Widget',
       'Community Support',
@@ -50,7 +50,7 @@ const plans = [
     price: '$199',
     description: 'Perfect for small teams and solopreneurs.',
     features: [
-      '3 AI Operatives',
+      '3 AI Agents',
       'Knowledge Base Training',
       'Persistent Conversation Memory',
       'Mission Control (Monitor & Takeover)',
@@ -70,7 +70,7 @@ const plans = [
     price: '$699',
     description: 'The complete AI agency suite for growing businesses.',
     features: [
-      '10 AI Operatives',
+      '10 AI Agents',
       'WhatsApp & Telegram Integration',
       'Email Agent Tool',
       'Custom Webhook Actions',
@@ -91,8 +91,8 @@ const plans = [
     price: '$2,599',
     description: 'White-glove service with AI Smart Routing for high-scale agencies.',
     features: [
-      'Unlimited AI Operatives',
-      '🧠 Smart Router Agent (Multi-Operative per Number)',
+      'Unlimited AI Agents',
+      '🧠 Smart Router Agent (Multi-Agent per Number)',
       'All Enterprise Features',
       'Full Action Suite (Email, Webhooks, Booking)',
       'Multi-channel Agency Control',
@@ -238,7 +238,7 @@ export default function BillingPage() {
                       Select Plan
                     </h2>
                     <p className="text-[10px] text-silver/60 font-medium mt-0.5">
-                      Choose the subscription tier for your operative fleet.
+                      Choose the subscription tier for your agent fleet.
                     </p>
                   </div>
 
@@ -304,7 +304,7 @@ export default function BillingPage() {
 
                     <div className="space-y-3">
                       {[
-                        { icon: Cpu, label: 'Operatives Deployed', value: `${sub.usedWorkers} / ${sub.maxWorkers}` },
+                        { icon: Cpu, label: 'Agents Deployed', value: `${sub.usedWorkers} / ${sub.maxWorkers}` },
                         { icon: Wifi, label: 'Heartbeat', value: 'Active', color: 'text-emerald-600 dark:text-emerald-400' },
                         { icon: Shield, label: 'Plan Status', value: isCurrentPlan ? 'Current' : 'Available', color: isCurrentPlan ? 'text-emerald-600 dark:text-emerald-400' : '' },
                       ].map((row, i) => (

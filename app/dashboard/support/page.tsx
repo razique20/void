@@ -419,7 +419,7 @@ export default function SupportPage() {
                   <div className="space-y-1">
                     <h4 className="font-bold text-[11px] text-apple-blue uppercase tracking-wider">Need Urgent Help?</h4>
                     <p className="text-[10px] text-apple-blue/70 font-medium leading-relaxed">
-                      For critical issues affecting live operatives, mention &quot;URGENT&quot; in your ticket subject for priority handling.
+                      For critical issues affecting live agents, mention &quot;URGENT&quot; in your ticket subject for priority handling.
                     </p>
                   </div>
                 </div>

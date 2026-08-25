@@ -36,7 +36,7 @@ export default function DashboardPreview() {
   const [activeOp, setActiveOp] = useState<'alpha' | 'beta' | 'gamma'>('alpha');
   const [load, setLoad] = useState(42);
 
-  // Rotate active operative highlights
+  // Rotate active agent highlights
   useEffect(() => {
     const opInterval = setInterval(() => {
       const ops = ['alpha', 'beta', 'gamma'] as const;
@@ -68,10 +68,10 @@ export default function DashboardPreview() {
       {/* Background Ambience Glow */}
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-apple-blue/5 via-transparent to-transparent opacity-50 pointer-events-none" />
 
-      {/* Left Panel: Operative Fleet (Col-span 3) */}
+      {/* Left Panel: Agent Fleet (Col-span 3) */}
       <div className="p-6 border-b md:border-b-0 md:border-r border-foreground/5 md:col-span-3 flex flex-col justify-between bg-black/10 dark:bg-black/20">
         <div>
-          <div className="text-[9px] font-bold text-silver uppercase tracking-[0.2em] mb-4">Operative Fleet</div>
+          <div className="text-[9px] font-bold text-silver uppercase tracking-[0.2em] mb-4">Agent Fleet</div>
           
           <div className="flex flex-col gap-3">
             {/* Op Alpha */}

@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     
     if (workerCount >= sub.planInfo.maxWorkers) {
       return NextResponse.json({ 
-        error: `Limit Reached. Your ${sub.planInfo.name} plan allows up to ${sub.planInfo.maxWorkers} operatives. Please upgrade in the Marketplace.` 
+        error: `Limit Reached. Your ${sub.planInfo.name} plan allows up to ${sub.planInfo.maxWorkers} agents. Please upgrade in the Marketplace.` 
       }, { status: 403 });
     }
 
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     // Broadcast real-time notification
     broadcast(userId, {
       type: 'worker',
-      title: 'Operative Deployed',
+      title: 'Agent Deployed',
       body: `"${name}" is now online and ready to handle conversations.`,
       href: '/dashboard',
       meta: { workerId: worker._id },

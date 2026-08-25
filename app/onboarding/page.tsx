@@ -30,7 +30,7 @@ const STORAGE_KEY = 'void_onboarding_state';
 const STEPS = [
   { id: 'name', label: 'Business Name', icon: Building2 },
   { id: 'industry', label: 'Industry', icon: Activity },
-  { id: 'operative', label: 'First Operative', icon: Bot },
+  { id: 'operative', label: 'First Agent', icon: Bot },
 ] as const;
 
 const INDUSTRIES = [
@@ -148,7 +148,7 @@ export default function OnboardingPage() {
   };
 
   /* ---------------------------------------------------------------- */
-  /*  Step 3: First Operative                                          */
+  /*  Step 3: First Agent                                            */
   /* ---------------------------------------------------------------- */
 
   const handleOperativeSubmit = async () => {
@@ -347,7 +347,7 @@ export default function OnboardingPage() {
                   Select your industry
                 </h2>
                 <p className="text-silver font-medium text-sm">
-                  We&apos;ll tailor operative templates and blueprints for <span className="text-foreground font-semibold">{state.companyName || 'your business'}</span>.
+                  We&apos;ll tailor agent templates and blueprints for <span className="text-foreground font-semibold">{state.companyName || 'your business'}</span>.
                 </p>
               </div>
 
@@ -408,7 +408,7 @@ export default function OnboardingPage() {
             </motion.div>
           )}
 
-          {/* ---- STEP 2: First Operative ---- */}
+          {/* ---- STEP 2: First Agent ---- */}
           {state.step === 2 && (
             <motion.div
               key="step-2"
@@ -449,7 +449,7 @@ export default function OnboardingPage() {
                 <>
                   <div className="text-center space-y-2">
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-                      Create your first operative
+                      Create your first agent
                     </h2>
                     <p className="text-silver font-medium text-sm">
                       Give your AI agent a name and personality.
@@ -459,7 +459,7 @@ export default function OnboardingPage() {
                   <div className="space-y-5">
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-bold text-silver uppercase tracking-widest px-1">
-                        Operative Name
+                        Agent Name
                       </label>
                       <input
                         autoFocus
@@ -511,7 +511,7 @@ export default function OnboardingPage() {
                           <Loader2 className="w-5 h-5 animate-spin" />
                         ) : (
                           <>
-                            Deploy Operative <ChevronRight className="w-4 h-4" />
+                            Deploy Agent <ChevronRight className="w-4 h-4" />
                           </>
                         )}
                       </button>

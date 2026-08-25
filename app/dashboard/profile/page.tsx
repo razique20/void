@@ -183,7 +183,7 @@ export default function ProfilePage() {
                         <Building2 className="w-4 h-4 text-emerald-500" />
                         01 / Select Active Sector
                       </h3>
-                      <p className="text-xs text-silver mt-0.5 font-medium">Select an industry to configure your operative templates.</p>
+                      <p className="text-xs text-silver mt-0.5 font-medium">Select an industry to configure your agent templates.</p>
                     </div>
                     <span className="text-[10px] font-mono font-bold text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full uppercase">
                       Active: {activeIndustryObj?.label}
@@ -307,7 +307,7 @@ export default function ProfilePage() {
                     )}
                     <div className="space-y-1">
                       <div className="text-base font-bold text-foreground">
-                        {user?.fullName || user?.username || 'Authenticated Operative Manager'}
+                        {user?.fullName || user?.username || 'Authenticated Agent Manager'}
                       </div>
                       <div className="text-xs font-mono text-silver">
                         {user?.primaryEmailAddress?.emailAddress || 'User ID: ' + (user?.id || 'active-user')}
@@ -359,9 +359,9 @@ export default function ProfilePage() {
                   <div>
                     <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                       <Sliders className="w-4 h-4 text-emerald-500" />
-                      Global Operative Preferences
+                      Global Agent Preferences
                     </h3>
-                    <p className="text-xs text-silver mt-0.5 font-medium">Default behavior settings applied to newly synthesized operatives.</p>
+                    <p className="text-xs text-silver mt-0.5 font-medium">Default behavior settings applied to newly synthesized agents.</p>
                   </div>
 
                   <div className="space-y-4">
@@ -395,7 +395,7 @@ export default function ProfilePage() {
                     <div className="p-4 rounded-2xl bg-bg-surface border border-border-default flex items-center justify-between">
                       <div className="space-y-0.5">
                         <div className="text-xs font-bold text-foreground">Real-Time Operational Alerts</div>
-                        <div className="text-[11px] text-silver font-medium">Receive browser notifications when operatives resolve customer inquiries.</div>
+                        <div className="text-[11px] text-silver font-medium">Receive browser notifications when agents resolve customer inquiries.</div>
                       </div>
                       <input
                         type="checkbox"

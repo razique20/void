@@ -158,7 +158,7 @@ export async function DELETE(req: Request) {
 
     if (operativeUsingIt) {
       return NextResponse.json({
-        error: `Cannot delete: Operative "${operativeUsingIt.name}" is using this credential. Reassign it first.`
+        error: `Cannot delete: Agent "${operativeUsingIt.name}" is using this credential. Reassign it first.`
       }, { status: 409 });
     }
 

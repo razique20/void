@@ -42,19 +42,19 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'dashboard',
     title: 'Fleet Command Center',
-    subtitle: 'Real-time operative telemetry and interaction monitoring.',
+    subtitle: 'Real-time agent telemetry and interaction monitoring.',
     badge: 'Step 1 of 6 · Overview',
     icon: LayoutDashboard,
     color: 'text-emerald-400',
     highlightRoute: '/dashboard',
-    description: 'The Command Center gives you total visibility into your active AI operatives, response throughput, and hours saved.',
+    description: 'The Command Center gives you total visibility into your active AI agents, response throughput, and hours saved.',
     bullets: [
-      'Monitor live online operative status across WhatsApp and Telegram.',
+      'Monitor live online agent status across WhatsApp and Telegram.',
       'Track estimated financial savings and human hours reclaimed.',
       'View real-time 7-day interaction volume graphs and gateway health.'
     ],
     graphic: {
-      title: 'OPERATIVE FLEET TELEMETRY',
+      title: 'AGENT FLEET TELEMETRY',
       statValue: '99.98%',
       statLabel: 'Autonomy Score',
       tag: 'Fleet Status: 2 Online'
@@ -62,13 +62,13 @@ const TOUR_STEPS: TourStep[] = [
   },
   {
     id: 'hire',
-    title: 'Hire & Synthesize Operatives',
+    title: 'Hire & Synthesize Agents',
     subtitle: 'Deploy industry-tailored autonomous AI workers in seconds.',
     badge: 'Step 2 of 6 · Synthesis',
     icon: PlusCircle,
     color: 'text-cyan-400',
     highlightRoute: '/create-worker',
-    description: 'Instantly build custom AI operatives using domain frameworks (Healthcare, Retail, Logistics, Real Estate, Hotel Desk) or from scratch.',
+    description: 'Instantly build custom AI agents using domain frameworks (Healthcare, Retail, Logistics, Real Estate, Hotel Desk) or from scratch.',
     bullets: [
       'Pre-configured sector blueprints with industry-specific role templates.',
       'Dynamic baseline tone and prompt customization.',
@@ -84,12 +84,12 @@ const TOUR_STEPS: TourStep[] = [
   {
     id: 'brain',
     title: 'Knowledge Base & SOP Training',
-    subtitle: 'Prime operative brains with company documents and guidelines.',
+    subtitle: 'Prime agent brains with company documents and guidelines.',
     badge: 'Step 3 of 6 · Neural Core',
     icon: BookOpen,
     color: 'text-purple-400',
     highlightRoute: '/training',
-    description: 'Upload your company documents, FAQs, pricing sheets, or SOPs so your operatives answer questions with 100% precision.',
+    description: 'Upload your company documents, FAQs, pricing sheets, or SOPs so your agents answer questions with 100% precision.',
     bullets: [
       'Supports PDF, DOCX, and TXT mission files.',
       'Vector semantic search for sub-second accurate document lookup.',
@@ -131,7 +131,7 @@ const TOUR_STEPS: TourStep[] = [
     icon: Database,
     color: 'text-blue-400',
     highlightRoute: '/dashboard/leads',
-    description: 'Operatives automatically capture customer names, phone numbers, intent details, and status updates directly into your CRM.',
+    description: 'Agents automatically capture customer names, phone numbers, intent details, and status updates directly into your CRM.',
     bullets: [
       'Zero manual data entry — automatic lead capture.',
       'Filter leads by intent, channel, or acquisition timestamp.',
@@ -154,7 +154,7 @@ const TOUR_STEPS: TourStep[] = [
     highlightRoute: '/dashboard/profile',
     description: 'Configure your active industry sector, global business metadata (Hours, Contacts), and user authentication credentials.',
     bullets: [
-      'Locks the Operative Builder to your active industry sector.',
+      'Locks the Agent Builder to your active industry sector.',
       'Auto-fills business parameters into new worker templates.',
       'Manage Username & Password credentials or 2FA via Clerk Security.'
     ],

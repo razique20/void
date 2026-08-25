@@ -144,7 +144,7 @@ export default function MarketplacePage() {
                     <p className="text-[9px] font-bold text-apple-blue uppercase tracking-[0.2em] mb-2">Enterprise Workforce</p>
                     <h3 className="text-2xl lg:text-3xl font-bold leading-tight mb-4 max-w-md text-foreground tracking-tight">Action Agent<br />Workflows.</h3>
                     <p className="text-silver text-xs leading-relaxed max-w-lg font-medium">
-                      Transform operatives into autonomous workers that can execute refunds, book meetings, and update your CRM directly from live conversations.
+                      Transform agents into autonomous workers that can execute refunds, book meetings, and update your CRM directly from live conversations.
                     </p>
                   </div>
 
@@ -216,7 +216,7 @@ export default function MarketplacePage() {
                   <div>
                     <h4 className="text-sm font-bold mb-1.5 text-foreground">Elite Sovereign</h4>
                     <p className="text-silver text-xs leading-relaxed font-medium">
-                      Dedicated LPU nodes and unlimited operatives for high-scale agencies.
+                      Dedicated LPU nodes and unlimited agents for high-scale agencies.
                     </p>
                   </div>
                   <div className="mt-5">

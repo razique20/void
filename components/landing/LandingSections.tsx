@@ -33,13 +33,13 @@ const viewport = { once: true, margin: '-60px' } as const;
 
 
 /* ------------------------------------------------------------------ */
-/* Metrics Band — Concrete performance numbers (light background)     */
+/* Metrics Band — Early-stage positioning (light background)          */
 /* ------------------------------------------------------------------ */
 const STATS = [
-  { value: '2,400+', label: 'Teams deployed' },
-  { value: '1.2M', label: 'Conversations handled' },
-  { value: '<90ms', label: 'Median response time' },
-  { value: '99.8%', label: 'Uptime SLA' },
+  { value: 'Beta', label: 'Currently in early access' },
+  { value: 'Free', label: 'Tier to get started' },
+  { value: '<100ms', label: 'Target response time' },
+  { value: '24/7', label: 'Always-on coverage' },
 ];
 
 export function MetricsBand() {
@@ -75,99 +75,79 @@ export function MetricsBand() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Testimonials — Case study carousel (dark background)                */
+/* Social Proof — Honest early-stage messaging (dark background)      */
 /* ------------------------------------------------------------------ */
-const TESTIMONIALS = [
-  {
-    quote: 'We cut our support costs by 73% in the first month. Our operative handles 1,200 tickets daily without breaks.',
-    stat: '73%',
-    statLabel: 'Cost reduction',
-    company: 'Aethyl',
-    industry: 'SaaS',
-  },
-  {
-    quote: 'Deployed 3 operatives in one afternoon. By Monday, they were handling 80% of our WhatsApp inbound.',
-    stat: '80%',
-    statLabel: 'Inbound automated',
-    company: 'JobX',
-    industry: 'FinTech',
-  },
-  {
-    quote: 'Our sales pipeline went from 40 leads/day to 200 qualified leads. The ROI paid for itself in week one.',
-    stat: '5×',
-    statLabel: 'Lead volume increase',
-    company: 'Estaite',
-    industry: 'Real Estate',
-  },
-  {
-    quote: 'We replaced 12 separate tools with VOID. One dashboard, one team, zero context switching.',
-    stat: '12',
-    statLabel: 'Tools replaced',
-    company: 'DeiraEscape',
-    industry: 'Travel',
-  },
-  {
-    quote: 'Our deals API latency dropped from 800ms to 12ms. Void processes 50k requests daily without a single hiccup.',
-    stat: '12ms',
-    statLabel: 'API response time',
-    company: 'Offrion',
-    industry: 'Deals API',
-  },
+const PROOF_POINTS = [
+  { icon: Zap, label: 'Deploy in minutes, no engineers' },
+  { icon: Globe, label: 'WhatsApp, Telegram, Web & Email' },
+  { icon: Shield, label: 'Your data never trains our models' },
+  { icon: Lock, label: 'Encryption at rest and in transit' },
+  { icon: BarChart3, label: 'Real-time analytics & logs' },
+  { icon: Settings, label: 'CRM, helpdesk & 50+ integrations' },
 ];
 
-export function Testimonials() {
+export function SocialProof() {
   return (
-    <section aria-labelledby="testimonials-heading" className="py-20 md:py-32 bg-zinc-950 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-5 sm:px-6 mb-16 md:mb-24">
+    <section aria-labelledby="proof-heading" className="py-16 md:py-24 bg-zinc-950 overflow-hidden">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6">
         <motion.div
           variants={reveal}
           initial="hidden"
           whileInView="visible"
           viewport={viewport}
-          className="max-w-2xl"
+          className="text-center mb-12 md:mb-16"
         >
           <h2
-            id="testimonials-heading"
+            id="proof-heading"
             className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-white"
           >
-            What they say about VOID
+            Built to scale. Early to market.
           </h2>
+          <p className="mt-4 text-zinc-400 text-lg font-medium max-w-xl mx-auto">
+            VOID is in early access. We&apos;re shipping fast and listening to every adopter.
+          </p>
         </motion.div>
-      </div>
 
-      {/* Scrolling testimonials */}
-      <div className="relative">
-        <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-zinc-950 to-transparent z-10" />
-        <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-zinc-950 to-transparent z-10" />
-
-        <div className="flex animate-marquee">
-          {[...TESTIMONIALS, ...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
-            <div
-              key={`${t.company}-${i}`}
-              className="flex-shrink-0 w-[380px] mx-4 p-8 bg-zinc-900 border border-zinc-800 rounded-[28px] flex flex-col justify-between"
+        {/* Compact bento grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {PROOF_POINTS.map((p, i) => (
+            <motion.div
+              key={p.label}
+              variants={reveal}
+              custom={i}
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewport}
+              className="flex items-center gap-3 p-4 bg-zinc-900/60 border border-zinc-800/60 rounded-2xl"
             >
-              <div>
-                <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-5xl font-black text-white tabular-nums">
-                    {t.stat}
-                  </span>
-                  <span className="text-sm font-semibold text-emerald-400">
-                    {t.statLabel}
-                  </span>
-                </div>
-                <p className="text-zinc-300 text-base font-medium leading-relaxed mb-6">
-                  &ldquo;{t.quote}&rdquo;
-                </p>
+              <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+                <p.icon className="w-4 h-4 text-emerald-400" />
               </div>
-              <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
-                <span className="text-sm font-bold text-white">{t.company}</span>
-                <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                  {t.industry}
-                </span>
-              </div>
-            </div>
+              <span className="text-sm font-semibold text-zinc-300 leading-tight">
+                {p.label}
+              </span>
+            </motion.div>
           ))}
         </div>
+
+        <motion.div
+          variants={reveal}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+          className="flex flex-wrap items-center justify-center gap-4 mt-10"
+        >
+          <Link
+            href="/onboarding"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-emerald-500 text-white text-sm font-bold hover:bg-emerald-400 transition-all active:scale-[0.98]"
+          >
+            Join Early Access
+            <ArrowUpRight className="w-4 h-4" />
+          </Link>
+          <span className="text-sm font-medium text-zinc-500">
+            No credit card required &middot; Free tier available
+          </span>
+        </motion.div>
       </div>
     </section>
   );
@@ -187,7 +167,7 @@ const STEPS = [
     icon: PlugZap,
     step: '02',
     title: 'Connect your stack',
-    body: 'Plug in WhatsApp, Telegram, web, email and your CRM. Your operative learns privately.',
+    body: 'Plug in WhatsApp, Telegram, web, email and your CRM. Your agent learns privately.',
   },
   {
     icon: Rocket,
@@ -218,7 +198,7 @@ export function HowItWorks() {
             Live in three steps.
           </h2>
           <p className="mt-4 text-zinc-500 dark:text-zinc-400 text-lg max-w-xl mx-auto font-medium">
-            No engineers. No six-month rollout. Ship your first operative today.
+            No engineers. No six-month rollout. Ship your first agent today.
           </p>
         </motion.div>
 
@@ -342,46 +322,22 @@ export function UseCases() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Why Choose VOID — Feature grid (light background)                   */
+/* Why Choose VOID — Compact feature grid (light background)          */
 /* ------------------------------------------------------------------ */
 const FEATURES = [
-  {
-    icon: Zap,
-    title: 'Deploy in minutes',
-    body: 'No engineering team required. Describe what you need, connect your tools, and go live.',
-  },
-  {
-    icon: Globe,
-    title: 'Omnichannel native',
-    body: 'WhatsApp, Telegram, web chat, email — your operative handles all channels from one brain.',
-  },
-  {
-    icon: Shield,
-    title: 'Enterprise-grade security',
-    body: 'SOC 2 compliant infrastructure. Your data never trains our models. Full isolation.',
-  },
-  {
-    icon: Lock,
-    title: 'Private by design',
-    body: 'Your knowledge base stays yours. Zero data sharing, full encryption at rest and in transit.',
-  },
-  {
-    icon: BarChart3,
-    title: 'Full visibility',
-    body: 'Real-time analytics, conversation logs, and performance metrics from the console.',
-  },
-  {
-    icon: Settings,
-    title: 'Works with your stack',
-    body: 'CRM, helpdesk, webhooks, APIs — plug into 50+ integrations or build custom flows.',
-  },
+  { icon: Zap, label: 'Deploy in minutes, no engineers' },
+  { icon: Globe, label: 'WhatsApp, Telegram, Web & Email' },
+  { icon: Shield, label: 'Your data never trains our models' },
+  { icon: Lock, label: 'Encryption at rest and in transit' },
+  { icon: BarChart3, label: 'Real-time analytics & logs' },
+  { icon: Settings, label: 'CRM, helpdesk & 50+ integrations' },
 ];
 
 export function WhyChoose() {
   return (
     <section
       aria-labelledby="why-heading"
-      className="bg-zinc-100 dark:bg-zinc-900 py-20 md:py-32"
+      className="bg-zinc-100 dark:bg-zinc-900 py-16 md:py-24"
     >
       <div className="max-w-6xl mx-auto px-5 sm:px-6">
         <motion.div
@@ -389,7 +345,7 @@ export function WhyChoose() {
           initial="hidden"
           whileInView="visible"
           viewport={viewport}
-          className="text-center mb-16 md:mb-24"
+          className="text-center mb-10 md:mb-14"
         >
           <h2
             id="why-heading"
@@ -398,28 +354,27 @@ export function WhyChoose() {
             Why teams choose VOID
           </h2>
           <p className="mt-4 text-zinc-500 dark:text-zinc-400 text-lg max-w-xl mx-auto font-medium">
-            Everything you need to deploy AI operatives — nothing you don&apos;t.
+            Everything you need to deploy AI agents — nothing you don&apos;t.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {FEATURES.map((f, i) => (
             <motion.div
-              key={f.title}
+              key={f.label}
               variants={reveal}
               custom={i}
               initial="hidden"
               whileInView="visible"
               viewport={viewport}
-              className="p-8 rounded-[28px] bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700"
+              className="flex items-center gap-3 p-4 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl"
             >
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-500/10 flex items-center justify-center border border-emerald-200 dark:border-emerald-500/20 mb-6">
-                <f.icon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 flex items-center justify-center shrink-0">
+                <f.icon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <h3 className="text-lg font-bold text-zinc-900 dark:text-white mb-3">{f.title}</h3>
-              <p className="text-zinc-500 dark:text-zinc-400 text-base font-medium leading-relaxed">
-                {f.body}
-              </p>
+              <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 leading-tight">
+                {f.label}
+              </span>
             </motion.div>
           ))}
         </div>
@@ -457,17 +412,17 @@ export function TrustStrip() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Trust Badges — Compliance & security certifications (dark bg)       */
+/* Trust Badges — Honest security posture (dark bg)                   */
 /* ------------------------------------------------------------------ */
 const BADGES = [
-  { label: 'SOC 2', desc: 'Type II Certified' },
-  { label: 'GDPR', desc: 'Fully Compliant' },
-  { label: 'ISO 27001', desc: 'Information Security' },
+  { icon: Shield, title: 'Data isolation', desc: 'Every account gets its own environment. Your data never mixes.' },
+  { icon: Lock, title: 'Encryption', desc: 'Data encrypted at rest and in transit. We never train on your data.' },
+  { icon: Settings, title: 'Privacy-first', desc: 'Full control over your data. Delete anytime. No lock-in.' },
 ];
 
 export function TrustBadges() {
   return (
-    <section aria-label="Security certifications" className="py-16 md:py-24 bg-zinc-950">
+    <section aria-label="Security features" className="py-16 md:py-24 bg-zinc-950">
       <div className="max-w-6xl mx-auto px-5 sm:px-6">
         <motion.div
           variants={reveal}
@@ -476,15 +431,15 @@ export function TrustBadges() {
           viewport={viewport}
           className="text-center mb-12"
         >
-          <h3 className="text-xl font-bold text-white mb-2">Trust built in</h3>
+          <h3 className="text-xl font-bold text-white mb-2">Security built in</h3>
           <p className="text-zinc-400 text-sm font-medium">
-            Enterprise-grade infrastructure backed by global standards.
+            We take data privacy seriously — here&apos;s what we do today.
           </p>
         </motion.div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {BADGES.map((b, i) => (
             <motion.div
-              key={`${b.label}-${i}`}
+              key={`${b.title}-${i}`}
               variants={reveal}
               custom={i}
               initial="hidden"
@@ -492,9 +447,9 @@ export function TrustBadges() {
               viewport={viewport}
               className="flex flex-col items-center justify-center p-8 rounded-[28px] bg-zinc-900 border border-zinc-800 text-center"
             >
-              <Shield className="w-8 h-8 text-emerald-400 mb-3" />
-              <span className="text-lg font-bold text-white">{b.label}</span>
-              <span className="text-xs font-semibold text-zinc-500 mt-1">{b.desc}</span>
+              <b.icon className="w-8 h-8 text-emerald-400 mb-3" />
+              <span className="text-lg font-bold text-white">{b.title}</span>
+              <span className="text-xs font-semibold text-zinc-500 mt-2 max-w-[200px] leading-relaxed">{b.desc}</span>
             </motion.div>
           ))}
         </div>

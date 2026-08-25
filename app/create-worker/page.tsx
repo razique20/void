@@ -503,7 +503,7 @@ export default function CreateWorkerPage() {
         router.push('/dashboard');
       } else {
         const data = await res.json();
-        setError(data.error || 'Failed to synthesize operative.');
+        setError(data.error || 'Failed to synthesize agent.');
       }
     } catch (err) {
       console.error(err);
@@ -548,7 +548,7 @@ export default function CreateWorkerPage() {
             <div className="space-y-1">
               <div className="flex items-center gap-3">
                 <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
-                  Deploy Operative
+                  Deploy Agent
                 </h1>
                 <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-500/15 rounded-full">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 relative flex shrink-0">
@@ -669,7 +669,7 @@ export default function CreateWorkerPage() {
                           Operator Role
                         </h2>
                         <p className="text-[10px] text-silver/60 font-medium mt-0.5">
-                          Select the specific role assignment for this operative.
+                          Select the specific role assignment for this agent.
                         </p>
                       </div>
 
@@ -933,7 +933,7 @@ export default function CreateWorkerPage() {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <>
-                      Deploy Operative
+                      Deploy Agent
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                     </>
                   )}
@@ -997,7 +997,7 @@ export default function CreateWorkerPage() {
                 <div className="space-y-1">
                   <h4 className="font-bold text-[11px] text-apple-blue uppercase tracking-wider">Sandbox Mode</h4>
                   <p className="text-[10px] text-apple-blue/70 font-medium leading-relaxed">
-                    Once deployed, your operative enters sandbox mode. Wire live channels (WhatsApp, Telegram) in the config tab.
+                    Once deployed, your agent enters sandbox mode. Wire live channels (WhatsApp, Telegram) in the config tab.
                   </p>
                 </div>
               </div>

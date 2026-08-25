@@ -21,13 +21,13 @@ export async function POST(req: Request) {
 
     const worker = await Worker.findById(workerId);
     if (!worker) {
-      return NextResponse.json({ error: 'Operative not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Agent not found' }, { status: 404 });
     }
 
     // Accept token from body (unsaved input) or fall back to database
     const tgToken = bodyToken || worker.channels?.telegram?.token;
     if (!tgToken) {
-      return NextResponse.json({ error: 'No Telegram token saved for this operative' }, { status: 400 });
+      return NextResponse.json({ error: 'No Telegram token saved for this agent' }, { status: 400 });
     }
 
     // Validate token format: should be numeric:alphanumeric

@@ -38,7 +38,7 @@ const PAGE_DATA: Record<string, PageContent> = {
         icon: Cpu
       },
       {
-        title: "Operative Orchestrator",
+        title: "Agent Orchestrator",
         description: "The central nervous system of VOID. Manages state transitions, memory windows, and routes intents to correct webhooks.",
         icon: Network
       },
@@ -76,7 +76,7 @@ const PAGE_DATA: Record<string, PageContent> = {
     title: "Neural Hub",
     subtitle: "Global Telemetry and Fleet Management",
     badge: "Network Control Console",
-    description: "Scale your workforce dynamically. Track the live telemetry of every active operative, balance LPU allocation, and fine-tune reasoning loops.",
+    description: "Scale your workforce dynamically. Track the live telemetry of every active agent, balance LPU allocation, and fine-tune reasoning loops.",
     sections: [
       {
         title: "Real-time Telemetry",
@@ -85,12 +85,12 @@ const PAGE_DATA: Record<string, PageContent> = {
       },
       {
         title: "Fine-Tuning Loop",
-        description: "Review conversation logs and calibrate operative responses with a single click, updating weights instantly.",
+        description: "Review conversation logs and calibrate agent responses with a single click, updating weights instantly.",
         icon: Zap
       },
       {
         title: "Omnichannel Routing",
-        description: "Sync your operatives to WhatsApp, Telegram, Slack, or Web with unified state tracking.",
+        description: "Sync your agents to WhatsApp, Telegram, Slack, or Web with unified state tracking.",
         icon: Globe
       }
     ]
@@ -108,7 +108,7 @@ const PAGE_DATA: Record<string, PageContent> = {
       },
       {
         title: "Bi-directional Webhooks",
-        description: "Configure instant event triggers when operatives need to request human authorization or execute database actions.",
+        description: "Configure instant event triggers when agents need to request human authorization or execute database actions.",
         icon: Network
       },
       {
@@ -537,8 +537,8 @@ function NeuralHubSandbox() {
   const [load, setLoad] = useState(38);
   const [isCalibrating, setIsCalibrating] = useState(false);
   const [logs, setLogs] = useState<string[]>([
-    "System standby. Monitoring active operatives.",
-    "Operative Alpha: synthesis completed in 84ms.",
+    "System standby. Monitoring active agents.",
+    "Agent Alpha: synthesis completed in 84ms.",
   ]);
 
   useEffect(() => {

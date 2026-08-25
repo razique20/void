@@ -23,7 +23,7 @@ export default function CreateWorkerError({
         <div className="space-y-2">
           <h1 className="text-xl font-bold">Hiring Error</h1>
           <p className="text-sm text-silver leading-relaxed">
-            Failed to load the operative hiring wizard. Please try again.
+            Failed to load the agent hiring wizard. Please try again.
           </p>
         </div>
         <button

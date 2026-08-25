@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s | VOID",
   },
   description:
-    "Deploy autonomous AI operatives that handle support, sales, and customer workflows 24/7. Scale your team with intelligent agents that work globally, autonomously, and seamlessly.",
+    "Deploy autonomous AI agents that handle support, sales, and customer workflows 24/7. Scale your team with intelligent agents that work globally, autonomously, and seamlessly.",
   keywords: [
     "AI agents",
     "AI workforce",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     "AI chatbot",
     "AI customer service",
     "business automation",
-    "AI operatives",
+    "AI agents",
     "deploy AI",
   ],
   authors: [{ name: "VOID" }],
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     siteName: "VOID",
     title: "VOID — Hire an AI Workforce That Never Sleeps",
     description:
-      "Deploy autonomous AI operatives that handle support, sales, and customer workflows 24/7.",
+      "Deploy autonomous AI agents that handle support, sales, and customer workflows 24/7.",
     images: [
       {
         url: "/og.png",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "VOID — Hire an AI Workforce That Never Sleeps",
     description:
-      "Deploy autonomous AI operatives that handle support, sales, and customer workflows 24/7.",
+      "Deploy autonomous AI agents that handle support, sales, and customer workflows 24/7.",
     images: ["/og.png"],
   },
   robots: {

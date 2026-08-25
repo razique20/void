@@ -132,7 +132,7 @@ export default function Navbar() {
       title: 'Core Intelligence',
       links: [
         { label: 'Overview', href: '/dashboard', icon: LayoutDashboard, locked: false },
-        { label: 'Hire Operative', href: '/create-worker', icon: PlusCircle, locked: false },
+        { label: 'Hire Agent', href: '/create-worker', icon: PlusCircle, locked: false },
         { label: 'Brain & Knowledge', href: '/training', icon: BookOpen, locked: false },
         { label: 'Live Chat', href: '/chat', icon: Bot, locked: false },
       ]

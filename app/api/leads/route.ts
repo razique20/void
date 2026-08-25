@@ -22,7 +22,7 @@ export async function GET() {
 
     const enrichedLeads = leads.map(l => ({
       ...l,
-      workerName: workerMap[l.workerId] || 'Deleted Operative'
+      workerName: workerMap[l.workerId] || 'Deleted Agent'
     }));
 
     return NextResponse.json(enrichedLeads);

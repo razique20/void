@@ -111,7 +111,7 @@ export default function TrainingPage() {
   const handleTrain = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedWorker) {
-      showToast('Please select a target operative', 'error');
+      showToast('Please select a target agent', 'error');
       return;
     }
 
@@ -119,7 +119,7 @@ export default function TrainingPage() {
     setSuccess(false);
 
     const activeWorkerObj = workers.find(w => w._id === selectedWorker);
-    const workerName = activeWorkerObj?.name || 'Operative';
+    const workerName = activeWorkerObj?.name || 'Agent';
 
     try {
       let res;
@@ -297,7 +297,7 @@ export default function TrainingPage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-bg-active rounded-2xl overflow-hidden border border-border-default">
             {[
               { label: 'Total Neural Chunks', value: trainingStats.totalChunks ?? 0, trend: 'Active' },
-              { label: 'Target Operatives', value: workers.length, trend: '' },
+              { label: 'Target Agents', value: workers.length, trend: '' },
               { label: 'Documents Digested', value: trainingStats.stats?.fileCount ?? 0 },
               { label: 'Web Portals Crawled', value: trainingStats.stats?.websiteCount ?? 0 },
             ].map((stat, i) => (
@@ -322,7 +322,7 @@ export default function TrainingPage() {
               <div className="w-14 h-14 bg-bg-elevated border border-border-strong rounded-2xl flex items-center justify-center mb-4">
                 <Bot className="w-7 h-7 text-silver" />
               </div>
-              <h3 className="text-sm font-bold text-foreground">No operatives deployed yet</h3>
+              <h3 className="text-sm font-bold text-foreground">No agents deployed yet</h3>
               <p className="text-silver text-xs max-w-sm mt-1.5 leading-relaxed">
                 Deploy your first AI agent to start injecting knowledge.
               </p>
@@ -330,7 +330,7 @@ export default function TrainingPage() {
                 href="/create-worker"
                 className="mt-5 inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-sm"
               >
-                <Plus className="w-3.5 h-3.5" /> Deploy Operative
+                <Plus className="w-3.5 h-3.5" /> Deploy Agent
               </Link>
             </div>
           )}
@@ -348,7 +348,7 @@ export default function TrainingPage() {
                     <div>
                       <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-2">
                         <BrainCircuit className="w-3.5 h-3.5 text-purple-500" />
-                        Target Operative
+                        Target Agent
                       </h2>
                       <p className="text-[10px] text-silver/60 font-medium mt-0.5">Select agent profile to ingest knowledge</p>
                     </div>
@@ -371,7 +371,7 @@ export default function TrainingPage() {
                       className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold text-foreground focus:outline-none focus:border-purple-500/40 transition-all cursor-pointer appearance-none"
                     >
                       {workers.length === 0 ? (
-                        <option value="">No operatives available</option>
+                        <option value="">No agents available</option>
                       ) : (
                         workers.map(w => (
                           <option key={w._id} value={w._id} className="bg-background text-foreground">
@@ -565,7 +565,7 @@ export default function TrainingPage() {
                         <Layers className="w-3.5 h-3.5 text-purple-500" />
                         Memory Bank Index
                       </h2>
-                      <p className="text-[10px] text-silver/60 font-medium mt-0.5">Active RAG vector chunks for selected operative</p>
+                      <p className="text-[10px] text-silver/60 font-medium mt-0.5">Active RAG vector chunks for selected agent</p>
                     </div>
 
                     <div className="relative w-full sm:w-64">
@@ -595,7 +595,7 @@ export default function TrainingPage() {
                       <p className="text-xs text-silver mt-1.5 max-w-xs leading-relaxed">
                         {searchQuery
                           ? 'Try adjusting your search terms or clear the filter.'
-                          : 'Inject your first knowledge base to give your operative custom intelligence. Start with FAQs, SOPs, or product docs.'}
+                          : 'Inject your first knowledge base to give your agent custom intelligence. Start with FAQs, SOPs, or product docs.'}
                       </p>
                       {!searchQuery && (
                         <div className="mt-4 flex gap-2">
@@ -714,7 +714,7 @@ export default function TrainingPage() {
                         title="Test Sandbox"
                       />
                     ) : (
-                      <div className="p-8 text-center text-xs text-silver">Select an operative to start sandbox session</div>
+                      <div className="p-8 text-center text-xs text-silver">Select an agent to start sandbox session</div>
                     )}
                   </div>
                 </motion.div>
@@ -758,7 +758,7 @@ export default function TrainingPage() {
                   <div className="space-y-1">
                     <h4 className="font-bold text-[11px] text-purple-400 uppercase tracking-wider">Encrypted Neural Memory</h4>
                     <p className="text-[10px] text-purple-300/80 font-medium leading-relaxed">
-                      Datasets are isolated per operative workspace and chunked automatically for high-precision semantic lookup.
+                      Datasets are isolated per agent workspace and chunked automatically for high-precision semantic lookup.
                     </p>
                   </div>
                 </div>

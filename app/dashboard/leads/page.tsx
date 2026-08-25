@@ -160,7 +160,7 @@ export default function LeadsPage() {
   };
 
   const downloadCSV = () => {
-    const headers = ['Date', 'Name', 'Email', 'Phone', 'Intent', 'Source', 'Operative', 'Status', 'Notes'];
+    const headers = ['Date', 'Name', 'Email', 'Phone', 'Intent', 'Source', 'Agent', 'Status', 'Notes'];
     const rows = leads.map(l => [
       new Date(l.createdAt).toLocaleDateString(),
       l.contactInfo?.name || '',
@@ -281,7 +281,7 @@ export default function LeadsPage() {
               </div>
             </div>
             <p className="text-silver text-xs font-medium">
-              Pipeline automatically captured, qualified, and indexed by your autonomous neural operatives.
+              Pipeline automatically captured, qualified, and indexed by your autonomous neural agents.
             </p>
           </div>
 
@@ -444,7 +444,7 @@ export default function LeadsPage() {
               <p className="text-silver text-xs max-w-sm mt-1.5 font-medium leading-relaxed">
                 {search
                   ? 'Try adjusting your search terms or clear the filter to see all leads.'
-                  : 'Leads are captured automatically when customers interact with your operatives via chat, WhatsApp, or web widgets. Deploy an operative and start conversations to begin capturing leads.'}
+                  : 'Leads are captured automatically when customers interact with your agents via chat, WhatsApp, or web widgets. Deploy an agent and start conversations to begin capturing leads.'}
               </p>
               {!search && (
                 <div className="mt-5 flex flex-col sm:flex-row gap-2">
@@ -452,7 +452,7 @@ export default function LeadsPage() {
                     href="/create-worker"
                     className="inline-flex items-center justify-center gap-1.5 bg-foreground text-background px-5 py-2.5 rounded-xl text-[11px] font-bold hover:opacity-90 transition-all shadow-sm"
                   >
-                    <Plus className="w-3.5 h-3.5" /> Deploy Operative
+                    <Plus className="w-3.5 h-3.5" /> Deploy Agent
                   </Link>
                   <Link
                     href="/chat"

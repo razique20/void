@@ -110,7 +110,7 @@ export default function ChannelsPage() {
       });
 
       if (duplicate) {
-        alert(`Error: This WhatsApp number is already assigned to active operative "${duplicate.name}". Multiple operatives per number is an Elite-only feature. Please upgrade or deactivate WhatsApp on "${duplicate.name}" first.`);
+        alert(`Error: This WhatsApp number is already assigned to active agent "${duplicate.name}". Multiple agents per number is an Elite-only feature. Please upgrade or deactivate WhatsApp on "${duplicate.name}" first.`);
         setSaving(false);
         return;
       }
@@ -339,7 +339,7 @@ export default function ChannelsPage() {
                           </div>
                           {!hasSmartRouting && (
                             <div className="text-[11px] font-medium opacity-90">
-                              Only the primary operative (<span className="underline font-bold">{isPrimary ? "this operative" : `"${allSharers[0]?.name}"`}</span>) will receive incoming messages. Upgrade to Elite to enable Smart Routing.
+                              Only the primary agent (<span className="underline font-bold">{isPrimary ? "this agent" : `"${allSharers[0]?.name}"`}</span>) will receive incoming messages. Upgrade to Elite to enable Smart Routing.
                             </div>
                           )}
                         </div>

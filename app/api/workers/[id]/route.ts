@@ -62,7 +62,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
           if (duplicateWorker && !features.includes('smart_routing')) {
             return NextResponse.json({
-              error: `This WhatsApp number is already assigned to active operative "${duplicateWorker.name}". Multiple operatives per number is an Elite-only feature. Please upgrade or deactivate WhatsApp on "${duplicateWorker.name}" first.`
+              error: `This WhatsApp number is already assigned to active agent "${duplicateWorker.name}". Multiple agents per number is an Elite-only feature. Please upgrade or deactivate WhatsApp on "${duplicateWorker.name}" first.`
             }, { status: 400 });
           }
         }

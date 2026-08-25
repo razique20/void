@@ -3,7 +3,7 @@
 import Footer from '@/components/Footer';
 import {
   MetricsBand,
-  Testimonials,
+  SocialProof,
   HowItWorks,
   UseCases,
   WhyChoose,
@@ -25,7 +25,7 @@ const organizationJsonLd = {
   url: SITE_URL,
   logo: `${SITE_URL}/icon.svg`,
   description:
-    'Deploy autonomous AI operatives that handle support, sales, and customer workflows 24/7.',
+    'Deploy autonomous AI agents that handle support, sales, and customer workflows 24/7.',
   sameAs: [],
   contactPoint: {
     '@type': 'ContactPoint',
@@ -40,7 +40,7 @@ const websiteJsonLd = {
   name: 'VOID',
   url: SITE_URL,
   description:
-    'Hire an AI workforce that never sleeps. Deploy autonomous operatives that handle support, sales, and workflows 24/7.',
+    'Hire an AI workforce that never sleeps. Deploy autonomous agents that handle support, sales, and workflows 24/7.',
 };
 
 const softwareApplicationJsonLd = {
@@ -51,7 +51,7 @@ const softwareApplicationJsonLd = {
   operatingSystem: 'Web',
   url: SITE_URL,
   description:
-    'Deploy autonomous AI operatives that handle support, sales, and customer workflows 24/7. Scale your team with intelligent agents.',
+    'Deploy autonomous AI agents that handle support, sales, and customer workflows 24/7. Scale your team with intelligent agents.',
   offers: {
     '@type': 'AggregateOffer',
     lowPrice: '0',
@@ -60,7 +60,7 @@ const softwareApplicationJsonLd = {
     offerCount: '4',
   },
   featureList: [
-    'AI Operative Deployment',
+    'AI Agent Deployment',
     'Knowledge Base Training',
     'WhatsApp & Telegram Integration',
     'Lead Capture & CRM Sync',
@@ -78,7 +78,7 @@ const faqJsonLd = {
       name: 'What is VOID?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'VOID is an AI workforce platform that lets you deploy autonomous operatives to handle customer support, sales, and business workflows 24/7.',
+        text: 'VOID is an AI workforce platform that lets you deploy autonomous agents to handle customer support, sales, and business workflows 24/7.',
       },
     },
     {
@@ -99,10 +99,10 @@ const faqJsonLd = {
     },
     {
       '@type': 'Question',
-      name: 'Can I train my AI operative with my own data?',
+      name: 'Can I train my AI agent with my own data?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes. You can upload documents (PDF, DOCX, CSV, TXT), paste text snippets, or crawl web pages to build a custom knowledge base for each operative.',
+        text: 'Yes. You can upload documents (PDF, DOCX, CSV, TXT), paste text snippets, or crawl web pages to build a custom knowledge base for each agent.',
       },
     },
   ],
@@ -189,7 +189,7 @@ export default function LandingPage() {
                   variants={itemVariants}
                   className="text-zinc-400 text-lg md:text-xl max-w-lg mb-4 leading-relaxed"
                 >
-                  Deploy autonomous operatives that handle support, sales, and workflows 24/7.
+                  Deploy autonomous agents that handle support, sales, and workflows 24/7.
                 </motion.p>
 
                 {/* Three-word tagline */}
@@ -207,7 +207,7 @@ export default function LandingPage() {
                       href="/onboarding"
                       className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-white text-zinc-950 text-sm font-bold hover:bg-zinc-200 transition-all active:scale-[0.98]"
                     >
-                      Deploy an Operative
+                      Deploy an Agent
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </Show>
@@ -241,14 +241,14 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                {/* Floating Card 1 — Operative Deployed */}
+                {/* Floating Card 1 — Agent Deployed */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
                   className="absolute top-8 right-4 sm:right-8 bg-white rounded-2xl p-5 shadow-2xl shadow-black/20 w-[200px]"
                 >
-                  <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1">Operative deployed</p>
+                  <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1">Agent deployed</p>
                   <p className="text-2xl font-black text-zinc-950">Sales Rep</p>
                   <div className="mt-3 flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-500" />
@@ -307,8 +307,8 @@ export default function LandingPage() {
         {/* Metrics Band — Light background */}
         <MetricsBand />
 
-        {/* Testimonials — Dark background */}
-        <Testimonials />
+        {/* Social Proof — Dark background */}
+        <SocialProof />
 
         {/* How it works — Light background */}
         <HowItWorks />
@@ -335,7 +335,7 @@ export default function LandingPage() {
                 Ready to scale?
               </h2>
               <p className="text-zinc-500 dark:text-zinc-400 text-lg md:text-xl font-medium max-w-xl mx-auto mb-12">
-                Your first operative pays for itself instantly. Start free today.
+                Your first agent pays for itself instantly. Start free today.
               </p>
 
               <div className="flex flex-col items-center gap-8">

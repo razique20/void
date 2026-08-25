@@ -66,7 +66,7 @@ export default function AdminDashboard() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard icon={Users} label="Total Architects" value={data?.stats?.totalUsers || 0} loading={loading} />
-        <StatCard icon={Bot} label="Active Operatives" value={data?.stats?.totalWorkers || 0} loading={loading} />
+        <StatCard icon={Bot} label="Active Agents" value={data?.stats?.totalWorkers || 0} loading={loading} />
         <StatCard icon={Database} label="Knowledge Nodes" value={data?.stats?.totalTrainingEntries || 0} loading={loading} />
         <StatCard icon={MessageSquare} label="Neural Handshakes" value={data?.stats?.totalConversations || 0} loading={loading} />
       </div>
@@ -81,7 +81,7 @@ export default function AdminDashboard() {
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-foreground/5 bg-bg-surface">
-                  <th className="px-6 py-4 text-xs font-semibold text-silver uppercase">Operative</th>
+                  <th className="px-6 py-4 text-xs font-semibold text-silver uppercase">Agent</th>
                   <th className="px-6 py-4 text-xs font-semibold text-silver uppercase">Tone</th>
                   <th className="px-6 py-4 text-xs font-semibold text-silver uppercase text-right">Status</th>
                 </tr>
