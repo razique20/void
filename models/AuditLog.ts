@@ -20,6 +20,10 @@ AuditLogSchema.index({ createdAt: -1 });
 AuditLogSchema.index({ targetType: 1, createdAt: -1 });
 AuditLogSchema.index({ action: 1, createdAt: -1 });
 
+// TTL index: auto-purge audit logs after 90 days (MongoDB handles deletion)
+const NINETY_DAYS = 90 * 24 * 60 * 60; // 7,776,000 seconds
+AuditLogSchema.index({ createdAt: 1 }, { expireAfterSeconds: NINETY_DAYS });
+
 const AuditLog = models.AuditLog || model('AuditLog', AuditLogSchema);
 
 export default AuditLog;

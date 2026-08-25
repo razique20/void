@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ScrollText, ShieldAlert, Users, Megaphone, Database, Bot, MessageSquare, Activity, Settings, LogIn, Trash2, Clock, Search, X, RefreshCw } from 'lucide-react';
+import { ScrollText, ShieldAlert, Users, Megaphone, Database, Bot, MessageSquare, Activity, Settings, LogIn, Trash2, Clock, Search, X, RefreshCw, Timer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, Variants } from 'framer-motion';
 
@@ -107,6 +107,10 @@ export default function AdminAuditPage() {
           <p className="text-silver text-xs font-medium">Immutable trail of all admin actions across the platform.</p>
         </div>
         <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 border border-amber-500/15 rounded-full">
+            <Timer className="w-3 h-3 text-amber-500" />
+            <span className="text-[9px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">90-day retention</span>
+          </div>
           <span className="text-[10px] text-silver font-mono">{logs.length} entries</span>
           <button onClick={fetchLogs} className="p-2.5 bg-bg-elevated hover:bg-bg-border border border-border-default rounded-xl transition-all text-silver hover:text-foreground" title="Refresh">
             <RefreshCw className={cn("w-3.5 h-3.5", loading && "animate-spin")} />
