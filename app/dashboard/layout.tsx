@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { Monitor, X } from 'lucide-react';
 import { useState } from 'react';
+import AnnouncementBanner from '@/components/AnnouncementBanner';
 
 export default function DashboardLayout({
   children,
@@ -38,6 +39,13 @@ export default function DashboardLayout({
               </button>
             </div>
           )}
+          {/* System Announcements */}
+          <div className="px-4 md:px-12 pt-4 relative z-10">
+            <div className="max-w-7xl mx-auto">
+              <AnnouncementBanner />
+            </div>
+          </div>
+
           {isLiveChat ? (
             <main className="flex-1 overflow-hidden pb-16 md:pb-0 relative z-10">
               {children}

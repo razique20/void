@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Users, Bot, Calendar, Search, MoreHorizontal, ShieldAlert, CreditCard, Activity, Download, X, Copy, Check } from 'lucide-react';
+import { Users, Bot, Calendar, Search, MoreHorizontal, ShieldAlert, CreditCard, Activity, Download, X, Copy, Check, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, Variants } from 'framer-motion';
 
@@ -25,6 +25,7 @@ export default function UserDirectoryPage() {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loadingTransactions, setLoadingTransactions] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [impersonating, setImpersonating] = useState(false);
 
   useEffect(() => {
     fetch('/api/admin/users')
@@ -90,6 +91,17 @@ export default function UserDirectoryPage() {
     link.href = URL.createObjectURL(blob);
     link.download = `users_export_${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
+  };
+
+  const handleImpersonate = async (clerkId: string) => {
+    if (!confirm(`Impersonate user ${clerkId}? You will be redirected to their dashboard.`)) return;
+    setImpersonating(true);
+    try {
+      // Store the impersonation target and redirect to their dashboard
+      // The admin stays logged in but sees the user's view
+      localStorage.setItem('void_impersonate', clerkId);
+      window.location.href = '/dashboard';
+    } finally { setImpersonating(false); }
   };
 
   return (
@@ -293,6 +305,10 @@ export default function UserDirectoryPage() {
 
             {/* Modal Footer */}
             <div className="px-6 py-4 border-t border-border-default flex gap-2 shrink-0">
+              <button onClick={() => handleImpersonate(selectedUser.clerkId)} disabled={impersonating}
+                className="flex items-center gap-2 px-4 py-2.5 bg-amber-500/10 border border-amber-500/20 text-amber-500 rounded-xl text-xs font-bold hover:bg-amber-500/20 transition-all disabled:opacity-50">
+                <LogIn className="w-3.5 h-3.5" /> {impersonating ? 'Switching...' : 'Impersonate'}
+              </button>
               <button onClick={() => setSelectedUser(null)} className="flex-1 py-2.5 bg-bg-elevated border border-border-default text-foreground rounded-xl text-xs font-bold hover:bg-bg-active transition-all">
                 Close
               </button>

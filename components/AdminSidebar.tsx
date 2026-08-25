@@ -11,6 +11,8 @@ import {
   MessageSquare,
   ArrowLeft,
   BarChart3,
+  HeartPulse,
+  Megaphone,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -33,8 +35,10 @@ const navGroups = [
   {
     title: 'System',
     links: [
+      { label: 'System Health', icon: HeartPulse, href: '/admin/health' },
       { label: 'Neural Config', icon: Database, href: '/admin/config' },
       { label: 'System Logs', icon: Activity, href: '/admin/logs' },
+      { label: 'Announcements', icon: Megaphone, href: '/admin/announcements' },
     ],
   },
 ];
