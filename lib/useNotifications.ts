@@ -12,8 +12,10 @@ export interface UseNotificationsReturn {
   unreadCount: number;
   /** Mark specific notifications (or all) as read */
   markRead: (ids?: string[]) => void;
-  /** Dismiss / remove a notification from the list */
+  /** Dismiss / remove a notification from the list (also marks as read on server) */
   dismiss: (id: string) => void;
+  /** Mark all as read and dismiss them from the list */
+  markReadAndClear: () => void;
   /** Connection status */
   connected: boolean;
 }
@@ -110,8 +112,28 @@ export function useNotifications(): UseNotificationsReturn {
   }, []);
 
   const dismiss = useCallback((id: string) => {
+    // Remove locally and persist as read on server
     setNotifications((prev) => prev.filter((n) => n.id !== id));
+    fetch('/api/notifications', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: [id] }),
+    }).catch(() => {});
   }, []);
 
-  return { notifications, unreadCount, markRead, dismiss, connected };
+  const markReadAndClear = useCallback(() => {
+    // Mark all as read optimistically, then clear from list
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    fetch('/api/notifications', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    }).catch(() => {});
+    // Clear after a brief delay so the UI can animate
+    setTimeout(() => {
+      setNotifications([]);
+    }, 300);
+  }, []);
+
+  return { notifications, unreadCount, markRead, dismiss, markReadAndClear, connected };
 }

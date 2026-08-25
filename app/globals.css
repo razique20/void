@@ -179,7 +179,7 @@ body {
 
 @media (min-width: 1024px) {
   body.has-sidebars {
-    padding-left: 240px;
+    padding-left: 256px;
     padding-right: 64px;
   }
   body.has-sidebars.has-transitions {
