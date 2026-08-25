@@ -47,7 +47,11 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(cachedMounted);
   const pathname = usePathname();
 
-  const isWorkspace = pathname !== '/' && !pathname.startsWith('/sign-in') && !pathname.startsWith('/sign-up') && !pathname.startsWith('/admin');
+  const isAdmin = pathname.startsWith('/admin');
+  const isWorkspace = pathname !== '/' && !pathname.startsWith('/sign-in') && !pathname.startsWith('/sign-up') && !isAdmin;
+
+  // Hide navbar entirely on admin pages (admin has its own sidebar)
+  if (isAdmin) return null;
 
   // Hydrate from localStorage + enable transitions after first paint
   useEffect(() => {
