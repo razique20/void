@@ -77,7 +77,7 @@ export default function ChannelsPage() {
 
   const hasWhatsApp = sub?.features?.includes('whatsapp');
   const hasTelegram = sub?.features?.includes('telegram');
-  const hasSlack = sub?.features?.includes('whatsapp'); // Shared on enterprise/elite
+  const hasSlack = sub?.features?.includes('slack');
   const hasEmail = sub?.features?.includes('email_agent');
   const hasCalcom = sub?.features?.includes('cal_booking');
   const hasActions = sub?.features?.includes('actions_webhooks') || sub?.features?.includes('actions_full');
@@ -89,7 +89,7 @@ export default function ChannelsPage() {
     
     const formData = new FormData(e.currentTarget);
     
-    // Validate uniqueness of phone number assignment for non-Elite plans
+    // Validate uniqueness of phone number assignment for non-Enterprise plans
     const hasSmartRouting = sub?.features?.includes('smart_routing');
     const waActive = hasWhatsApp && formData.get('wa_active') === 'on';
     const waCredId = useVault ? (formData.get('wa_credentialId') || '') : '';
@@ -107,7 +107,7 @@ export default function ChannelsPage() {
       });
 
       if (duplicate) {
-        alert(`Error: This WhatsApp number is already assigned to active agent "${duplicate.name}". Multiple agents per number is an Elite-only feature. Please upgrade or deactivate WhatsApp on "${duplicate.name}" first.`);
+        alert(`Error: This WhatsApp number is already assigned to active agent "${duplicate.name}". Multiple agents per number is an Enterprise-only feature. Please upgrade or deactivate WhatsApp on "${duplicate.name}" first.`);
         setSaving(false);
         return;
       }
@@ -336,7 +336,7 @@ export default function ChannelsPage() {
                           </div>
                           {!hasSmartRouting && (
                             <div className="text-[11px] font-medium opacity-90">
-                              Only the primary agent (<span className="underline font-bold">{isPrimary ? "this agent" : `"${allSharers[0]?.name}"`}</span>) will receive incoming messages. Upgrade to Elite to enable Smart Routing.
+                              Only the primary agent (<span className="underline font-bold">{isPrimary ? "this agent" : `"${allSharers[0]?.name}"`}</span>) will receive incoming messages. Upgrade to Enterprise to enable Smart Routing.
                             </div>
                           )}
                         </div>

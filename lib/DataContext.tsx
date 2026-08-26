@@ -11,6 +11,7 @@ interface DataContextValue {
   config: any;
   loading: boolean;
   hasFeature: (feature: string) => boolean;
+  refreshSub: () => Promise<void>;
 }
 
 const DataContext = createContext<DataContextValue | null>(null);
@@ -61,6 +62,17 @@ export function DataProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false));
   }, []);
 
+  const refreshSub = async () => {
+    try {
+      const subData = await fetch('/api/subscription').then(res => res.json());
+      cachedSub = subData;
+      setSub(subData);
+      localStorage.setItem('void_navbar_sub', JSON.stringify(subData));
+    } catch (err) {
+      console.error('[DataContext] Failed to refresh subscription', err);
+    }
+  };
+
   const hasFeature = (feature: string) => {
     // Default to true while data is loading to prevent menu items
     // from flickering between locked/unlocked on every navigation
@@ -69,7 +81,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <DataContext.Provider value={{ sub, config, loading, hasFeature }}>
+    <DataContext.Provider value={{ sub, config, loading, hasFeature, refreshSub }}>
       {children}
     </DataContext.Provider>
   );

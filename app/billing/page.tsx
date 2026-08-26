@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   Check,
@@ -133,7 +133,12 @@ export default function BillingPage() {
   const [selectedPlanId, setSelectedPlanId] = useState('pro');
   const { showToast, Toast } = useToast();
   const { user } = useUser();
-  const { sub } = useData();
+  const { sub, refreshSub } = useData();
+
+  // Always fetch fresh subscription data on mount (bypasses stale cache)
+  useEffect(() => {
+    refreshSub();
+  }, []);
 
   const handleSubscribe = (planId: string) => {
     const plan = plans.find((p) => p.id === planId);
@@ -215,7 +220,7 @@ export default function BillingPage() {
               </div>
 
               <button
-                onClick={() => window.location.reload()}
+                onClick={() => refreshSub()}
                 className="p-2.5 bg-bg-elevated hover:bg-bg-border dark:hover:bg-white/[0.06] border border-border-default rounded-xl transition-all text-silver hover:text-foreground"
                 title="Refresh"
               >
