@@ -62,12 +62,12 @@ const PAGE_DATA: Record<string, PageContent> = {
       },
       {
         title: "Zero-Knowledge Database Sync",
-        description: "All sync pipelines to your Shopify, HubSpot, or SQL instances are encrypted end-to-end with ephemeral key protocols.",
+        description: "All sync pipelines to your CRM and webhook endpoints are encrypted end-to-end with ephemeral key protocols.",
         icon: Database
       },
       {
         title: "PII Redaction Engine",
-        description: "Intelligent middleware automatically scrubs Social Security Numbers, credit cards, and addresses before neural ingress.",
+        description: "Sensitive data is isolated within your account. Agents never share data across tenants or train on your conversations.",
         icon: ShieldCheck
       }
     ]
@@ -85,12 +85,12 @@ const PAGE_DATA: Record<string, PageContent> = {
       },
       {
         title: "Fine-Tuning Loop",
-        description: "Review conversation logs and calibrate agent responses with a single click, updating weights instantly.",
+        description: "Review conversation logs and update your knowledge base to improve agent responses over time.",
         icon: Zap
       },
       {
         title: "Omnichannel Routing",
-        description: "Sync your agents to WhatsApp, Telegram, Slack, or Web with unified state tracking.",
+        description: "Sync your agents to WhatsApp, Telegram, Web Chat, or Email with unified state tracking.",
         icon: Globe
       }
     ]
@@ -113,7 +113,7 @@ const PAGE_DATA: Record<string, PageContent> = {
       },
       {
         title: "Client Libraries",
-        description: "Official, highly optimized client SDKs for JavaScript/TypeScript, Python, and Rust.",
+        description: "Integrate with your existing stack using standard webhooks, REST APIs, and the public chat embed.",
         icon: Code
       }
     ]
@@ -469,8 +469,8 @@ function PrivacySandbox() {
           <div className="flex items-center gap-3">
             <Lock className="w-5 h-5 text-apple-blue shrink-0" />
             <div>
-              <div className="text-xs font-bold text-foreground">Zero-Persistence Encryption</div>
-              <div className="text-[11px] text-silver mt-0.5">Encrypts payloads in-flight with ephemeral key</div>
+              <div className="text-xs font-bold text-foreground">TLS Encryption</div>
+              <div className="text-[11px] text-silver mt-0.5">All data encrypted in transit via HTTPS/TLS</div>
             </div>
           </div>
           <button 
@@ -495,8 +495,8 @@ function PrivacySandbox() {
           <div className="flex items-center gap-3">
             <Sliders className="w-5 h-5 text-purple-500 shrink-0" />
             <div>
-              <div className="text-xs font-bold text-foreground">Automatic PII scrubbing</div>
-              <div className="text-[11px] text-silver mt-0.5">Redacts emails, cards, and keys automatically</div>
+              <div className="text-xs font-bold text-foreground">Data Isolation</div>
+              <div className="text-[11px] text-silver mt-0.5">Every account runs in its own isolated environment</div>
             </div>
           </div>
           <button 

@@ -83,7 +83,7 @@ const PROOF_POINTS = [
   { icon: Shield, label: 'Your data never trains our models' },
   { icon: Lock, label: 'Encryption at rest and in transit' },
   { icon: BarChart3, label: 'Real-time analytics & logs' },
-  { icon: Settings, label: 'CRM, helpdesk & 50+ integrations' },
+  { icon: Settings, label: 'CRM, helpdesk & webhook integrations' },
 ];
 
 export function SocialProof() {
@@ -330,7 +330,7 @@ const FEATURES = [
   { icon: Shield, label: 'Your data never trains our models' },
   { icon: Lock, label: 'Encryption at rest and in transit' },
   { icon: BarChart3, label: 'Real-time analytics & logs' },
-  { icon: Settings, label: 'CRM, helpdesk & 50+ integrations' },
+  { icon: Settings, label: 'CRM, helpdesk & webhook integrations' },
 ];
 
 export function WhyChoose() {
@@ -417,7 +417,7 @@ export function TrustStrip() {
 const BADGES = [
   { icon: Shield, title: 'Data isolation', desc: 'Every account gets its own environment. Your data never mixes.' },
   { icon: Lock, title: 'Encryption', desc: 'Data encrypted at rest and in transit. We never train on your data.' },
-  { icon: Settings, title: 'Privacy-first', desc: 'Full control over your data. Delete anytime. No lock-in.' },
+  { icon: Settings, title: 'Privacy-first', desc: 'Your data never trains our models. Enterprise data isolation.' },
 ];
 
 export function TrustBadges() {

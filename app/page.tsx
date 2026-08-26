@@ -62,8 +62,8 @@ const softwareApplicationJsonLd = {
   featureList: [
     'AI Agent Deployment',
     'Knowledge Base Training',
-    'WhatsApp & Telegram Integration',
-    'Lead Capture & CRM Sync',
+    'WhatsApp, Telegram, Web Chat & Email',
+    'Lead Capture & Webhook Sync',
     'Custom Webhook Actions',
     'Multi-channel Agency Control',
   ],
@@ -94,7 +94,7 @@ const faqJsonLd = {
       name: 'What channels does VOID support?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'VOID supports WhatsApp, Telegram, web chat widgets, and email — all manageable from a single dashboard.',
+        text: 'VOID supports WhatsApp, Telegram, web chat, and email — all manageable from a single dashboard.',
       },
     },
     {
