@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 import { 
   MessageSquare, 
@@ -19,9 +19,7 @@ import {
   Globe, 
   ArrowLeft,
   ChevronRight,
-  Link2,
-  Check,
-  Circle
+  Link2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useParams, useRouter } from 'next/navigation';
@@ -43,7 +41,6 @@ export default function ChannelsPage() {
   const [savedCredentials, setSavedCredentials] = useState<any[]>([]);
   const [allWorkers, setAllWorkers] = useState<any[]>([]);
   const [useVault, setUseVault] = useState(true);
-  const tgTokenRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     Promise.all([
@@ -462,7 +459,6 @@ export default function ChannelsPage() {
                       <div className="space-y-2">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot Token</label>
                         <input 
-                          ref={tgTokenRef}
                           name="tg_token" 
                           disabled={!hasTelegram}
                           defaultValue={operative.channels?.telegram?.token}
@@ -473,11 +469,7 @@ export default function ChannelsPage() {
                         />
                       </div>
 
-                      {operative.channels?.telegram?.token && (
-                        <div className="pt-2 border-t border-border-default space-y-2">
-                          <TelegramWebhookButton workerId={operative._id} tokenRef={tgTokenRef} />
-                        </div>
-                      )}
+
                     </div>
                   </div>
 
@@ -821,65 +813,4 @@ export default function ChannelsPage() {
   );
 }
 
-function TelegramWebhookButton({ workerId, tokenRef }: { workerId: string; tokenRef: React.RefObject<HTMLInputElement | null> }) {
-  const [registering, setRegistering] = useState(false);
-  const [status, setStatus] = useState<{ ok: boolean; message: string } | null>(null);
 
-  const handleRegister = async () => {
-    setRegistering(true);
-    setStatus(null);
-    try {
-      // Use the current input value (even if unsaved) to avoid stale DB tokens
-      const currentToken = tokenRef?.current?.value || '';
-      const res = await fetch('/api/webhooks/telegram/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ workerId, token: currentToken }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setStatus({ ok: true, message: data.message || 'Webhook registered!' });
-      } else {
-        setStatus({ ok: false, message: data.error || 'Failed to register' });
-      }
-    } catch (err: any) {
-      setStatus({ ok: false, message: err.message || 'Network error' });
-    } finally {
-      setRegistering(false);
-    }
-  };
-
-  return (
-    <div className="space-y-2">
-      <button
-        type="button"
-        onClick={handleRegister}
-        disabled={registering}
-        className={cn(
-          'w-full px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer',
-          registering
-            ? 'bg-sky-500/20 text-sky-400 cursor-wait'
-            : 'bg-sky-500/10 text-sky-500 border border-sky-500/20 hover:bg-sky-500/20'
-        )}
-      >
-        {registering ? (
-          <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Registering...</>
-        ) : (
-          <><Link2 className="w-3.5 h-3.5" /> Register Webhook</>
-        )}
-      </button>
-
-      {status && (
-        <div className={cn(
-          'p-2.5 rounded-xl text-[10px] font-medium flex items-start gap-2',
-          status.ok
-            ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
-            : 'bg-red-500/10 text-red-500 border border-red-500/20'
-        )}>
-          {status.ok ? <Check className="w-3 h-3 mt-0.5 shrink-0" /> : <Circle className="w-3 h-3 mt-0.5 shrink-0" />}
-          <span>{status.message}</span>
-        </div>
-      )}
-    </div>
-  );
-}
