@@ -377,6 +377,18 @@ body {
   animation: none;
 }
 
+/* Anchor the public header so it doesn't blink during navigation */
+::view-transition-group(site-public-nav) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-public-nav) {
+  display: none;
+}
+::view-transition-new(site-public-nav) {
+  animation: none;
+}
+
 /* Keyframes */
 @keyframes vt-fade-in {
   from { opacity: 0; }

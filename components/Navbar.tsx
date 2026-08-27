@@ -30,6 +30,7 @@ import {
   Compass
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Logo from './Logo';
 
 import SystemTourModal from './SystemTourModal';
 import UpgradeModal from './UpgradeModal';
@@ -48,7 +49,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const isAdmin = pathname.startsWith('/admin');
-  const publicPages = ['/', '/sign-in', '/sign-up', '/privacy', '/terms', '/dpa'];
+  const publicPages = ['/', '/sign-in', '/sign-up', '/privacy', '/terms', '/dpa', '/docs'];
   const isWorkspace = !publicPages.some(p => p === pathname) && !isAdmin;
 
   // Hydrate from localStorage + enable transitions after first paint
@@ -187,13 +188,10 @@ export default function Navbar() {
   // RENDER OPTION A: Public Header (Landing Page or Auth flows)
   if (!isWorkspace) {
     return (
-      <nav className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b bg-black/60 backdrop-blur-xl border-white/10 shadow-[0_2px_15px_rgba(0,0,0,0.15)]">
+      <nav style={{ viewTransitionName: 'site-public-nav' }} className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b bg-black border-white/10 shadow-[0_2px_15px_rgba(0,0,0,0.15)]">
         <div className="flex justify-between items-center px-2 md:px-4 max-w-7xl mx-auto">
           <Link href="/" className="group flex items-center">
-            <span className="text-lg md:text-xl font-extrabold tracking-[-0.04em] text-white flex items-center gap-1">
-              VOID
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-0.5 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.6)]" />
-            </span>
+            <Logo className="text-lg md:text-xl" />
           </Link>
 
           <div className="flex items-center gap-4">
@@ -238,10 +236,7 @@ export default function Navbar() {
           )}>
             <Link href="/" className="group flex items-center gap-2 transition-transform hover:scale-[1.02]">
               <div className="flex flex-col">
-                <span className="font-black text-base tracking-wide text-white flex items-center gap-1.5 leading-none">
-                  VOID
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
-                </span>
+                <Logo iconOnly={mounted && isCollapsed} compact={mounted && isCollapsed} />
                 {(!mounted || !isCollapsed) && (
                   <span className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-white/50 uppercase mt-1 flex items-center gap-1">
                     AUTONOMOUS OS <span className="text-emerald-400/80 font-normal lowercase tracking-normal">by Aethyl</span>
@@ -422,10 +417,7 @@ export default function Navbar() {
       <nav style={{ viewTransitionName: 'site-mobile-nav' }} className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3 border-b lg:hidden bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]">
         <div className="flex justify-between items-center px-2 md:px-4 max-w-full">
           <Link href="/" className="group flex items-center">
-            <span className="text-base font-black tracking-[-0.04em] text-foreground flex items-center gap-1">
-              VOID
-              <span className="w-1.5 h-1.5 rounded-full bg-apple-blue mt-0.5 animate-pulse" />
-            </span>
+            <Logo />
           </Link>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -517,8 +509,7 @@ export default function Navbar() {
         {/* Mobile Footer */}
         <div className="text-center w-full space-y-2 pb-6 border-t border-white/10 pt-4">
           <Link href="/" className="inline-flex items-center gap-1.5">
-            <span className="font-black text-sm tracking-wide text-white">VOID</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
+            <Logo />
           </Link>
           <p className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-white/40 uppercase">
             AUTONOMOUS OS <span className="text-emerald-400/80 font-normal lowercase tracking-normal">by Aethyl</span>
