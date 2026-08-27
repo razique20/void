@@ -11,6 +11,19 @@ const UserSchema = new Schema({
   },
   isAdmin: { type: Boolean, default: false },
   leadWebhookUrl: { type: String },
+  settings: {
+    industry: { type: String, default: 'hospital' },
+    companyName: { type: String, default: 'CareSync Medical' },
+    operatingHours: { type: String, default: 'Mon-Fri 8 AM - 6 PM' },
+    contactInfo: { type: String, default: '+1 (555) 0199' },
+    defaultTone: { type: String, default: 'professional' },
+    defaultLanguage: { type: String, default: 'English' },
+    notifications: { type: Boolean, default: true },
+    emailDigest: { type: String, default: 'weekly' },
+    timezone: { type: String, default: 'America/New_York' },
+    dateFormat: { type: String, default: 'MM/DD/YYYY' },
+    theme: { type: String, default: 'system' },
+  },
   // Legacy single credential (kept for backward compatibility / migration)
   whatsappConfig: {
     connectionType: { type: String, enum: ['manual', 'embedded'] },

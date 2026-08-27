@@ -29,6 +29,7 @@ import {
   Copy,
   Loader2,
   RefreshCw,
+  Download,
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -67,17 +68,23 @@ export default function LiveChatPage() {
   const [editNameValue, setEditNameValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'ai' | 'takeover'>('all');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalConversations, setTotalConversations] = useState(0);
   const { showToast, Toast } = useToast();
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const fetchConversations = async () => {
+  const fetchConversations = async (targetPage = 1) => {
     try {
-      const res = await fetch('/api/conversations');
+      const res = await fetch(`/api/conversations?page=${targetPage}&limit=50`);
       if (res.ok) {
         const data = await res.json();
-        setConversations(data);
+        setConversations(data.conversations || []);
+        setPage(data.page || 1);
+        setTotalPages(data.pages || 1);
+        setTotalConversations(data.total || 0);
         if (selectedChat) {
-          const updated = data.find((c: any) => c._id === selectedChat._id);
+          const updated = (data.conversations || []).find((c: any) => c._id === selectedChat._id);
           if (updated) setSelectedChat(updated);
         }
       }
@@ -88,10 +95,10 @@ export default function LiveChatPage() {
 
   useEffect(() => {
     if (!loadingSub && sub?.features?.includes('mission_control')) {
-      fetchConversations();
+      fetchConversations(1);
 
       // Fallback polling at a relaxed 15s interval (SSE triggers immediate re-fetch)
-      const interval = setInterval(fetchConversations, 15_000);
+      const interval = setInterval(() => fetchConversations(page), 15_000);
 
       // SSE connection for instant updates — re-fetch on any message/lead notification
       const es = new EventSource('/api/notifications');
@@ -225,6 +232,48 @@ export default function LiveChatPage() {
     showToast('Copied message content');
   };
 
+  const exportConversations = () => {
+    const headers = ['Date', 'Channel', 'Contact', 'Agent', 'Messages', 'Last Message'];
+    const rows = filteredConversations.map(c => [
+      new Date(c.updatedAt).toLocaleString(),
+      c.channel || '',
+      c.displayName || c.externalId || '',
+      c.workerId?.name || '',
+      c.messages?.length || 0,
+      c.messages?.[c.messages.length - 1]?.content?.substring(0, 100) || ''
+    ].map((v: any) => `"${String(v).replace(/"/g, '""')}"`));
+    
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map((e: string[]) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `void_conversations_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('Exported conversations CSV');
+  };
+
+  const exportFullConversation = () => {
+    if (!selectedChat) return;
+    const headers = ['Timestamp', 'Role', 'Content'];
+    const rows = selectedChat.messages.map((m: any) => [
+      new Date(m.createdAt || Date.now()).toLocaleString(),
+      m.role || '',
+      m.content || ''
+    ].map((v: any) => `"${String(v).replace(/"/g, '""')}"`));
+    
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map((e: string[]) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `void_chat_${selectedChat.displayName || selectedChat.externalId || 'unknown'}_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('Exported conversation transcript');
+  };
+
   const filteredConversations = conversations.filter(c => {
     const matchesSearch = 
       (c.displayName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -286,10 +335,10 @@ export default function LiveChatPage() {
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 relative flex shrink-0">
                         <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-pulse" />
                       </span>
-                      <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Live</span>
-                    </div>
-                  </div>
-                  <p className="text-[10px] text-silver font-medium">Monitor and intercept agent conversations.</p>
+                <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Live</span>
+              </div>
+            </div>
+            <p className="text-[10px] text-silver font-medium">{totalConversations} active sessions across your fleet.</p>
                 </div>
 
                 {/* Search bar */}
@@ -326,6 +375,29 @@ export default function LiveChatPage() {
                   ))}
                 </div>
               </div>
+
+              {/* Pagination Controls */}
+              {totalPages > 1 && (
+                <div className="px-4 py-2 flex items-center justify-between border-b border-border-default">
+                  <button
+                    onClick={() => fetchConversations(page - 1)}
+                    disabled={page <= 1}
+                    className="px-2 py-1 bg-bg-elevated border border-border-default rounded text-[10px] font-bold text-silver hover:text-foreground disabled:opacity-40 transition-all"
+                  >
+                    Prev
+                  </button>
+                  <span className="text-[10px] font-bold text-foreground">
+                    {page}/{totalPages}
+                  </span>
+                  <button
+                    onClick={() => fetchConversations(page + 1)}
+                    disabled={page >= totalPages}
+                    className="px-2 py-1 bg-bg-elevated border border-border-default rounded text-[10px] font-bold text-silver hover:text-foreground disabled:opacity-40 transition-all"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
 
               {/* Conversation List */}
               <div className="flex-1 overflow-y-auto custom-scrollbar px-4 py-3 space-y-2">
@@ -400,6 +472,25 @@ export default function LiveChatPage() {
 
             {/* ── 2. Center Panel — Active Chat Screen ── */}
             <div className="flex-1 flex flex-col min-w-0 relative overflow-hidden">
+              {!selectedChat && (
+                <div className="flex-1 flex flex-col items-center justify-center text-center p-6 space-y-4 relative">
+                  <div className="w-14 h-14 rounded-2xl bg-bg-elevated border border-border-strong flex items-center justify-center">
+                    <MessageSquare className="w-7 h-7 text-silver" />
+                  </div>
+                  <div className="space-y-1">
+                    <h2 className="text-sm font-bold text-foreground">Select a Transmission Feed</h2>
+                    <p className="text-silver text-xs font-medium max-w-xs leading-relaxed">
+                      Choose an active session from the War Room to inspect RAG memory, monitor dialogues, or manually intervene.
+                    </p>
+                  </div>
+                  <button
+                    onClick={exportConversations}
+                    className="mt-4 flex items-center gap-2 px-4 py-2 bg-bg-elevated border border-border-default text-silver hover:text-foreground rounded-xl text-xs font-bold transition-all"
+                  >
+                    <Download className="w-3.5 h-3.5" /> Export All Conversations
+                  </button>
+                </div>
+              )}
               {selectedChat ? (
                 <div className="flex flex-col h-full overflow-hidden">
                   
@@ -425,6 +516,14 @@ export default function LiveChatPage() {
 
                     {/* Action utilities */}
                     <div className="flex items-center gap-2">
+                      {/* Export button */}
+                      <button
+                        onClick={exportFullConversation}
+                        className="p-2 bg-bg-elevated border border-border-default text-silver hover:text-foreground rounded-xl transition-all"
+                        title="Export Conversation"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
                       {/* Visual Autopilot / Takeover Switcher */}
                       <button
                         onClick={() => togglePause(selectedChat)}
@@ -585,20 +684,7 @@ export default function LiveChatPage() {
                   </div>
 
                 </div>
-              ) : (
-                /* Empty state (matching dashboard pattern) */
-                <div className="flex-1 flex flex-col items-center justify-center text-center p-6 space-y-4 relative">
-                  <div className="w-14 h-14 rounded-2xl bg-bg-elevated border border-border-strong flex items-center justify-center">
-                    <MessageSquare className="w-7 h-7 text-silver" />
-                  </div>
-                  <div className="space-y-1">
-                    <h2 className="text-sm font-bold text-foreground">Select a Transmission Feed</h2>
-                    <p className="text-silver text-xs font-medium max-w-xs leading-relaxed">
-                      Choose an active session from the War Room to inspect RAG memory, monitor dialogues, or manually intervene.
-                    </p>
-                  </div>
-                </div>
-              )}
+              ) : null}
             </div>
 
             {/* ── 3. Right Sidebar — Neural Memory Drawer ── */}

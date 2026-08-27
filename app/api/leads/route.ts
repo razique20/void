@@ -4,16 +4,24 @@ import connectDB from '@/lib/mongodb';
 import Lead from '@/models/Lead';
 import Worker from '@/models/Worker';
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const skip = (page - 1) * limit;
+
     await connectDB();
 
-    const leads = await Lead.find({ userId }).sort({ createdAt: -1 }).lean();
+    const [leads, total] = await Promise.all([
+      Lead.find({ userId }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      Lead.countDocuments({ userId })
+    ]);
     
     // Enrich with worker names
     const workerIds = [...new Set(leads.map(l => l.workerId))];
@@ -25,7 +33,12 @@ export async function GET() {
       workerName: workerMap[l.workerId] || 'Deleted Agent'
     }));
 
-    return NextResponse.json(enrichedLeads);
+    return NextResponse.json({
+      leads: enrichedLeads,
+      total,
+      page,
+      pages: Math.ceil(total / limit)
+    });
   } catch (error) {
     console.error('[LEADS_GET]', error);
     return NextResponse.json({ error: 'Internal Error' }, { status: 500 });

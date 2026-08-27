@@ -48,55 +48,83 @@ export default function ProfilePage() {
   const [defaultTone, setDefaultTone] = useState('professional');
   const [defaultLang, setDefaultLang] = useState('English');
   const [notifications, setNotifications] = useState(true);
+  const [emailDigest, setEmailDigest] = useState('weekly');
+  const [timezone, setTimezone] = useState('America/New_York');
+  const [dateFormat, setDateFormat] = useState('MM/DD/YYYY');
 
-  // Load from localStorage on mount
+  // Load from server on mount
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const ind = localStorage.getItem('void_profile_industry') || 'hospital';
-      setSelectedIndustry(ind);
-      const industryObj = INDUSTRIES.find(i => i.id === ind);
-
-      setCompanyName(localStorage.getItem('void_profile_companyName') || industryObj?.defaultCompany || 'CareSync Medical');
-      setHours(localStorage.getItem('void_profile_hours') || industryObj?.defaultHours || 'Mon-Fri 8 AM - 6 PM');
-      setContact(localStorage.getItem('void_profile_contact') || industryObj?.defaultContact || '+1 (555) 0199');
-      setDefaultTone(localStorage.getItem('void_pref_tone') || 'professional');
-      setDefaultLang(localStorage.getItem('void_pref_lang') || 'English');
-    }
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('/api/user/settings');
+        if (res.ok) {
+          const settings = await res.json();
+          if (settings.industry) setSelectedIndustry(settings.industry);
+          if (settings.companyName) setCompanyName(settings.companyName);
+          if (settings.operatingHours) setHours(settings.operatingHours);
+          if (settings.contactInfo) setContact(settings.contactInfo);
+          if (settings.defaultTone) setDefaultTone(settings.defaultTone);
+          if (settings.defaultLanguage) setDefaultLang(settings.defaultLanguage);
+          if (settings.emailDigest) setEmailDigest(settings.emailDigest);
+          if (settings.timezone) setTimezone(settings.timezone);
+          if (settings.dateFormat) setDateFormat(settings.dateFormat);
+          if (settings.notifications !== undefined) setNotifications(settings.notifications);
+        }
+      } catch (err) {
+        console.error('Failed to fetch settings:', err);
+      }
+    };
+    fetchSettings();
   }, []);
 
   // Instant dynamic industry selection
-  const handleSelectIndustry = (id: string) => {
+  const handleSelectIndustry = async (id: string) => {
     setSelectedIndustry(id);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('void_profile_industry', id);
-      
-      const indObj = INDUSTRIES.find(i => i.id === id);
-      if (indObj) {
-        setCompanyName(indObj.defaultCompany);
-        setHours(indObj.defaultHours);
-        setContact(indObj.defaultContact);
-        localStorage.setItem('void_profile_companyName', indObj.defaultCompany);
-        localStorage.setItem('void_profile_hours', indObj.defaultHours);
-        localStorage.setItem('void_profile_contact', indObj.defaultContact);
-      }
+    const indObj = INDUSTRIES.find(i => i.id === id);
+    if (indObj) {
+      setCompanyName(indObj.defaultCompany);
+      setHours(indObj.defaultHours);
+      setContact(indObj.defaultContact);
+    }
+    await saveSettings({
+      industry: id,
+      companyName: indObj?.defaultCompany || companyName,
+      operatingHours: indObj?.defaultHours || hours,
+      contactInfo: indObj?.defaultContact || contact,
+      defaultTone,
+      defaultLanguage: defaultLang,
+    });
+  };
 
+  const saveSettings = async (overrides: Record<string, any> = {}) => {
+    try {
+      await fetch('/api/user/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          industry: selectedIndustry,
+          companyName,
+          operatingHours: hours,
+          contactInfo: contact,
+          defaultTone,
+          defaultLanguage: defaultLang,
+          notifications,
+          emailDigest,
+          timezone,
+          dateFormat,
+          ...overrides,
+        })
+      });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
+    } catch (err) {
+      console.error('Failed to save settings:', err);
     }
   };
 
-  const handleSaveForm = (e: React.FormEvent) => {
+  const handleSaveForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('void_profile_companyName', companyName);
-      localStorage.setItem('void_profile_hours', hours);
-      localStorage.setItem('void_profile_contact', contact);
-      localStorage.setItem('void_profile_industry', selectedIndustry);
-      localStorage.setItem('void_pref_tone', defaultTone);
-      localStorage.setItem('void_pref_lang', defaultLang);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2500);
-    }
+    await saveSettings();
   };
 
   const activeIndustryObj = INDUSTRIES.find(i => i.id === selectedIndustry);
@@ -403,6 +431,46 @@ export default function ProfilePage() {
                         onChange={(e) => setNotifications(e.target.checked)}
                         className="w-4 h-4 accent-emerald-500 rounded cursor-pointer"
                       />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-bold text-silver uppercase tracking-widest block px-1">Email Digest Frequency</label>
+                      <select
+                        value={emailDigest}
+                        onChange={(e) => setEmailDigest(e.target.value)}
+                        className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-emerald-500/40 text-foreground"
+                      >
+                        <option value="realtime">Real-time</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="never">Never</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-bold text-silver uppercase tracking-widest block px-1">Timezone</label>
+                      <select
+                        value={timezone}
+                        onChange={(e) => setTimezone(e.target.value)}
+                        className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-emerald-500/40 text-foreground"
+                      >
+                        {['America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles', 'Europe/London', 'Europe/Paris', 'Asia/Tokyo', 'Asia/Dubai'].map(tz => (
+                          <option key={tz} value={tz}>{tz.replace('_', ' ')}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-bold text-silver uppercase tracking-widest block px-1">Date Format</label>
+                      <select
+                        value={dateFormat}
+                        onChange={(e) => setDateFormat(e.target.value)}
+                        className="w-full bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-emerald-500/40 text-foreground"
+                      >
+                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                      </select>
                     </div>
                   </div>
                 </div>

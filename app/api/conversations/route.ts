@@ -7,12 +7,17 @@ import ContactMemory from '@/models/ContactMemory';
 import { broadcast } from '@/lib/notifications';
 
 // GET: List all conversations with worker details for the logged-in user
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const { userId } = await auth();
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '50');
+    const skip = (page - 1) * limit;
 
     await connectDB();
 
@@ -20,10 +25,15 @@ export async function GET() {
     const userWorkers = await Worker.find({ userId }).select('_id');
     const workerIds = userWorkers.map(w => w._id);
 
-    // 2. Find conversations only for those workers
-    const conversations = await Conversation.find({ workerId: { $in: workerIds } })
-      .populate('workerId', 'name')
-      .sort({ updatedAt: -1 });
+    // 2. Find conversations only for those workers (paginated)
+    const [conversations, total] = await Promise.all([
+      Conversation.find({ workerId: { $in: workerIds } })
+        .populate('workerId', 'name')
+        .sort({ updatedAt: -1 })
+        .skip(skip)
+        .limit(limit),
+      Conversation.countDocuments({ workerId: { $in: workerIds } })
+    ]);
 
     // 3. Enrich conversations with ContactMemory details (displayName, summary, facts)
     const enrichedConversations = await Promise.all(
@@ -43,7 +53,12 @@ export async function GET() {
       })
     );
 
-    return NextResponse.json(enrichedConversations);
+    return NextResponse.json({
+      conversations: enrichedConversations,
+      total,
+      page,
+      pages: Math.ceil(total / limit)
+    });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

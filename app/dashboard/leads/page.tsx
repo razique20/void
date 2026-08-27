@@ -22,7 +22,9 @@ import {
   Lock,
   X,
   Plus,
-  MessageSquare
+  MessageSquare,
+  Sparkles,
+  TrendingUp,
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -37,17 +39,21 @@ export default function LeadsPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'new' | 'exported' | 'junk'>('all');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalLeads, setTotalLeads] = useState(0);
   const [selectedLead, setSelectedLead] = useState<any>(null);
   const [notes, setNotes] = useState('');
   const [savingNotes, setSavingNotes] = useState(false);
   const [webhookUrl, setWebhookUrl] = useState('');
   const [savingWebhook, setSavingWebhook] = useState(false);
   const [showWebhookPanel, setShowWebhookPanel] = useState(false);
+  const [scoringLead, setScoringLead] = useState<string | null>(null);
   const { showToast, Toast } = useToast();
 
   useEffect(() => {
     if (!loadingSub && sub?.features?.includes('lead_capture')) {
-      fetchLeads();
+      fetchLeads(1);
       fetchWebhookConfig();
     }
   }, [sub, loadingSub]);
@@ -86,12 +92,15 @@ export default function LeadsPage() {
     }
   };
 
-  const fetchLeads = async () => {
+  const fetchLeads = async (targetPage = 1) => {
     try {
-      const res = await fetch('/api/leads');
+      const res = await fetch(`/api/leads?page=${targetPage}&limit=20`);
       if (res.ok) {
         const data = await res.json();
-        setLeads(data);
+        setLeads(data.leads || []);
+        setPage(data.page || 1);
+        setTotalPages(data.pages || 1);
+        setTotalLeads(data.total || 0);
       }
     } catch (err) {
       console.error(err);
@@ -104,7 +113,7 @@ export default function LeadsPage() {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    fetchLeads();
+    fetchLeads(page);
   };
 
   const handleUpdateStatus = async (id: string, status: string) => {
@@ -156,6 +165,31 @@ export default function LeadsPage() {
     } catch (err) {
       console.error(err);
       showToast('Error deleting lead', 'error');
+    }
+  };
+
+  const handleScoreLead = async (id: string) => {
+    setScoringLead(id);
+    try {
+      const res = await fetch('/api/leads/score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId: id })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLeads(prev => prev.map(l => l._id === id ? {
+          ...l,
+          data: { ...l.data, heatScore: data.score, scoreTier: data.tier, scoreFactors: data.factors, scoreRecommendation: data.recommendation }
+        } : l));
+        showToast(`Lead scored: ${data.score}/100 (${data.tier})`);
+      } else {
+        showToast('Failed to score lead', 'error');
+      }
+    } catch (err) {
+      showToast('Error scoring lead', 'error');
+    } finally {
+      setScoringLead(null);
     }
   };
 
@@ -360,7 +394,7 @@ export default function LeadsPage() {
         {/* Stats Strip */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-bg-active rounded-2xl overflow-hidden border border-border-default">
           {[
-            { label: 'Total Pipeline Leads', value: leads.length, trend: 'Captured' },
+            { label: 'Total Pipeline Leads', value: totalLeads, trend: 'Captured' },
             { label: 'New / Pending', value: newCount },
             { label: 'Exported to CRM', value: exportedCount },
             { label: 'Sync Status', value: webhookUrl ? 'Connected' : 'Manual', isStatus: true },
@@ -521,8 +555,37 @@ export default function LeadsPage() {
                         )}
                       </div>
 
-                      {/* Right: Status & Date Actions */}
+                      {/* Right: Score, Status & Date Actions */}
                       <div className="flex items-center gap-3 shrink-0 self-end md:self-center" onClick={(e) => e.stopPropagation()}>
+                        {/* Heat Score Badge */}
+                        {lead.data?.heatScore && (
+                          <div className={cn(
+                            "flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold border",
+                            lead.data.scoreTier === 'hot' ? "bg-red-500/10 text-red-500 border-red-500/20" :
+                            lead.data.scoreTier === 'warm' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
+                            "bg-blue-500/10 text-blue-500 border-blue-500/20"
+                          )}>
+                            <Flame className="w-3 h-3" />
+                            {lead.data.heatScore}
+                          </div>
+                        )}
+
+                        {/* Score Button */}
+                        {!lead.data?.heatScore && (
+                          <button
+                            onClick={() => handleScoreLead(lead._id)}
+                            disabled={scoringLead === lead._id}
+                            className="p-1.5 text-silver hover:text-purple-500 hover:bg-purple-500/10 rounded-lg transition-all disabled:opacity-50"
+                            title="Score Lead"
+                          >
+                            {scoringLead === lead._id ? (
+                              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <Sparkles className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+                        )}
+
                         <span className="text-[10px] text-silver/60 font-mono hidden sm:inline">
                           {dateStr}
                         </span>
@@ -553,6 +616,34 @@ export default function LeadsPage() {
                 })}
               </AnimatePresence>
             </motion.div>
+          )}
+
+          {/* Pagination Controls */}
+          {!loading && totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4">
+              <div className="text-xs font-semibold text-silver">
+                Showing <span className="text-foreground">{filteredLeads.length}</span> leads • <span className="text-foreground">{totalLeads}</span> total
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => { fetchLeads(page - 1); }}
+                  disabled={page <= 1}
+                  className="px-3 py-1.5 bg-bg-elevated border border-border-default rounded-lg text-xs font-bold text-silver hover:text-foreground disabled:opacity-40 transition-all"
+                >
+                  Previous
+                </button>
+                <span className="text-xs font-bold text-foreground px-2">
+                  Page {page} of {totalPages}
+                </span>
+                <button
+                  onClick={() => { fetchLeads(page + 1); }}
+                  disabled={page >= totalPages}
+                  className="px-3 py-1.5 bg-bg-elevated border border-border-default rounded-lg text-xs font-bold text-silver hover:text-foreground disabled:opacity-40 transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           )}
 
         </div>
@@ -634,6 +725,71 @@ export default function LeadsPage() {
                     {selectedLead.interest || 'No intent description logged.'}
                   </div>
                 </div>
+
+                {/* AI Heat Score */}
+                {selectedLead.data?.heatScore && (
+                  <div className="space-y-2">
+                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
+                      <Flame className="w-3 h-3 text-red-500" />
+                      Predictive Heat Score
+                    </h4>
+                    <div className="bg-bg-surface border border-border-default rounded-xl p-4">
+                      <div className="flex items-center gap-4 mb-3">
+                        <div className={cn(
+                          "text-3xl font-bold",
+                          selectedLead.data.scoreTier === 'hot' ? "text-red-500" :
+                          selectedLead.data.scoreTier === 'warm' ? "text-amber-500" : "text-blue-500"
+                        )}>
+                          {selectedLead.data.heatScore}
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-foreground uppercase">{selectedLead.data.scoreTier} Lead</p>
+                          <p className="text-[10px] text-silver">out of 100</p>
+                        </div>
+                      </div>
+                      {selectedLead.data.scoreFactors?.length > 0 && (
+                        <div className="space-y-1.5">
+                          <p className="text-[9px] font-bold text-silver uppercase">Key Factors</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {selectedLead.data.scoreFactors.map((factor: string, idx: number) => (
+                              <span key={idx} className="text-[10px] px-2 py-0.5 bg-bg-elevated border border-border-default rounded text-silver">
+                                {factor}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {selectedLead.data.scoreRecommendation && (
+                        <div className="mt-3 pt-3 border-t border-border-default">
+                          <p className="text-[9px] font-bold text-silver uppercase mb-1">Recommendation</p>
+                          <p className="text-xs text-foreground font-sans">{selectedLead.data.scoreRecommendation}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {!selectedLead.data?.heatScore && (
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => handleScoreLead(selectedLead._id)}
+                      disabled={scoringLead === selectedLead._id}
+                      className="w-full py-3 bg-purple-500/10 border border-purple-500/20 text-purple-500 rounded-xl text-xs font-bold hover:bg-purple-500/20 transition-all flex items-center justify-center gap-2"
+                    >
+                      {scoringLead === selectedLead._id ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          Analyzing Lead...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3.5 h-3.5" />
+                          Generate AI Heat Score
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
 
                 {/* Manual Notes Override */}
                 <div className="space-y-2">

@@ -1,128 +1,138 @@
 import { NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Conversation from '@/models/Conversation';
+import Lead from '@/models/Lead';
 import Worker from '@/models/Worker';
-import SystemLog from '@/models/SystemLog';
-import { auth } from '@clerk/nextjs/server';
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const { userId } = await auth();
-    if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const period = searchParams.get('period') || '30d'; // 7d, 30d, 90d
 
     await connectDB();
 
-    // Find all workers owned by the user
-    const userWorkers = await Worker.find({ userId });
+    // Calculate date range
+    const now = new Date();
+    let startDate = new Date();
+    if (period === '7d') startDate.setDate(now.getDate() - 7);
+    else if (period === '30d') startDate.setDate(now.getDate() - 30);
+    else if (period === '90d') startDate.setDate(now.getDate() - 90);
+
+    // Get user's workers
+    const userWorkers = await Worker.find({ userId }).select('_id');
     const workerIds = userWorkers.map(w => w._id);
 
-    // Get all conversations for these workers
-    const conversations = await Conversation.find({ workerId: { $in: workerIds } });
+    // Parallel queries for performance
+    const [
+      totalConversations,
+      conversationsByChannel,
+      conversationsByDay,
+      sentimentDistribution,
+      totalLeads,
+      leadsBySentiment,
+      leadsBySource,
+      avgMessagesPerConversation,
+    ] = await Promise.all([
+      // Total conversations in period
+      Conversation.countDocuments({
+        workerId: { $in: workerIds },
+        createdAt: { $gte: startDate }
+      }),
 
-    let totalMessages = 0;
-    let activeChats = conversations.length;
+      // Conversations by channel
+      Conversation.aggregate([
+        { $match: { workerId: { $in: workerIds }, createdAt: { $gte: startDate } } },
+        { $group: { _id: '$channel', count: { $sum: 1 } } }
+      ]),
 
-    // Calculate last 7 days user message interactions
-    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const dailyInteractions: { name: string; dateStr: string; interactions: number }[] = [];
-
-    // Initialize array with the last 7 days in chronological order
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const dayName = daysOfWeek[d.getDay()];
-      const dateStr = d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
-      dailyInteractions.push({
-        name: dayName,
-        dateStr,
-        interactions: 0
-      });
-    }
-
-    let currentWeekInteractions = 0;
-    let previousWeekInteractions = 0;
-    let botMessages = 0;
-    let userMessages = 0;
-
-    const now = new Date();
-    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
-
-    conversations.forEach(conv => {
-      totalMessages += conv.messages.length;
-      conv.messages.forEach((msg: any) => {
-        if (msg.role === 'assistant') {
-          botMessages++;
-        }
-        if (msg.role === 'user') {
-          userMessages++;
-          const msgDateObj = new Date(msg.createdAt || conv.updatedAt);
-          const msgDate = msgDateObj.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
-          const dayObj = dailyInteractions.find(day => day.dateStr === msgDate);
-          if (dayObj) {
-            dayObj.interactions += 1;
+      // Conversations by day (for line chart)
+      Conversation.aggregate([
+        { $match: { workerId: { $in: workerIds }, createdAt: { $gte: startDate } } },
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+            count: { $sum: 1 }
           }
-          if (msgDateObj >= sevenDaysAgo) {
-            currentWeekInteractions++;
-          } else if (msgDateObj >= fourteenDaysAgo && msgDateObj < sevenDaysAgo) {
-            previousWeekInteractions++;
-          }
-        }
-      });
-    });
+        },
+        { $sort: { _id: 1 } }
+      ]),
 
-    let interactionTrend = 0;
-    if (previousWeekInteractions === 0) {
-      interactionTrend = currentWeekInteractions > 0 ? 100 : 0;
-    } else {
-      interactionTrend = ((currentWeekInteractions - previousWeekInteractions) / previousWeekInteractions) * 100;
-    }
+      // Sentiment distribution (from leads linked to conversations)
+      Lead.aggregate([
+        { $match: { userId, createdAt: { $gte: startDate } } },
+        { $group: { _id: '$sentiment', count: { $sum: 1 } } }
+      ]),
 
-    // Success rate can be represented by the percentage of user messages that got an assistant response.
-    // Assuming normally it's 1-to-1, we cap it at 100.
-    let successRate = 100;
-    if (userMessages > 0) {
-      successRate = Math.min(100, Math.max(0, (botMessages / userMessages) * 100));
-    }
+      // Total leads
+      Lead.countDocuments({ userId, createdAt: { $gte: startDate } }),
 
-    // Real-world ROI Metrics
-    // Based on average customer support agent salary ($45k/year) + benefits 
-    // Average cost per human ticket: $1.20 - $2.50
-    // Average resolution time: 5-8 minutes
+      // Leads by sentiment
+      Lead.aggregate([
+        { $match: { userId, createdAt: { $gte: startDate } } },
+        { $group: { _id: '$sentiment', count: { $sum: 1 } } }
+      ]),
 
-    const HUMAN_COST_PER_MESSAGE = 0.80;
-    const MINUTES_SAVED_PER_RESPONSE = 3.5;
+      // Leads by source
+      Lead.aggregate([
+        { $match: { userId, createdAt: { $gte: startDate } } },
+        { $group: { _id: '$source', count: { $sum: 1 } } }
+      ]),
 
-    const estimatedSavings = totalMessages * HUMAN_COST_PER_MESSAGE;
-    const estimatedTimeSaved = (totalMessages * MINUTES_SAVED_PER_RESPONSE) / 60; // in hours
+      // Average messages per conversation
+      Conversation.aggregate([
+        { $match: { workerId: { $in: workerIds }, createdAt: { $gte: startDate } } },
+        { $project: { messageCount: { $size: '$messages' } } },
+        { $group: { _id: null, avg: { $avg: '$messageCount' } } }
+      ]),
+    ]);
 
-    // Fetch latest 10 system logs belonging to this user
-    const systemLogs = await SystemLog.find({ userId })
-      .sort({ createdAt: -1 })
-      .limit(10);
+    // Format conversations by day for chart
+    const dailyConversations = conversationsByDay.map((d: any) => ({
+      date: d._id,
+      count: d.count
+    }));
+
+    // Format channel distribution
+    const channelDistribution = conversationsByChannel.map((c: any) => ({
+      channel: c._id || 'unknown',
+      count: c.count
+    }));
+
+    // Format sentiment distribution
+    const sentimentData = sentimentDistribution.map((s: any) => ({
+      sentiment: s._id || 'unknown',
+      count: s.count
+    }));
+
+    // Format leads by source
+    const leadsBySourceData = leadsBySource.map((l: any) => ({
+      source: l._id || 'unknown',
+      count: l.count
+    }));
 
     return NextResponse.json({
-      totalOperatives: userWorkers.length,
-      totalMessages,
-      activeChats,
-      estimatedSavings: estimatedSavings.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-      estimatedTimeSaved: estimatedTimeSaved.toFixed(1),
-      status: 'Optimal',
-      load: totalMessages > 100 ? 'High Efficiency' : 'Nominal',
-      interactionTrend: interactionTrend.toFixed(1),
-      successRate: successRate.toFixed(1),
-      dailyInteractions: dailyInteractions.map(d => ({ name: d.name, interactions: d.interactions })),
-      systemLogs: systemLogs.map(l => ({
-        _id: l._id,
-        type: l.type,
-        source: l.source,
-        message: l.message,
-        createdAt: l.createdAt
-      }))
+      overview: {
+        totalConversations,
+        totalLeads,
+        avgMessagesPerConversation: Math.round(avgMessagesPerConversation[0]?.avg || 0),
+        conversionRate: totalConversations > 0 ? Math.round((totalLeads / totalConversations) * 100) : 0,
+      },
+      charts: {
+        dailyConversations,
+        channelDistribution,
+        sentimentDistribution: sentimentData,
+        leadsBySource: leadsBySourceData,
+      },
+      period,
     });
   } catch (error: any) {
-    console.error('[ANALYTICS_ERROR]', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[ANALYTICS_GET]', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
-
