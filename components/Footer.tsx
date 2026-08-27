@@ -20,6 +20,9 @@ export default function Footer() {
           <Link href="/terms" className="text-sm text-zinc-500 hover:text-white transition-colors">
             Terms
           </Link>
+          <Link href="/dpa" className="text-sm text-zinc-500 hover:text-white transition-colors">
+            DPA
+          </Link>
           <Link href="/docs" className="text-sm text-zinc-500 hover:text-white transition-colors">
             Docs
           </Link>

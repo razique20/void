@@ -418,6 +418,7 @@ const BADGES = [
   { icon: Shield, title: 'Data isolation', desc: 'Every account gets its own environment. Your data never mixes.' },
   { icon: Lock, title: 'Encryption', desc: 'Data encrypted at rest and in transit. We never train on your data.' },
   { icon: Settings, title: 'Privacy-first', desc: 'Your data never trains our models. Enterprise data isolation.' },
+  { icon: Shield, title: 'SOC 2 Certified Infrastructure', desc: 'All infrastructure providers (Clerk, MongoDB, Stripe, Vercel) are SOC 2 Type 2 certified.' },
 ];
 
 export function TrustBadges() {
@@ -436,7 +437,7 @@ export function TrustBadges() {
             We take data privacy seriously — here&apos;s what we do today.
           </p>
         </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
           {BADGES.map((b, i) => (
             <motion.div
               key={`${b.title}-${i}`}
