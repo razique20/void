@@ -46,8 +46,10 @@ export function MetricsBand() {
   return (
     <section
       aria-label="Performance at a glance"
-      className="bg-zinc-100 dark:bg-zinc-900 py-20 md:py-28"
+      className="relative py-20 md:py-28 overflow-hidden"
     >
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/80 via-zinc-100 to-zinc-100 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-900" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[60%] h-[60%] bg-emerald-100/40 blur-[100px] rounded-full" />
       <div className="max-w-6xl mx-auto px-5 sm:px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
           {STATS.map((s, i) => (
@@ -181,8 +183,10 @@ export function HowItWorks() {
   return (
     <section
       aria-labelledby="how-heading"
-      className="bg-zinc-100 dark:bg-zinc-900 py-20 md:py-32"
+      className="relative py-20 md:py-32 overflow-hidden"
     >
+      <div className="absolute inset-0 bg-gradient-to-b from-zinc-100 via-emerald-50/50 to-zinc-100 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-900" />
+      <div className="absolute bottom-0 right-0 w-[50%] h-[50%] bg-emerald-100/30 blur-[120px] rounded-full" />
       <div className="max-w-6xl mx-auto px-5 sm:px-6">
         <motion.div
           variants={reveal}
@@ -337,8 +341,10 @@ export function WhyChoose() {
   return (
     <section
       aria-labelledby="why-heading"
-      className="bg-zinc-100 dark:bg-zinc-900 py-16 md:py-24"
+      className="relative py-16 md:py-24 overflow-hidden"
     >
+      <div className="absolute inset-0 bg-gradient-to-b from-zinc-100 via-emerald-50/60 to-zinc-100 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-900" />
+      <div className="absolute top-1/2 left-0 w-[40%] h-[40%] bg-emerald-100/30 blur-[100px] rounded-full -translate-y-1/2" />
       <div className="max-w-6xl mx-auto px-5 sm:px-6">
         <motion.div
           variants={reveal}

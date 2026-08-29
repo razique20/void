@@ -323,7 +323,9 @@ export default function LandingPage() {
         <TrustBadges />
 
         {/* Final CTA — Light background */}
-        <section className="relative py-28 md:py-40 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+        <section className="relative py-28 md:py-40 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-zinc-100 via-emerald-50/60 to-emerald-100/40 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-900" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-[50%] bg-emerald-100/50 blur-[120px] rounded-full" />
           <div className="max-w-4xl mx-auto px-5 sm:px-6 text-center relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
