@@ -1,5 +1,5 @@
-import VoidLoader from '@/components/VoidLoader';
+import SimpleLoader from '@/components/SimpleLoader';
 
 export default function ChannelsLoading() {
-  return <VoidLoader />;
+  return <SimpleLoader />;
 }

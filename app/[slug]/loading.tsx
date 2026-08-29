@@ -1,5 +1,5 @@
-import VoidLoader from '@/components/VoidLoader';
+import SimpleLoader from '@/components/SimpleLoader';
 
 export default function SlugLoading() {
-  return <VoidLoader />;
+  return <SimpleLoader />;
 }

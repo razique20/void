@@ -31,6 +31,7 @@ import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';
 import { useData } from '@/lib/DataContext';
 import Link from 'next/link';
+import FeatureLocked from '@/components/FeatureLocked';
 
 export default function LeadsPage() {
   const { sub, loading: loadingSub } = useData();
@@ -263,26 +264,10 @@ export default function LeadsPage() {
 
   if (!sub?.features?.includes('lead_capture')) {
     return (
-      <div className="min-h-[70vh] w-full flex flex-col items-center justify-center text-center p-6 text-foreground relative">
-        <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
-
-        <div className="max-w-md mx-auto text-center py-16 px-6 bg-bg-subtle-alt border border-border-default rounded-2xl backdrop-blur-3xl shadow-sm relative z-10">
-          <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Lock className="w-6 h-6 text-red-500" />
-          </div>
-          <h2 className="text-xl font-bold mb-3 text-foreground">Leads CRM Locked</h2>
-          <p className="text-silver text-xs leading-relaxed mb-8">
-            Your current plan does not have access to Leads CRM. Upgrade to Enterprise or higher to automatically qualify and capture prospective targets into your workspace pipeline.
-          </p>
-          <Link
-            href="/billing"
-            className="inline-flex items-center justify-center bg-foreground text-background px-8 py-3.5 rounded-full text-xs font-bold transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] shadow-md cursor-pointer"
-          >
-            Upgrade Now
-          </Link>
-        </div>
-      </div>
+      <FeatureLocked
+        title="Leads CRM Locked"
+        description="Your current plan does not have access to Leads CRM. Upgrade to Enterprise or higher to automatically qualify and capture prospective targets into your workspace pipeline."
+      />
     );
   }
 

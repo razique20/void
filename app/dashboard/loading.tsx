@@ -1,5 +1,5 @@
-import VoidLoader from '@/components/VoidLoader';
+import SimpleLoader from '@/components/SimpleLoader';
 
 export default function DashboardLoading() {
-  return <VoidLoader />;
+  return <SimpleLoader />;
 }

@@ -35,6 +35,7 @@ import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';
 import { useData } from '@/lib/DataContext';
+import FeatureLocked from '@/components/FeatureLocked';
 
 /* ── Motion variants (matching training/dashboard) ────── */
 
@@ -298,23 +299,10 @@ export default function LiveChatPage() {
 
   if (!sub?.features?.includes('mission_control')) {
     return (
-      <div className="flex flex-col items-center justify-center h-full px-6">
-        <div className="flex flex-col items-center justify-center py-20 bg-bg-subtle border border-border-default border-dashed rounded-2xl text-center max-w-md mx-auto">
-          <div className="w-14 h-14 bg-bg-elevated border border-border-strong rounded-2xl flex items-center justify-center mb-4">
-            <Shield className="w-7 h-7 text-silver" />
-          </div>
-          <h3 className="text-sm font-bold text-foreground">Mission Control Locked</h3>
-          <p className="text-silver text-xs max-w-xs mt-1.5 leading-relaxed">
-            Your current {sub?.plan || 'Free'} plan does not include Mission Control. Upgrade to Pro or higher to monitor and take over agent chats live.
-          </p>
-          <Link
-            href="/billing"
-            className="mt-5 inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-sm"
-          >
-            Upgrade Now <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-      </div>
+      <FeatureLocked
+        title="Mission Control Locked"
+        description={`Your current ${sub?.plan || 'Free'} plan does not include Mission Control. Upgrade to Pro or higher to monitor and take over agent chats live.`}
+      />
     );
   }
 

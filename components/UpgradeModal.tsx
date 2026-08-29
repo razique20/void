@@ -90,12 +90,12 @@ export default function UpgradeModal({ isOpen, onClose, featureName, featureDesc
             {/* Close button */}
             <button
               onClick={onClose}
-              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-foreground/5 dark:hover:bg-white/5 text-silver hover:text-foreground transition-colors z-10"
+              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-foreground/5 dark:hover:bg-white/5 text-silver hover:text-foreground transition-colors z-20"
             >
               <X className="w-4 h-4" />
             </button>
 
-            <div className="relative z-10 p-8 text-center flex flex-col items-center justify-center h-[380px] space-y-5 overflow-hidden">
+            <div className="relative z-0 p-8 text-center flex flex-col items-center justify-center h-[380px] space-y-5 overflow-hidden">
               {/* Icon */}
               <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center shrink-0">
                 <Lock className="w-7 h-7 text-red-500" />

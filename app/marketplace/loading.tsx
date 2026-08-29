@@ -1,5 +1,5 @@
-import VoidLoader from '@/components/VoidLoader';
+import SimpleLoader from '@/components/SimpleLoader';
 
 export default function MarketplaceLoading() {
-  return <VoidLoader />;
+  return <SimpleLoader />;
 }
