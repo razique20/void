@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VOID Platform Mockups</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { DEFAULT: '#10b981', light: '#34d399', dark: '#059669' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Inter', system-ui, sans-serif; }
+    .page { width: 1280px; min-height: 800px; margin: 0 auto 60px auto; overflow: hidden; position: relative; }
+    .page-label { position: absolute; top: -32px; left: 0; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #71717a; }
+    body { background: #18181b; }
+    .glow { position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none; }
+    .stat-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+    .floating-card { position: absolute; background: white; border-radius: 16px; padding: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+    .bento-item { background: rgba(24,24,27,0.6); border: 1px solid rgba(63,63,70,0.6); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; }
+    .dashboard-stat { background: white; padding: 16px 20px; }
+    .agent-row { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .channel-tag { font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .step-card { padding: 32px; }
+    .use-case-card { background: rgba(24,24,27,1); border: 1px solid rgba(63,63,70,1); border-radius: 28px; padding: 32px; }
+    .trust-card { background: rgba(24,24,27,1); border: 1px solid rgba(63,63,70,1); border-radius: 28px; padding: 32px; text-align: center; }
+    .onboard-input { width: 100%; background: #f4f4f5; border: 2px solid #d4d4d8; border-radius: 16px; padding: 16px 24px; font-size: 18px; font-weight: 700; }
+    .onboard-btn { width: 100%; background: #18181b; color: white; padding: 16px; border-radius: 16px; font-weight: 700; font-size: 14px; text-align: center; }
+    .industry-btn { padding: 16px; border-radius: 16px; border: 1px solid #e4e4e7; display: flex; align-items: center; gap: 16px; background: white; }
+    .industry-btn.selected { background: #18181b; color: white; border-color: transparent; }
+    .tone-btn { padding: 16px; border-radius: 16px; border: 1px solid #e4e4e7; background: white; text-align: center; font-size: 12px; font-weight: 700; }
+    .tone-btn.selected { background: #18181b; color: white; border-color: transparent; }
+    .progress-dot { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #d4d4d8; background: white; }
+    .progress-dot.active { background: #18181b; border-color: #18181b; color: white; }
+    .progress-dot.done { background: #3b82f6; border-color: #3b82f6; color: white; }
+    .chart-bar { background: linear-gradient(to top, rgba(59,130,246,0.08), rgba(59,130,246,0.2)); border-radius: 4px 4px 0 0; }
+    .marketplace-card { background: #fafafa; border: 1px solid #e4e4e7; border-radius: 24px; padding: 28px; }
+    .chat-msg { max-width: 70%; padding: 12px 16px; border-radius: 16px; font-size: 13px; line-height: 1.5; }
+    .chat-user { background: #f4f4f5; color: #18181b; border-bottom-left-radius: 4px; }
+    .chat-agent { background: #18181b; color: white; border-bottom-right-radius: 4px; }
+    .takeover-banner { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; }
+    .billing-plan { border: 1px solid #e4e4e7; border-radius: 16px; padding: 24px; text-align: center; background: white; }
+    .billing-plan.current { border: 2px solid #18181b; }
+    .metric-big { font-size: 36px; font-weight: 900; letter-spacing: -0.02em; }
+    .telemetry-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f4f4f5; }
+    .event-log { background: #f9f9f9; border: 1px solid #e4e4e7; border-radius: 12px; padding: 12px; font-family: monospace; font-size: 10px; }
+  </style>
+</head>
+<body class="bg-zinc-950">
+
+<!-- ===================== PAGE 1: LANDING ===================== -->
+<div class="page dark" style="background: #09090b; min-height: 900px;">
+  <span class="page-label" style="color: #52525b;">Screenshot 1 — Landing Page</span>
+  
+  <!-- Background glows -->
+  <div class="glow" style="top: -10%; right: -5%; width: 600px; height: 600px; background: rgba(16,185,129,0.10);"></div>
+  <div class="glow" style="bottom: 10%; left: 5%; width: 400px; height: 400px; background: rgba(37,99,235,0.04);"></div>
+
+  <!-- Nav -->
+  <nav style="padding: 20px 48px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 10;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="width: 32px; height: 32px; background: #10b981; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      </div>
+      <span style="font-size: 16px; font-weight: 900; color: white; letter-spacing: -0.02em;">VOID</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 32px;">
+      <span style="font-size: 13px; font-weight: 600; color: #a1a1aa;">Features</span>
+      <span style="font-size: 13px; font-weight: 600; color: #a1a1aa;">Pricing</span>
+      <span style="font-size: 13px; font-weight: 600; color: #a1a1aa;">Docs</span>
+      <div style="padding: 8px 20px; background: white; color: #09090b; border-radius: 999px; font-size: 13px; font-weight: 700;">Sign In</div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div style="padding: 60px 48px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; position: relative; z-index: 10;">
+    <div>
+      <h1 style="font-size: 64px; font-weight: 900; color: white; line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 24px;">
+        Hire an AI workforce<br>that never sleeps.
+      </h1>
+      <p style="font-size: 18px; color: #a1a1aa; line-height: 1.6; margin-bottom: 8px; max-width: 480px;">
+        Deploy autonomous agents that handle support, sales, and workflows 24/7.
+      </p>
+      <p style="font-size: 14px; color: #71717a; margin-bottom: 40px;">Globally. Autonomously. Seamlessly.</p>
+      <div style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: white; color: #09090b; border-radius: 999px; font-size: 14px; font-weight: 700;">
+        Talk to our team
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+
+    <!-- Floating cards -->
+    <div style="position: relative; height: 480px;">
+      <!-- Card 1: Agent Deployed -->
+      <div class="floating-card" style="top: 20px; right: 0; width: 200px;">
+        <p style="font-size: 9px; font-weight: 700; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Agent deployed</p>
+        <p style="font-size: 24px; font-weight: 900; color: #09090b;">Sales Rep</p>
+        <div style="margin-top: 12px; display: flex; align-items: center; gap: 6px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span>
+          <span style="font-size: 11px; font-weight: 600; color: #059669;">Active now</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Resolution Rate -->
+      <div class="floating-card" style="top: 120px; left: 0; width: 190px;">
+        <p style="font-size: 9px; font-weight: 700; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Resolution rate</p>
+        <p style="font-size: 24px; font-weight: 900; color: #09090b;">Saved <span style="color: #10b981;">88%</span></p>
+        <svg style="margin-top: 12px;" width="150" height="32" viewBox="0 0 150 32" fill="none">
+          <path d="M0 28 L20 22 L40 25 L60 16 L80 20 L100 8 L120 6 L150 4" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Card 3: Onboarding Checklist -->
+      <div class="floating-card" style="bottom: 60px; left: 40px; width: 200px;">
+        <p style="font-size: 14px; font-weight: 700; color: #09090b; margin-bottom: 12px;">Onboarding</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span><span style="font-size: 11px; font-weight: 600; color: #52525b;">Knowledge base loaded</span></div>
+          <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span><span style="font-size: 11px; font-weight: 600; color: #52525b;">Channels connected</span></div>
+          <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span><span style="font-size: 11px; font-weight: 600; color: #52525b;">Prompts configured</span></div>
+          <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span><span style="font-size: 11px; font-weight: 600; color: #52525b;">Testing complete</span></div>
+          <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #d4d4d8;"></span><span style="font-size: 11px; color: #d4d4d8;">Deployed</span></div>
+        </div>
+      </div>
+
+      <!-- Card 4: Enterprise Badge -->
+      <div class="floating-card" style="bottom: 20px; right: 30px; background: #10b981; padding: 16px; display: flex; flex-direction: column; align-items: center;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span style="font-size: 11px; font-weight: 800; color: white; margin-top: 4px;">Enterprise</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metrics Band -->
+  <div style="margin-top: 80px; padding: 48px; background: #f4f4f5; border-radius: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; position: relative; z-index: 10; margin-left: 48px; margin-right: 48px;">
+    <div style="text-align: center;">
+      <div style="font-size: 40px; font-weight: 900; color: #09090b; letter-spacing: -0.02em;">Beta</div>
+      <div style="font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Currently in early access</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 40px; font-weight: 900; color: #09090b; letter-spacing: -0.02em;">Free</div>
+      <div style="font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Tier to get started</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 40px; font-weight: 900; color: #09090b; letter-spacing: -0.02em;">&lt;100ms</div>
+      <div style="font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Target response time</div>
+    </div>
+    <div style="text-align: center;">
+      <div style="font-size: 40px; font-weight: 900; color: #09090b; letter-spacing: -0.02em;">24/7</div>
+      <div style="font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;">Always-on coverage</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== PAGE 2: HOW IT WORKS ===================== -->
+<div class="page" style="background: #f4f4f5; min-height: 800px; padding: 80px 48px;">
+  <span class="page-label" style="color: #a1a1aa;">Screenshot 2 — How It Works</span>
+  <div style="text-align: center; margin-bottom: 60px;">
+    <h2 style="font-size: 48px; font-weight: 900; color: #09090b; letter-spacing: -0.03em;">Live in three steps.</h2>
+    <p style="font-size: 18px; color: #71717a; margin-top: 12px;">No engineers. No six-month rollout. Ship your first agent today.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;">
+    <!-- Step 1 -->
+    <div class="step-card">
+      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+        <div style="width: 56px; height: 56px; background: #ecfdf5; border: 1px solid #bbf7d0; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <span style="font-size: 48px; font-weight: 900; color: #e4e4e7;">01</span>
+      </div>
+      <h3 style="font-size: 20px; font-weight: 700; color: #09090b; margin-bottom: 12px;">Describe the job</h3>
+      <p style="font-size: 15px; color: #71717a; line-height: 1.6;">Tell VOID what you need in plain language. No prompt engineering required.</p>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-card">
+      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+        <div style="width: 56px; height: 56px; background: #ecfdf5; border: 1px solid #bbf7d0; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span style="font-size: 48px; font-weight: 900; color: #e4e4e7;">02</span>
+      </div>
+      <h3 style="font-size: 20px; font-weight: 700; color: #09090b; margin-bottom: 12px;">Connect your stack</h3>
+      <p style="font-size: 15px; color: #71717a; line-height: 1.6;">Plug in WhatsApp, Telegram, web, email and your CRM. Your agent learns privately.</p>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-card">
+      <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+        <div style="width: 56px; height: 56px; background: #ecfdf5; border: 1px solid #bbf7d0; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M13.5 2L3 14h9l-1 8L22 10h-9l1.5-8z"/></svg>
+        </div>
+        <span style="font-size: 48px; font-weight: 900; color: #e4e4e7;">03</span>
+      </div>
+      <h3 style="font-size: 20px; font-weight: 700; color: #09090b; margin-bottom: 12px;">Deploy & relax</h3>
+      <p style="font-size: 15px; color: #71717a; line-height: 1.6;">Go live in minutes. Run 24/7 with full visibility from the console.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== PAGE 3: USE CASES ===================== -->
+<div class="page" style="background: #09090b; min-height: 700px; padding: 80px 48px;">
+  <span class="page-label" style="color: #52525b;">Screenshot 3 — Use Cases</span>
+  <div style="margin-bottom: 60px; max-width: 600px;">
+    <h2 style="font-size: 48px; font-weight: 900; color: white; letter-spacing: -0.03em; line-height: 1.1;">One workforce.<br>Every department.</h2>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+    <div class="use-case-card" style="transition: all 0.3s;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+      </div>
+      <span style="font-size: 11px; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 12px;">Support</span>
+      <h3 style="font-size: 20px; font-weight: 700; color: white; margin-bottom: 12px;">Resolve tickets in seconds</h3>
+      <p style="font-size: 15px; color: #a1a1aa; line-height: 1.6;">Refunds, order status, troubleshooting — handled instantly across every channel.</p>
+    </div>
+
+    <div class="use-case-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+      </div>
+      <span style="font-size: 11px; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 12px;">Sales</span>
+      <h3 style="font-size: 20px; font-weight: 700; color: white; margin-bottom: 12px;">Never miss a lead again</h3>
+      <p style="font-size: 15px; color: #a1a1aa; line-height: 1.6;">Qualify, follow up and book demos automatically. Your pipeline keeps moving 24/7.</p>
+    </div>
+
+    <div class="use-case-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+      </div>
+      <span style="font-size: 11px; font-weight: 800; color: #10b981; text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 12px;">Operations</span>
+      <h3 style="font-size: 20px; font-weight: 700; color: white; margin-bottom: 12px;">Automate the busywork</h3>
+      <p style="font-size: 15px; color: #a1a1aa; line-height: 1.6;">Sync your CRM, dispatch webhooks and run multi-step workflows without human in the loop.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== PAGE 4: ONBOARDING — INDUSTRY ===================== -->
+<div class="page" style="background: white; min-height: 900px; display: flex; align-items: center; justify-content: center;">
+  <span class="page-label" style="color: #a1a1aa;">Screenshot 4 — Onboarding: Industry Selection</span>
+  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 560px;">
+    <!-- Progress -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 48px; position: relative;">
+      <div style="position: absolute; top: 20px; left: 0; right: 0; height: 2px; background: #e4e4e7;"></div>
+      <div style="position: absolute; top: 20px; left: 0; width: 50%; height: 2px; background: #3b82f6;"></div>
+      <div class="progress-dot done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="progress-dot active" style="color: white;">2</div>
+      <div class="progress-dot">3</div>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 32px;">
+      <h2 style="font-size: 28px; font-weight: 700; color: #09090b; letter-spacing: -0.02em;">Select your industry</h2>
+      <p style="font-size: 14px; color: #71717a; margin-top: 8px;">We'll tailor agent templates and blueprints for <strong style="color: #09090b;">CareSync Medical</strong>.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div class="industry-btn selected">
+        <div style="width: 44px; height: 44px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;">Hospital & Healthcare <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-size: 11px; margin-top: 2px; opacity: 0.6;">Medical care, scheduling & triage</div>
+        </div>
+      </div>
+      <div class="industry-btn">
+        <div style="width: 44px; height: 44px; background: #f4f4f5; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-size: 14px; font-weight: 700;">Warehouse & Logistics</div>
+          <div style="font-size: 11px; color: #71717a; margin-top: 2px;">Inventory, stock & shipping</div>
+        </div>
+      </div>
+      <div class="industry-btn">
+        <div style="width: 44px; height: 44px; background: #f4f4f5; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-size: 14px; font-weight: 700;">Grocery & Retail</div>
+          <div style="font-size: 11px; color: #71717a; margin-top: 2px;">Deliveries, refunds & support</div>
+        </div>
+      </div>
+      <div class="industry-btn">
+        <div style="width: 44px; height: 44px; background: #f4f4f5; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-size: 14px; font-weight: 700;">Real Estate</div>
+          <div style="font-size: 11px; color: #71717a; margin-top: 2px;">Leasing, sales & property</div>
+        </div>
+      </div>
+      <div class="industry-btn">
+        <div style="width: 44px; height: 44px; background: #f4f4f5; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z"/><line x1="9" y1="2" x2="9" y2="22"/></svg>
+        </div>
+        <div style="flex: 1;">
+          <div style="font-size: 14px; font-weight: 700;">Hotel & Concierge</div>
+          <div style="font-size: 11px; color: #71717a; margin-top: 2px;">Hospitality, bookings & guests</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 12px; margin-top: 32px;">
+      <div style="flex: 1; padding: 16px; background: #f4f4f5; border-radius: 16px; text-align: center; font-size: 14px; font-weight: 700; color: #09090b;">Back</div>
+      <div style="flex: 2; padding: 16px; background: #18181b; border-radius: 16px; text-align: center; font-size: 14px; font-weight: 700; color: white; display: flex; align-items: center; justify-content: center; gap: 8px;">Continue <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== PAGE 5: DASHBOARD ===================== -->
+<div class="page" style="background: white; min-height: 900px; padding: 32px 40px;">
+  <span class="page-label" style="color: #a1a1aa;">Screenshot 5 — Dashboard: Fleet Overview</span>
+
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #e4e4e7;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
+        <h1 style="font-size: 22px; font-weight: 600; color: #09090b;">Fleet Overview</h1>
+        <div style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.15); border-radius: 999px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite;"></span>
+          <span style="font-size: 9px; font-weight: 800; color: #059669; text-transform: uppercase; letter-spacing: 0.1em;">3 Online</span>
+        </div>
+      </div>
+      <p style="font-size: 12px; font-weight: 500; color: #71717a;">Monitor, calibrate, and manage your autonomous agent fleet.</p>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <div style="padding: 10px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </div>
+      <div style="padding: 10px 20px; background: #09090b; color: white; border-radius: 12px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Deploy Agent
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Strip -->
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #f4f4f5; border-radius: 16px; overflow: hidden; margin-bottom: 32px; border: 1px solid #e4e4e7;">
+    <div class="dashboard-stat"><p style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Total Messages</p><p style="font-size: 20px; font-weight: 700; color: #09090b;">1,234</p></div>
+    <div class="dashboard-stat"><p style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Active Chats</p><p style="font-size: 20px; font-weight: 700; color: #09090b;">12</p></div>
+    <div class="dashboard-stat"><p style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Estimated Savings</p><p style="font-size: 20px; font-weight: 700; color: #09090b;">$450</p></div>
+    <div class="dashboard-stat"><p style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Hours Reclaimed</p><p style="font-size: 20px; font-weight: 700; color: #09090b;">45.2</p></div>
+  </div>
+
+  <!-- Two Column Layout -->
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
+    <!-- Left: Agents -->
+    <div>
+      <!-- Filter Bar -->
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 6px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 12px;">
+        <div style="flex: 1; display: flex; align-items: center; gap: 8px; padding: 8px 12px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span style="font-size: 12px; color: #a1a1aa;">Filter agents...</span>
+        </div>
+        <div style="display: flex; gap: 2px;">
+          <div style="padding: 6px 12px; background: #09090b; color: white; border-radius: 8px; font-size: 11px; font-weight: 700;">All</div>
+          <div style="padding: 6px 12px; font-size: 11px; font-weight: 600; color: #71717a; border-radius: 8px;">Online</div>
+          <div style="padding: 6px 12px; font-size: 11px; font-weight: 600; color: #71717a; border-radius: 8px;">WhatsApp</div>
+          <div style="padding: 6px 12px; font-size: 11px; font-weight: 600; color: #71717a; border-radius: 8px;">Telegram</div>
+        </div>
+      </div>
+
+      <!-- Agent Rows -->
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <div class="agent-row">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 36px; height: 36px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 13px; font-weight: 600; color: #09090b;">Sales Rep</span>
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
+                <span class="channel-tag" style="background: rgba(16,185,129,0.08); color: #059669; border: 1px solid rgba(16,185,129,0.1);">WA</span>
+                <span class="channel-tag" style="background: rgba(14,165,233,0.08); color: #0284c7; border: 1px solid rgba(14,165,233,0.1);">TG</span>
+              </div>
+              <div style="font-size: 10px; color: #71717a; margin-top: 2px; display: flex; gap: 4px;">
+                <span style="font-weight: 600;">Professional</span>
+                <span>·</span>
+                <span>English</span>
+                <span>·</span>
+                <span style="color: #a1a1aa; font-style: italic;">Expert sales consultant for enterprise...</span>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 4px;">
+            <div style="padding: 6px 10px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a; display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Chat</div>
+            <div style="padding: 6px 10px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a; display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Brain</div>
+          </div>
+        </div>
+
+        <div class="agent-row">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 36px; height: 36px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 13px; font-weight: 600; color: #09090b;">Support Agent</span>
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
+                <span class="channel-tag" style="background: rgba(16,185,129,0.08); color: #059669; border: 1px solid rgba(16,185,129,0.1);">WA</span>
+              </div>
+              <div style="font-size: 10px; color: #71717a; margin-top: 2px; display: flex; gap: 4px;">
+                <span style="font-weight: 600;">Friendly</span>
+                <span>·</span>
+                <span>English</span>
+                <span>·</span>
+                <span style="color: #a1a1aa; font-style: italic;">Warm and helpful customer support bot...</span>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 4px;">
+            <div style="padding: 6px 10px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a; display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Chat</div>
+            <div style="padding: 6px 10px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a; display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Brain</div>
+          </div>
+        </div>
+
+        <div class="agent-row" style="opacity: 0.6;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 36px; height: 36px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 13px; font-weight: 600; color: #09090b;">Lead Gen Bot</span>
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: #d4d4d8;"></span>
+                <span class="channel-tag" style="background: #f4f4f5; color: #71717a;">WEB</span>
+              </div>
+              <div style="font-size: 10px; color: #71717a; margin-top: 2px; display: flex; gap: 4px;">
+                <span style="font-weight: 600;">Concise</span>
+                <span>·</span>
+                <span>English</span>
+                <span>·</span>
+                <span style="color: #a1a1aa; font-style: italic;">Quick lead qualification and booking...</span>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 4px;">
+            <div style="padding: 6px 10px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a; display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Chat</div>
+            <div style="padding: 6px 10px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a; display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Brain</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Telemetry -->
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <!-- Activity Chart -->
+      <div style="background: #fafafa; border: 1px solid #e4e4e7; border-radius: 16px; padding: 20px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+          <div><p style="font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em;">Activity</p><p style="font-size: 10px; color: #a1a1aa; margin-top: 2px;">7-day interaction volume</p></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d4d4d8" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+        </div>
+        <!-- Mini bar chart -->
+        <div style="display: flex; align-items: flex-end; gap: 6px; height: 120px;">
+          <div style="flex: 1; height: 45%; background: linear-gradient(to top, rgba(59,130,246,0.06), rgba(59,130,246,0.18)); border-radius: 4px 4px 0 0;"></div>
+          <div style="flex: 1; height: 65%; background: linear-gradient(to top, rgba(59,130,246,0.06), rgba(59,130,246,0.18)); border-radius: 4px 4px 0 0;"></div>
+          <div style="flex: 1; height: 55%; background: linear-gradient(to top, rgba(59,130,246,0.06), rgba(59,130,246,0.18)); border-radius: 4px 4px 0 0;"></div>
+          <div style="flex: 1; height: 80%; background: linear-gradient(to top, rgba(59,130,246,0.06), rgba(59,130,246,0.18)); border-radius: 4px 4px 0 0;"></div>
+          <div style="flex: 1; height: 70%; background: linear-gradient(to top, rgba(59,130,246,0.06), rgba(59,130,246,0.18)); border-radius: 4px 4px 0 0;"></div>
+          <div style="flex: 1; height: 90%; background: linear-gradient(to top, rgba(59,130,246,0.06), rgba(59,130,246,0.18)); border-radius: 4px 4px 0 0;"></div>
+          <div style="flex: 1; height: 95%; background: linear-gradient(to top, rgba(59,130,246,0.06), rgba(59,130,246,0.18)); border-radius: 4px 4px 0 0;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+          <span style="font-size: 9px; color: #a1a1aa;">Mon</span>
+          <span style="font-size: 9px; color: #a1a1aa;">Tue</span>
+          <span style="font-size: 9px; color: #a1a1aa;">Wed</span>
+          <span style="font-size: 9px; color: #a1a1aa;">Thu</span>
+          <span style="font-size: 9px; color: #a1a1aa;">Fri</span>
+          <span style="font-size: 9px; color: #a1a1aa;">Sat</span>
+          <span style="font-size: 9px; color: #a1a1aa;">Sun</span>
+        </div>
+      </div>
+
+      <!-- System Telemetry -->
+      <div style="background: #fafafa; border: 1px solid #e4e4e7; border-radius: 16px; padding: 20px;">
+        <p style="font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;">System</p>
+        <div class="telemetry-row">
+          <div style="display: flex; align-items: center; gap: 8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg><span style="font-size: 12px; color: #71717a;">Autonomy Score</span></div>
+          <span style="font-size: 12px; font-weight: 700; color: #09090b;">98%</span>
+        </div>
+        <div class="telemetry-row">
+          <div style="display: flex; align-items: center; gap: 8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg><span style="font-size: 12px; color: #71717a;">Heartbeat</span></div>
+          <span style="font-size: 12px; font-weight: 700; color: #059669;">Active</span>
+        </div>
+        <div class="telemetry-row" style="border-bottom: none;">
+          <div style="display: flex; align-items: center; gap: 8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span style="font-size: 12px; color: #71717a;">Active Gateways</span></div>
+          <span style="font-size: 12px; font-weight: 700; color: #09090b;">2 / 3</span>
+        </div>
+      </div>
+
+      <!-- Events Log -->
+      <div style="background: #fafafa; border: 1px solid #e4e4e7; border-radius: 16px; padding: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <p style="font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            Events
+          </p>
+          <span style="font-size: 9px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em;">View all →</span>
+        </div>
+        <div class="event-log" style="max-height: 140px; overflow: hidden;">
+          <div style="display: flex; align-items: flex-start; gap: 6px; margin-bottom: 6px;"><span style="width: 4px; height: 4px; border-radius: 50%; background: #10b981; margin-top: 4px; flex-shrink: 0;"></span><span><span style="color: #a1a1aa;">[12:04:23]</span> gateway: WhatsApp handshake complete</span></div>
+          <div style="display: flex; align-items: flex-start; gap: 6px; margin-bottom: 6px;"><span style="width: 4px; height: 4px; border-radius: 50%; background: #3b82f6; margin-top: 4px; flex-shrink: 0;"></span><span><span style="color: #a1a1aa;">[12:04:25]</span> agent: Sales Rep responding to inbound</span></div>
+          <div style="display: flex; align-items: flex-start; gap: 6px; margin-bottom: 6px;"><span style="width: 4px; height: 4px; border-radius: 50%; background: #3b82f6; margin-top: 4px; flex-shrink: 0;"></span><span><span style="color: #a1a1aa;">[12:05:01]</span> rag: context injected (3 sources)</span></div>
+          <div style="display: flex; align-items: flex-start; gap: 6px; margin-bottom: 6px;"><span style="width: 4px; height: 4px; border-radius: 50%; background: #f59e0b; margin-top: 4px; flex-shrink: 0;"></span><span><span style="color: #a1a1aa;">[12:05:30]</span> rate: approaching message quota (85%)</span></div>
+          <div style="display: flex; align-items: flex-start; gap: 6px;"><span style="width: 4px; height: 4px; border-radius: 50%; background: #3b82f6; margin-top: 4px; flex-shrink: 0;"></span><span><span style="color: #a1a1aa;">[12:06:12]</span> agent: Support Agent responding to inbound</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== PAGE 6: CHAT ===================== -->
+<div class="page" style="background: white; min-height: 900px; padding: 40px;">
+  <span class="page-label" style="color: #a1a1aa;">Screenshot 6 — Chat Interface</span>
+  
+  <div style="max-width: 720px; margin: 0 auto; border: 1px solid #e4e4e7; border-radius: 20px; overflow: hidden; min-height: 800px; display: flex; flex-direction: column;">
+    <!-- Chat Header -->
+    <div style="padding: 20px 24px; border-bottom: 1px solid #e4e4e7; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 40px; height: 40px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 15px; font-weight: 700; color: #09090b;">Sales Rep</span>
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981;"></span>
+          </div>
+          <span style="font-size: 11px; color: #71717a;">Powered by VOID Neural Agency</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <div style="padding: 8px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <div style="padding: 8px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div style="flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+      <!-- User msg 1 -->
+      <div style="display: flex; justify-content: flex-end;">
+        <div class="chat-msg chat-user">Hi, I'm looking at the Enterprise plan. Can you tell me more about the features?</div>
+      </div>
+      <!-- Agent msg 1 -->
+      <div style="display: flex; justify-content: flex-start;">
+        <div class="chat-msg chat-agent">
+          <p style="font-weight: 600; margin-bottom: 6px;">Hey there! 👋 Happy to walk you through our Enterprise plan.</p>
+          <p>Here's what you get:</p>
+          <ul style="margin: 8px 0 8px 16px; list-style: disc;">
+            <li>Unlimited AI agents</li>
+            <li>Dedicated Groq LPU nodes for sub-100ms responses</li>
+            <li>Priority support & custom integrations</li>
+            <li>Advanced analytics & webhook access</li>
+          </ul>
+          <p>Want me to help you get started?</p>
+        </div>
+      </div>
+      <!-- User msg 2 -->
+      <div style="display: flex; justify-content: flex-end;">
+        <div class="chat-msg chat-user">Sounds great! How do I set up a WhatsApp channel?</div>
+      </div>
+      <!-- Agent msg 2 -->
+      <div style="display: flex; justify-content: flex-start;">
+        <div class="chat-msg chat-agent">
+          <p style="margin-bottom: 6px;">Super easy! Just head to your <strong>Dashboard → Agent → Channels</strong> and click "Connect WhatsApp." We'll walk you through the Business Cloud API setup — takes about 5 minutes.</p>
+          <p>Once connected, your agent starts receiving messages instantly. No coding needed. 🚀</p>
+        </div>
+      </div>
+      <!-- User msg 3 -->
+      <div style="display: flex; justify-content: flex-end;">
+        <div class="chat-msg chat-user">Can I try it for free first?</div>
+      </div>
+      <!-- Agent msg 3 -->
+      <div style="display: flex; justify-content: flex-start;">
+        <div class="chat-msg chat-agent">
+          <p>Absolutely! We have a <strong>free tier</strong> with 50 messages/month — perfect for testing. No credit card required. You can deploy your first agent right now and upgrade whenever you're ready. 🎉</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Takeover Banner -->
+    <div style="padding: 0 24px;">
+      <div class="takeover-banner">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span style="font-size: 12px; font-weight: 600; color: #059669;">Human takeover available</span>
+        </div>
+        <div style="padding: 6px 14px; background: #059669; color: white; border-radius: 8px; font-size: 11px; font-weight: 700;">Take Over</div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div style="padding: 16px 24px 24px; display: flex; gap: 12px; align-items: flex-end;">
+      <div style="flex: 1; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        <span style="font-size: 13px; color: #a1a1aa;">Type your message...</span>
+      </div>
+      <div style="width: 44px; height: 44px; background: #09090b; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== PAGE 7: MARKETPLACE ===================== -->
+<div class="page" style="background: white; min-height: 900px; padding: 40px;">
+  <span class="page-label" style="color: #a1a1aa;">Screenshot 7 — Marketplace</span>
+  
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+        <div style="padding: 4px 10px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 9px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 6px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          Synthesis Hub
+        </div>
+        <span style="width: 4px; height: 4px; border-radius: 50%; background: #71717a;"></span>
+        <div style="display: flex; align-items: center; gap: 6px; font-size: 9px; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.1em;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
+          Live Marketplace
+        </div>
+      </div>
+      <h1 style="font-size: 30px; font-weight: 700; color: #09090b; letter-spacing: -0.02em;">Marketplace.</h1>
+      <p style="font-size: 12px; color: #71717a; margin-top: 4px; max-width: 500px;">Expand your agency's capabilities with specialized neural modules and custom action tools.</p>
+    </div>
+    <div style="display: flex; padding: 2px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px;">
+      <div style="padding: 6px 12px; background: #09090b; color: white; border-radius: 6px; font-size: 10px; font-weight: 700;">All Modules</div>
+      <div style="padding: 6px 12px; font-size: 10px; font-weight: 700; color: #71717a;">Agents</div>
+      <div style="padding: 6px 12px; font-size: 10px; font-weight: 700; color: #71717a;">Integrations</div>
+      <div style="padding: 6px 12px; font-size: 10px; font-weight: 700; color: #71717a;">Tools</div>
+    </div>
+  </div>
+
+  <!-- Marketplace Grid -->
+  <div style="display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: auto auto; gap: 16px;">
+    <!-- Action Agents (Large) -->
+    <div style="grid-row: span 2; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 24px; padding: 36px; position: relative; overflow: hidden;">
+      <div style="position: absolute; top: 24px; right: 24px; padding: 4px 12px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 8px;">
+        <span style="font-size: 9px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.1em;">Internal Testing</span>
+      </div>
+      <div style="width: 48px; height: 48px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <p style="font-size: 9px; font-weight: 700; color: #3b82f6; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 8px;">Enterprise Workforce</p>
+      <h3 style="font-size: 28px; font-weight: 700; color: #09090b; line-height: 1.1; margin-bottom: 16px;">Action Agent<br>Workflows.</h3>
+      <p style="font-size: 12px; color: #71717a; line-height: 1.6; max-width: 480px;">Transform agents into autonomous workers that can execute refunds, book meetings, and update your CRM directly from live conversations.</p>
+      <div style="margin-top: 40px; display: flex; align-items: center; gap: 16px;">
+        <div style="padding: 12px 24px; background: #09090b; color: white; border-radius: 12px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px;">Configure in Fleet <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+        <div style="display: flex; -space-x: 8px;">
+          <div style="width: 32px; height: 32px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div style="width: 32px; height: 32px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <div style="width: 32px; height: 32px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        </div>
+      </div>
+      <div style="position: absolute; bottom: -60px; right: -60px; width: 300px; height: 300px; background: rgba(59,130,246,0.05); border-radius: 50%; filter: blur(80px);"></div>
+    </div>
+
+    <!-- Neural Voice -->
+    <div style="background: #fafafa; border: 1px solid #e4e4e7; border-radius: 24px; padding: 28px;">
+      <div style="width: 40px; height: 40px; background: rgba(147,51,234,0.08); border: 1px solid rgba(147,51,234,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9333ea" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </div>
+      <h4 style="font-size: 14px; font-weight: 700; color: #09090b; margin-bottom: 6px;">Neural Voice</h4>
+      <p style="font-size: 12px; color: #71717a; line-height: 1.5;">High-fidelity STT/TTS transformation for WhatsApp voice notes.</p>
+      <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="padding: 8px 16px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 10px; font-weight: 700; color: #71717a;">Configure</div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+    </div>
+
+    <!-- Elite Sovereign -->
+    <div style="background: #fafafa; border: 1px solid #e4e4e7; border-radius: 24px; padding: 28px;">
+      <div style="width: 40px; height: 40px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h4 style="font-size: 14px; font-weight: 700; color: #09090b; margin-bottom: 6px;">Elite Sovereign</h4>
+      <p style="font-size: 12px; color: #71717a; line-height: 1.5;">Dedicated LPU nodes and unlimited agents for high-scale agencies.</p>
+      <div style="margin-top: 20px; text-align: center; padding: 10px; background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.1); border-radius: 8px; font-size: 10px; font-weight: 700; color: #71717a;">Configure</div>
+    </div>
+  </div>
+
+  <!-- Lead Sync (Full Width) -->
+  <div style="margin-top: 16px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 24px; padding: 28px; display: flex; align-items: center; justify-content: space-between;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="width: 40px; height: 40px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      </div>
+      <div>
+        <h4 style="font-size: 14px; font-weight: 700; color: #09090b; margin-bottom: 2px;">Lead Sync</h4>
+        <p style="font-size: 12px; color: #71717a;">Auto-export leads from social chats to Google Sheets, Excel, or custom CRMs.</p>
+      </div>
+    </div>
+    <div style="padding: 10px 20px; background: rgba(245,158,11,0.04); border: 1px solid rgba(245,158,11,0.1); border-radius: 8px; font-size: 10px; font-weight: 700; color: #71717a;">Active</div>
+  </div>
+</div>
+
+
+<!-- ===================== PAGE 8: TRUST BADGES ===================== -->
+<div class="page" style="background: #09090b; min-height: 600px; padding: 80px 48px;">
+  <span class="page-label" style="color: #52525b;">Screenshot 8 — Trust & Security</span>
+  <div style="text-align: center; margin-bottom: 48px;">
+    <h3 style="font-size: 22px; font-weight: 700; color: white; margin-bottom: 8px;">Security built in</h3>
+    <p style="font-size: 14px; color: #71717a;">We take data privacy seriously — here's what we do today.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; max-width: 1000px; margin: 0 auto;">
+    <div class="trust-card">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" style="margin-bottom: 12px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div style="font-size: 16px; font-weight: 700; color: white; margin-bottom: 8px;">Data isolation</div>
+      <div style="font-size: 12px; color: #71717a; line-height: 1.5;">Every account gets its own environment. Your data never mixes.</div>
+    </div>
+    <div class="trust-card">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" style="margin-bottom: 12px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <div style="font-size: 16px; font-weight: 700; color: white; margin-bottom: 8px;">Encryption</div>
+      <div style="font-size: 12px; color: #71717a; line-height: 1.5;">Data encrypted at rest and in transit. We never train on your data.</div>
+    </div>
+    <div class="trust-card">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" style="margin-bottom: 12px;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <div style="font-size: 16px; font-weight: 700; color: white; margin-bottom: 8px;">Privacy-first</div>
+      <div style="font-size: 12px; color: #71717a; line-height: 1.5;">Your data never trains our models. Enterprise data isolation.</div>
+    </div>
+    <div class="trust-card">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" style="margin-bottom: 12px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <div style="font-size: 16px; font-weight: 700; color: white; margin-bottom: 8px;">SOC 2 Certified</div>
+      <div style="font-size: 12px; color: #71717a; line-height: 1.5;">All infrastructure providers are SOC 2 Type 2 certified.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== PAGE 9: LEADS CRM ===================== -->
+<div class="page" style="background: white; min-height: 900px; padding: 32px 40px;">
+  <span class="page-label" style="color: #a1a1aa;">Screenshot 9 — Leads CRM</span>
+
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #e4e4e7;">
+    <div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
+        <h1 style="font-size: 22px; font-weight: 600; color: #09090b;">Leads CRM</h1>
+        <div style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.15); border-radius: 999px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span>
+          <span style="font-size: 9px; font-weight: 800; color: #059669; text-transform: uppercase; letter-spacing: 0.1em;">Synced</span>
+        </div>
+      </div>
+      <p style="font-size: 12px; font-weight: 500; color: #71717a;">View, export, and sync leads captured by your AI agents across your CRM in real time.</p>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <div style="padding: 10px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </div>
+      <div style="padding: 10px 20px; background: #09090b; color: white; border-radius: 12px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export CSV
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Strip -->
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #f4f4f5; border-radius: 16px; overflow: hidden; margin-bottom: 24px; border: 1px solid #e4e4e7;">
+    <div class="dashboard-stat"><p style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Total Leads</p><p style="font-size: 20px; font-weight: 700; color: #09090b;">156</p></div>
+    <div class="dashboard-stat"><p style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">New</p><p style="font-size: 20px; font-weight: 700; color: #10b981;">42</p></div>
+    <div class="dashboard-stat"><p style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Exported</p><p style="font-size: 20px; font-weight: 700; color: #3b82f6;">98</p></div>
+    <div class="dashboard-stat"><p style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px;">Junk</p><p style="font-size: 20px; font-weight: 700; color: #ef4444;">16</p></div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 6px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 12px;">
+    <div style="flex: 1; display: flex; align-items: center; gap: 8px; padding: 8px 12px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span style="font-size: 12px; color: #a1a1aa;">Search leads by name, email, or company...</span>
+    </div>
+    <div style="display: flex; gap: 2px;">
+      <div style="padding: 6px 12px; background: #09090b; color: white; border-radius: 8px; font-size: 11px; font-weight: 700;">All</div>
+      <div style="padding: 6px 12px; font-size: 11px; font-weight: 600; color: #71717a; border-radius: 8px;">New</div>
+      <div style="padding: 6px 12px; font-size: 11px; font-weight: 600; color: #71717a; border-radius: 8px;">Exported</div>
+      <div style="padding: 6px 12px; font-size: 11px; font-weight: 600; color: #71717a; border-radius: 8px;">Junk</div>
+    </div>
+  </div>
+
+  <!-- Leads Table -->
+  <div style="background: white; border: 1px solid #e4e4e7; border-radius: 16px; overflow: hidden;">
+    <!-- Table Header -->
+    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr; padding: 12px 20px; background: #fafafa; border-bottom: 1px solid #e4e4e7;">
+      <span style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em;">Contact</span>
+      <span style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em;">Company</span>
+      <span style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em;">Source</span>
+      <span style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em;">Score</span>
+      <span style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em;">Status</span>
+      <span style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em;">Actions</span>
+    </div>
+    <!-- Row 1 -->
+    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr; padding: 16px 20px; border-bottom: 1px solid #f4f4f5; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 32px; height: 32px; background: #ecfdf5; border-radius: 8px; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div><div style="font-size: 13px; font-weight: 600; color: #09090b;">Sarah Chen</div><div style="font-size: 11px; color: #71717a;">sarah@acme.com</div></div>
+      </div>
+      <div style="font-size: 13px; color: #09090b;">Acme Corp</div>
+      <div><span class="channel-tag" style="background: rgba(16,185,129,0.08); color: #059669; border: 1px solid rgba(16,185,129,0.1);">WhatsApp</span></div>
+      <div style="font-size: 13px; font-weight: 700; color: #10b981;">92</div>
+      <div><span style="padding: 4px 10px; background: rgba(16,185,129,0.08); color: #059669; border-radius: 999px; font-size: 10px; font-weight: 700;">New</span></div>
+      <div style="display: flex; gap: 4px;">
+        <div style="padding: 4px 8px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; font-size: 10px; font-weight: 600; color: #71717a;">Export</div>
+        <div style="padding: 4px 8px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; font-size: 10px; font-weight: 600; color: #71717a;">Junk</div>
+      </div>
+    </div>
+    <!-- Row 2 -->
+    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr; padding: 16px 20px; border-bottom: 1px solid #f4f4f5; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 32px; height: 32px; background: #eff6ff; border-radius: 8px; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div><div style="font-size: 13px; font-weight: 600; color: #09090b;">Marcus Johnson</div><div style="font-size: 11px; color: #71717a;">mjohnson@techflow.io</div></div>
+      </div>
+      <div style="font-size: 13px; color: #09090b;">TechFlow Inc</div>
+      <div><span class="channel-tag" style="background: rgba(14,165,233,0.08); color: #0284c7; border: 1px solid rgba(14,165,233,0.1);">Telegram</span></div>
+      <div style="font-size: 13px; font-weight: 700; color: #10b981;">85</div>
+      <div><span style="padding: 4px 10px; background: rgba(59,130,246,0.08); color: #3b82f6; border-radius: 999px; font-size: 10px; font-weight: 700;">Exported</span></div>
+      <div style="display: flex; gap: 4px;">
+        <div style="padding: 4px 8px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; font-size: 10px; font-weight: 600; color: #71717a;">View</div>
+      </div>
+    </div>
+    <!-- Row 3 -->
+    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr; padding: 16px 20px; border-bottom: 1px solid #f4f4f5; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 32px; height: 32px; background: #fef3c7; border-radius: 8px; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div><div style="font-size: 13px; font-weight: 600; color: #09090b;">Emily Rodriguez</div><div style="font-size: 11px; color: #71717a;">emily@startupxyz.com</div></div>
+      </div>
+      <div style="font-size: 13px; color: #09090b;">StartupXYZ</div>
+      <div><span class="channel-tag" style="background: #f4f4f5; color: #71717a;">Web</span></div>
+      <div style="font-size: 13px; font-weight: 700; color: #f59e0b;">71</div>
+      <div><span style="padding: 4px 10px; background: rgba(16,185,129,0.08); color: #059669; border-radius: 999px; font-size: 10px; font-weight: 700;">New</span></div>
+      <div style="display: flex; gap: 4px;">
+        <div style="padding: 4px 8px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; font-size: 10px; font-weight: 600; color: #71717a;">Export</div>
+        <div style="padding: 4px 8px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; font-size: 10px; font-weight: 600; color: #71717a;">Junk</div>
+      </div>
+    </div>
+    <!-- Row 4 -->
+    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr; padding: 16px 20px; border-bottom: 1px solid #f4f4f5; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 32px; height: 32px; background: #fce7f3; border-radius: 8px; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div><div style="font-size: 13px; font-weight: 600; color: #09090b;">James Park</div><div style="font-size: 11px; color: #71717a;">jpark@logitrack.co</div></div>
+      </div>
+      <div style="font-size: 13px; color: #09090b;">LogiTrack</div>
+      <div><span class="channel-tag" style="background: rgba(16,185,129,0.08); color: #059669; border: 1px solid rgba(16,185,129,0.1);">WhatsApp</span></div>
+      <div style="font-size: 13px; font-weight: 700; color: #ef4444;">34</div>
+      <div><span style="padding: 4px 10px; background: rgba(239,68,68,0.08); color: #ef4444; border-radius: 999px; font-size: 10px; font-weight: 700;">Junk</span></div>
+      <div style="display: flex; gap: 4px;">
+        <div style="padding: 4px 8px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; font-size: 10px; font-weight: 600; color: #71717a;">Restore</div>
+      </div>
+    </div>
+    <!-- Row 5 -->
+    <div style="display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr; padding: 16px 20px; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 32px; height: 32px; background: #ecfdf5; border-radius: 8px; display: flex; align-items: center; justify-content: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div><div style="font-size: 13px; font-weight: 600; color: #09090b;">Aisha Patel</div><div style="font-size: 11px; color: #71717a;">aisha@freshcart.com</div></div>
+      </div>
+      <div style="font-size: 13px; color: #09090b;">FreshCart Market</div>
+      <div><span class="channel-tag" style="background: rgba(14,165,233,0.08); color: #0284c7; border: 1px solid rgba(14,165,233,0.1);">Telegram</span></div>
+      <div style="font-size: 13px; font-weight: 700; color: #10b981;">88</div>
+      <div><span style="padding: 4px 10px; background: rgba(16,185,129,0.08); color: #059669; border-radius: 999px; font-size: 10px; font-weight: 700;">New</span></div>
+      <div style="display: flex; gap: 4px;">
+        <div style="padding: 4px 8px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; font-size: 10px; font-weight: 600; color: #71717a;">Export</div>
+        <div style="padding: 4px 8px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 6px; font-size: 10px; font-weight: 600; color: #71717a;">Junk</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+    <span style="font-size: 12px; color: #71717a;">Showing 1-5 of 156 leads</span>
+    <div style="display: flex; gap: 4px;">
+      <div style="padding: 6px 12px; background: #09090b; color: white; border-radius: 8px; font-size: 11px; font-weight: 700;">1</div>
+      <div style="padding: 6px 12px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a;">2</div>
+      <div style="padding: 6px 12px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a;">3</div>
+      <div style="padding: 6px 12px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a;">...</div>
+      <div style="padding: 6px 12px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a;">8</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== PAGE 10: AI EMAIL HUB ===================== -->
+<div class="page" style="background: white; min-height: 900px; display: flex;">
+  <span class="page-label" style="color: #a1a1aa; position: absolute; top: -32px; left: 40px;">Screenshot 10 — AI Email Hub</span>
+
+  <!-- Sidebar -->
+  <div style="width: 220px; background: #fafafa; border-right: 1px solid #e4e4e7; padding: 20px 16px; display: flex; flex-direction: column;">
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+      <div style="width: 28px; height: 28px; background: #18181b; border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <span style="font-size: 14px; font-weight: 700; color: #09090b;">AI Email Hub</span>
+    </div>
+
+    <!-- Compose Button -->
+    <div style="padding: 10px 16px; background: #09090b; color: white; border-radius: 10px; font-size: 12px; font-weight: 700; text-align: center; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Compose
+    </div>
+
+    <!-- Folders -->
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <div style="padding: 8px 12px; background: #18181b; color: white; border-radius: 8px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+        Inbox <span style="margin-left: auto; background: #3b82f6; color: white; padding: 1px 6px; border-radius: 999px; font-size: 9px;">12</span>
+      </div>
+      <div style="padding: 8px 12px; font-size: 12px; font-weight: 600; color: #71717a; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Sent
+      </div>
+      <div style="padding: 8px 12px; font-size: 12px; font-weight: 600; color: #71717a; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Drafts
+      </div>
+      <div style="padding: 8px 12px; font-size: 12px; font-weight: 600; color: #71717a; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Trash
+      </div>
+    </div>
+
+    <!-- Account -->
+    <div style="margin-top: auto; padding: 12px; background: white; border: 1px solid #e4e4e7; border-radius: 10px;">
+      <div style="font-size: 10px; font-weight: 700; color: #71717a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Connected Account</div>
+      <div style="font-size: 12px; font-weight: 600; color: #09090b;">support@void.ai</div>
+      <div style="display: flex; align-items: center; gap: 4px; margin-top: 4px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span><span style="font-size: 10px; color: #059669; font-weight: 600;">Connected</span></div>
+    </div>
+  </div>
+
+  <!-- Email List -->
+  <div style="width: 380px; border-right: 1px solid #e4e4e7; display: flex; flex-direction: column;">
+    <!-- Search -->
+    <div style="padding: 16px; border-bottom: 1px solid #e4e4e7;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 10px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span style="font-size: 12px; color: #a1a1aa;">Search emails...</span>
+      </div>
+    </div>
+    <!-- Email Rows -->
+    <div style="flex: 1; overflow: hidden;">
+      <div style="padding: 14px 16px; background: #f4f4f5; border-bottom: 1px solid #e4e4e7; border-left: 3px solid #3b82f6;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 13px; font-weight: 700; color: #09090b;">Re: Partnership Inquiry</span>
+          <span style="font-size: 10px; color: #71717a;">2m ago</span>
+        </div>
+        <div style="font-size: 11px; color: #71717a; margin-bottom: 2px;">Sarah Chen - Acme Corp</div>
+        <div style="font-size: 11px; color: #a1a1aa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Hi, I'd love to discuss a potential partnership for our enterprise tier...</div>
+      </div>
+      <div style="padding: 14px 16px; border-bottom: 1px solid #f4f4f5;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 13px; font-weight: 600; color: #09090b;">Demo Request - TechFlow</span>
+          <span style="font-size: 10px; color: #71717a;">15m ago</span>
+        </div>
+        <div style="font-size: 11px; color: #71717a; margin-bottom: 2px;">Marcus Johnson</div>
+        <div style="font-size: 11px; color: #a1a1aa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Would it be possible to schedule a demo for next week? We're interested...</div>
+      </div>
+      <div style="padding: 14px 16px; border-bottom: 1px solid #f4f4f5;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 13px; font-weight: 600; color: #09090b;">Invoice #1042 - Paid</span>
+          <span style="font-size: 10px; color: #71717a;">1h ago</span>
+        </div>
+        <div style="font-size: 11px; color: #71717a; margin-bottom: 2px;">Billing System</div>
+        <div style="font-size: 11px; color: #a1a1aa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Invoice #1042 has been paid successfully. Amount: $299.00...</div>
+      </div>
+      <div style="padding: 14px 16px; border-bottom: 1px solid #f4f4f5;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 13px; font-weight: 600; color: #09090b;">Support Ticket #847</span>
+          <span style="font-size: 10px; color: #71717a;">3h ago</span>
+        </div>
+        <div style="font-size: 11px; color: #71717a; margin-bottom: 2px;">Emily Rodriguez</div>
+        <div style="font-size: 11px; color: #a1a1aa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">My agent isn't responding to WhatsApp messages since this morning...</div>
+      </div>
+      <div style="padding: 14px 16px; border-bottom: 1px solid #f4f4f5;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <span style="font-size: 13px; font-weight: 600; color: #09090b;">Welcome to VOID!</span>
+          <span style="font-size: 10px; color: #71717a;">1d ago</span>
+        </div>
+        <div style="font-size: 11px; color: #71717a; margin-bottom: 2px;">VOID Team</div>
+        <div style="font-size: 11px; color: #a1a1aa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Welcome to VOID Platform! Here's how to get started with your first agent...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email Detail -->
+  <div style="flex: 1; padding: 24px 32px; display: flex; flex-direction: column;">
+    <!-- Email Header -->
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+        <h2 style="font-size: 20px; font-weight: 700; color: #09090b;">Re: Partnership Inquiry</h2>
+        <div style="display: flex; gap: 6px;">
+          <div style="padding: 6px 12px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a; display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg> Reply</div>
+          <div style="padding: 6px 12px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 8px; font-size: 11px; font-weight: 600; color: #71717a; display: flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 17 20 12 15 7"/><path d="M4 18v-2a4 4 0 0 1 4-4h12"/></svg> Forward</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <div style="width: 40px; height: 40px; background: #ecfdf5; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <div style="font-size: 13px; font-weight: 600; color: #09090b;">Sarah Chen</div>
+          <div style="font-size: 11px; color: #71717a;">sarah@acme.com</div>
+        </div>
+        <div style="margin-left: auto; font-size: 11px; color: #a1a1aa;">Aug 30, 2026 at 2:14 PM</div>
+      </div>
+    </div>
+
+    <!-- Email Body -->
+    <div style="flex: 1; padding: 20px; background: #fafafa; border: 1px solid #e4e4e7; border-radius: 12px; font-size: 13px; color: #3f3f46; line-height: 1.7;">
+      <p style="margin-bottom: 12px;">Hi VOID Team,</p>
+      <p style="margin-bottom: 12px;">I'm reaching out from Acme Corp regarding a potential enterprise partnership. We've been following your platform's development and are impressed with the autonomous agent capabilities.</p>
+      <p style="margin-bottom: 12px;">We have a team of 50+ support agents and are looking for an AI solution to handle tier-1 inquiries. Could we schedule a call to discuss:</p>
+      <ul style="margin-left: 20px; margin-bottom: 12px;">
+        <li>Enterprise pricing and volume discounts</li>
+        <li>Custom integration with our Salesforce CRM</li>
+        <li>SLA guarantees for response times</li>
+      </ul>
+      <p>Looking forward to hearing from you.</p>
+      <p style="margin-top: 12px;">Best regards,<br/>Sarah Chen<br/>VP of Operations, Acme Corp</p>
+    </div>
+
+    <!-- AI Summary -->
+    <div style="margin-top: 16px; padding: 16px; background: rgba(16,185,129,0.04); border: 1px solid rgba(16,185,129,0.1); border-radius: 12px;">
+      <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <span style="font-size: 11px; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.1em;">AI Summary</span>
+      </div>
+      <p style="font-size: 12px; color: #52525b; line-height: 1.5;">Enterprise partnership inquiry from Acme Corp (50+ agents). Interested in pricing, Salesforce integration, and SLA guarantees. High-intent lead — recommend priority follow-up.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===================== PAGE 11: MISSION CONTROL ===================== -->
+<div class="page" style="background: #09090b; min-height: 900px; display: flex;">
+  <span class="page-label" style="color: #52525b; position: absolute; top: -32px; left: 40px;">Screenshot 11 — Mission Control</span>
+
+  <!-- Conversations Sidebar -->
+  <div style="width: 340px; background: #18181b; border-right: 1px solid rgba(63,63,70,0.6); display: flex; flex-direction: column;">
+    <!-- Header -->
+    <div style="padding: 20px; border-bottom: 1px solid rgba(63,63,70,0.6);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <h2 style="font-size: 16px; font-weight: 700; color: white;">Mission Control</h2>
+        <div style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 999px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite;"></span>
+          <span style="font-size: 9px; font-weight: 800; color: #34d399; text-transform: uppercase; letter-spacing: 0.1em;">Live</span>
+        </div>
+      </div>
+      <!-- Search -->
+      <div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(24,24,27,0.8); border: 1px solid rgba(63,63,70,0.6); border-radius: 8px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span style="font-size: 11px; color: #71717a;">Search conversations...</span>
+      </div>
+      <!-- Filters -->
+      <div style="display: flex; gap: 4px; margin-top: 8px;">
+        <div style="padding: 4px 10px; background: white; color: #09090b; border-radius: 6px; font-size: 10px; font-weight: 700;">All</div>
+        <div style="padding: 4px 10px; background: rgba(63,63,70,0.4); color: #a1a1aa; border-radius: 6px; font-size: 10px; font-weight: 600;">AI</div>
+        <div style="padding: 4px 10px; background: rgba(63,63,70,0.4); color: #a1a1aa; border-radius: 6px; font-size: 10px; font-weight: 600;">Takeover</div>
+      </div>
+    </div>
+
+    <!-- Conversation List -->
+    <div style="flex: 1; overflow: hidden;">
+      <!-- Active Chat -->
+      <div style="padding: 16px 20px; background: rgba(16,185,129,0.06); border-left: 3px solid #10b981; border-bottom: 1px solid rgba(63,63,70,0.4); cursor: pointer;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></div>
+            <span style="font-size: 13px; font-weight: 600; color: white;">Sarah Chen</span>
+          </div>
+          <span style="font-size: 10px; color: #71717a;">2m</span>
+        </div>
+        <div style="font-size: 11px; color: #a1a1aa; margin-bottom: 4px;">Acme Corp</div>
+        <div style="font-size: 11px; color: #71717a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">I need help with my enterprise plan pricing...</div>
+        <div style="display: flex; gap: 4px; margin-top: 6px;">
+          <span class="channel-tag" style="background: rgba(16,185,129,0.1); color: #34d399;">WhatsApp</span>
+          <span style="padding: 2px 6px; background: rgba(16,185,129,0.1); border-radius: 4px; font-size: 8px; font-weight: 700; color: #34d399;">AI</span>
+        </div>
+      </div>
+
+      <div style="padding: 16px 20px; border-bottom: 1px solid rgba(63,63,70,0.4); cursor: pointer;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></div>
+            <span style="font-size: 13px; font-weight: 600; color: #e4e4e7;">Marcus Johnson</span>
+          </div>
+          <span style="font-size: 10px; color: #71717a;">8m</span>
+        </div>
+        <div style="font-size: 11px; color: #a1a1aa; margin-bottom: 4px;">TechFlow Inc</div>
+        <div style="font-size: 11px; color: #71717a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Can you walk me through the onboarding process?</div>
+        <div style="display: flex; gap: 4px; margin-top: 6px;">
+          <span class="channel-tag" style="background: rgba(14,165,233,0.1); color: #38bdf8;">Telegram</span>
+          <span style="padding: 2px 6px; background: rgba(16,185,129,0.1); border-radius: 4px; font-size: 8px; font-weight: 700; color: #34d399;">AI</span>
+        </div>
+      </div>
+
+      <div style="padding: 16px 20px; border-bottom: 1px solid rgba(63,63,70,0.4); cursor: pointer;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;"></div>
+            <span style="font-size: 13px; font-weight: 600; color: #e4e4e7;">Emily Rodriguez</span>
+          </div>
+          <span style="font-size: 10px; color: #71717a;">15m</span>
+        </div>
+        <div style="font-size: 11px; color: #a1a1aa; margin-bottom: 4px;">StartupXYZ</div>
+        <div style="font-size: 11px; color: #71717a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">My agent stopped responding to messages on WhatsApp</div>
+        <div style="display: flex; gap: 4px; margin-top: 6px;">
+          <span class="channel-tag" style="background: rgba(16,185,129,0.1); color: #34d399;">WhatsApp</span>
+          <span style="padding: 2px 6px; background: rgba(245,158,11,0.15); border-radius: 4px; font-size: 8px; font-weight: 700; color: #fbbf24;">TAKEOVER</span>
+        </div>
+      </div>
+
+      <div style="padding: 16px 20px; border-bottom: 1px solid rgba(63,63,70,0.4); cursor: pointer;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #d4d4d8;"></div>
+            <span style="font-size: 13px; font-weight: 600; color: #e4e4e7;">James Park</span>
+          </div>
+          <span style="font-size: 10px; color: #71717a;">1h</span>
+        </div>
+        <div style="font-size: 11px; color: #a1a1aa; margin-bottom: 4px;">LogiTrack</div>
+        <div style="font-size: 11px; color: #71717a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Thanks for the quick response!</div>
+        <div style="display: flex; gap: 4px; margin-top: 6px;">
+          <span class="channel-tag" style="background: #f4f4f5; color: #71717a;">Web</span>
+          <span style="padding: 2px 6px; background: rgba(16,185,129,0.1); border-radius: 4px; font-size: 8px; font-weight: 700; color: #34d399;">AI</span>
+        </div>
+      </div>
+
+      <div style="padding: 16px 20px; cursor: pointer;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: #d4d4d8;"></div>
+            <span style="font-size: 13px; font-weight: 600; color: #e4e4e7;">Aisha Patel</span>
+          </div>
+          <span style="font-size: 10px; color: #71717a;">2h</span>
+        </div>
+        <div style="font-size: 11px; color: #a1a1aa; margin-bottom: 4px;">FreshCart Market</div>
+        <div style="font-size: 11px; color: #71717a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Can I get a refund for my last order?</div>
+        <div style="display: flex; gap: 4px; margin-top: 6px;">
+          <span class="channel-tag" style="background: rgba(14,165,233,0.1); color: #38bdf8;">Telegram</span>
+          <span style="padding: 2px 6px; background: rgba(16,185,129,0.1); border-radius: 4px; font-size: 8px; font-weight: 700; color: #34d399;">AI</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Footer -->
+    <div style="padding: 16px 20px; border-top: 1px solid rgba(63,63,70,0.6); display: flex; justify-content: space-between;">
+      <div style="text-align: center;"><div style="font-size: 14px; font-weight: 700; color: white;">12</div><div style="font-size: 9px; color: #71717a; text-transform: uppercase;">Active</div></div>
+      <div style="text-align: center;"><div style="font-size: 14px; font-weight: 700; color: white;">2</div><div style="font-size: 9px; color: #71717a; text-transform: uppercase;">Takeover</div></div>
+      <div style="text-align: center;"><div style="font-size: 14px; font-weight: 700; color: white;">98%</div><div style="font-size: 9px; color: #71717a; text-transform: uppercase;">AI Rate</div></div>
+    </div>
+  </div>
+
+  <!-- Chat Area -->
+  <div style="flex: 1; display: flex; flex-direction: column;">
+    <!-- Chat Header -->
+    <div style="padding: 16px 24px; border-bottom: 1px solid rgba(63,63,70,0.6); display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 36px; height: 36px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <div style="font-size: 14px; font-weight: 600; color: white;">Sarah Chen</div>
+          <div style="font-size: 11px; color: #71717a;">Acme Corp · WhatsApp · <span style="color: #10b981;">AI Handling</span></div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <div style="padding: 8px 16px; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); border-radius: 8px; font-size: 11px; font-weight: 700; color: #fbbf24; display: flex; align-items: center; gap: 6px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Take Over
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div style="flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 16px; overflow: hidden;">
+      <!-- User Message -->
+      <div style="display: flex; gap: 10px; max-width: 65%;">
+        <div style="width: 28px; height: 28px; background: #3f3f46; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <div class="chat-msg chat-user">Hi, I'm interested in your enterprise plan. Can you tell me about the pricing for a team of 50 agents?</div>
+          <div style="font-size: 9px; color: #52525b; margin-top: 4px;">2:14 PM · WhatsApp</div>
+        </div>
+      </div>
+
+      <!-- AI Response -->
+      <div style="display: flex; gap: 10px; max-width: 65%; margin-left: auto; flex-direction: row-reverse;">
+        <div style="width: 28px; height: 28px; background: #10b981; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div>
+          <div class="chat-msg chat-agent">Great question, Sarah! For an enterprise team of 50 agents, we offer the <strong>Elite Sovereign</strong> plan at $299/month. This includes unlimited agents, dedicated LPU nodes, priority support, and custom integrations.</div>
+          <div style="font-size: 9px; color: #52525b; margin-top: 4px; text-align: right;">2:14 PM · AI Agent</div>
+        </div>
+      </div>
+
+      <!-- User Message -->
+      <div style="display: flex; gap: 10px; max-width: 65%;">
+        <div style="width: 28px; height: 28px; background: #3f3f46; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <div class="chat-msg chat-user">That sounds good. Do you support Salesforce integration? We need our agents to sync leads directly to our CRM.</div>
+          <div style="font-size: 9px; color: #52525b; margin-top: 4px;">2:15 PM · WhatsApp</div>
+        </div>
+      </div>
+
+      <!-- AI Response -->
+      <div style="display: flex; gap: 10px; max-width: 65%; margin-left: auto; flex-direction: row-reverse;">
+        <div style="width: 28px; height: 28px; background: #10b981; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div>
+          <div class="chat-msg chat-agent">Absolutely! We support Salesforce, HubSpot, and custom CRM integrations via webhooks. Our <strong>Lead Sync</strong> module automatically exports qualified leads from conversations to your CRM in real-time. Would you like me to set up a demo?</div>
+          <div style="font-size: 9px; color: #52525b; margin-top: 4px; text-align: right;">2:15 PM · AI Agent</div>
+        </div>
+      </div>
+
+      <!-- Takeover Banner -->
+      <div class="takeover-banner">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span style="font-size: 11px; font-weight: 600; color: #059669;">AI is handling this conversation. Take over to respond manually.</span>
+        </div>
+        <div style="padding: 6px 12px; background: #10b981; color: white; border-radius: 6px; font-size: 10px; font-weight: 700; cursor: pointer;">Take Over</div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div style="padding: 16px 24px; border-top: 1px solid rgba(63,63,70,0.6);">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(24,24,27,0.6); border: 1px solid rgba(63,63,70,0.6); border-radius: 12px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#71717a" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+        <span style="flex: 1; font-size: 13px; color: #71717a;">Type a message...</span>
+        <div style="padding: 6px 12px; background: #10b981; color: white; border-radius: 8px; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
