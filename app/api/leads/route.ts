@@ -60,12 +60,18 @@ export async function PATCH(req: Request) {
     const lead = await Lead.findOne({ _id: id, userId });
     if (!lead) return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
 
-    if (status) lead.status = status;
+    if (status && status !== lead.status) {
+      lead.status = status;
+      lead.activityLog = lead.activityLog || [];
+      lead.activityLog.push({ action: 'status_change', detail: `Status changed to "${status}"`, timestamp: new Date() });
+    }
     if (notes !== undefined) {
       // Upsert notes into the data mixed object
       lead.data = { ...lead.data, manual_notes: notes };
       // Also mark modified since it's a Mixed type
       lead.markModified('data');
+      lead.activityLog = lead.activityLog || [];
+      lead.activityLog.push({ action: 'notes_updated', detail: notes ? 'Manual notes updated' : 'Manual notes cleared', timestamp: new Date() });
     }
 
     await lead.save();

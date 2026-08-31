@@ -22,6 +22,8 @@
     "googleapis": "^174.0.1",
     "groq-sdk": "^1.1.2",
     "imapflow": "^1.3.3",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "lucide-react": "^1.14.0",
     "mailparser": "^3.9.8",
     "mammoth": "^1.12.0",

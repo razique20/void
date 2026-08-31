@@ -31,6 +31,8 @@ import {
   RefreshCw,
   Download,
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';
@@ -275,6 +277,76 @@ export default function LiveChatPage() {
     showToast('Exported conversation transcript');
   };
 
+  const exportConversationPDF = () => {
+    if (!selectedChat) return;
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 14;
+
+    // Header
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('VOID AI - Conversation Transcript', margin, 20);
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(120, 120, 120);
+    const contact = selectedChat.displayName || selectedChat.externalId || 'Unknown';
+    const channel = (selectedChat.channel || 'web').toUpperCase();
+    const agent = selectedChat.workerId?.name || '—';
+    doc.text(`Contact: ${contact}`, margin, 28);
+    doc.text(`Channel: ${channel}`, margin, 34);
+    doc.text(`Agent: ${agent}`, margin, 40);
+    doc.text(`Exported: ${new Date().toLocaleString()}`, pageWidth - margin, 28, { align: 'right' });
+
+    // Divider
+    doc.setDrawColor(200, 200, 200);
+    doc.line(margin, 44, pageWidth - margin, 44);
+
+    // Message table
+    const tableData = selectedChat.messages.map((m: any) => {
+      const ts = new Date(m.createdAt || Date.now()).toLocaleString([], {
+        month: 'short', day: 'numeric', year: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+      });
+      const role = m.role === 'assistant' ? `[AI] ${agent}` : `[User] ${selectedChat.displayName || 'Client'}`;
+      return [ts, role, m.content || ''];
+    });
+
+    autoTable(doc, {
+      startY: 48,
+      head: [['Timestamp', 'Sender', 'Message']],
+      body: tableData,
+      margin: { left: margin, right: margin },
+      styles: { fontSize: 9, cellPadding: 4, overflow: 'linebreak' },
+      headStyles: { fillColor: [30, 30, 30], textColor: [255, 255, 255], fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: [248, 248, 248] },
+      columnStyles: {
+        0: { cellWidth: 38 },
+        1: { cellWidth: 42 },
+        2: { cellWidth: 'auto' },
+      },
+    });
+
+    // Footer on each page
+    const totalPages = (doc as any).internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(160, 160, 160);
+      doc.text(
+        `VOID AI Workforce Platform — Page ${i} of ${totalPages}`,
+        pageWidth / 2,
+        doc.internal.pageSize.getHeight() - 8,
+        { align: 'center' }
+      );
+    }
+
+    const filename = `void_chat_${selectedChat.displayName || selectedChat.externalId || 'unknown'}_${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(filename);
+    showToast('Exported conversation as PDF');
+  };
+
   const filteredConversations = conversations.filter(c => {
     const matchesSearch = 
       (c.displayName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -504,13 +576,21 @@ export default function LiveChatPage() {
 
                     {/* Action utilities */}
                     <div className="flex items-center gap-2">
-                      {/* Export button */}
+                      {/* Export CSV button */}
                       <button
                         onClick={exportFullConversation}
                         className="p-2 bg-bg-elevated border border-border-default text-silver hover:text-foreground rounded-xl transition-all"
-                        title="Export Conversation"
+                        title="Export as CSV"
                       >
                         <Download className="w-4 h-4" />
+                      </button>
+                      {/* Export PDF button */}
+                      <button
+                        onClick={exportConversationPDF}
+                        className="p-2 bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20 rounded-xl transition-all"
+                        title="Export as PDF"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                       </button>
                       {/* Visual Autopilot / Takeover Switcher */}
                       <button

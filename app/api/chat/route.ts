@@ -276,7 +276,8 @@ When a user asks for a task matching these descriptions, you MUST include the [A
                 phone: phone.trim()
               },
               interest: interest,
-              data: extraData
+              data: extraData,
+              activityLog: [{ action: 'captured', detail: 'Lead captured via Web Chat', timestamp: new Date() }]
             });
             existingLead = lead;
           }

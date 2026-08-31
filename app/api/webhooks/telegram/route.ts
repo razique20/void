@@ -274,7 +274,8 @@ When a user asks for a task matching these descriptions, include the [ACTION: na
                 phone: phone.trim() || chatId.toString()
               },
               interest: interest,
-              data: extraData
+              data: extraData,
+              activityLog: [{ action: 'captured', detail: 'Lead captured via Telegram', timestamp: new Date() }]
             });
           }
 

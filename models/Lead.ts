@@ -13,7 +13,12 @@ const LeadSchema = new Schema({
   interest: { type: String }, // User intent / keywords
   sentiment: { type: String, enum: ['hot', 'warm', 'cold'], default: 'warm' },
   data: { type: Schema.Types.Mixed }, // Any additional captured info
-  status: { type: String, enum: ['new', 'exported', 'junk'], default: 'new' }
+  status: { type: String, enum: ['new', 'exported', 'junk'], default: 'new' },
+  activityLog: [{
+    action: { type: String, required: true },
+    detail: { type: String },
+    timestamp: { type: Date, default: Date.now }
+  }]
 }, { timestamps: true });
 
 if (process.env.NODE_ENV === 'development' && models.Lead) {

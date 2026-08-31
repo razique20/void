@@ -369,7 +369,8 @@ Once all conditions are met, execute the action by including the exact tag in yo
                 phone: phone.trim() || customerPhone
               },
               interest: interest,
-              data: extraData
+              data: extraData,
+              activityLog: [{ action: 'captured', detail: 'Lead captured via WhatsApp', timestamp: new Date() }]
             });
           }
 

@@ -23,8 +23,9 @@ import {
   X,
   Plus,
   MessageSquare,
-  Sparkles,
   TrendingUp,
+  Clock,
+  Activity,
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -560,13 +561,13 @@ export default function LeadsPage() {
                           <button
                             onClick={() => handleScoreLead(lead._id)}
                             disabled={scoringLead === lead._id}
-                            className="p-1.5 text-silver hover:text-purple-500 hover:bg-purple-500/10 rounded-lg transition-all disabled:opacity-50"
+                            className="p-1.5 text-silver hover:text-amber-500 hover:bg-amber-500/10 rounded-lg transition-all disabled:opacity-50"
                             title="Score Lead"
                           >
                             {scoringLead === lead._id ? (
                               <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                             ) : (
-                              <Sparkles className="w-3.5 h-3.5" />
+                              <Flame className="w-3.5 h-3.5" />
                             )}
                           </button>
                         )}
@@ -703,6 +704,87 @@ export default function LeadsPage() {
                   </div>
                 </div>
 
+                {/* Activity Timeline */}
+                <div className="space-y-2">
+                  <h4 className="text-[10px] font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
+                    <Activity className="w-3 h-3 text-apple-blue" />
+                    Activity Timeline
+                  </h4>
+                  <div className="bg-bg-surface border border-border-default rounded-xl overflow-hidden">
+                    {(() => {
+                      // Build timeline from activityLog + createdAt
+                      const events: { action: string; detail: string; timestamp: string }[] = [];
+                      
+                      // Lead captured event
+                      events.push({
+                        action: 'captured',
+                        detail: `Lead captured via ${selectedLead.source || 'Web Chat'}`,
+                        timestamp: selectedLead.createdAt
+                      });
+
+                      // Activity log entries
+                      if (selectedLead.activityLog && selectedLead.activityLog.length > 0) {
+                        selectedLead.activityLog.forEach((entry: any) => {
+                          events.push({
+                            action: entry.action,
+                            detail: entry.detail || entry.action,
+                            timestamp: entry.timestamp
+                          });
+                        });
+                      }
+
+                      // Sort by timestamp descending (most recent first)
+                      events.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+                      const actionIcons: Record<string, string> = {
+                        captured: '📥',
+                        status_change: '🔄',
+                        notes_updated: '📝',
+                        scored: '🔥',
+                      };
+
+                      const actionColors: Record<string, string> = {
+                        captured: 'bg-apple-blue/10 text-apple-blue border-apple-blue/20',
+                        status_change: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
+                        notes_updated: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
+                        scored: 'bg-red-500/10 text-red-500 border-red-500/20',
+                      };
+
+                      if (events.length === 0) {
+                        return (
+                          <p className="text-xs text-silver/60 italic p-4">No activity recorded yet.</p>
+                        );
+                      }
+
+                      return (
+                        <div className="divide-y divide-border-subtle">
+                          {events.map((event, idx) => (
+                            <div key={idx} className="flex items-start gap-3 p-3.5">
+                              <div className={cn(
+                                "w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border text-xs",
+                                actionColors[event.action] || 'bg-bg-elevated text-silver border-border-default'
+                              )}>
+                                {actionIcons[event.action] || '•'}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[11px] font-semibold text-foreground leading-snug">
+                                  {event.detail}
+                                </p>
+                                <p className="text-[9px] text-silver font-mono mt-0.5">
+                                  {new Date(event.timestamp).toLocaleString([], {
+                                    month: 'short', day: 'numeric', year: 'numeric',
+                                    hour: '2-digit', minute: '2-digit'
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+
                 {/* Intent Summary */}
                 <div className="space-y-2">
                   <h4 className="text-[10px] font-bold uppercase tracking-wider text-silver">Captured Intent & Need</h4>
@@ -768,7 +850,7 @@ export default function LeadsPage() {
                         </>
                       ) : (
                         <>
-                          <Sparkles className="w-3.5 h-3.5" />
+                          <Flame className="w-3.5 h-3.5" />
                           Generate AI Heat Score
                         </>
                       )}

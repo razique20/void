@@ -130,6 +130,8 @@ ${conversationContext || 'No conversation history available'}`
       scoredAt: new Date(),
     };
     lead.markModified('data');
+    lead.activityLog = lead.activityLog || [];
+    lead.activityLog.push({ action: 'scored', detail: `AI scored ${scoreData.score}/100 (${scoreData.tier})`, timestamp: new Date() });
     await lead.save();
 
     return NextResponse.json({
