@@ -42,7 +42,7 @@ let cachedMounted = false; // survives SPA remounts so transitions stay enabled
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   
-  const { sub, config, hasFeature } = useData();
+  const { sub, config, hasFeature, isEmailHubEnabled } = useData();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mounted, setMounted] = useState(cachedMounted);
@@ -146,7 +146,8 @@ export default function Navbar() {
         // Always show Leads CRM link; locked state is handled by hasFeature
         { label: 'Leads CRM', href: '/dashboard/leads', icon: Database, locked: !hasFeature('lead_capture') },
         { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
-        { label: 'AI Email Hub', href: '/dashboard/email', icon: Mail, locked: !hasFeature('email_agent') }
+        // Only show Email Hub when enabled globally
+        ...(isEmailHubEnabled ? [{ label: 'AI Email Hub', href: '/dashboard/email', icon: Mail, locked: false }] : []),
       ]
     }
   ];

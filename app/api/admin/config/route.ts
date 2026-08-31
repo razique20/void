@@ -15,7 +15,8 @@ export async function GET() {
           actionAgents: false,
           neuralVoice: false,
           vision: false,
-          leadManagement: false
+          leadManagement: false,
+          emailHub: false,
         }
       });
     }

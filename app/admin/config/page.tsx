@@ -115,6 +115,12 @@ export default function NeuralConfigPage() {
               isEnabled={globalConfig?.featureFlags?.neuralVoice}
               onToggle={() => toggleFeature('neuralVoice')}
             />
+            <FeatureToggle
+              label="AI Email Hub"
+              description="Autonomous email agent for connecting IMAP/SMTP mailboxes."
+              isEnabled={globalConfig?.featureFlags?.emailHub}
+              onToggle={() => toggleFeature('emailHub')}
+            />
           </div>
         </motion.div>
 

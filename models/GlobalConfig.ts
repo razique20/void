@@ -6,6 +6,7 @@ const GlobalConfigSchema = new Schema({
     neuralVoice: { type: Boolean, default: false },
     vision: { type: Boolean, default: false },
     leadManagement: { type: Boolean, default: false },
+    emailHub: { type: Boolean, default: false },
   }
 }, { timestamps: true });
 

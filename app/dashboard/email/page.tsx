@@ -37,7 +37,7 @@ import FeatureLocked from '@/components/FeatureLocked';
 
 export default function EmailWorkspacePage() {
   // Subscription from shared context
-  const { sub, loading: loadingSub } = useData();
+  const { sub, loading: loadingSub, isEmailHubEnabled } = useData();
 
   // Accounts state
   const [accounts, setAccounts] = useState<any[]>([]);
@@ -166,10 +166,10 @@ export default function EmailWorkspacePage() {
 
   // Fetch email accounts when subscription is loaded and feature is available
   useEffect(() => {
-    if (!loadingSub && sub?.features?.includes('email_agent')) {
+    if (!loadingSub && isEmailHubEnabled) {
       fetchAccounts();
     }
-  }, [sub, loadingSub]);
+  }, [sub, loadingSub, isEmailHubEnabled]);
 
   // 2. Fetch email accounts
   const fetchAccounts = async () => {
@@ -475,11 +475,11 @@ export default function EmailWorkspacePage() {
   }
 
   // Gated Access wall
-  if (!sub?.features?.includes('email_agent')) {
+  if (!isEmailHubEnabled) {
     return (
       <FeatureLocked
         title="AI Email Hub Locked"
-        description="Your plan does not have access to the AI Email Hub. Upgrade to Enterprise or higher to connect custom IMAP/SMTP mailboxes, draft smart responses, and classify folders automatically."
+        description="This feature is not available yet. The AI Email Hub is not enabled for your plan or has been disabled by the administrator."
       />
     );
   }

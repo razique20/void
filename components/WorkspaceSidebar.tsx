@@ -26,7 +26,7 @@ interface NavLink {
   featureKey?: string;
 }
 
-const navGroups: { label: string; links: NavLink[] }[] = [
+const allNavGroups: { label: string; links: NavLink[] }[] = [
   {
     label: 'Core Intelligence',
     links: [
@@ -48,7 +48,7 @@ const navGroups: { label: string; links: NavLink[] }[] = [
 
 export default function WorkspaceSidebar() {
   const pathname = usePathname();
-  const { hasFeature } = useData();
+  const { hasFeature, isEmailHubEnabled } = useData();
   const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -68,6 +68,12 @@ export default function WorkspaceSidebar() {
     if (href === '/dashboard') return pathname === '/dashboard';
     return pathname.startsWith(href);
   };
+
+  // Filter out email hub when disabled
+  const navGroups = allNavGroups.map(group => ({
+    ...group,
+    links: group.links.filter(link => !(link.featureKey === 'email_agent' && !isEmailHubEnabled)),
+  })).filter(group => group.links.length > 0);
 
   return (
     <div
@@ -124,7 +130,7 @@ export default function WorkspaceSidebar() {
             <nav className="space-y-0.5">
               {group.links.map((link) => {
                 const isActive = isTabActive(link.href);
-                const isLocked = mounted && link.featureKey && !hasFeature(link.featureKey);
+                const isLocked = mounted && link.featureKey && (link.featureKey === 'email_agent' ? !isEmailHubEnabled : !hasFeature(link.featureKey));
                 const Icon = link.icon;
                 return (
                   <Link

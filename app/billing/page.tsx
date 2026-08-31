@@ -88,11 +88,10 @@ const plans = [
     id: 'enterprise',
     name: 'Enterprise',
     price: '$299',
-    description: 'The complete suite with email, webhooks, lead capture, and booking.',
+    description: 'The complete suite with webhooks, lead capture, and booking.',
     features: [
       '20 AI Agents',
       '25,000 messages/month',
-      'Email Agent Tool',
       'Custom Webhook Actions',
       'Cal.com Booking Integration',
       'Lead Capture & CRM Sync',

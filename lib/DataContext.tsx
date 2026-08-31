@@ -11,6 +11,7 @@ interface DataContextValue {
   config: any;
   loading: boolean;
   hasFeature: (feature: string) => boolean;
+  isEmailHubEnabled: boolean;
   refreshSub: () => Promise<void>;
 }
 
@@ -80,8 +81,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
     return sub.features.includes(feature);
   };
 
+  // Email Hub is enabled only when both the global flag is on AND the user's plan includes it
+  // Default to false while loading to prevent showing the feature prematurely
+  const isEmailHubEnabled = loading ? false : (sub?.emailHubEnabled === true) && hasFeature('email_agent');
+
   return (
-    <DataContext.Provider value={{ sub, config, loading, hasFeature, refreshSub }}>
+    <DataContext.Provider value={{ sub, config, loading, hasFeature, isEmailHubEnabled, refreshSub }}>
       {children}
     </DataContext.Provider>
   );

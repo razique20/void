@@ -30,7 +30,7 @@ export default function ChannelsPage() {
   const params = useParams();
   const router = useRouter();
   const operativeId = params.id as string;
-  const { config, sub } = useData();
+  const { config, sub, isEmailHubEnabled } = useData();
 
   const [operative, setOperative] = useState<any>(null);
   const [actions, setActions] = useState<any[]>([]);
@@ -78,7 +78,7 @@ export default function ChannelsPage() {
   const hasWhatsApp = sub?.features?.includes('whatsapp');
   const hasTelegram = sub?.features?.includes('telegram');
   const hasSlack = sub?.features?.includes('slack');
-  const hasEmail = sub?.features?.includes('email_agent');
+  const hasEmail = isEmailHubEnabled;
   const hasCalcom = sub?.features?.includes('cal_booking');
   const hasActions = sub?.features?.includes('actions_webhooks') || sub?.features?.includes('actions_full');
 
