@@ -261,13 +261,13 @@ export default function Navbar() {
               <div key={cat.title} className="space-y-1.5">
                 {(!mounted || !isCollapsed) && (
                   <div className="flex items-center gap-2 px-1">
-                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">
+                    <span className="text-[9px] font-black text-silver/40 uppercase tracking-widest">
                       {cat.title}
                     </span>
-                    <div className="flex-1 h-[1px] bg-white/10" />
+                    <div className="flex-1 h-[1px] bg-border-default" />
                   </div>
                 )}
-                <nav className="space-y-1">
+                <nav className="space-y-0.5">
                   {cat.links.map((link) => {
                     const Icon = link.icon;
                     const isActive = isTabActive(link.href);
@@ -283,30 +283,30 @@ export default function Navbar() {
                           setUpgradeModal({ open: true, feature: link.label });
                         } : undefined}
                         className={cn(
-                          "flex items-center rounded-xl text-xs font-bold transition-all border relative group",
-                          (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3.5 py-2.5",
+                          "flex items-center rounded-xl text-xs font-bold transition-all relative group",
+                          (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3 py-2.5",
                           isLocked
-                            ? "border-white/10 cursor-not-allowed opacity-50 bg-white/5 text-white/30"
+                            ? "cursor-not-allowed opacity-50 text-silver/30"
                             : isActive
-                              ? "bg-emerald-500/[0.15] border-emerald-500/30 text-emerald-400 font-extrabold shadow-sm cursor-pointer"
-                              : "bg-white/5 border-white/10 text-white/70 hover:border-emerald-500/20 hover:bg-emerald-500/[0.08] hover:text-white cursor-pointer"
+                              ? "bg-foreground text-background cursor-pointer"
+                              : "text-silver hover:text-foreground hover:bg-bg-active cursor-pointer"
                         )}
                       >
                         <Icon className={cn(
                           "w-4 h-4 shrink-0 transition-colors",
-                          isLocked ? "text-white/30" : isActive ? "text-emerald-400" : "text-white/60 group-hover:text-emerald-400"
+                          isLocked ? "text-silver/30" : isActive ? "text-background" : "text-silver"
                         )} />
                         {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
                         {isLocked && (!mounted || !isCollapsed) && <Lock className="w-3 h-3 text-silver/30" />}
                         {!isLocked && isActive && (!mounted || !isCollapsed) && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                          <span className="ml-auto w-1.5 h-1.5 rounded-full bg-background/40 shrink-0" />
                         )}
                         {(mounted && isCollapsed) && (
                           <div className={cn(
                             "absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50",
                             isLocked
                               ? "bg-red-500 text-white"
-                              : "bg-white text-black"
+                              : "bg-foreground text-background"
                           )}>
                             {link.label}{isLocked ? ' — UPGRADE' : ''}
                           </div>
@@ -320,26 +320,8 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Bottom: Telemetry & Collapse Control */}
-        <div className="space-y-2.5 pt-2">
-          {/* Telemetry status card */}
-          {(!mounted || !isCollapsed) && (
-            <div className="p-3 bg-white/5 border border-white/10 rounded-2xl space-y-2">
-              <div className="flex justify-between items-center text-[9px] font-mono text-white/50">
-                <span className="font-extrabold tracking-wider">SYSTEM ACTIVE</span>
-                <span className="text-emerald-400 font-bold flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 relative flex shrink-0">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-                  </span>
-                  99.9%
-                </span>
-              </div>
-              <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden border border-white/10">
-                <div className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 w-[92%] rounded-full" />
-              </div>
-            </div>
-          )}
-
+        {/* Bottom: Collapse Control */}
+        <div className="pt-2">
           {/* Collapse / Expand Toggle */}
           <button
             onClick={toggleCollapse}
@@ -400,8 +382,17 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Bottom profile & settings elements */}
-        <div className="flex flex-col items-center gap-4">
+        {/* System Status Indicator */}
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-bg-active border border-border-default flex items-center justify-center group relative">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 relative">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+            </span>
+            {/* Tooltip */}
+            <div className="absolute right-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-right shadow-xl pointer-events-none whitespace-nowrap">
+              System Online — 99.9%
+            </div>
+          </div>
           <div className="scale-90">
             <UserButton />
           </div>
@@ -443,7 +434,7 @@ export default function Navbar() {
         <div className="flex-1 flex flex-col justify-center gap-8 max-h-[75vh] overflow-y-auto w-full px-4 pt-16">
           {/* Core Workspaces Section */}
           <div className="space-y-4">
-            <p className="text-[9px] font-bold text-white/50 uppercase tracking-widest border-b border-white/10 pb-2">Core Workspaces</p>
+            <p className="text-[9px] font-bold text-silver/40 uppercase tracking-widest border-b border-border-default pb-2">Core Workspaces</p>
             <div className="flex flex-col gap-3">
               {leftLinks.map((link) => {
                 const Icon = link.icon;
@@ -460,12 +451,12 @@ export default function Navbar() {
                     }}
                     className={cn(
                       "font-extrabold tracking-tight transition-all text-lg flex items-center gap-2.5",
-                      isTabActive(link.href) ? "text-white" : "text-white/60 hover:text-white"
+                      isTabActive(link.href) ? "text-foreground" : "text-silver hover:text-foreground"
                     )}
                   >
                     <Icon className="w-5 h-5" />
                     <span>{link.label}</span>
-                    {link.locked && <Lock className="w-3.5 h-3.5 text-white/30" />}
+                    {link.locked && <Lock className="w-3.5 h-3.5 text-silver/30" />}
                   </Link>
                 );
               })}
@@ -473,7 +464,7 @@ export default function Navbar() {
           </div>
           
           {/* System Utilities Section */}
-          <div className="space-y-4">                      <p className="text-[9px] font-bold text-white/50 uppercase tracking-widest border-b border-white/10 pb-2">System Utilities</p>
+          <div className="space-y-4">                      <p className="text-[9px] font-bold text-silver/40 uppercase tracking-widest border-b border-border-default pb-2">System Utilities</p>
             <div className="flex flex-col gap-3">
               {rightLinks.map((link) => {
                 const Icon = link.icon;
@@ -511,7 +502,7 @@ export default function Navbar() {
           <Link href="/" className="inline-flex items-center gap-1.5">
             <Logo />
           </Link>
-          <p className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-white/40 uppercase">
+          <p className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-silver/40 uppercase">
             AUTONOMOUS OS <span className="text-emerald-400/80 font-normal lowercase tracking-normal">by Aethyl</span>
           </p>
         </div>
