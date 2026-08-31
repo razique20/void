@@ -204,7 +204,7 @@ export default function ProfilePage() {
               <form onSubmit={handleSaveForm} className="space-y-6">
                 
                 {/* Industry Selection */}
-                <div className="bg-bg-subtle-alt border border-border-default p-6 rounded-2xl space-y-4 shadow-sm">
+                <div className="bg-bg-subtle border border-border-default p-6 rounded-2xl space-y-4 shadow-sm">
                   <div className="flex justify-between items-center">
                     <div>
                       <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
@@ -247,7 +247,7 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Organization Specifications */}
-                <div className="bg-bg-subtle-alt border border-border-default p-6 rounded-2xl space-y-4 shadow-sm">
+                <div className="bg-bg-subtle border border-border-default p-6 rounded-2xl space-y-4 shadow-sm">
                   <div>
                     <h3 className="text-sm font-bold text-foreground">02 / Business Specifications</h3>
                     <p className="text-xs text-silver mt-0.5 font-medium">Default metadata used during AI generation.</p>
@@ -310,7 +310,7 @@ export default function ProfilePage() {
               <div className="space-y-6">
                 
                 {/* Account Details */}
-                <div className="bg-bg-subtle-alt border border-border-default p-6 rounded-2xl space-y-6 shadow-sm">
+                <div className="bg-bg-subtle border border-border-default p-6 rounded-2xl space-y-6 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
@@ -383,7 +383,7 @@ export default function ProfilePage() {
             {activeTab === 'system' && (
               <form onSubmit={handleSaveForm} className="space-y-6">
                 
-                <div className="bg-bg-subtle-alt border border-border-default p-6 rounded-2xl space-y-6 shadow-sm">
+                <div className="bg-bg-subtle border border-border-default p-6 rounded-2xl space-y-6 shadow-sm">
                   <div>
                     <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                       <Sliders className="w-4 h-4 text-emerald-500" />

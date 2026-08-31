@@ -105,19 +105,18 @@ export default function SystemLogsPage() {
           <button 
             onClick={() => fetchLogs(page, true)}
             disabled={isRefreshing}
-            className="p-3 bg-card/40 backdrop-blur-md border border-foreground/5 dark:border-white/5 hover:bg-card/80 rounded-2xl transition-all disabled:opacity-50 text-foreground flex items-center gap-2 text-xs font-bold"
+            className="p-2.5 bg-bg-elevated hover:bg-bg-border border border-border-default rounded-xl transition-all disabled:opacity-50 text-silver hover:text-foreground"
           >
-            <RefreshCw className={cn("w-4 h-4 text-silver", isRefreshing && "animate-spin text-foreground")} />
-            <span>Refresh Console</span>
+            <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin text-foreground")} />
           </button>
         </div>
       </div>
 
       {/* Main Console Hub */}
-      <div className="glass border border-border-subtle rounded-[28px] overflow-hidden relative z-10 flex flex-col min-h-[500px]">
+      <div className="bg-bg-subtle border border-border-default rounded-2xl overflow-hidden relative z-10 flex flex-col min-h-[500px]">
         
         {/* Controls Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 border-b border-border-subtle bg-card/10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 border-b border-border-default">
           
           {/* Search Box */}
           <div className="relative flex-1 max-w-md w-full">
@@ -127,7 +126,7 @@ export default function SystemLogsPage() {
               placeholder="Search by source or message text..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-bg-elevated border border-foreground/5 dark:border-white/5 rounded-2xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver text-foreground"
+              className="w-full bg-bg-elevated border border-border-default rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver text-foreground"
             />
             {searchQuery && (
               <button 
@@ -227,7 +226,7 @@ export default function SystemLogsPage() {
         </div>
 
         {/* Footer Pagination Bar */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-5 border-t border-border-subtle bg-card/10">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-5 border-t border-border-default">
           
           <div className="text-xs font-semibold text-silver">
             Showing <span className="text-foreground">{filteredLogs.length}</span> log frames • <span className="text-foreground">{totalLogs}</span> total logged events
@@ -237,7 +236,7 @@ export default function SystemLogsPage() {
             <button
               onClick={handlePrevPage}
               disabled={page <= 1 || loading}
-              className="p-2.5 bg-bg-surface border border-foreground/5 dark:border-white/5 rounded-xl hover:bg-foreground/5 disabled:opacity-40 transition-all text-foreground"
+              className="p-2.5 bg-bg-elevated border border-border-default rounded-xl hover:bg-bg-hover disabled:opacity-40 transition-all text-silver hover:text-foreground"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
@@ -247,7 +246,7 @@ export default function SystemLogsPage() {
             <button
               onClick={handleNextPage}
               disabled={page >= totalPages || loading}
-              className="p-2.5 bg-bg-surface border border-foreground/5 dark:border-white/5 rounded-xl hover:bg-foreground/5 disabled:opacity-40 transition-all text-foreground"
+              className="p-2.5 bg-bg-elevated border border-border-default rounded-xl hover:bg-bg-hover disabled:opacity-40 transition-all text-silver hover:text-foreground"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

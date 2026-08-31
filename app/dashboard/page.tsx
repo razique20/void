@@ -184,23 +184,27 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-bg-active rounded-2xl overflow-hidden border border-border-default">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
             { label: 'Total Messages', value: stats?.totalMessages || 0, trend: stats?.interactionTrend },
             { label: 'Active Chats', value: stats?.activeChats || 0 },
             { label: 'Estimated Savings', value: `$${stats?.estimatedSavings || '0.00'}` },
             { label: 'Hours Reclaimed', value: stats?.estimatedTimeSaved || '0.0' },
           ].map((stat, i) => (
-            <div key={i} className="bg-background px-5 py-4 space-y-1">
-              <p className="text-[10px] font-bold text-silver uppercase tracking-wider">{stat.label}</p>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-lg font-bold text-foreground">{loading ? '—' : stat.value}</span>
-                {stat.trend !== undefined && !loading && (
-                  <span className="text-[9px] font-bold text-emerald-600 flex items-center gap-0.5">
-                    <TrendingUp className="w-2.5 h-2.5" />
-                    {Number(stat.trend) > 0 ? '+' : ''}{stat.trend}%
-                  </span>
-                )}
+            <div key={i} className="bg-bg-subtle border border-border-default rounded-2xl p-5">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-[10px] font-bold text-silver uppercase tracking-wider mb-1">{stat.label}</p>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl font-bold tabular-nums text-foreground">{loading ? '—' : stat.value}</span>
+                    {stat.trend !== undefined && !loading && (
+                      <span className="text-[9px] font-bold text-emerald-600 flex items-center gap-0.5">
+                        <TrendingUp className="w-2.5 h-2.5" />
+                        {Number(stat.trend) > 0 ? '+' : ''}{stat.trend}%
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           ))}

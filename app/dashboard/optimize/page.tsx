@@ -144,7 +144,7 @@ export default function OptimizePage() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
             { 
               label: 'Issues Found', 
@@ -172,13 +172,13 @@ export default function OptimizePage() {
             },
           ].map((stat, i) => (
             <motion.div key={i} variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5">
-              <div className="flex items-center gap-3">
-                <stat.icon className={cn("w-5 h-5", stat.color)} />
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{loading ? '—' : stat.value}</p>
-                  <p className="text-[10px] font-bold text-silver uppercase tracking-wider">{stat.label}</p>
+              <div className="flex items-center justify-between mb-4">
+                <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center", `${stat.color}/10`)}>
+                  <stat.icon className={cn("w-4 h-4", stat.color)} />
                 </div>
               </div>
+              <p className="text-[10px] font-bold text-silver uppercase tracking-wider mb-1">{stat.label}</p>
+              <h3 className="text-2xl font-bold tabular-nums text-foreground">{loading ? '—' : stat.value}</h3>
             </motion.div>
           ))}
         </div>

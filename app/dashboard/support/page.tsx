@@ -276,7 +276,7 @@ export default function SupportPage() {
 
                 {/* Ticket List Card */}
                 <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 space-y-4">
-                  <div className="flex justify-between items-center border-b border-border-subtle pb-4">
+                  <div className="flex justify-between items-center border-b border-border-default pb-4">
                     <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-2">
                       <Layers className="w-3.5 h-3.5 text-apple-blue" />
                       Ticket History
@@ -381,7 +381,7 @@ export default function SupportPage() {
                       { icon: Clock, label: 'Avg Response', value: '< 24h', color: '' },
                       { icon: MessageSquare, label: 'Channel', value: 'Ticket System', color: '' },
                     ].map((row, i) => (
-                      <div key={i} className={cn('flex justify-between items-center text-xs', i < 2 && 'border-b border-border-subtle pb-2.5')}>
+                      <div key={i} className={cn('flex justify-between items-center text-xs', i < 2 && 'border-b border-border-default pb-2.5')}>
                         <div className="flex items-center gap-2">
                           <row.icon className="w-3.5 h-3.5 text-silver" />
                           <span className="font-medium text-silver">{row.label}</span>
