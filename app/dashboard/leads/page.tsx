@@ -28,6 +28,10 @@ import {
   Activity,
   Square,
   CheckSquare,
+  Bookmark,
+  BookmarkCheck,
+  ChevronDown,
+  Pencil,
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -55,12 +59,21 @@ export default function LeadsPage() {
   const [scoringLead, setScoringLead] = useState<string | null>(null);
   const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set());
   const [bulkUpdating, setBulkUpdating] = useState(false);
+  const [savedFilters, setSavedFilters] = useState<{ id: string; name: string; search: string; status: string }[]>([]);
+  const [showSavedFilters, setShowSavedFilters] = useState(false);
+  const [savingFilterName, setSavingFilterName] = useState('');
+  const [showSaveInput, setShowSaveInput] = useState(false);
   const { showToast, Toast } = useToast();
 
   useEffect(() => {
     if (!loadingSub && sub?.features?.includes('lead_capture')) {
       fetchLeads(1);
       fetchWebhookConfig();
+      // Load saved filters from localStorage
+      try {
+        const stored = localStorage.getItem('void_lead_saved_filters');
+        if (stored) setSavedFilters(JSON.parse(stored));
+      } catch {}
     }
   }, [sub, loadingSub]);
 
@@ -217,6 +230,36 @@ export default function LeadsPage() {
     } else {
       setSelectedLeads(new Set(filteredLeads.map(l => l._id)));
     }
+  };
+
+  const handleSaveFilter = () => {
+    if (!savingFilterName.trim()) return;
+    const newFilter = {
+      id: Date.now().toString(),
+      name: savingFilterName.trim(),
+      search,
+      status: activeFilter,
+    };
+    const updated = [...savedFilters, newFilter];
+    setSavedFilters(updated);
+    localStorage.setItem('void_lead_saved_filters', JSON.stringify(updated));
+    setSavingFilterName('');
+    setShowSaveInput(false);
+    showToast(`Filter "${newFilter.name}" saved`);
+  };
+
+  const handleLoadFilter = (filter: typeof savedFilters[0]) => {
+    setSearch(filter.search);
+    setActiveFilter(filter.status as any);
+    setShowSavedFilters(false);
+    showToast(`Loaded filter "${filter.name}"`);
+  };
+
+  const handleDeleteFilter = (id: string) => {
+    const updated = savedFilters.filter(f => f.id !== id);
+    setSavedFilters(updated);
+    localStorage.setItem('void_lead_saved_filters', JSON.stringify(updated));
+    showToast('Filter deleted');
   };
 
   const handleDeleteLead = async (id: string) => {
@@ -491,7 +534,88 @@ export default function LeadsPage() {
               )}
             </div>
 
-            <div className="flex items-center gap-0.5">
+            <div className="flex items-center gap-1.5 relative">
+              {/* Saved Filters Dropdown */}
+              {savedFilters.length > 0 && (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowSavedFilters(!showSavedFilters)}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 bg-purple-500/10 border border-purple-500/20 text-purple-500 rounded-lg text-[10px] font-bold hover:bg-purple-500/20 transition-all"
+                  >
+                    <BookmarkCheck className="w-3 h-3" />
+                    Saved
+                    <ChevronDown className={cn("w-3 h-3 transition-transform", showSavedFilters && "rotate-180")} />
+                  </button>
+                  <AnimatePresence>
+                    {showSavedFilters && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                        className="absolute right-0 top-full mt-1 w-64 bg-background border border-border-strong rounded-xl shadow-xl z-50 overflow-hidden"
+                      >
+                        <div className="p-2 border-b border-border-default">
+                          <p className="text-[9px] font-bold text-silver uppercase tracking-wider px-2 py-1">Saved Filters</p>
+                        </div>
+                        <div className="max-h-48 overflow-y-auto p-1">
+                          {savedFilters.map((f) => (
+                            <div key={f.id} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-bg-elevated group cursor-pointer">
+                              <button
+                                onClick={() => handleLoadFilter(f)}
+                                className="flex-1 text-left"
+                              >
+                                <p className="text-[11px] font-semibold text-foreground truncate">{f.name}</p>
+                                <p className="text-[9px] text-silver truncate">{f.search || 'No search'} · {f.status}</p>
+                              </button>
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleDeleteFilter(f.id); }}
+                                className="p-1 text-silver/40 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+
+              {/* Save Current Filter */}
+              {(search || activeFilter !== 'all') && (
+                <>
+                  {showSaveInput ? (
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="text"
+                        placeholder="Filter name..."
+                        value={savingFilterName}
+                        onChange={(e) => setSavingFilterName(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') handleSaveFilter(); if (e.key === 'Escape') setShowSaveInput(false); }}
+                        className="w-28 bg-bg-elevated border border-border-strong rounded-lg px-2 py-1 text-[10px] text-foreground focus:outline-none focus:border-apple-blue/40"
+                        autoFocus
+                      />
+                      <button onClick={handleSaveFilter} className="p-1 text-emerald-500 hover:bg-emerald-500/10 rounded">
+                        <Check className="w-3.5 h-3.5" />
+                      </button>
+                      <button onClick={() => setShowSaveInput(false)} className="p-1 text-silver hover:text-foreground">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setShowSaveInput(true)}
+                      className="flex items-center gap-1 px-2 py-1.5 text-silver hover:text-foreground hover:bg-bg-active rounded-lg text-[10px] font-bold transition-all"
+                      title="Save current filter"
+                    >
+                      <Bookmark className="w-3 h-3" />
+                      Save
+                    </button>
+                  )}
+                </>
+              )}
+
               {/* Select All checkbox */}
               {filteredLeads.length > 0 && (
                 <button
