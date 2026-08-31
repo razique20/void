@@ -26,6 +26,8 @@ import {
   TrendingUp,
   Clock,
   Activity,
+  Square,
+  CheckSquare,
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -51,6 +53,8 @@ export default function LeadsPage() {
   const [savingWebhook, setSavingWebhook] = useState(false);
   const [showWebhookPanel, setShowWebhookPanel] = useState(false);
   const [scoringLead, setScoringLead] = useState<string | null>(null);
+  const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set());
+  const [bulkUpdating, setBulkUpdating] = useState(false);
   const { showToast, Toast } = useToast();
 
   useEffect(() => {
@@ -150,6 +154,68 @@ export default function LeadsPage() {
       showToast('Failed to save notes', 'error');
     } finally {
       setSavingNotes(false);
+    }
+  };
+
+  const handleBulkUpdateStatus = async (status: string) => {
+    if (selectedLeads.size === 0) return;
+    setBulkUpdating(true);
+    try {
+      const ids = Array.from(selectedLeads);
+      const res = await fetch('/api/leads', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids, status })
+      });
+      if (res.ok) {
+        setLeads(prev => prev.map(l => 
+          selectedLeads.has(l._id) ? { ...l, status } : l
+        ));
+        setSelectedLeads(new Set());
+        showToast(`${ids.length} lead${ids.length > 1 ? 's' : ''} updated to ${status}`);
+      } else {
+        showToast('Failed to bulk update leads', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Bulk update failed', 'error');
+    } finally {
+      setBulkUpdating(false);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedLeads.size === 0) return;
+    if (!confirm(`Are you sure you want to delete ${selectedLeads.size} lead(s)? This cannot be undone.`)) return;
+    setBulkUpdating(true);
+    try {
+      const ids = Array.from(selectedLeads);
+      await Promise.all(ids.map(id => fetch(`/api/leads/${id}`, { method: 'DELETE' })));
+      setLeads(prev => prev.filter(l => !selectedLeads.has(l._id)));
+      setSelectedLeads(new Set());
+      showToast(`${ids.length} lead(s) deleted`);
+    } catch (err) {
+      console.error(err);
+      showToast('Bulk delete failed', 'error');
+    } finally {
+      setBulkUpdating(false);
+    }
+  };
+
+  const toggleLeadSelection = (id: string) => {
+    setSelectedLeads(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedLeads.size === filteredLeads.length) {
+      setSelectedLeads(new Set());
+    } else {
+      setSelectedLeads(new Set(filteredLeads.map(l => l._id)));
     }
   };
 
@@ -426,6 +492,24 @@ export default function LeadsPage() {
             </div>
 
             <div className="flex items-center gap-0.5">
+              {/* Select All checkbox */}
+              {filteredLeads.length > 0 && (
+                <button
+                  onClick={toggleSelectAll}
+                  className="p-1.5 rounded-lg text-silver hover:text-foreground hover:bg-bg-active transition-all"
+                  title={selectedLeads.size === filteredLeads.length ? 'Deselect all' : 'Select all'}
+                >
+                  {selectedLeads.size === filteredLeads.length && filteredLeads.length > 0 ? (
+                    <CheckSquare className="w-4 h-4 text-apple-blue" />
+                  ) : selectedLeads.size > 0 ? (
+                    <div className="w-4 h-4 rounded border-2 border-apple-blue bg-apple-blue/20 flex items-center justify-center">
+                      <div className="w-2 h-0.5 bg-apple-blue rounded" />
+                    </div>
+                  ) : (
+                    <Square className="w-4 h-4" />
+                  )}
+                </button>
+              )}
               {[
                 { id: 'all', label: `All (${leads.length})` },
                 { id: 'new', label: `New (${newCount})` },
@@ -497,6 +581,20 @@ export default function LeadsPage() {
                       onClick={() => { setSelectedLead(lead); setNotes(lead.data?.manual_notes || ''); }}
                       className="group bg-bg-subtle hover:bg-bg-elevated border border-border-default hover:border-border-hover dark:hover:border-white/[0.1] rounded-xl px-5 py-3.5 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 cursor-pointer"
                     >
+                      {/* Selection Checkbox */}
+                      <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => toggleLeadSelection(lead._id)}
+                          className="p-1 rounded-md hover:bg-bg-active transition-all"
+                        >
+                          {selectedLeads.has(lead._id) ? (
+                            <CheckSquare className="w-4 h-4 text-apple-blue" />
+                          ) : (
+                            <Square className="w-4 h-4 text-silver/40 group-hover:text-silver" />
+                          )}
+                        </button>
+                      </div>
+
                       {/* Left: Contact Info */}
                       <div className="flex items-center gap-3.5 min-w-0 flex-1">
                         <div className="w-9 h-9 bg-bg-elevated border border-border-strong rounded-lg flex items-center justify-center shrink-0 text-xs font-bold text-foreground group-hover:border-border-hover dark:group-hover:border-white/[0.12] transition-colors">
@@ -635,6 +733,71 @@ export default function LeadsPage() {
         </div>
 
       </motion.div>
+
+      {/* Floating Bulk Action Bar */}
+      <AnimatePresence>
+        {selectedLeads.size > 0 && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
+          >
+            <div className="bg-background border border-border-strong rounded-2xl shadow-2xl px-5 py-3.5 flex items-center gap-4">
+              <div className="flex items-center gap-2 pr-4 border-r border-border-default">
+                <CheckSquare className="w-4 h-4 text-apple-blue" />
+                <span className="text-xs font-bold text-foreground">
+                  {selectedLeads.size} selected
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleBulkUpdateStatus('new')}
+                  disabled={bulkUpdating}
+                  className="px-3 py-1.5 bg-apple-blue/10 border border-apple-blue/20 text-apple-blue rounded-lg text-[11px] font-bold hover:bg-apple-blue/20 transition-all disabled:opacity-50"
+                >
+                  Mark New
+                </button>
+                <button
+                  onClick={() => handleBulkUpdateStatus('exported')}
+                  disabled={bulkUpdating}
+                  className="px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-lg text-[11px] font-bold hover:bg-emerald-500/20 transition-all disabled:opacity-50"
+                >
+                  Mark Exported
+                </button>
+                <button
+                  onClick={() => handleBulkUpdateStatus('junk')}
+                  disabled={bulkUpdating}
+                  className="px-3 py-1.5 bg-red-500/10 border border-red-500/20 text-red-500 rounded-lg text-[11px] font-bold hover:bg-red-500/20 transition-all disabled:opacity-50"
+                >
+                  Mark Junk
+                </button>
+              </div>
+
+              <div className="pl-3 border-l border-border-default">
+                <button
+                  onClick={handleBulkDelete}
+                  disabled={bulkUpdating}
+                  className="p-2 text-silver hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all disabled:opacity-50"
+                  title="Delete selected"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+
+              <button
+                onClick={() => setSelectedLeads(new Set())}
+                className="p-2 text-silver hover:text-foreground hover:bg-bg-elevated rounded-lg transition-all"
+                title="Clear selection"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Lead Intelligence Drawer (Slide-Over) */}
       <AnimatePresence>

@@ -421,17 +421,35 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 {[
                   { icon: Cpu, label: 'Autonomy Score', value: `${stats?.successRate || '100'}%`, color: '' },
-                  { icon: Wifi, label: 'Heartbeat', value: 'Active', color: 'text-emerald-600' },
+                  { icon: Wifi, label: 'Heartbeat', value: 'Active', color: 'text-emerald-600', href: '/dashboard/uptime' },
                   { icon: Shield, label: 'Active Gateways', value: `${gatewayCount} / ${workers.length}`, color: '' },
-                ].map((row, i) => (
-                  <div key={i} className={cn("flex justify-between items-center text-xs", i < 2 && "border-b border-border-subtle pb-2.5")}>
-                    <div className="flex items-center gap-2">
-                      <row.icon className="w-3.5 h-3.5 text-silver" />
-                      <span className="font-medium text-silver">{row.label}</span>
+                ].map((row, i) => {
+                  const content = (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <row.icon className="w-3.5 h-3.5 text-silver" />
+                        <span className="font-medium text-silver">{row.label}</span>
+                      </div>
+                      <span className={cn("font-bold text-foreground", row.color)}>{loading ? '—' : row.value}</span>
+                    </>
+                  );
+                  return (
+                    <div key={i} className={cn("flex justify-between items-center text-xs", i < 2 && "border-b border-border-subtle pb-2.5")}>
+                      {'href' in row && row.href ? (
+                        <Link href={row.href} className="flex-1 flex justify-between items-center group/heartbeat px-2 -mx-2 py-1.5 -my-1.5 rounded-lg hover:bg-emerald-500/5 transition-all cursor-pointer">
+                          <div className="flex items-center gap-2">
+                            <row.icon className="w-3.5 h-3.5 text-emerald-500" />
+                            <span className="font-medium text-silver group-hover/heartbeat:text-emerald-600 dark:group-hover/heartbeat:text-emerald-400 transition-colors">{row.label}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className={cn("font-bold text-emerald-600 dark:text-emerald-400", row.color)}>{loading ? '—' : row.value}</span>
+                            <ChevronRight className="w-3 h-3 text-silver/40 group-hover/heartbeat:text-emerald-500 group-hover/heartbeat:translate-x-0.5 transition-all" />
+                          </div>
+                        </Link>
+                      ) : content}
                     </div>
-                    <span className={cn("font-bold text-foreground", row.color)}>{loading ? '—' : row.value}</span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 

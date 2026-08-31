@@ -54,7 +54,27 @@ export async function PATCH(req: Request) {
 
     await connectDB();
     
-    const { id, status, notes } = await req.json();
+    const { id, ids, status, notes } = await req.json();
+
+    // Bulk status update
+    if (ids && Array.isArray(ids) && status) {
+      const result = await Lead.updateMany(
+        { _id: { $in: ids }, userId },
+        {
+          $set: { status },
+          $push: {
+            activityLog: {
+              action: 'status_change',
+              detail: `Bulk status changed to "${status}"`,
+              timestamp: new Date()
+            }
+          }
+        }
+      );
+      return NextResponse.json({ updated: result.modifiedCount });
+    }
+
+    // Single lead update
     if (!id) return NextResponse.json({ error: 'Lead ID required' }, { status: 400 });
 
     const lead = await Lead.findOne({ _id: id, userId });
