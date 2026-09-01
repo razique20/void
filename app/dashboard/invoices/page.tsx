@@ -58,6 +58,7 @@ export default function InvoicesPage() {
   const [totalInvoices, setTotalInvoices] = useState(0);
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showAIModal, setShowAIModal] = useState(false);
   const [aiPrompt, setAiPrompt] = useState('');
@@ -222,6 +223,7 @@ export default function InvoicesPage() {
       if (res.ok) {
         showToast('Invoice deleted');
         setSelectedInvoice(null);
+        setSelectedPaymentMethod(null);
         fetchInvoices(page);
       }
     } catch (err) {
@@ -742,7 +744,7 @@ export default function InvoicesPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setSelectedInvoice(null)}
+              onClick={() => { setSelectedInvoice(null); setSelectedPaymentMethod(null); }}
               className="absolute inset-0"
             />
             <motion.div
@@ -761,7 +763,7 @@ export default function InvoicesPage() {
                   <span className={cn("px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase border", STATUS_COLORS[selectedInvoice.status])}>
                     {selectedInvoice.status}
                   </span>
-                  <button onClick={() => setSelectedInvoice(null)} className="p-1 hover:bg-bg-elevated rounded-lg">
+                  <button onClick={() => { setSelectedInvoice(null); setSelectedPaymentMethod(null); }} className="p-1 hover:bg-bg-elevated rounded-lg">
                     <X className="w-4 h-4 text-silver" />
                   </button>
                 </div>
@@ -841,14 +843,31 @@ export default function InvoicesPage() {
                       ] as const).map(m => (
                         <button
                           key={m.key}
-                          onClick={() => handleMarkAsPaid(selectedInvoice._id, m.key)}
-                          className="flex flex-col items-center gap-1 py-2.5 px-1 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-600 dark:text-emerald-400 text-[10px] font-bold hover:bg-emerald-500/20 transition-all"
+                          onClick={() => setSelectedPaymentMethod(m.key)}
+                          className={cn(
+                            "flex flex-col items-center gap-1 py-2.5 px-1 border rounded-xl text-[10px] font-bold transition-all",
+                            selectedPaymentMethod === m.key
+                              ? "bg-emerald-500 text-white border-emerald-600 shadow-md"
+                              : "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20"
+                          )}
                         >
                           <span className="text-sm">{m.icon}</span>
                           {m.label}
                         </button>
                       ))}
                     </div>
+                    <button
+                      onClick={() => {
+                        if (selectedPaymentMethod) {
+                          handleMarkAsPaid(selectedInvoice._id, selectedPaymentMethod);
+                          setSelectedPaymentMethod(null);
+                        }
+                      }}
+                      disabled={!selectedPaymentMethod}
+                      className="w-full py-2.5 bg-emerald-500 text-white rounded-xl text-xs font-bold hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                    >
+                      {selectedPaymentMethod ? `Confirm — Pay by ${selectedPaymentMethod.charAt(0).toUpperCase() + selectedPaymentMethod.slice(1)}` : 'Select a payment method'}
+                    </button>
                   </div>
                 )}
 
