@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import SentimentWorkflow from '@/models/SentimentWorkflow';
 import { TRIGGER_CONDITIONS, WORKFLOW_ACTIONS } from '@/models/SentimentWorkflow';
+import { getUserPlan, checkCountLimit } from '@/lib/planLimits';
 
 // GET: Fetch all workflows or a specific workflow
 export async function GET(req: Request) {
@@ -98,6 +99,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
 
+    // --- Plan-based limit: check active workflow count ---
+    const { plan, limits } = await getUserPlan(userId);
+    const activeCount = await SentimentWorkflow.countDocuments({ userId, isActive: true });
+    const limitCheck = checkCountLimit(activeCount, plan, limits.sentimentWorkflows);
+    if (!limitCheck.allowed) {
+      return limitCheck.response!;
+    }
+
     const workflow = await SentimentWorkflow.create({
       userId,
       name: name.trim(),
@@ -110,7 +119,14 @@ export async function POST(req: Request) {
       actionConfig: actionConfig || {},
     });
 
-    return NextResponse.json({ workflow }, { status: 201 });
+    return NextResponse.json({
+      workflow,
+      usage: {
+        plan,
+        used: activeCount + 1,
+        limit: limits.sentimentWorkflows,
+      },
+    }, { status: 201 });
   } catch (error: any) {
     console.error('[SENTIMENT_WORKFLOWS_POST]', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

@@ -6,6 +6,7 @@ import Topic from '@/models/Topic';
 import Lead from '@/models/Lead';
 import AIProvider from '@/models/AIProvider';
 import Groq from 'groq-sdk';
+import { getUserPlan, checkWeeklyLimit, incrementWeeklyLimit } from '@/lib/planLimits';
 
 // GET: Fetch topic clusters and trends
 export async function GET(req: Request) {
@@ -93,36 +94,46 @@ export async function POST(req: Request) {
     const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 
     // Check if recent analysis exists (skip if not forced)
+    // Increased cache window from 24 hours to 7 days to reduce token usage
     if (!force) {
       const recentAnalysis = await Topic.findOne({
         userId,
-        lastAnalyzedAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+        lastAnalyzedAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
       });
       if (recentAnalysis) {
         return NextResponse.json({
-          message: 'Topics were recently analyzed. Use force=true to re-analyze.',
+          message: 'Topics were recently analyzed within the last 7 days. Use force=true to re-analyze.',
           lastAnalyzed: recentAnalysis.lastAnalyzedAt,
         });
       }
     }
 
-    // Fetch conversations for analysis
+    // --- Plan-based weekly rate limit ---
+    const { plan, limits } = await getUserPlan(userId);
+    const weeklyLimit = limits.topicAnalysisPerWeek;
+    const rateLimitKey = `topic-analysis:${userId}`;
+    const limitCheck = await checkWeeklyLimit(userId, plan, weeklyLimit, rateLimitKey);
+    if (!limitCheck.allowed) {
+      return limitCheck.response!;
+    }
+
+    // Fetch conversations for analysis (optimized for token efficiency)
     const conversations = await Conversation.find({
       workerId: { $exists: true },
       createdAt: { $gte: since },
       'messages.0': { $exists: true },
     })
       .sort({ createdAt: -1 })
-      .limit(200)
+      .limit(50)  // Reduced from 200 to 50 for token efficiency
       .lean();
 
     if (conversations.length === 0) {
       return NextResponse.json({ message: 'No conversations found for analysis', topics: [] });
     }
 
-    // Prepare conversation summaries for AI
+    // Prepare conversation summaries for AI (optimized for token efficiency)
     const conversationSummaries = conversations.map((c, i) => {
-      const messages = c.messages.slice(-6).map((m: any) =>
+      const messages = c.messages.slice(-3).map((m: any) =>  // Reduced from 6 to 3 messages
         `${m.role === 'user' ? 'User' : 'Agent'}: ${m.content.substring(0, 200)}`
       ).join('\n');
       return `Conversation ${i + 1} (ID: ${c._id}, Channel: ${c.channel}, Date: ${c.createdAt}):\n${messages}`;
@@ -158,11 +169,12 @@ For each topic found:
 6. Write a brief 1-sentence description
 
 RULES:
-- Identify 5-15 distinct topics
+- Identify 3-10 distinct topics (optimized for smaller dataset)
 - Merge very similar topics
 - A conversation can belong to multiple topics
-- Focus on actionable business insights
+- Focus on actionable business insights for lead conversion
 - Include both customer-facing and operational topics
+- Be concise in analysis to preserve token efficiency
 
 Return ONLY valid JSON:
 {
@@ -259,10 +271,18 @@ Return ONLY valid JSON:
       }
     }
 
+    // --- Increment usage counter after successful analysis ---
+    const currentCount = await incrementWeeklyLimit(userId, rateLimitKey);
+
     return NextResponse.json({
       message: `Analyzed ${conversations.length} conversations, found ${savedTopics.length} topics`,
       topics: savedTopics,
       conversationsAnalyzed: conversations.length,
+      usage: {
+        plan,
+        used: currentCount,
+        limit: weeklyLimit,
+      },
     });
   } catch (error: any) {
     console.error('[TOPICS_POST]', error);

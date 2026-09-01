@@ -66,6 +66,7 @@ export default function TopicsPage() {
   const [decliningTopics, setDecliningTopics] = useState<any[]>([]);
   const [expandedTopic, setExpandedTopic] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [usage, setUsage] = useState<{ plan: string; used: number; limit: number } | null>(null);
 
   const fetchTopics = async () => {
     try {
@@ -95,10 +96,15 @@ export default function TopicsPage() {
       });
       if (res.ok) {
         const data = await res.json();
+        if (data.usage) setUsage(data.usage);
         showToast(data.message || 'Topic analysis complete');
         fetchTopics();
       } else {
         const err = await res.json();
+        if (err.usage) setUsage(err.usage);
+        if (res.status === 429) {
+          setUsage({ plan: err.plan || 'free', used: err.used || 0, limit: err.limit || 1 });
+        }
         showToast(err.error || 'Analysis failed', 'error');
       }
     } catch (err) {
@@ -185,28 +191,37 @@ export default function TopicsPage() {
                 </button>
               ))}
             </div>
-            <button
-              onClick={handleAnalyze}
-              disabled={analyzing}
-              className={cn(
-                "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all border",
-                analyzing
-                  ? "bg-amber-500/10 border-amber-500/20 text-amber-500"
-                  : "bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500/20"
+            <div className="flex items-center gap-2">
+              {usage && (
+                <span className="text-[10px] font-bold text-silver px-2 py-1 bg-bg-elevated border border-border-default rounded-lg">
+                  {usage.used}/{usage.limit === Infinity ? '∞' : usage.limit} analyses ({usage.plan})
+                </span>
               )}
-            >
-              {analyzing ? (
-                <>
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  <Brain className="w-3.5 h-3.5" />
-                  Run AI Analysis
-                </>
-              )}
-            </button>
+              <button
+                onClick={handleAnalyze}
+                disabled={analyzing || (usage !== null && usage.used >= usage.limit && usage.limit !== Infinity)}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all border",
+                  analyzing
+                    ? "bg-amber-500/10 border-amber-500/20 text-amber-500"
+                    : usage && usage.used >= usage.limit && usage.limit !== Infinity
+                      ? "bg-bg-elevated border-border-default text-silver/50 cursor-not-allowed"
+                      : "bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500/20"
+                )}
+              >
+                {analyzing ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    Analyzing...
+                  </>
+                ) : (
+                  <>
+                    <Brain className="w-3.5 h-3.5" />
+                    {usage && usage.used >= usage.limit && usage.limit !== Infinity ? 'Limit Reached' : 'Run AI Analysis'}
+                  </>
+                )}
+              </button>
+            </div>
             <button
               onClick={() => fetchTopics()}
               disabled={loading}

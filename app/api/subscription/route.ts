@@ -28,6 +28,11 @@ export async function GET() {
       maxWorkers: sub.planInfo.maxWorkers,
       usedWorkers: workerCount,
       features: sub.planInfo.features,
+      limits: {
+        topicAnalysisPerWeek: sub.planInfo.topicAnalysisPerWeek ?? 1,
+        sentimentWorkflows: sub.planInfo.sentimentWorkflows ?? 0,
+        invoicesPerMonth: sub.planInfo.invoicesPerMonth ?? 0,
+      },
       userFlags: user?.featureFlags || { actionAgents: false, neuralVoice: false, vision: false, leadManagement: false },
       emailHubEnabled,
     });

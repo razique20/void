@@ -4,6 +4,7 @@ import connectDB from '@/lib/mongodb';
 import Invoice from '@/models/Invoice';
 import AIProvider from '@/models/AIProvider';
 import Groq from 'groq-sdk';
+import { getUserPlan, checkMonthlyLimit, incrementMonthlyLimit } from '@/lib/planLimits';
 
 export async function POST(req: Request) {
   try {
@@ -13,6 +14,14 @@ export async function POST(req: Request) {
     }
 
     await connectDB();
+
+    // --- Plan-based monthly invoice limit ---
+    const { plan, limits } = await getUserPlan(userId);
+    const invoiceRateKey = `invoices:${userId}:${new Date().getFullYear()}-${new Date().getMonth()}`;
+    const invoiceCheck = await checkMonthlyLimit(userId, plan, limits.invoicesPerMonth, invoiceRateKey);
+    if (!invoiceCheck.allowed) {
+      return invoiceCheck.response!;
+    }
 
     const { prompt, customerInfo, channel } = await req.json();
 
@@ -127,7 +136,17 @@ Rules:
       status: 'draft',
     });
 
-    return NextResponse.json(invoice);
+    // Increment usage counter
+    const newCount = await incrementMonthlyLimit(userId, invoiceRateKey);
+
+    return NextResponse.json({
+      ...invoice.toObject(),
+      usage: {
+        plan,
+        used: newCount,
+        limit: limits.invoicesPerMonth,
+      },
+    });
   } catch (error: any) {
     console.error('[INVOICES_GENERATE]', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

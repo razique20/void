@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Invoice from '@/models/Invoice';
 import Stripe from 'stripe';
+import { getUserPlan, checkMonthlyLimit, incrementMonthlyLimit } from '@/lib/planLimits';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -58,6 +59,14 @@ export async function POST(req: Request) {
 
     await connectDB();
 
+    // --- Plan-based monthly invoice limit ---
+    const { plan, limits } = await getUserPlan(userId);
+    const invoiceRateKey = `invoices:${userId}:${new Date().getFullYear()}-${new Date().getMonth()}`;
+    const invoiceCheck = await checkMonthlyLimit(userId, plan, limits.invoicesPerMonth, invoiceRateKey);
+    if (!invoiceCheck.allowed) {
+      return invoiceCheck.response!;
+    }
+
     const body = await req.json();
     const { title, description, items, taxRate, customer, leadId, workerId, channel, notes } = body;
 
@@ -97,7 +106,17 @@ export async function POST(req: Request) {
       status: 'draft',
     });
 
-    return NextResponse.json(invoice);
+    // Increment usage counter
+    const newCount = await incrementMonthlyLimit(userId, invoiceRateKey);
+
+    return NextResponse.json({
+      ...invoice.toObject(),
+      usage: {
+        plan,
+        used: newCount,
+        limit: limits.invoicesPerMonth,
+      },
+    });
   } catch (error: any) {
     console.error('[INVOICES_POST]', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

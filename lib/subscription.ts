@@ -7,6 +7,10 @@ export const PLANS = {
     maxWorkers: 1,
     maxMessages: 50,
     features: ['basic_rag', 'web_chat', 'whatsapp', 'telegram', 'memory'],
+    // Feature-specific limits
+    topicAnalysisPerWeek: 1,
+    sentimentWorkflows: 0,
+    invoicesPerMonth: 0,
     price: 0,
   },
   starter: {
@@ -14,6 +18,9 @@ export const PLANS = {
     maxWorkers: 2,
     maxMessages: 1000,
     features: ['basic_rag', 'web_chat', 'whatsapp', 'telegram', 'memory', 'mission_control'],
+    topicAnalysisPerWeek: 2,
+    sentimentWorkflows: 3,
+    invoicesPerMonth: 10,
     price: 29,
   },
   pro: {
@@ -21,6 +28,9 @@ export const PLANS = {
     maxWorkers: 5,
     maxMessages: 5000,
     features: ['basic_rag', 'web_chat', 'whatsapp', 'telegram', 'memory', 'mission_control', 'marketplace', 'priority_support'],
+    topicAnalysisPerWeek: 5,
+    sentimentWorkflows: 15,
+    invoicesPerMonth: 100,
     price: 99,
   },
   enterprise: {
@@ -28,6 +38,9 @@ export const PLANS = {
     maxWorkers: 20,
     maxMessages: 25000,
     features: ['advanced_rag', 'web_chat', 'whatsapp', 'telegram', 'slack', 'memory', 'mission_control', 'marketplace', 'email_agent', 'actions_webhooks', 'cal_booking', 'lead_capture', 'dedicated_support', 'smart_routing'],
+    topicAnalysisPerWeek: Infinity,
+    sentimentWorkflows: Infinity,
+    invoicesPerMonth: Infinity,
     price: 299,
   },
 };
