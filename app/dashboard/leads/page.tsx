@@ -65,6 +65,8 @@ export default function LeadsPage() {
   const [showSaveInput, setShowSaveInput] = useState(false);
   const [activeSegment, setActiveSegment] = useState<string>('all');
   const [segmentingLead, setSegmentingLead] = useState<string | null>(null);
+  const [deal, setDeal] = useState<any>(null);
+  const [analyzingPipeline, setAnalyzingPipeline] = useState(false);
   const { showToast, Toast } = useToast();
 
   useEffect(() => {
@@ -309,6 +311,80 @@ export default function LeadsPage() {
       showToast('Error segmenting lead', 'error');
     } finally {
       setSegmentingLead(null);
+    }
+  };
+
+  const fetchDeal = async (leadId: string) => {
+    try {
+      const res = await fetch(`/api/leads/pipeline?leadId=${leadId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setDeal(data.deal || null);
+      }
+    } catch (err) {
+      console.error('Failed to fetch deal pipeline', err);
+    }
+  };
+
+  const handleAnalyzePipeline = async (leadId: string) => {
+    setAnalyzingPipeline(true);
+    try {
+      const res = await fetch('/api/leads/pipeline', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setDeal({
+          _id: data.dealId,
+          stage: data.stage,
+          stageLabel: data.stageLabel,
+          dealValue: data.dealValue,
+          aiConfidence: data.confidence,
+          stageHistory: data.stageHistory,
+        });
+        // Refresh the lead list to get updated status
+        fetchLeads(page);
+        if (data.transitioned) {
+          showToast(`Deal advanced: ${data.previousStage ? data.stageLabel : 'Qualified'} — ${data.reason}`);
+        } else {
+          showToast(`Pipeline analyzed: ${data.stageLabel} — ${data.reason}`);
+        }
+      } else {
+        showToast('Failed to analyze pipeline', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Pipeline analysis failed', 'error');
+    } finally {
+      setAnalyzingPipeline(false);
+    }
+  };
+
+  const handleManualPipelineStage = async (leadId: string, stage: string, notes?: string) => {
+    try {
+      const res = await fetch('/api/leads/pipeline', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId, stage, notes })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setDeal({
+          _id: data.dealId,
+          stage: data.stage,
+          stageLabel: data.stageLabel,
+          stageHistory: data.stageHistory,
+        });
+        fetchLeads(page);
+        showToast(`Pipeline stage set to ${data.stageLabel}`);
+      } else {
+        showToast('Failed to update pipeline', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Failed to update pipeline', 'error');
     }
   };
 
@@ -813,7 +889,7 @@ export default function LeadsPage() {
                       layout
                       variants={itemVariants}
                       key={lead._id}
-                      onClick={() => { setSelectedLead(lead); setNotes(lead.data?.manual_notes || ''); }}
+                      onClick={() => { setSelectedLead(lead); setNotes(lead.data?.manual_notes || ''); setDeal(null); fetchDeal(lead._id); }}
                       className="group bg-bg-subtle hover:bg-bg-elevated border border-border-default hover:border-border-hover dark:hover:border-white/[0.1] rounded-xl px-4 py-3 transition-all duration-200 flex items-center gap-3 cursor-pointer"
                     >
                       {/* Selection Checkbox */}
@@ -879,6 +955,20 @@ export default function LeadsPage() {
                           )}>
                             <Flame className="w-3 h-3" />
                             {lead.data.heatScore}
+                          </div>
+                        )}
+
+                        {/* Pipeline Stage Pill */}
+                        {deal && deal.leadId === lead._id && deal.stage && (
+                          <div className={cn(
+                            "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold border",
+                            deal.stage === 'qualified' ? "bg-blue-500/10 text-blue-500 border-blue-500/20" :
+                            deal.stage === 'proposal_sent' ? "bg-purple-500/10 text-purple-500 border-purple-500/20" :
+                            deal.stage === 'negotiation' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
+                            deal.stage === 'closed_won' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
+                            "bg-red-500/10 text-red-500 border-red-500/20"
+                          )}>
+                            {deal.stageLabel || deal.stage}
                           </div>
                         )}
 
@@ -1226,6 +1316,153 @@ export default function LeadsPage() {
                     </button>
                   </div>
                 )}
+
+                {/* Deal Pipeline */}
+                <div className="space-y-2">
+                  <h4 className="text-[10px] font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
+                    <TrendingUp className="w-3 h-3 text-emerald-500" />
+                    Deal Pipeline
+                  </h4>
+                  <div className="bg-bg-surface border border-border-default rounded-xl p-4 space-y-4">
+                    {/* Pipeline Stage Visualizer */}
+                    {deal && (
+                      <div>
+                        <div className="flex items-center gap-1.5 mb-3">
+                          {['qualified', 'proposal_sent', 'negotiation', 'closed_won'].map((stage, idx) => {
+                            const stageOrder = { qualified: 0, proposal_sent: 1, negotiation: 2, closed_won: 3 };
+                            const currentOrder = stageOrder[deal.stage as keyof typeof stageOrder] ?? -1;
+                            const isActive = deal.stage === stage;
+                            const isPast = stageOrder[stage as keyof typeof stageOrder] < currentOrder && deal.stage !== 'closed_lost';
+                            const isLost = deal.stage === 'closed_lost' && stage === 'closed_lost';
+                            return (
+                              <div key={stage} className="flex items-center gap-1.5 flex-1">
+                                <div className={cn(
+                                  "w-full h-2 rounded-full transition-all",
+                                  isActive ? "bg-apple-blue" :
+                                  isPast ? "bg-emerald-500" :
+                                  isLost ? "bg-red-500" :
+                                  "bg-bg-elevated"
+                                )} />
+                                {idx < 3 && <div className={cn(
+                                  "w-1 h-2 rounded-sm",
+                                  isPast ? "bg-emerald-500/60" : "bg-bg-elevated"
+                                )} />}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-foreground">
+                            {deal.stageLabel || deal.stage}
+                          </span>
+                          {deal.aiConfidence > 0 && (
+                            <span className="text-[10px] text-silver">
+                              AI: {deal.aiConfidence}% confident
+                            </span>
+                          )}
+                        </div>
+                        {deal.dealValue > 0 && (
+                          <p className="text-lg font-bold text-emerald-500 mt-2">
+                            ${deal.dealValue.toLocaleString()}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Analyze Button */}
+                    <button
+                      onClick={() => handleAnalyzePipeline(selectedLead._id)}
+                      disabled={analyzingPipeline}
+                      className={cn(
+                        "w-full py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2",
+                        analyzingPipeline
+                          ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-500"
+                          : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20"
+                      )}
+                    >
+                      {analyzingPipeline ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          Analyzing Conversation...
+                        </>
+                      ) : (
+                        <>
+                          <Zap className="w-3.5 h-3.5" />
+                          {deal ? 'Re-Analyze Pipeline' : 'Initialize Pipeline'}
+                        </>
+                      )}
+                    </button>
+
+                    {/* Manual Stage Override */}
+                    {deal && deal.stage !== 'closed_won' && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {(['qualified', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost'] as const).map((s) => {
+                          const stageColors: Record<string, string> = {
+                            qualified: 'bg-blue-500/10 text-blue-500 border-blue-500/20 hover:bg-blue-500/20',
+                            proposal_sent: 'bg-purple-500/10 text-purple-500 border-purple-500/20 hover:bg-purple-500/20',
+                            negotiation: 'bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20',
+                            closed_won: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/20',
+                            closed_lost: 'bg-red-500/10 text-red-500 border-red-500/20 hover:bg-red-500/20',
+                          };
+                          const labelMap: Record<string, string> = {
+                            qualified: 'Qualified',
+                            proposal_sent: 'Proposal',
+                            negotiation: 'Negotiate',
+                            closed_won: 'Won',
+                            closed_lost: 'Lost',
+                          };
+                          return (
+                            <button
+                              key={s}
+                              onClick={() => handleManualPipelineStage(selectedLead._id, s)}
+                              disabled={deal.stage === s}
+                              className={cn(
+                                "px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all",
+                                stageColors[s],
+                                deal.stage === s && "opacity-50 cursor-default"
+                              )}
+                            >
+                              {labelMap[s]}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* Stage History */}
+                    {deal?.stageHistory?.length > 0 && (
+                      <div className="space-y-1.5">
+                        <p className="text-[9px] font-bold text-silver uppercase">Stage History</p>
+                        <div className="space-y-1">
+                          {deal.stageHistory.slice().reverse().slice(0, 5).map((h: any, idx: number) => (
+                            <div key={idx} className="flex items-start gap-2 text-[10px]">
+                              <div className={cn(
+                                "w-1.5 h-1.5 rounded-full mt-1.5 shrink-0",
+                                h.stage === 'closed_won' ? "bg-emerald-500" :
+                                h.stage === 'closed_lost' ? "bg-red-500" :
+                                h.triggeredBy === 'ai' ? "bg-apple-blue" : "bg-purple-500"
+                              )} />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-foreground font-semibold">
+                                  {h.label || h.stage}
+                                  {h.triggeredBy && (
+                                    <span className="text-silver font-normal ml-1">({h.triggeredBy})</span>
+                                  )}
+                                </p>
+                                {h.reason && <p className="text-silver truncate">{h.reason}</p>}
+                              </div>
+                              {h.timestamp && (
+                                <span className="text-silver/60 font-mono shrink-0">
+                                  {new Date(h.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 {/* Intent Summary */}
                 <div className="space-y-2">

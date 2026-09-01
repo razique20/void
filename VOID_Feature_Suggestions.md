@@ -28,6 +28,7 @@ Based on comprehensive analysis of the VOID platform architecture and current ca
 - **Description**: AI moves deals through pipeline stages automatically based on conversation triggers (e.g., "interested" → "proposal sent" → "negotiation")
 - **Impact**: Reduces manual CRM data entry by 80%
 - **Implementation**: Intent detection + state machine for deal stages
+- **Status**: ✅ Done
 
 ### 5. **Revenue Attribution Analytics**
 - **Description**: Track which AI interactions directly led to closed deals, calculate ROI per agent and channel
@@ -197,11 +198,11 @@ Based on comprehensive analysis of the VOID platform architecture and current ca
 2. **Voice Operatives** (#7) - WhatsApp is voice-first; this is critical
 3. **CRM Bi-Directional Sync** (#15) - Enterprise requirement
 4. **Automated Outreach Campaigns** (#18) - Highest ROI feature
-5. **Sentiment-Triggered Workflows** (#8) - Proactive retention
+5. **CRM Bi-Directional Sync** (#15) - Enterprise requirement
 
 ---
 
 *Generated: August 31, 2026*
-*Last Updated: September 1, 2026 — Predictive Lead Scoring 2.0 completed*
+*Last Updated: September 1, 2026 — Automated Deal Pipeline Management completed*
 *Platform: VOID AI Workforce Platform*
 *Analysis based on: Codebase review, feature roadmap, and market research*
