@@ -15,6 +15,7 @@ import {
   PanelLeft,
   Lock,
   Route,
+  Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/Logo';
@@ -42,6 +43,7 @@ const allNavGroups: { label: string; links: NavLink[] }[] = [
     links: [
       { label: 'Leads CRM', icon: Database, href: '/dashboard/leads', featureKey: 'lead_capture' },
       { label: 'Customer Journey', icon: Route, href: '/dashboard/journey', featureKey: 'lead_capture' },
+      { label: 'Sentiment Workflows', icon: Zap, href: '/dashboard/sentiment-workflows', featureKey: 'lead_capture' },
       { label: 'Mission Control', icon: MessageSquare, href: '/dashboard/live', featureKey: 'mission_control' },
       { label: 'AI Email Hub', icon: Mail, href: '/dashboard/email', featureKey: 'email_agent' },
     ],

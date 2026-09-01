@@ -11,6 +11,7 @@ import { checkRateLimit } from '@/lib/rateLimit';
 import { checkMessageLimit, incrementMessageCount } from '@/lib/messageUsage';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
+import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
 
 /**
  * TELEGRAM WEBHOOK HANDLER
@@ -226,6 +227,17 @@ When a user asks for a task matching these descriptions, include the [ACTION: na
 
     // 8. Update longitudinal memory (non-blocking — fire and forget)
     updateMemorySummary(contactMemory, userText, aiResponse, groq, modelName);
+
+    // Sentiment-triggered workflows (non-blocking — fire and forget)
+    processSentimentWorkflows({
+      userId: operative.userId,
+      workerId: operative._id.toString(),
+      workerName: operative.name,
+      channel: 'telegram',
+      conversationId: conversation._id.toString(),
+      externalId: chatId.toString(),
+      contactName: userName,
+    }).catch(err => console.error('[SENTIMENT_WORKFLOW_TRIGGER_TG]', err));
 
     // NEW: Lead Management Handler for Telegram
     if (aiResponse.includes('[LEAD:')) {

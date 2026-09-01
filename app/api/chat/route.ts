@@ -15,6 +15,7 @@ import { getUserSubscription } from '@/lib/subscription';
 import Lead from '@/models/Lead';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
+import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
 
 export async function POST(req: Request) {
   try {
@@ -357,7 +358,17 @@ When a user asks for a task matching these descriptions, you MUST include the [A
     const dynamicGroqRef = dynamicGroq;
     updateMemorySummary(contactMemory, message, aiResponse, dynamicGroqRef, modelName);
 
-    // 10b. Increment monthly message counter
+    // 10c. Sentiment-triggered workflows (non-blocking — fire and forget)
+    processSentimentWorkflows({
+      userId,
+      workerId: worker._id.toString(),
+      workerName: worker.name,
+      channel: 'web',
+      conversationId: conversation._id.toString(),
+      externalId: userId,
+    }).catch(err => console.error('[SENTIMENT_WORKFLOW_TRIGGER]', err));
+
+    // 10d. Increment monthly message counter
     incrementMessageCount(userId).catch(() => {});
 
     // 11. Broadcast real-time notification for new conversation activity

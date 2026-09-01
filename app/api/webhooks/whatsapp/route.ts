@@ -12,6 +12,7 @@ import { checkRateLimit } from '@/lib/rateLimit';
 import { checkMessageLimit, incrementMessageCount } from '@/lib/messageUsage';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
+import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
 
 // 1. Webhook Verification (GET) - Required by Meta
 export async function GET(req: Request) {
@@ -447,6 +448,16 @@ Once all conditions are met, execute the action by including the exact tag in yo
     await Conversation.findByIdAndUpdate(conversation._id, {
       $push: { messages: { role: 'assistant', content: aiResponse } }
     });
+
+    // Sentiment-triggered workflows (non-blocking — fire and forget)
+    processSentimentWorkflows({
+      userId: operative.userId,
+      workerId: operative._id.toString(),
+      workerName: operative.name,
+      channel: 'whatsapp',
+      conversationId: conversation._id.toString(),
+      externalId: customerPhone,
+    }).catch(err => console.error('[SENTIMENT_WORKFLOW_TRIGGER_WA]', err));
 
     // 6. Send Response back to WhatsApp
     // Resolve access token: from vault credential if linked, otherwise inline apiKey
