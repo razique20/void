@@ -63,6 +63,8 @@ export default function LeadsPage() {
   const [showSavedFilters, setShowSavedFilters] = useState(false);
   const [savingFilterName, setSavingFilterName] = useState('');
   const [showSaveInput, setShowSaveInput] = useState(false);
+  const [activeSegment, setActiveSegment] = useState<string>('all');
+  const [segmentingLead, setSegmentingLead] = useState<string | null>(null);
   const { showToast, Toast } = useToast();
 
   useEffect(() => {
@@ -279,6 +281,37 @@ export default function LeadsPage() {
     }
   };
 
+  const handleSegmentLead = async (id: string) => {
+    setSegmentingLead(id);
+    try {
+      const res = await fetch('/api/leads/segment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId: id })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLeads(prev => prev.map(l => l._id === id ? {
+          ...l,
+          data: {
+            ...l.data,
+            segment: data.segment,
+            segmentConfidence: data.confidence,
+            segmentReasons: data.reasons,
+            segmentNextAction: data.nextAction,
+          }
+        } : l));
+        showToast(`Lead segmented as ${data.meta?.label || data.segment} (${data.confidence}% confidence)`);
+      } else {
+        showToast('Failed to segment lead', 'error');
+      }
+    } catch (err) {
+      showToast('Error segmenting lead', 'error');
+    } finally {
+      setSegmentingLead(null);
+    }
+  };
+
   const handleScoreLead = async (id: string) => {
     setScoringLead(id);
     try {
@@ -305,7 +338,7 @@ export default function LeadsPage() {
   };
 
   const downloadCSV = () => {
-    const headers = ['Date', 'Name', 'Email', 'Phone', 'Intent', 'Source', 'Agent', 'Status', 'Notes'];
+    const headers = ['Date', 'Name', 'Email', 'Phone', 'Intent', 'Source', 'Agent', 'Status', 'Segment', 'Notes'];
     const rows = leads.map(l => [
       new Date(l.createdAt).toLocaleDateString(),
       l.contactInfo?.name || '',
@@ -315,6 +348,7 @@ export default function LeadsPage() {
       l.source || '',
       l.workerName || '',
       l.status || '',
+      l.data?.segment || '',
       l.data?.manual_notes || ''
     ].map(v => `"${String(v).replace(/"/g, '""')}"`));
     
@@ -330,22 +364,34 @@ export default function LeadsPage() {
   };
 
   const filteredLeads = leads.filter(l => {
-    const matchesSearch = 
+    let matchesSearch = 
       (l.contactInfo?.name || '').toLowerCase().includes(search.toLowerCase()) ||
       (l.contactInfo?.email || '').toLowerCase().includes(search.toLowerCase()) ||
       (l.contactInfo?.phone || '').toLowerCase().includes(search.toLowerCase()) ||
       (l.interest || '').toLowerCase().includes(search.toLowerCase()) ||
       (l.source || '').toLowerCase().includes(search.toLowerCase());
 
-    if (activeFilter === 'new') return matchesSearch && (l.status === 'new' || !l.status);
-    if (activeFilter === 'exported') return matchesSearch && l.status === 'exported';
-    if (activeFilter === 'junk') return matchesSearch && l.status === 'junk';
+    if (activeFilter === 'new') matchesSearch = matchesSearch && (l.status === 'new' || !l.status);
+    else if (activeFilter === 'exported') matchesSearch = matchesSearch && l.status === 'exported';
+    else if (activeFilter === 'junk') matchesSearch = matchesSearch && l.status === 'junk';
+
+    // Segment filter
+    if (activeSegment !== 'all') {
+      matchesSearch = matchesSearch && l.data?.segment === activeSegment;
+    }
     return matchesSearch;
   });
 
   const newCount = leads.filter(l => l.status === 'new' || !l.status).length;
   const exportedCount = leads.filter(l => l.status === 'exported').length;
   const junkCount = leads.filter(l => l.status === 'junk').length;
+
+  // Segment counts
+  const segmentCounts: Record<string, number> = {};
+  leads.forEach(l => {
+    const seg = l.data?.segment;
+    if (seg) segmentCounts[seg] = (segmentCounts[seg] || 0) + 1;
+  });
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -656,6 +702,49 @@ export default function LeadsPage() {
             </div>
           </div>
 
+          {/* Segment Filter Row */}
+          {Object.keys(segmentCounts).length > 0 && (
+            <div className="flex items-center gap-2 px-1">
+              <span className="text-[9px] font-bold text-silver uppercase tracking-wider shrink-0">Segment</span>
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <button
+                  onClick={() => setActiveSegment('all')}
+                  className={cn(
+                    "px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all border",
+                    activeSegment === 'all'
+                      ? "bg-foreground text-background border-foreground"
+                      : "text-silver border-border-default hover:text-foreground hover:border-border-hover"
+                  )}
+                >
+                  All
+                </button>
+                {(
+                  [
+                    { id: 'vip', label: 'VIP', color: 'amber' },
+                    { id: 'at_risk', label: 'At-Risk', color: 'red' },
+                    { id: 'new', label: 'New', color: 'blue' },
+                    { id: 'loyal', label: 'Loyal', color: 'emerald' },
+                    { id: 'champion', label: 'Champion', color: 'purple' },
+                    { id: 'prospect', label: 'Prospect', color: 'sky' },
+                  ] as const
+                ).filter(s => segmentCounts[s.id] > 0).map((s) => (
+                  <button
+                    key={s.id}
+                    onClick={() => setActiveSegment(activeSegment === s.id ? 'all' : s.id)}
+                    className={cn(
+                      "px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all border",
+                      activeSegment === s.id
+                        ? `bg-${s.color}-500/15 border-${s.color}-500/30 text-${s.color}-500`
+                        : "text-silver border-border-default hover:text-foreground hover:border-border-hover"
+                    )}
+                  >
+                    {s.label} ({segmentCounts[s.id]})
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Leads List / Table */}
           {loading ? (
             <div className="space-y-2">
@@ -735,6 +824,21 @@ export default function LeadsPage() {
                               <span className="w-1.5 h-1.5 rounded-full bg-apple-blue shrink-0 animate-pulse" title="New Lead" />
                             )}
 
+                            {/* Segment Badge */}
+                            {lead.data?.segment && (
+                              <span className={cn(
+                                "text-[8px] font-extrabold uppercase px-1.5 py-0.5 rounded tracking-wider border",
+                                lead.data.segment === 'vip' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
+                                lead.data.segment === 'at_risk' ? "bg-red-500/10 text-red-500 border-red-500/20" :
+                                lead.data.segment === 'new' ? "bg-blue-500/10 text-blue-500 border-blue-500/20" :
+                                lead.data.segment === 'loyal' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
+                                lead.data.segment === 'champion' ? "bg-purple-500/10 text-purple-500 border-purple-500/20" :
+                                "bg-sky-500/10 text-sky-500 border-sky-500/20"
+                              )}>
+                                {lead.data.segment === 'at_risk' ? 'At-Risk' : lead.data.segment}
+                              </span>
+                            )}
+
                             {/* Source Badge */}
                             <span className="text-[8px] font-extrabold uppercase bg-bg-active text-silver px-1.5 py-0.5 rounded tracking-wider">
                               {lead.source || 'Web Chat'}
@@ -783,14 +887,30 @@ export default function LeadsPage() {
                           <button
                             onClick={() => handleScoreLead(lead._id)}
                             disabled={scoringLead === lead._id}
-                            className="p-1.5 text-silver hover:text-amber-500 hover:bg-amber-500/10 rounded-lg transition-all disabled:opacity-50"
-                            title="Score Lead"
+                            className="flex items-center gap-1 px-2 py-1 text-[9px] font-bold uppercase text-silver hover:text-amber-500 hover:bg-amber-500/10 rounded-lg transition-all disabled:opacity-50 border border-border-default hover:border-amber-500/20"
                           >
                             {scoringLead === lead._id ? (
-                              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                              <RefreshCw className="w-3 h-3 animate-spin" />
                             ) : (
-                              <Flame className="w-3.5 h-3.5" />
+                              <Flame className="w-3 h-3" />
                             )}
+                            {scoringLead === lead._id ? 'Scoring...' : 'Score'}
+                          </button>
+                        )}
+
+                        {/* Segment Button */}
+                        {!lead.data?.segment && (
+                          <button
+                            onClick={() => handleSegmentLead(lead._id)}
+                            disabled={segmentingLead === lead._id}
+                            className="flex items-center gap-1 px-2 py-1 text-[9px] font-bold uppercase text-silver hover:text-purple-500 hover:bg-purple-500/10 rounded-lg transition-all disabled:opacity-50 border border-border-default hover:border-purple-500/20"
+                          >
+                            {segmentingLead === lead._id ? (
+                              <RefreshCw className="w-3 h-3 animate-spin" />
+                            ) : (
+                              <Filter className="w-3 h-3" />
+                            )}
+                            {segmentingLead === lead._id ? 'Segmenting...' : 'Segment'}
                           </button>
                         )}
 
@@ -1028,6 +1148,7 @@ export default function LeadsPage() {
                         status_change: '🔄',
                         notes_updated: '📝',
                         scored: '🔥',
+                        segmented: '🏷️',
                       };
 
                       const actionColors: Record<string, string> = {
@@ -1035,6 +1156,7 @@ export default function LeadsPage() {
                         status_change: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
                         notes_updated: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
                         scored: 'bg-red-500/10 text-red-500 border-red-500/20',
+                        segmented: 'bg-violet-500/10 text-violet-500 border-violet-500/20',
                       };
 
                       if (events.length === 0) {
@@ -1071,6 +1193,75 @@ export default function LeadsPage() {
                     })()}
                   </div>
                 </div>
+
+                {/* AI Segment */}
+                {selectedLead.data?.segment ? (
+                  <div className="space-y-2">
+                    <h4 className="text-[10px] font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
+                      <Filter className="w-3 h-3 text-purple-500" />
+                      Dynamic Segment
+                    </h4>
+                    <div className="bg-bg-surface border border-border-default rounded-xl p-4 space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className={cn(
+                          "text-2xl font-bold",
+                          selectedLead.data.segment === 'vip' ? "text-amber-500" :
+                          selectedLead.data.segment === 'at_risk' ? "text-red-500" :
+                          selectedLead.data.segment === 'new' ? "text-blue-500" :
+                          selectedLead.data.segment === 'loyal' ? "text-emerald-500" :
+                          selectedLead.data.segment === 'champion' ? "text-purple-500" :
+                          "text-sky-500"
+                        )}>
+                          {selectedLead.data.segment === 'at_risk' ? 'At-Risk' : selectedLead.data.segment.charAt(0).toUpperCase() + selectedLead.data.segment.slice(1)}
+                        </div>
+                        {selectedLead.data.segmentConfidence && (
+                          <div>
+                            <p className="text-[10px] text-silver">Confidence</p>
+                            <p className="text-xs font-bold text-foreground">{selectedLead.data.segmentConfidence}%</p>
+                          </div>
+                        )}
+                      </div>
+                      {selectedLead.data.segmentReasons?.length > 0 && (
+                        <div className="space-y-1.5">
+                          <p className="text-[9px] font-bold text-silver uppercase">Segmentation Reasons</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {selectedLead.data.segmentReasons.map((reason: string, idx: number) => (
+                              <span key={idx} className="text-[10px] px-2 py-0.5 bg-bg-elevated border border-border-default rounded text-silver">
+                                {reason}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {selectedLead.data.segmentNextAction && (
+                        <div className="pt-3 border-t border-border-default">
+                          <p className="text-[9px] font-bold text-silver uppercase mb-1">Recommended Next Action</p>
+                          <p className="text-xs text-foreground font-sans">{selectedLead.data.segmentNextAction}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => handleSegmentLead(selectedLead._id)}
+                      disabled={segmentingLead === selectedLead._id}
+                      className="w-full py-3 bg-purple-500/10 border border-purple-500/20 text-purple-500 rounded-xl text-xs font-bold hover:bg-purple-500/20 transition-all flex items-center justify-center gap-2"
+                    >
+                      {segmentingLead === selectedLead._id ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          Analyzing Segment...
+                        </>
+                      ) : (
+                        <>
+                          <Filter className="w-3.5 h-3.5" />
+                          Generate AI Segment
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
 
                 {/* Intent Summary */}
                 <div className="space-y-2">
