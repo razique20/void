@@ -29,7 +29,8 @@ import {  Menu,
   Compass,
   Route,
   DollarSign,
-  FileText
+  FileText,
+  Tags
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -150,6 +151,7 @@ export default function Navbar() {
         { label: 'Customer Journey', href: '/dashboard/journey', icon: Route, locked: !hasFeature('lead_capture') },
         { label: 'Invoices', href: '/dashboard/invoices', icon: FileText, locked: !hasFeature('lead_capture') },
         { label: 'Revenue Analytics', href: '/dashboard/analytics/revenue', icon: DollarSign, locked: !hasFeature('lead_capture') },
+        { label: 'Topic Trends', href: '/dashboard/analytics/topics', icon: Tags, locked: !hasFeature('lead_capture') },
         { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
         // Only show Email Hub when enabled globally
         ...(isEmailHubEnabled ? [{ label: 'AI Email Hub', href: '/dashboard/email', icon: Mail, locked: false }] : []),
