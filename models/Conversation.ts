@@ -12,6 +12,7 @@ const ConversationSchema = new Schema({
       createdAt: { type: Date, default: Date.now },
     },
   ],
+  summary: { type: String }, // AI-generated conversation summary for handoff
 }, { timestamps: true });
 
 // Auto-delete conversations after 30 days of inactivity

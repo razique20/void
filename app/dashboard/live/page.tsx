@@ -71,6 +71,8 @@ export default function LiveChatPage() {
   const [editNameValue, setEditNameValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'ai' | 'takeover'>('all');
+  const [generatingSummary, setGeneratingSummary] = useState(false);
+  const [conversationSummary, setConversationSummary] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalConversations, setTotalConversations] = useState(0);
@@ -131,6 +133,8 @@ export default function LiveChatPage() {
     if (selectedChat) {
       setEditNameValue(selectedChat.displayName || '');
       setIsEditingName(false);
+      // Load existing summary
+      setConversationSummary(selectedChat.summary || null);
     }
   }, [selectedChat?._id]);
 
@@ -227,6 +231,31 @@ export default function LiveChatPage() {
       showToast('Failed to send message', 'error');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGenerateSummary = async () => {
+    if (!selectedChat) return;
+    setGeneratingSummary(true);
+    try {
+      const res = await fetch(`/api/conversations/${selectedChat._id}/summary`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setConversationSummary(data.summary);
+        // Update selectedChat to persist summary in list
+        setSelectedChat({ ...selectedChat, summary: data.summary });
+        showToast('Conversation summary generated');
+      } else {
+        const err = await res.json();
+        showToast(err.error || 'Failed to generate summary', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Failed to generate summary', 'error');
+    } finally {
+      setGeneratingSummary(false);
     }
   };
 
@@ -846,6 +875,54 @@ export default function LiveChatPage() {
                             </p>
                           )}
                         </div>
+                      </div>
+
+                      {/* AI Summary */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h5 className="text-[9px] font-bold text-silver uppercase tracking-wider flex items-center gap-1.5">
+                            <BookOpen className="w-3 h-3 text-emerald-500" />
+                            AI Conversation Summary
+                          </h5>
+                          <button
+                            onClick={handleGenerateSummary}
+                            disabled={generatingSummary}
+                            className={cn(
+                              "px-2.5 py-1 rounded-lg text-[9px] font-bold transition-all border",
+                              generatingSummary
+                                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+                                : "bg-emerald-500/10 border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20"
+                            )}
+                          >
+                            {generatingSummary ? (
+                              <span className="flex items-center gap-1">
+                                <Loader2 className="w-2.5 h-2.5 animate-spin" /> Generating...
+                              </span>
+                            ) : conversationSummary ? 'Regenerate' : 'Summarize'}
+                          </button>
+                        </div>
+                        {conversationSummary ? (
+                          <div className="p-4 bg-bg-surface border border-border-default rounded-2xl">
+                            <div className="text-xs text-foreground/80 leading-relaxed font-sans whitespace-pre-wrap prose prose-xs max-w-none">
+                              {conversationSummary}
+                            </div>
+                            <button
+                              onClick={() => copyToClipboard(conversationSummary)}
+                              className="mt-3 flex items-center gap-1.5 px-2.5 py-1 bg-bg-elevated border border-border-default rounded-lg text-[9px] font-bold text-silver hover:text-foreground transition-all"
+                            >
+                              <Copy className="w-2.5 h-2.5" /> Copy Summary
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="p-4 bg-bg-surface border border-border-default border-dashed rounded-2xl text-center">
+                            <p className="text-[10px] text-silver/60 italic">
+                              {generatingSummary
+                                ? 'Analyzing conversation and generating summary...'
+                                : 'Generate a summary to hand off this conversation to another agent or human.'
+                              }
+                            </p>
+                          </div>
+                        )}
                       </div>
 
                       {/* Extracted Facts */}

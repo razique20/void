@@ -67,6 +67,13 @@ export default function LeadsPage() {
   const [segmentingLead, setSegmentingLead] = useState<string | null>(null);
   const [deal, setDeal] = useState<any>(null);
   const [analyzingPipeline, setAnalyzingPipeline] = useState(false);
+  const [followUps, setFollowUps] = useState<any[]>([]);
+  const [schedulingFollowUp, setSchedulingFollowUp] = useState(false);
+  const [showFollowUpForm, setShowFollowUpForm] = useState(false);
+  const [followUpMessage, setFollowUpMessage] = useState('');
+  const [followUpChannel, setFollowUpChannel] = useState('whatsapp');
+  const [followUpDate, setFollowUpDate] = useState('');
+  const [aiSuggestingFollowUp, setAiSuggestingFollowUp] = useState(false);
   const { showToast, Toast } = useToast();
 
   useEffect(() => {
@@ -385,6 +392,121 @@ export default function LeadsPage() {
     } catch (err) {
       console.error(err);
       showToast('Failed to update pipeline', 'error');
+    }
+  };
+
+  const fetchFollowUps = async (leadId: string) => {
+    try {
+      const res = await fetch(`/api/leads/follow-ups?leadId=${leadId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setFollowUps(data.followUps || []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch follow-ups', err);
+    }
+  };
+
+  const handleScheduleFollowUp = async () => {
+    if (!selectedLead || !followUpMessage.trim() || !followUpDate) return;
+    setSchedulingFollowUp(true);
+    try {
+      const res = await fetch('/api/leads/follow-ups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          leadId: selectedLead._id,
+          scheduledFor: new Date(followUpDate).toISOString(),
+          channel: followUpChannel,
+          message: followUpMessage,
+        })
+      });
+      if (res.ok) {
+        showToast('Follow-up scheduled');
+        setShowFollowUpForm(false);
+        setFollowUpMessage('');
+        setFollowUpDate('');
+        fetchFollowUps(selectedLead._id);
+        // Log activity on lead
+        setLeads(prev => prev.map(l => l._id === selectedLead._id ? {
+          ...l,
+          activityLog: [...(l.activityLog || []), {
+            action: 'follow_up_scheduled',
+            detail: `Follow-up scheduled via ${followUpChannel} for ${new Date(followUpDate).toLocaleDateString()}`,
+            timestamp: new Date().toISOString(),
+          }]
+        } : l));
+      } else {
+        showToast('Failed to schedule follow-up', 'error');
+      }
+    } catch {
+      showToast('Failed to schedule follow-up', 'error');
+    } finally {
+      setSchedulingFollowUp(false);
+    }
+  };
+
+  const handleAISuggestFollowUp = async () => {
+    if (!selectedLead) return;
+    setAiSuggestingFollowUp(true);
+    try {
+      const res = await fetch('/api/leads/follow-ups', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ leadId: selectedLead._id, aiSuggest: true })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.suggestion) {
+          setFollowUpMessage(data.suggestion.message || '');
+          setFollowUpChannel(data.suggestion.channel || 'whatsapp');
+          if (data.suggestion.scheduledFor) {
+            const d = new Date(data.suggestion.scheduledFor);
+            setFollowUpDate(d.toISOString().slice(0, 16));
+          }
+          setShowFollowUpForm(true);
+          showToast(`AI suggested: ${data.suggestion.reason || 'Optimal timing found'}`);
+        }
+        fetchFollowUps(selectedLead._id);
+      } else {
+        showToast('AI suggestion failed', 'error');
+      }
+    } catch {
+      showToast('AI suggestion failed', 'error');
+    } finally {
+      setAiSuggestingFollowUp(false);
+    }
+  };
+
+  const handleSnoozeFollowUp = async (id: string, minutes: number) => {
+    try {
+      const res = await fetch('/api/leads/follow-ups', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'snoozed', snoozeMinutes: minutes })
+      });
+      if (res.ok) {
+        showToast(`Follow-up snoozed for ${minutes} minutes`);
+        if (selectedLead) fetchFollowUps(selectedLead._id);
+      }
+    } catch {
+      showToast('Failed to snooze', 'error');
+    }
+  };
+
+  const handleCancelFollowUp = async (id: string) => {
+    try {
+      const res = await fetch('/api/leads/follow-ups', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: 'cancelled' })
+      });
+      if (res.ok) {
+        showToast('Follow-up cancelled');
+        if (selectedLead) fetchFollowUps(selectedLead._id);
+      }
+    } catch {
+      showToast('Failed to cancel', 'error');
     }
   };
 
@@ -889,7 +1011,7 @@ export default function LeadsPage() {
                       layout
                       variants={itemVariants}
                       key={lead._id}
-                      onClick={() => { setSelectedLead(lead); setNotes(lead.data?.manual_notes || ''); setDeal(null); fetchDeal(lead._id); }}
+                      onClick={() => { setSelectedLead(lead); setNotes(lead.data?.manual_notes || ''); setDeal(null); fetchDeal(lead._id); fetchFollowUps(lead._id); }}
                       className="group bg-bg-subtle hover:bg-bg-elevated border border-border-default hover:border-border-hover dark:hover:border-white/[0.1] rounded-xl px-4 py-3 transition-all duration-200 flex items-center gap-3 cursor-pointer"
                     >
                       {/* Selection Checkbox */}
@@ -1599,6 +1721,138 @@ export default function LeadsPage() {
                     </button>
                   </div>
                 )}
+
+                {/* Smart Follow-Up Scheduler */}
+                <div className="space-y-2">
+                  <h4 className="text-[10px] font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
+                    <Clock className="w-3 h-3 text-emerald-500" />
+                    Smart Follow-Ups
+                  </h4>
+                  <div className="bg-bg-surface border border-border-default rounded-xl p-4 space-y-3">
+                    {/* AI Suggest Button */}
+                    <button
+                      onClick={handleAISuggestFollowUp}
+                      disabled={aiSuggestingFollowUp}
+                      className={cn(
+                        "w-full py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2",
+                        aiSuggestingFollowUp
+                          ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-500"
+                          : "bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20"
+                      )}
+                    >
+                      {aiSuggestingFollowUp ? (
+                        <><RefreshCw className="w-3.5 h-3.5 animate-spin" /> Analyzing optimal timing...</>
+                      ) : (
+                        <><Zap className="w-3.5 h-3.5" /> AI Suggest Follow-Up</>
+                      )}
+                    </button>
+
+                    {/* Manual Schedule Toggle */}
+                    <button
+                      onClick={() => setShowFollowUpForm(!showFollowUpForm)}
+                      className="w-full py-2.5 rounded-xl text-xs font-bold bg-bg-elevated border border-border-default text-silver hover:text-foreground transition-all flex items-center justify-center gap-2"
+                    >
+                      <Plus className="w-3.5 h-3.5" /> Manual Follow-Up
+                    </button>
+
+                    {/* Follow-Up Form */}
+                    {showFollowUpForm && (
+                      <div className="space-y-3 pt-2 border-t border-border-default">
+                        <div className="space-y-1.5">
+                          <label className="text-[9px] font-bold text-silver uppercase">Channel</label>
+                          <div className="flex gap-1.5">
+                            {['whatsapp', 'email', 'web', 'telegram'].map(ch => (
+                              <button
+                                key={ch}
+                                onClick={() => setFollowUpChannel(ch)}
+                                className={cn(
+                                  "px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all capitalize",
+                                  followUpChannel === ch
+                                    ? "bg-foreground text-background border-foreground"
+                                    : "bg-bg-elevated border-border-default text-silver hover:text-foreground"
+                                )}
+                              >
+                                {ch}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[9px] font-bold text-silver uppercase">Schedule For</label>
+                          <input
+                            type="datetime-local"
+                            value={followUpDate}
+                            onChange={(e) => setFollowUpDate(e.target.value)}
+                            className="w-full bg-bg-elevated border border-border-strong rounded-lg px-3 py-2 text-xs text-foreground focus:outline-none focus:border-apple-blue/40"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[9px] font-bold text-silver uppercase">Message</label>
+                          <textarea
+                            rows={3}
+                            value={followUpMessage}
+                            onChange={(e) => setFollowUpMessage(e.target.value)}
+                            placeholder="Follow-up message..."
+                            className="w-full bg-bg-elevated border border-border-strong rounded-lg p-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 resize-none"
+                          />
+                        </div>
+                        <button
+                          onClick={handleScheduleFollowUp}
+                          disabled={schedulingFollowUp || !followUpMessage.trim() || !followUpDate}
+                          className="w-full py-2.5 bg-foreground text-background rounded-xl text-xs font-bold hover:opacity-90 transition-all disabled:opacity-50"
+                        >
+                          {schedulingFollowUp ? 'Scheduling...' : 'Schedule Follow-Up'}
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Existing Follow-Ups */}
+                    {followUps.length > 0 && (
+                      <div className="space-y-1.5 pt-2 border-t border-border-default">
+                        <p className="text-[9px] font-bold text-silver uppercase">Scheduled ({followUps.filter(f => f.status === 'pending' || f.status === 'snoozed').length})</p>
+                        <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                          {followUps.slice(0, 5).map((fu: any) => (
+                            <div key={fu._id} className="flex items-center gap-2 p-2.5 bg-bg-elevated border border-border-default rounded-lg">
+                              <div className={cn(
+                                "w-1.5 h-1.5 rounded-full shrink-0",
+                                fu.status === 'sent' ? "bg-emerald-500" :
+                                fu.status === 'pending' ? "bg-apple-blue" :
+                                fu.status === 'snoozed' ? "bg-amber-500" :
+                                fu.status === 'cancelled' ? "bg-silver/40" : "bg-red-500"
+                              )} />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[10px] text-foreground font-semibold truncate">{fu.message?.substring(0, 50)}...</p>
+                                <p className="text-[9px] text-silver">
+                                  {new Date(fu.scheduledFor).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                  <span className="ml-1.5 uppercase font-bold">{fu.channel}</span>
+                                  {fu.aiSuggested && <span className="ml-1.5 text-emerald-500">AI</span>}
+                                </p>
+                              </div>
+                              {fu.status === 'pending' && (
+                                <div className="flex items-center gap-1 shrink-0">
+                                  <button
+                                    onClick={() => handleSnoozeFollowUp(fu._id, 60)}
+                                    className="p-1 text-silver hover:text-amber-500 hover:bg-amber-500/10 rounded transition-all"
+                                    title="Snooze 1 hour"
+                                  >
+                                    <Clock className="w-3 h-3" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleCancelFollowUp(fu._id)}
+                                    className="p-1 text-silver hover:text-red-500 hover:bg-red-500/10 rounded transition-all"
+                                    title="Cancel"
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 {/* Manual Notes Override */}
                 <div className="space-y-2">
