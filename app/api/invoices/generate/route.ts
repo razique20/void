@@ -104,9 +104,14 @@ Rules:
     const taxAmount = subtotal * ((invoiceData.taxRate || 0) / 100);
     const total = subtotal + taxAmount;
 
+    // Generate invoice number (pre-save hook is bypassed by create)
+    const count = await Invoice.countDocuments({ userId });
+    const invoiceNumber = `INV-${String(count + 1).padStart(5, '0')}`;
+
     // Create invoice in DB
     const invoice = await Invoice.create({
       userId,
+      invoiceNumber,
       channel: channel || 'web',
       title: invoiceData.title,
       description: invoiceData.description,

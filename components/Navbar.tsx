@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { UserButton, Show } from '@clerk/nextjs';
-import { 
-  Menu, 
-  X, 
+import {  Menu,
+  X,
   ChevronDown,
   ShoppingBag,
   CreditCard,
@@ -29,7 +28,8 @@ import {
   User,
   Compass,
   Route,
-  DollarSign
+  DollarSign,
+  FileText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -148,6 +148,7 @@ export default function Navbar() {
         // Always show Leads CRM link; locked state is handled by hasFeature
         { label: 'Leads CRM', href: '/dashboard/leads', icon: Database, locked: !hasFeature('lead_capture') },
         { label: 'Customer Journey', href: '/dashboard/journey', icon: Route, locked: !hasFeature('lead_capture') },
+        { label: 'Invoices', href: '/dashboard/invoices', icon: FileText, locked: !hasFeature('lead_capture') },
         { label: 'Revenue Analytics', href: '/dashboard/analytics/revenue', icon: DollarSign, locked: !hasFeature('lead_capture') },
         { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
         // Only show Email Hub when enabled globally

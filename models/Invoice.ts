@@ -58,13 +58,12 @@ const InvoiceSchema = new Schema({
   
 }, { timestamps: true });
 
-// Auto-generate invoice number
-InvoiceSchema.pre('save', async function(this: any, next: any) {
+// Auto-generate invoice number (fallback for direct .save() calls)
+InvoiceSchema.pre('save', async function(this: any) {
   if (!this.invoiceNumber) {
     const count = await Invoice.countDocuments({ userId: this.userId });
     this.invoiceNumber = `INV-${String(count + 1).padStart(5, '0')}`;
   }
-  next();
 });
 
 const Invoice = models.Invoice || model('Invoice', InvoiceSchema);

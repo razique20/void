@@ -74,9 +74,14 @@ export async function POST(req: Request) {
     const taxAmount = subtotal * ((taxRate || 0) / 100);
     const total = subtotal + taxAmount;
 
+    // Generate invoice number (pre-save hook is bypassed by create)
+    const count = await Invoice.countDocuments({ userId });
+    const invoiceNumber = `INV-${String(count + 1).padStart(5, '0')}`;
+
     // Create invoice in DB
     const invoice = await Invoice.create({
       userId,
+      invoiceNumber,
       leadId,
       workerId,
       channel,

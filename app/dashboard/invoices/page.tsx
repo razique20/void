@@ -99,6 +99,8 @@ export default function InvoicesPage() {
     }
   }, [statusFilter, loadingSub]);
 
+  const [creating, setCreating] = useState(false);
+
   const handleCreateInvoice = async () => {
     try {
       const items = newInvoice.items
@@ -113,6 +115,7 @@ export default function InvoicesPage() {
         return;
       }
 
+      setCreating(true);
       const res = await fetch('/api/invoices', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -132,9 +135,14 @@ export default function InvoicesPage() {
         setShowCreateModal(false);
         fetchInvoices(page);
         resetForm();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        showToast(data.error || 'Failed to create invoice', 'error');
       }
     } catch (err) {
       showToast('Failed to create invoice', 'error');
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -586,39 +594,47 @@ export default function InvoicesPage() {
                 <div className="border-t border-border-default pt-4">
                   <label className="text-[10px] font-bold text-silver uppercase tracking-wider block mb-2">Line Items</label>
                   {newInvoice.items.map((item, idx) => (
-                    <div key={idx} className="flex gap-2 mb-2">
-                      <input
-                        type="text"
-                        value={item.name}
-                        onChange={(e) => {
-                          const items = [...newInvoice.items];
-                          items[idx].name = e.target.value;
-                          setNewInvoice({ ...newInvoice, items });
-                        }}
-                        placeholder="Item name"
-                        className="flex-1 bg-bg-elevated border border-border-default rounded-lg px-3 py-2 text-xs text-foreground focus:outline-none"
-                      />
-                      <input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) => {
-                          const items = [...newInvoice.items];
-                          items[idx].quantity = parseInt(e.target.value) || 1;
-                          setNewInvoice({ ...newInvoice, items });
-                        }}
-                        className="w-16 bg-bg-elevated border border-border-default rounded-lg px-3 py-2 text-xs text-foreground focus:outline-none"
-                      />
-                      <input
-                        type="number"
-                        value={item.unitPrice}
-                        onChange={(e) => {
-                          const items = [...newInvoice.items];
-                          items[idx].unitPrice = parseFloat(e.target.value) || 0;
-                          setNewInvoice({ ...newInvoice, items });
-                        }}
-                        placeholder="Price"
-                        className="w-24 bg-bg-elevated border border-border-default rounded-lg px-3 py-2 text-xs text-foreground focus:outline-none"
-                      />
+                    <div key={idx} className="mb-3">
+                      <div className="flex gap-2 mb-1">
+                        <input
+                          type="text"
+                          value={item.name}
+                          onChange={(e) => {
+                            const items = [...newInvoice.items];
+                            items[idx].name = e.target.value;
+                            setNewInvoice({ ...newInvoice, items });
+                          }}
+                          placeholder="e.g. Website Design, Logo, Consulting"
+                          className="flex-1 bg-bg-elevated border border-border-default rounded-lg px-3 py-2 text-xs text-foreground focus:outline-none"
+                        />
+                        <input
+                          type="number"
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const items = [...newInvoice.items];
+                            items[idx].quantity = parseInt(e.target.value) || 1;
+                            setNewInvoice({ ...newInvoice, items });
+                          }}
+                          placeholder="Qty"
+                          className="w-16 bg-bg-elevated border border-border-default rounded-lg px-3 py-2 text-xs text-foreground focus:outline-none"
+                        />
+                        <input
+                          type="number"
+                          value={item.unitPrice}
+                          onChange={(e) => {
+                            const items = [...newInvoice.items];
+                            items[idx].unitPrice = parseFloat(e.target.value) || 0;
+                            setNewInvoice({ ...newInvoice, items });
+                          }}
+                          placeholder="$0.00"
+                          className="w-24 bg-bg-elevated border border-border-default rounded-lg px-3 py-2 text-xs text-foreground focus:outline-none"
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <span className="flex-1 text-[9px] text-silver font-medium">Service or product name</span>
+                        <span className="w-16 text-[9px] text-silver font-medium text-center">Quantity</span>
+                        <span className="w-24 text-[9px] text-silver font-medium text-right">Unit price</span>
+                      </div>
                     </div>
                   ))}
                   <button
@@ -678,11 +694,19 @@ export default function InvoicesPage() {
                   Cancel
                 </button>
                 <button
+                  type="button"
                   onClick={handleCreateInvoice}
-                  disabled={!newInvoice.title}
-                  className="flex-1 px-4 py-2.5 bg-foreground text-background rounded-xl text-xs font-bold hover:opacity-90 disabled:opacity-50"
+                  disabled={!newInvoice.title || creating}
+                  className="flex-1 px-4 py-2.5 bg-foreground text-background rounded-xl text-xs font-bold hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  Create Invoice
+                  {creating ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    'Create Invoice'
+                  )}
                 </button>
               </div>
             </motion.div>
