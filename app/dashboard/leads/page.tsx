@@ -315,7 +315,7 @@ export default function LeadsPage() {
   const handleScoreLead = async (id: string) => {
     setScoringLead(id);
     try {
-      const res = await fetch('/api/leads/score', {
+      const res = await fetch('/api/leads/score-v2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ leadId: id })
@@ -324,9 +324,31 @@ export default function LeadsPage() {
         const data = await res.json();
         setLeads(prev => prev.map(l => l._id === id ? {
           ...l,
-          data: { ...l.data, heatScore: data.score, scoreTier: data.tier, scoreFactors: data.factors, scoreRecommendation: data.recommendation }
+          data: { 
+            ...l.data, 
+            heatScore: data.score, 
+            scoreTier: data.tier, 
+            scoreFactors: data.factors, 
+            scoreRecommendation: data.recommendation,
+            estimatedDealValue: data.estimatedDealValue,
+            timeToClose: data.timeToClose,
+            optimalFollowUp: data.optimalFollowUp,
+            dealConfidence: data.dealConfidence,
+          },
+          predictiveScore: {
+            heatScore: data.score,
+            tier: data.tier,
+            estimatedDealValue: data.estimatedDealValue,
+            timeToClose: data.timeToClose,
+            optimalFollowUp: data.optimalFollowUp,
+            dealConfidence: data.dealConfidence,
+            factors: data.factors,
+            recommendation: data.recommendation,
+            scoredAt: data.scoredAt,
+            modelVersion: data.modelVersion,
+          }
         } : l));
-        showToast(`Lead scored: ${data.score}/100 (${data.tier})`);
+        showToast(`Lead scored: ${data.score}/100 (${data.tier}) | Deal: $${data.estimatedDealValue} | Close: ${data.timeToClose}d`);
       } else {
         showToast('Failed to score lead', 'error');
       }
@@ -792,7 +814,7 @@ export default function LeadsPage() {
                       variants={itemVariants}
                       key={lead._id}
                       onClick={() => { setSelectedLead(lead); setNotes(lead.data?.manual_notes || ''); }}
-                      className="group bg-bg-subtle hover:bg-bg-elevated border border-border-default hover:border-border-hover dark:hover:border-white/[0.1] rounded-xl px-5 py-3.5 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 cursor-pointer"
+                      className="group bg-bg-subtle hover:bg-bg-elevated border border-border-default hover:border-border-hover dark:hover:border-white/[0.1] rounded-xl px-4 py-3 transition-all duration-200 flex items-center gap-3 cursor-pointer"
                     >
                       {/* Selection Checkbox */}
                       <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
@@ -808,71 +830,49 @@ export default function LeadsPage() {
                         </button>
                       </div>
 
-                      {/* Left: Contact Info */}
-                      <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                        <div className="w-9 h-9 bg-bg-elevated border border-border-strong rounded-lg flex items-center justify-center shrink-0 text-xs font-bold text-foreground group-hover:border-border-hover dark:group-hover:border-white/[0.12] transition-colors">
-                          {lead.contactInfo?.name ? lead.contactInfo.name.substring(0, 2).toUpperCase() : 'LD'}
-                        </div>
-
-                        <div className="min-w-0 flex-1 space-y-0.5">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-[13px] text-foreground group-hover:text-foreground transition-colors truncate">
-                              {lead.contactInfo?.name || 'Unnamed Lead'}
-                            </h3>
-                            
-                            {isNew && (
-                              <span className="w-1.5 h-1.5 rounded-full bg-apple-blue shrink-0 animate-pulse" title="New Lead" />
-                            )}
-
-                            {/* Segment Badge */}
-                            {lead.data?.segment && (
-                              <span className={cn(
-                                "text-[8px] font-extrabold uppercase px-1.5 py-0.5 rounded tracking-wider border",
-                                lead.data.segment === 'vip' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
-                                lead.data.segment === 'at_risk' ? "bg-red-500/10 text-red-500 border-red-500/20" :
-                                lead.data.segment === 'new' ? "bg-blue-500/10 text-blue-500 border-blue-500/20" :
-                                lead.data.segment === 'loyal' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
-                                lead.data.segment === 'champion' ? "bg-purple-500/10 text-purple-500 border-purple-500/20" :
-                                "bg-sky-500/10 text-sky-500 border-sky-500/20"
-                              )}>
-                                {lead.data.segment === 'at_risk' ? 'At-Risk' : lead.data.segment}
-                              </span>
-                            )}
-
-                            {/* Source Badge */}
-                            <span className="text-[8px] font-extrabold uppercase bg-bg-active text-silver px-1.5 py-0.5 rounded tracking-wider">
-                              {lead.source || 'Web Chat'}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-2 text-[10px] text-silver font-medium">
-                            {lead.contactInfo?.email && <span>{lead.contactInfo.email}</span>}
-                            {lead.contactInfo?.email && lead.contactInfo?.phone && <span>·</span>}
-                            {lead.contactInfo?.phone && <span>{lead.contactInfo.phone}</span>}
-                            <span>·</span>
-                            <span className="text-silver/60">via {lead.workerName}</span>
-                          </div>
-                        </div>
+                      {/* Avatar */}
+                      <div className="w-8 h-8 bg-bg-elevated border border-border-strong rounded-lg flex items-center justify-center shrink-0 text-[10px] font-bold text-foreground">
+                        {lead.contactInfo?.name ? lead.contactInfo.name.substring(0, 2).toUpperCase() : 'LD'}
                       </div>
 
-                      {/* Center: Intent Summary */}
-                      <div className="hidden lg:block min-w-0 flex-1 px-4">
-                        <p className="text-xs text-foreground/80 font-sans truncate">
-                          {lead.interest || 'No intent notes captured'}
-                        </p>
-                        {lead.data?.manual_notes && (
-                          <span className="text-[9px] font-bold text-purple-500 uppercase tracking-wider flex items-center gap-1 mt-0.5">
-                            Note Attached
+                      {/* Name + Source + Intent (single line) */}
+                      <div className="flex-1 min-w-0 flex items-center gap-2">
+                        <span className="font-semibold text-[13px] text-foreground truncate">
+                          {lead.contactInfo?.name || 'Unnamed Lead'}
+                        </span>
+                        
+                        {isNew && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-apple-blue shrink-0 animate-pulse" />
+                        )}
+
+                        <span className="text-[8px] font-extrabold uppercase bg-bg-active text-silver px-1.5 py-0.5 rounded tracking-wider shrink-0">
+                          {lead.source || 'Web Chat'}
+                        </span>
+
+                        {lead.data?.segment && (
+                          <span className={cn(
+                            "text-[8px] font-extrabold uppercase px-1.5 py-0.5 rounded tracking-wider border shrink-0",
+                            lead.data.segment === 'vip' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
+                            lead.data.segment === 'at_risk' ? "bg-red-500/10 text-red-500 border-red-500/20" :
+                            lead.data.segment === 'loyal' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
+                            lead.data.segment === 'champion' ? "bg-purple-500/10 text-purple-500 border-purple-500/20" :
+                            "bg-blue-500/10 text-blue-500 border-blue-500/20"
+                          )}>
+                            {lead.data.segment === 'at_risk' ? 'At-Risk' : lead.data.segment}
                           </span>
                         )}
+
+                        <span className="text-xs text-silver/70 truncate hidden sm:inline">
+                          {(lead.interest || 'No intent captured').replace(/\{"note":"|"\}/g, '').substring(0, 40)}
+                        </span>
                       </div>
 
-                      {/* Right: Score, Status & Date Actions */}
-                      <div className="flex items-center gap-3 shrink-0 self-end md:self-center" onClick={(e) => e.stopPropagation()}>
-                        {/* Heat Score Badge */}
+                      {/* Right: Score (compact) + Status + Actions */}
+                      <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+                        {/* Score (compact pill) */}
                         {lead.data?.heatScore && (
                           <div className={cn(
-                            "flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold border",
+                            "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold border",
                             lead.data.scoreTier === 'hot' ? "bg-red-500/10 text-red-500 border-red-500/20" :
                             lead.data.scoreTier === 'warm' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
                             "bg-blue-500/10 text-blue-500 border-blue-500/20"
@@ -882,47 +882,11 @@ export default function LeadsPage() {
                           </div>
                         )}
 
-                        {/* Score Button */}
-                        {!lead.data?.heatScore && (
-                          <button
-                            onClick={() => handleScoreLead(lead._id)}
-                            disabled={scoringLead === lead._id}
-                            className="flex items-center gap-1 px-2 py-1 text-[9px] font-bold uppercase text-silver hover:text-amber-500 hover:bg-amber-500/10 rounded-lg transition-all disabled:opacity-50 border border-border-default hover:border-amber-500/20"
-                          >
-                            {scoringLead === lead._id ? (
-                              <RefreshCw className="w-3 h-3 animate-spin" />
-                            ) : (
-                              <Flame className="w-3 h-3" />
-                            )}
-                            {scoringLead === lead._id ? 'Scoring...' : 'Score'}
-                          </button>
-                        )}
-
-                        {/* Segment Button */}
-                        {!lead.data?.segment && (
-                          <button
-                            onClick={() => handleSegmentLead(lead._id)}
-                            disabled={segmentingLead === lead._id}
-                            className="flex items-center gap-1 px-2 py-1 text-[9px] font-bold uppercase text-silver hover:text-purple-500 hover:bg-purple-500/10 rounded-lg transition-all disabled:opacity-50 border border-border-default hover:border-purple-500/20"
-                          >
-                            {segmentingLead === lead._id ? (
-                              <RefreshCw className="w-3 h-3 animate-spin" />
-                            ) : (
-                              <Filter className="w-3 h-3" />
-                            )}
-                            {segmentingLead === lead._id ? 'Segmenting...' : 'Segment'}
-                          </button>
-                        )}
-
-                        <span className="text-[10px] text-silver/60 font-mono hidden sm:inline">
-                          {dateStr}
-                        </span>
-
                         <select
                           value={lead.status || 'new'}
                           onChange={(e) => handleUpdateStatus(lead._id, e.target.value)}
                           className={cn(
-                            "bg-bg-elevated border border-border-default rounded-lg text-[10px] font-bold uppercase py-1 px-2.5 focus:outline-none cursor-pointer appearance-none",
+                            "bg-bg-elevated border border-border-default rounded-lg text-[10px] font-bold uppercase py-1 px-2 focus:outline-none cursor-pointer appearance-none",
                             lead.status === 'exported' ? "text-emerald-500 border-emerald-500/20" : lead.status === 'junk' ? "text-red-500 border-red-500/20" : "text-apple-blue border-apple-blue/20"
                           )}
                         >
@@ -933,7 +897,7 @@ export default function LeadsPage() {
 
                         <button
                           onClick={() => handleDeleteLead(lead._id)}
-                          className="p-1.5 opacity-40 hover:opacity-100 text-silver hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+                          className="p-1.5 opacity-0 group-hover:opacity-100 text-silver hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
                           title="Delete Lead"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -1271,15 +1235,16 @@ export default function LeadsPage() {
                   </div>
                 </div>
 
-                {/* AI Heat Score */}
+                {/* AI Predictive Score v2.0 */}
                 {selectedLead.data?.heatScore && (
                   <div className="space-y-2">
                     <h4 className="text-[10px] font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
                       <Flame className="w-3 h-3 text-red-500" />
-                      Predictive Heat Score
+                      Predictive Score v2.0
                     </h4>
                     <div className="bg-bg-surface border border-border-default rounded-xl p-4">
-                      <div className="flex items-center gap-4 mb-3">
+                      {/* Main Score */}
+                      <div className="flex items-center gap-4 mb-4">
                         <div className={cn(
                           "text-3xl font-bold",
                           selectedLead.data.scoreTier === 'hot' ? "text-red-500" :
@@ -1292,6 +1257,66 @@ export default function LeadsPage() {
                           <p className="text-[10px] text-silver">out of 100</p>
                         </div>
                       </div>
+                      
+                      {/* Deal Predictions Grid */}
+                      <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="bg-bg-elevated border border-border-default rounded-lg p-3">
+                          <p className="text-[9px] font-bold text-silver uppercase mb-1">Est. Deal Value</p>
+                          <p className="text-lg font-bold text-emerald-500">
+                            ${(selectedLead.data.estimatedDealValue || 0).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="bg-bg-elevated border border-border-default rounded-lg p-3">
+                          <p className="text-[9px] font-bold text-silver uppercase mb-1">Time to Close</p>
+                          <p className="text-lg font-bold text-purple-500">
+                            {selectedLead.data.timeToClose || 0} days
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Follow-up Timing */}
+                      {selectedLead.data.optimalFollowUp && (
+                        <div className="bg-bg-elevated border border-border-default rounded-lg p-3 mb-4">
+                          <p className="text-[9px] font-bold text-silver uppercase mb-2">Optimal Follow-up</p>
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="w-3.5 h-3.5 text-apple-blue" />
+                              <span className="text-xs font-bold text-foreground">
+                                {selectedLead.data.optimalFollowUp.timing?.replace(/_/g, ' ')}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[9px] text-silver">via</span>
+                              <span className="text-xs font-bold text-apple-blue capitalize">
+                                {selectedLead.data.optimalFollowUp.channel}
+                              </span>
+                            </div>
+                          </div>
+                          {selectedLead.data.optimalFollowUp.reason && (
+                            <p className="text-[10px] text-silver mt-1.5">{selectedLead.data.optimalFollowUp.reason}</p>
+                          )}
+                        </div>
+                      )}
+                      
+                      {/* Confidence */}
+                      {selectedLead.data.dealConfidence > 0 && (
+                        <div className="flex items-center gap-2 mb-4">
+                          <p className="text-[9px] font-bold text-silver uppercase">Confidence</p>
+                          <div className="flex-1 h-2 bg-bg-elevated rounded-full overflow-hidden">
+                            <div 
+                              className={cn(
+                                "h-full rounded-full",
+                                selectedLead.data.dealConfidence >= 70 ? "bg-emerald-500" :
+                                selectedLead.data.dealConfidence >= 40 ? "bg-amber-500" : "bg-red-500"
+                              )}
+                              style={{ width: `${selectedLead.data.dealConfidence}%` }}
+                            />
+                          </div>
+                          <span className="text-xs font-bold text-foreground">{selectedLead.data.dealConfidence}%</span>
+                        </div>
+                      )}
+                      
+                      {/* Key Factors */}
                       {selectedLead.data.scoreFactors?.length > 0 && (
                         <div className="space-y-1.5">
                           <p className="text-[9px] font-bold text-silver uppercase">Key Factors</p>
@@ -1304,6 +1329,8 @@ export default function LeadsPage() {
                           </div>
                         </div>
                       )}
+                      
+                      {/* Recommendation */}
                       {selectedLead.data.scoreRecommendation && (
                         <div className="mt-3 pt-3 border-t border-border-default">
                           <p className="text-[9px] font-bold text-silver uppercase mb-1">Recommendation</p>

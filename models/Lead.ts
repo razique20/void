@@ -14,6 +14,25 @@ const LeadSchema = new Schema({
   sentiment: { type: String, enum: ['hot', 'warm', 'cold'], default: 'warm' },
   data: { type: Schema.Types.Mixed }, // Any additional captured info
   status: { type: String, enum: ['new', 'exported', 'junk'], default: 'new' },
+  
+  // Predictive Lead Scoring 2.0
+  predictiveScore: {
+    heatScore: { type: Number, min: 0, max: 100 },
+    tier: { type: String, enum: ['hot', 'warm', 'cold'] },
+    estimatedDealValue: { type: Number, min: 0 }, // Predicted deal value in USD
+    timeToClose: { type: Number, min: 0 }, // Estimated days to close
+    optimalFollowUp: {
+      timing: { type: String }, // e.g. 'immediate', 'within_24h', 'within_3_days', 'within_week'
+      reason: { type: String }, // Why this timing
+      channel: { type: String }, // Best channel to reach them
+    },
+    dealConfidence: { type: Number, min: 0, max: 100 }, // Confidence in predictions
+    factors: [{ type: String }], // Key influencing factors
+    recommendation: { type: String }, // AI recommendation
+    scoredAt: { type: Date },
+    modelVersion: { type: String, default: '2.0' },
+  },
+  
   activityLog: [{
     action: { type: String, required: true },
     detail: { type: String },
