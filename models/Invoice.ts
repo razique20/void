@@ -36,6 +36,7 @@ const InvoiceSchema = new Schema({
   stripePaymentLinkId: { type: String },
   stripePaymentLinkUrl: { type: String },
   paidAt: { type: Date },
+  paymentMethod: { type: String, enum: ['stripe', 'cash', 'card', 'transfer', 'other'], default: 'stripe' },
   
   // Customer Details (from lead or manual)
   customer: {

@@ -113,7 +113,7 @@ export async function PATCH(req: Request) {
 
     await connectDB();
 
-    const { id, status, createPaymentLink } = await req.json();
+    const { id, status, createPaymentLink, paymentMethod } = await req.json();
 
     if (!id) {
       return NextResponse.json({ error: 'Invoice ID required' }, { status: 400 });
@@ -157,6 +157,9 @@ export async function PATCH(req: Request) {
       invoice.status = status;
       if (status === 'paid') {
         invoice.paidAt = new Date();
+        if (paymentMethod) {
+          invoice.paymentMethod = paymentMethod;
+        }
       }
     }
 

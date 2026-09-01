@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   FileText, 
   Plus, 
@@ -191,6 +192,25 @@ export default function InvoicesPage() {
       }
     } catch (err) {
       showToast('Failed to create payment link', 'error');
+    }
+  };
+
+  const handleMarkAsPaid = async (invoiceId: string, method: string) => {
+    try {
+      const res = await fetch('/api/invoices', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: invoiceId, status: 'paid', paymentMethod: method }),
+      });
+
+      if (res.ok) {
+        showToast(`Invoice marked as paid via ${method}`);
+        fetchInvoices(page);
+        // Update selectedInvoice in-place
+        setSelectedInvoice((prev: any) => prev ? { ...prev, status: 'paid', paidAt: new Date().toISOString(), paymentMethod: method } : null);
+      }
+    } catch (err) {
+      showToast('Failed to mark as paid', 'error');
     }
   };
 
@@ -451,7 +471,7 @@ export default function InvoicesPage() {
                       <p className="text-[10px] text-silver">{new Date(invoice.issuedAt).toLocaleDateString()}</p>
                     </div>
                     <span className={cn("px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase border", STATUS_COLORS[invoice.status])}>
-                      {invoice.status}
+                      {invoice.status}{invoice.status === 'paid' && invoice.paymentMethod ? ` (${invoice.paymentMethod})` : ''}
                     </span>
                   </div>
                 </div>
@@ -714,10 +734,10 @@ export default function InvoicesPage() {
         )}
       </AnimatePresence>
 
-      {/* Invoice Detail Drawer */}
-      <AnimatePresence>
-        {selectedInvoice && (
-          <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm">
+      {/* Invoice Detail Drawer — portaled to body to escape main's z-10 stacking context */}
+      {selectedInvoice && createPortal(
+        <AnimatePresence>
+          <div className="fixed inset-0 z-[9999] flex justify-end bg-black/60 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -807,39 +827,77 @@ export default function InvoicesPage() {
                 )}
               </div>
 
-              <div className="p-4 border-t border-border-default flex gap-2">
-                <button
-                  onClick={() => downloadInvoicePDF(selectedInvoice)}
-                  className="flex-1 px-4 py-2.5 bg-bg-elevated border border-border-default rounded-xl text-xs font-bold text-silver hover:text-foreground flex items-center justify-center gap-2"
-                >
-                  <Download className="w-3.5 h-3.5" /> Download
-                </button>
-                <button
-                  onClick={() => handleCreatePaymentLink(selectedInvoice._id)}
-                  disabled={selectedInvoice.stripePaymentLinkUrl}
-                  className="flex-1 px-4 py-2.5 bg-blue-500 text-white rounded-xl text-xs font-bold hover:bg-blue-600 disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  {selectedInvoice.stripePaymentLinkUrl ? (
-                    <a href={selectedInvoice.stripePaymentLinkUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-                      <ExternalLink className="w-3.5 h-3.5" /> View Link
-                    </a>
-                  ) : (
-                    <>
-                      <CreditCard className="w-3.5 h-3.5" /> Create Payment Link
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => handleDeleteInvoice(selectedInvoice._id)}
-                  className="px-4 py-2.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl text-xs font-bold hover:bg-red-500/20"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+              <div className="p-4 border-t border-border-default space-y-3">
+                {/* Mark as Paid — only shown when not already paid */}
+                {selectedInvoice.status !== 'paid' && (
+                  <div className="space-y-2">
+                    <p className="text-[9px] font-bold text-silver uppercase tracking-wider">Mark as Paid</p>
+                    <div className="grid grid-cols-4 gap-1.5">
+                      {([
+                        { key: 'cash', label: 'Cash', icon: '$' },
+                        { key: 'card', label: 'Card', icon: '💳' },
+                        { key: 'transfer', label: 'Transfer', icon: '🏦' },
+                        { key: 'other', label: 'Other', icon: '✦' },
+                      ] as const).map(m => (
+                        <button
+                          key={m.key}
+                          onClick={() => handleMarkAsPaid(selectedInvoice._id, m.key)}
+                          className="flex flex-col items-center gap-1 py-2.5 px-1 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-600 dark:text-emerald-400 text-[10px] font-bold hover:bg-emerald-500/20 transition-all"
+                        >
+                          <span className="text-sm">{m.icon}</span>
+                          {m.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Paid info — shown when already paid */}
+                {selectedInvoice.status === 'paid' && (
+                  <div className="flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl">
+                    <Check className="w-4 h-4 text-emerald-500" />
+                    <span className="text-[10px] font-bold text-emerald-600">
+                      Paid{selectedInvoice.paymentMethod ? ` via ${selectedInvoice.paymentMethod.charAt(0).toUpperCase() + selectedInvoice.paymentMethod.slice(1)}` : ''}{selectedInvoice.paidAt ? ` on ${new Date(selectedInvoice.paidAt).toLocaleDateString()}` : ''}
+                    </span>
+                  </div>
+                )}
+
+                {/* Action buttons */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => downloadInvoicePDF(selectedInvoice)}
+                    className="flex-1 px-4 py-2.5 bg-bg-elevated border border-border-default rounded-xl text-xs font-bold text-silver hover:text-foreground flex items-center justify-center gap-2"
+                  >
+                    <Download className="w-3.5 h-3.5" /> Download
+                  </button>
+                  <button
+                    onClick={() => handleCreatePaymentLink(selectedInvoice._id)}
+                    disabled={selectedInvoice.stripePaymentLinkUrl}
+                    className="flex-1 px-4 py-2.5 bg-blue-500 text-white rounded-xl text-xs font-bold hover:bg-blue-600 disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {selectedInvoice.stripePaymentLinkUrl ? (
+                      <a href={selectedInvoice.stripePaymentLinkUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                        <ExternalLink className="w-3.5 h-3.5" /> View Link
+                      </a>
+                    ) : (
+                      <>
+                        <CreditCard className="w-3.5 h-3.5" /> Create Payment Link
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => handleDeleteInvoice(selectedInvoice._id)}
+                    className="px-4 py-2.5 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl text-xs font-bold hover:bg-red-500/20"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             </motion.div>
           </div>
-        )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }
