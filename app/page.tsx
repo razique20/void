@@ -164,7 +164,25 @@ export default function LandingPage() {
 
       <main className="flex-1 relative z-10">
         {/* Hero Section — Lifted-go split layout */}
-        <section className="relative pt-28 md:pt-36 pb-16 md:pb-24 px-5 sm:px-8 lg:px-12 bg-zinc-950 overflow-hidden">
+        <section
+          className="relative pt-28 md:pt-36 pb-16 md:pb-24 px-5 sm:px-8 lg:px-12 overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #0a0d12 0%, #0b1414 25%, #091a18 50%, #0d1f1a 75%, #0a1510 100%)',
+          }}
+        >
+          {/* Hero glow overlay — soft radial emerald light */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse 80% 60% at 70% 40%, rgba(16, 185, 129, 0.08) 0%, transparent 70%)',
+            }}
+          />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse 50% 50% at 20% 80%, rgba(52, 211, 153, 0.05) 0%, transparent 70%)',
+            }}
+          />
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
               {/* Left — Text content */}
@@ -322,13 +340,26 @@ export default function LandingPage() {
         {/* Trust Badges — Dark background */}
         <TrustBadges />
 
-        {/* Final CTA — Warm gradient */}
-        <section className="relative py-28 md:py-40 overflow-hidden">
-          {/* Multi-layer gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-teal-500 to-cyan-500" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/15 pointer-events-none" />
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-cyan-400/40 via-emerald-300/30 to-transparent blur-3xl rounded-full pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-teal-400/30 via-emerald-300/25 to-transparent blur-3xl rounded-full pointer-events-none" />
+        {/* Final CTA — Dark gradient */}
+        <section
+          className="relative py-28 md:py-40 overflow-hidden"
+          style={{
+            background: 'linear-gradient(135deg, #0a0d12 0%, #0b1414 25%, #091a18 50%, #0d1f1a 75%, #0a1510 100%)',
+          }}
+        >
+          {/* CTA glow overlay — soft radial emerald light */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse 80% 60% at 50% 50%, rgba(16, 185, 129, 0.10) 0%, transparent 70%)',
+            }}
+          />
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse 60% 50% at 30% 70%, rgba(52, 211, 153, 0.06) 0%, transparent 70%)',
+            }}
+          />
           <div className="max-w-4xl mx-auto px-5 sm:px-6 text-center relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
