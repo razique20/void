@@ -46,12 +46,22 @@ let cachedMounted = false; // survives SPA remounts so transitions stay enabled
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   
   const { sub, config, hasFeature } = useData();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mounted, setMounted] = useState(cachedMounted);
   const pathname = usePathname();
+
+  // Track scroll position for transparent navbar effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const isAdmin = pathname.startsWith('/admin');
   const publicPages = ['/', '/sign-in', '/sign-up', '/privacy', '/terms', '/dpa', '/docs', '/about', '/careers', '/contact', '/partners', '/changelog', '/pricing'];
@@ -220,7 +230,12 @@ export default function Navbar() {
   // RENDER OPTION A: Public Header (Landing Page or Auth flows)
   if (!isWorkspace) {
     return (
-      <nav style={{ viewTransitionName: 'site-public-nav' }} className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b border-white/[0.06] bg-black/60 backdrop-blur-xl shadow-[0_1px_0_rgba(16,185,129,0.08)]">
+      <nav style={{ viewTransitionName: 'site-public-nav' }} className={cn(
+        "fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5",
+        scrolled 
+          ? "bg-black/80 backdrop-blur-xl border-b border-white/[0.06] shadow-[0_1px_0_rgba(16,185,129,0.08)]"
+          : "bg-transparent border-b border-transparent"
+      )}>
         <div className="flex justify-between items-center px-2 md:px-4 max-w-7xl mx-auto">
           <Link href="/" className="group flex items-center">
             <Logo className="text-lg md:text-xl" />
