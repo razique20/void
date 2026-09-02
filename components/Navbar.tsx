@@ -51,7 +51,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const isAdmin = pathname.startsWith('/admin');
-  const publicPages = ['/', '/sign-in', '/sign-up', '/privacy', '/terms', '/dpa', '/docs'];
+  const publicPages = ['/', '/sign-in', '/sign-up', '/privacy', '/terms', '/dpa', '/docs', '/about', '/careers', '/contact', '/partners', '/changelog', '/pricing'];
   const isWorkspace = !publicPages.some(p => p === pathname) && !isAdmin;
 
   // Hydrate from localStorage + enable transitions after first paint

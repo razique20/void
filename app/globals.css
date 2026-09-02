@@ -147,6 +147,10 @@
   --font-sans: var(--font-plus-jakarta);
   --font-mono: var(--font-jetbrains-mono);
 
+  /* Accenture-inspired purple accent */
+  --color-accenture-purple: #6f0dd5;
+  --color-accenture-purple-light: #8b3de8;
+
   /* Semantic background tokens */
   --color-bg-subtle: var(--bg-subtle);
   --color-bg-subtle-alt: var(--bg-subtle-alt);
@@ -271,6 +275,14 @@ body {
 @utility marquee-mask {
   mask-image: linear-gradient(to right, transparent, white 15%, white 85%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, white 15%, white 85%, transparent);
+}
+
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* ============================================ */
