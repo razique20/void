@@ -18,28 +18,27 @@ const itemVariants: Variants = {
 
 export default function Page() {
   return (
-    <div className="flex min-h-screen bg-zinc-950">
-      {/* Left — Branding Panel */}
+    <div className="flex min-h-screen">
+      {/* Left — Branding Panel (Light) */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center p-12">
-        {/* Background effects — matching landing page hero */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950" />
-          <div className="absolute inset-0 animate-[pulse_8s_ease-in-out_infinite]" style={{
-            background: 'radial-gradient(ellipse 80% 60% at 70% 40%, rgba(16, 185, 129, 0.10) 0%, transparent 70%)'
-          }} />
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-emerald-500/[0.07] blur-[150px] rounded-full" />
-          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-emerald-400/[0.04] blur-[120px] rounded-full" />
-        </div>
-
-        {/* Grid pattern overlay — matching landing page */}
+        {/* Background image */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0"
           style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "80px 80px",
+            backgroundImage: 'url("https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=900&fit=crop")',
+            backgroundSize: '130%',
+            backgroundPosition: 'center',
+            opacity: 0.2,
           }}
         />
+        <div className="absolute inset-0 bg-gradient-to-br from-zinc-950/80 via-zinc-950/60 to-zinc-950/80" />
+        {/* Glow effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-emerald-500/[0.08] blur-[120px] rounded-full" />
+          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-emerald-400/[0.04] blur-[100px] rounded-full" />
+        </div>
+        {/* Grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
 
         <motion.div
           variants={containerVariants}
@@ -49,7 +48,7 @@ export default function Page() {
         >
           <motion.div variants={itemVariants} className="flex items-center gap-3 mb-8">
             <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[10px] font-bold text-emerald-400/80 uppercase tracking-[0.2em] font-mono">
+            <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-[0.2em]">
               System Online
             </span>
           </motion.div>
@@ -91,7 +90,7 @@ export default function Page() {
       </div>
 
       {/* Right — Auth Form */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12 relative">
+      <div className="flex-1 flex items-center justify-center px-6 py-12 relative bg-black">
         {/* Subtle gradient background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-zinc-900/50 to-zinc-950" />
