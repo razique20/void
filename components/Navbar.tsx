@@ -165,17 +165,20 @@ export default function Navbar() {
     {
       title: 'Workspaces & CRM',
       links: [
-        // Always show Leads CRM link; locked state is handled by hasFeature
         { label: 'Leads CRM', href: '/dashboard/leads', icon: Database, locked: !hasFeature('lead_capture') },
         { label: 'Customer Journey', href: '/dashboard/journey', icon: Route, locked: !hasFeature('lead_capture') },
         { label: 'Invoices', href: '/dashboard/invoices', icon: FileText, locked: !hasFeature('lead_capture') },
+        { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
+      ]
+    },
+    {
+      title: 'Analytics & Intelligence',
+      links: [
         { label: 'Revenue Analytics', href: '/dashboard/analytics/revenue', icon: DollarSign, locked: !hasFeature('lead_capture') },
         { label: 'Topic Trends', href: '/dashboard/analytics/topics', icon: Tags, locked: !hasFeature('lead_capture') },
         { label: 'Churn Prediction', href: '/dashboard/analytics/churn', icon: AlertTriangle, locked: !hasFeature('lead_capture') },
         { label: 'Agent Scorecard', href: '/dashboard/analytics/agents', icon: Trophy, locked: !hasFeature('lead_capture') },
         { label: 'Quality Grader', href: '/dashboard/analytics/quality', icon: GraduationCap, locked: !hasFeature('lead_capture') },
-        { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
-
       ]
     }
   ];
