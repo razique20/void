@@ -47,6 +47,11 @@ const allNavGroups: { label: string; links: NavLink[] }[] = [
       { label: 'Leads CRM', icon: Database, href: '/dashboard/leads', featureKey: 'lead_capture' },
       { label: 'Mission Control', icon: MessageSquare, href: '/dashboard/live', featureKey: 'mission_control' },
       { label: 'AI Email Hub', icon: Mail, href: '/dashboard/email', featureKey: 'email_agent' },
+    ],
+  },
+  {
+    label: 'AI Intelligence',
+    links: [
       { label: 'Smart Booking', icon: CalendarCheck, href: '/dashboard/booking', featureKey: 'cal_booking' },
       { label: 'AI Goals', icon: Target, href: '/dashboard/goals', featureKey: 'autonomous_goals' },
       { label: 'Knowledge Hub', icon: Share2, href: '/dashboard/knowledge', featureKey: 'knowledge_sharing' },
