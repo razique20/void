@@ -23,7 +23,6 @@ import {  Menu,
   Activity,
   Cpu,
   PanelLeftClose,
-  Mail,
   Building2,
   User,
   Compass,
@@ -45,7 +44,7 @@ let cachedMounted = false; // survives SPA remounts so transitions stay enabled
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   
-  const { sub, config, hasFeature, isEmailHubEnabled } = useData();
+  const { sub, config, hasFeature } = useData();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mounted, setMounted] = useState(cachedMounted);
@@ -86,6 +85,15 @@ export default function Navbar() {
       document.body.classList.remove('sidebar-collapsed');
     }
   };
+
+  // Set body background: dark on public pages, light on workspace & admin
+  useEffect(() => {
+    if (!isWorkspace && !isAdmin) {
+      document.body.style.backgroundColor = '#0a0a0c';
+    } else {
+      document.body.style.backgroundColor = '';
+    }
+  }, [isWorkspace, isAdmin]);
 
   // Handle body padding dynamic class assignment
   useEffect(() => {
@@ -153,8 +161,7 @@ export default function Navbar() {
         { label: 'Revenue Analytics', href: '/dashboard/analytics/revenue', icon: DollarSign, locked: !hasFeature('lead_capture') },
         { label: 'Topic Trends', href: '/dashboard/analytics/topics', icon: Tags, locked: !hasFeature('lead_capture') },
         { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
-        // Only show Email Hub when enabled globally
-        ...(isEmailHubEnabled ? [{ label: 'AI Email Hub', href: '/dashboard/email', icon: Mail, locked: false }] : []),
+
       ]
     }
   ];

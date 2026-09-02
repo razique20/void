@@ -46,11 +46,21 @@ export function MetricsBand() {
   return (
     <section
       aria-label="Performance at a glance"
-      className="relative py-20 md:py-28 overflow-hidden bg-zinc-100 dark:bg-zinc-900"
+      className="relative py-20 md:py-28 overflow-hidden bg-zinc-950"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-transparent to-emerald-50/30 pointer-events-none" />
+      {/* Subtle grid pattern overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.035]"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+          backgroundSize: '60px 60px',
+        }}
+      />
+      {/* Radial glow behind stats */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_50%,rgba(16,185,129,0.06),transparent)] pointer-events-none" />
       <div className="max-w-6xl mx-auto px-5 sm:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
           {STATS.map((s, i) => (
             <motion.div
               key={s.label}
@@ -59,12 +69,12 @@ export function MetricsBand() {
               initial="hidden"
               whileInView="visible"
               viewport={viewport}
-              className="text-center p-6"
+              className="text-center p-6 rounded-2xl bg-zinc-900/50 border border-zinc-800/60 backdrop-blur-sm"
             >
-              <div className="text-4xl md:text-5xl font-black tracking-tighter text-zinc-900 dark:text-white tabular-nums">
+              <div className="text-4xl md:text-5xl font-black tracking-tighter bg-gradient-to-br from-white via-white to-zinc-400 bg-clip-text text-transparent tabular-nums">
                 {s.value}
               </div>
-              <div className="mt-3 text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+              <div className="mt-3 text-[10px] font-bold text-emerald-400/70 uppercase tracking-widest">
                 {s.label}
               </div>
             </motion.div>
@@ -182,9 +192,8 @@ export function HowItWorks() {
   return (
     <section
       aria-labelledby="how-heading"
-      className="relative py-20 md:py-32 overflow-hidden bg-zinc-100 dark:bg-zinc-900"
+      className="relative py-20 md:py-32 overflow-hidden bg-zinc-950"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/40 via-transparent to-emerald-50/20 pointer-events-none" />
       <div className="max-w-6xl mx-auto px-5 sm:px-6">
         <motion.div
           variants={reveal}
@@ -195,11 +204,11 @@ export function HowItWorks() {
         >
           <h2
             id="how-heading"
-            className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-zinc-900 dark:text-white"
+            className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-white"
           >
             Live in three steps.
           </h2>
-          <p className="mt-4 text-zinc-500 dark:text-zinc-400 text-lg max-w-xl mx-auto font-medium">
+          <p className="mt-4 text-zinc-400 text-lg max-w-xl mx-auto font-medium">
             No engineers. No six-month rollout. Ship your first agent today.
           </p>
         </motion.div>
@@ -216,17 +225,17 @@ export function HowItWorks() {
               className="relative p-8 group"
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-100 dark:bg-emerald-500/10 flex items-center justify-center border border-emerald-200 dark:border-emerald-500/20">
-                  <s.icon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                  <s.icon className="w-6 h-6 text-emerald-400" />
                 </div>
-                <span className="text-5xl font-black text-zinc-200 dark:text-white/[0.12] tabular-nums select-none">
+                <span className="text-5xl font-black text-white/[0.12] tabular-nums select-none">
                   {s.step}
                 </span>
               </div>
-              <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-3">
+              <h3 className="text-xl font-bold text-white mb-3">
                 {s.title}
               </h3>
-              <p className="text-zinc-500 dark:text-zinc-400 text-base font-medium leading-relaxed">
+              <p className="text-zinc-400 text-base font-medium leading-relaxed">
                 {s.body}
               </p>
             </motion.li>
@@ -339,9 +348,8 @@ export function WhyChoose() {
   return (
     <section
       aria-labelledby="why-heading"
-      className="relative py-16 md:py-24 overflow-hidden bg-zinc-100 dark:bg-zinc-900"
+      className="relative py-16 md:py-24 overflow-hidden bg-zinc-950"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/40 via-transparent to-emerald-50/30 pointer-events-none" />
       <div className="max-w-6xl mx-auto px-5 sm:px-6">
         <motion.div
           variants={reveal}
@@ -352,11 +360,11 @@ export function WhyChoose() {
         >
           <h2
             id="why-heading"
-            className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-zinc-900 dark:text-white"
+            className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-white"
           >
             Why teams choose VOID
           </h2>
-          <p className="mt-4 text-zinc-500 dark:text-zinc-400 text-lg max-w-xl mx-auto font-medium">
+          <p className="mt-4 text-zinc-400 text-lg max-w-xl mx-auto font-medium">
             Everything you need to deploy AI agents — nothing you don&apos;t.
           </p>
         </motion.div>
@@ -370,12 +378,12 @@ export function WhyChoose() {
               initial="hidden"
               whileInView="visible"
               viewport={viewport}
-              className="flex items-center gap-3 p-4 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl"
+              className="flex items-center gap-3 p-4 bg-zinc-900/60 border border-zinc-800/60 rounded-2xl"
             >
-              <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 flex items-center justify-center shrink-0">
-                <f.icon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+                <f.icon className="w-4 h-4 text-emerald-400" />
               </div>
-              <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300 leading-tight">
+              <span className="text-sm font-semibold text-zinc-300 leading-tight">
                 {f.label}
               </span>
             </motion.div>
@@ -403,7 +411,7 @@ export function TrustStrip() {
         {TRUST.map((t) => (
           <span
             key={t}
-            className="flex items-center gap-2 text-sm font-medium text-zinc-500 dark:text-zinc-400"
+className="flex items-center gap-2 text-sm font-medium text-white/50"
           >
             <Check className="w-4 h-4 text-emerald-500/70 shrink-0" />
             {t}

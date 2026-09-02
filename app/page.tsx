@@ -322,9 +322,13 @@ export default function LandingPage() {
         {/* Trust Badges — Dark background */}
         <TrustBadges />
 
-        {/* Final CTA — Light background */}
-        <section className="relative py-28 md:py-40 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-transparent to-emerald-50/30 pointer-events-none" />
+        {/* Final CTA — Warm gradient */}
+        <section className="relative py-28 md:py-40 overflow-hidden">
+          {/* Multi-layer gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 via-teal-500 to-cyan-500" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/15 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-cyan-400/40 via-emerald-300/30 to-transparent blur-3xl rounded-full pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-teal-400/30 via-emerald-300/25 to-transparent blur-3xl rounded-full pointer-events-none" />
           <div className="max-w-4xl mx-auto px-5 sm:px-6 text-center relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -332,10 +336,10 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, ease }}
             >
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter mb-6 text-zinc-900 dark:text-white leading-tight">
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter mb-6 text-white leading-tight">
                 Ready to scale?
               </h2>
-              <p className="text-zinc-500 dark:text-zinc-400 text-lg md:text-xl font-medium max-w-xl mx-auto mb-12">
+              <p className="text-white/70 text-lg md:text-xl font-medium max-w-xl mx-auto mb-12">
                 Your first agent pays for itself instantly. Start free today.
               </p>
 
@@ -343,7 +347,7 @@ export default function LandingPage() {
                 <Show when="signed-in">
                   <Link
                     href="/dashboard"
-                    className="bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 px-10 py-4 rounded-full text-base font-bold transition-all active:scale-[0.98] shadow-lg shadow-zinc-950/10 dark:shadow-white/10"
+                    className="bg-white text-emerald-700 hover:bg-white/90 px-10 py-4 rounded-full text-base font-bold transition-all active:scale-[0.98] shadow-lg shadow-black/15"
                   >
                     Enter the Console
                   </Link>
@@ -354,7 +358,7 @@ export default function LandingPage() {
                     fallbackRedirectUrl="/onboarding"
                     signUpFallbackRedirectUrl="/onboarding"
                   >
-                    <button className="bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 px-10 py-4 rounded-full text-base font-bold transition-all active:scale-[0.98] shadow-lg shadow-zinc-950/10 dark:shadow-white/10 cursor-pointer">
+                    <button className="bg-white text-emerald-700 hover:bg-white/90 px-10 py-4 rounded-full text-base font-bold transition-all active:scale-[0.98] shadow-lg shadow-black/15 cursor-pointer">
                       Start free
                     </button>
                   </SignInButton>
@@ -366,7 +370,7 @@ export default function LandingPage() {
           </div>
 
           {/* Bottom glow */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[50%] bg-emerald-500/[0.03] blur-[100px] rounded-full" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[80%] h-[50%] bg-white/[0.08] blur-[120px] rounded-full" />
         </section>
       </main>
 
