@@ -11,7 +11,8 @@ import SystemLog from '@/models/SystemLog';
 import { getContactMemory, updateMemorySummary, buildMemoryPrompt } from '@/lib/memory';
 import { checkRateLimit } from '@/lib/rateLimit';
 import { checkMessageLimit, incrementMessageCount } from '@/lib/messageUsage';
-import { getUserSubscription } from '@/lib/subscription';
+import { getUserSubscription, checkAccess } from '@/lib/subscription';
+import { logError, logInfo } from '@/lib/errorLogger';
 import Lead from '@/models/Lead';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
@@ -32,8 +33,15 @@ export async function POST(req: Request) {
       return new NextResponse('Rate limit exceeded. Please try again in an hour.', { status: 429 });
     }
 
-    // 0b. Monthly message limit check
+    // 0b. Check subscription and trial status
     const sub = await getUserSubscription(userId);
+    
+    // Enforce trial expiry
+    const accessCheck = checkAccess(sub);
+    if (!accessCheck.allowed) {
+      return accessCheck.response!;
+    }
+    
     const { allowed, used, remaining } = await checkMessageLimit(userId, sub.planInfo.maxMessages);
     if (!allowed) {
       return NextResponse.json({
@@ -390,6 +398,7 @@ When a user asks for a task matching these descriptions, you MUST include the [A
 
   } catch (error: any) {
     console.error('[CHAT_POST]', error);
+    await logError('CHAT_API', error, { message: error.message });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

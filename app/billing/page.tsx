@@ -27,20 +27,20 @@ import { useData } from '@/lib/DataContext';
 const plans = [
   {
     id: 'free',
-    name: 'Free (Tryout)',
+    name: 'Free Trial',
     price: '$0',
-    description: 'Try all channels with 50 messages per month. No credit card required.',
+    description: '14-day full access. No credit card required.',
     features: [
-      '1 AI Agent',
-      '50 messages/month',
+      '2 AI Agents',
+      '500 messages (14 days)',
       'WhatsApp, Telegram & Web Chat',
-      'Knowledge Base (3 docs)',
-      'Conversation Memory',
-      'Topic Analysis: 1/week',
-      'Sentiment Workflows: 0',
-      'Invoicing: 0/month',
+      'Knowledge Base & Memory',
+      'Mission Control (Live Chat)',
+      'Topic Analysis: 3/week',
+      'Sentiment Workflows: 1',
+      'Invoicing: 5/month',
     ],
-    buttonText: 'Free Plan',
+    buttonText: 'Start Free Trial',
     popular: false,
     color: 'text-zinc-400',
     bgColor: 'bg-zinc-500/10 border-zinc-500/20',
@@ -155,7 +155,7 @@ export default function BillingPage() {
     const plan = plans.find((p) => p.id === planId);
     if (!plan) return;
 
-    const currentPlanName = sub?.plan || 'Free (Tryout)';
+    const currentPlanName = sub?.plan || 'Free Trial';
     const userId = user?.id || 'Unknown';
     const userEmail = user?.emailAddresses?.[0]?.emailAddress || 'N/A';
     const userName = user?.fullName || user?.firstName || 'N/A';
@@ -221,7 +221,7 @@ export default function BillingPage() {
                       <span className="absolute inline-flex h-full w-full rounded-full bg-purple-500 opacity-75 animate-ping" />
                     </span>
                     <span className="text-[9px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest">
-                      {sub?.plan || 'Free (Tryout)'}
+                      {sub?.plan || 'Free Trial'}
                     </span>
                   </div>
                 </div>

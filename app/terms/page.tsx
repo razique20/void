@@ -26,7 +26,7 @@ const sections = [
     subsections: [
       {
         heading: 'Plans',
-        items: ['Free: $0/mo — Limited agents and conversations', 'Starter: $49/mo — Basic features for small teams', 'Pro: $199/mo — Full features for growing businesses', 'Enterprise: $699/mo — Advanced features for scaling businesses']
+        items: ['Free Trial: $0 — 14-day full access, no credit card required', 'Starter: $29/mo — 2 agents, 1,000 messages, core features', 'Pro: $99/mo — 5 agents, 5,000 messages, marketplace access', 'Enterprise: $299/mo — 20 agents, 25,000 messages, all features']
       },
       {
         heading: 'Billing',

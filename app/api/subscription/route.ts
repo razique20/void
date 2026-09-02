@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { getUserSubscription } from '@/lib/subscription';
+import { logError } from '@/lib/errorLogger';
 import Worker from '@/models/Worker';
 import connectDB from '@/lib/mongodb';
 import GlobalConfig from '@/models/GlobalConfig';
@@ -38,6 +39,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error('[SUBSCRIPTION_GET]', error);
+    await logError('SUBSCRIPTION_API', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

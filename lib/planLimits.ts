@@ -11,10 +11,10 @@ export interface PlanLimits {
 
 const PLAN_LIMITS: Record<string, PlanLimits> = {
   free: {
-    topicAnalysisPerWeek: 1,
-    sentimentWorkflows: 0,
-    invoicesPerMonth: 0,
-    maxWorkers: 1,
+    topicAnalysisPerWeek: 3,
+    sentimentWorkflows: 1,
+    invoicesPerMonth: 5,
+    maxWorkers: 2,
   },
   starter: {
     topicAnalysisPerWeek: 2,

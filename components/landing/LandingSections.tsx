@@ -37,7 +37,7 @@ const viewport = { once: true, margin: '-60px' } as const;
 /* ------------------------------------------------------------------ */
 const STATS = [
   { value: 'Beta', label: 'Currently in early access' },
-  { value: 'Free', label: 'Tier to get started' },
+  { value: '14 Days', label: 'Free trial included' },
   { value: '<100ms', label: 'Target response time' },
   { value: '24/7', label: 'Always-on coverage' },
 ];
@@ -156,7 +156,7 @@ export function SocialProof() {
             <ArrowUpRight className="w-4 h-4" />
           </Link>
           <span className="text-sm font-medium text-zinc-500">
-            No credit card required &middot; Free tier available
+            No credit card required &middot; 14-day free trial
           </span>
         </motion.div>
       </div>

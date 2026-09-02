@@ -5,6 +5,7 @@ import TrainingData from '@/models/TrainingData';
 import Worker from '@/models/Worker';
 import mammoth from 'mammoth';
 import { parse } from 'csv-parse/sync';
+import { logError } from '@/lib/errorLogger';
 
 async function extractTextFromFile(file: File): Promise<string> {
   const bytes = await file.arrayBuffer();
@@ -203,6 +204,7 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('[TRAIN_DELETE]', error);
+    await logError('TRAIN_API', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

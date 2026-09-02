@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Lead from '@/models/Lead';
 import Worker from '@/models/Worker';
+import { logError } from '@/lib/errorLogger';
 
 export async function GET(req: Request) {
   try {
@@ -99,6 +100,7 @@ export async function PATCH(req: Request) {
     return NextResponse.json(lead);
   } catch (error) {
     console.error('[LEADS_PATCH]', error);
+    await logError('LEADS_API', error);
     return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
   }
 }

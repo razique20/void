@@ -12,6 +12,7 @@ import { checkMessageLimit, incrementMessageCount } from '@/lib/messageUsage';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
 import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
+import { logError } from '@/lib/errorLogger';
 
 /**
  * TELEGRAM WEBHOOK HANDLER
@@ -99,9 +100,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ status: 'ok' });
     }
 
-    // 1b. Monthly message limit check
-    const { getUserSubscription } = await import('@/lib/subscription');
+    // 1b. Check subscription and trial status
+    const { getUserSubscription, checkAccess } = await import('@/lib/subscription');
     const sub = await getUserSubscription(operative.userId);
+    
+    // Enforce trial expiry — drop message if trial expired
+    const accessCheck = checkAccess(sub);
+    if (!accessCheck.allowed) {
+      console.log(`[TELEGRAM] Trial expired for ${operative.userId}. Dropping message.`);
+      return NextResponse.json({ status: 'ok' });
+    }
+    
     const { allowed } = await checkMessageLimit(operative.userId, sub.planInfo.maxMessages);
     if (!allowed) {
       console.log(`[TELEGRAM] Monthly message limit reached for ${operative.userId}. Dropping message.`);
@@ -447,6 +456,7 @@ When a user asks for a task matching these descriptions, include the [ACTION: na
 
   } catch (err: any) {
     console.error('[TELEGRAM_WEBHOOK_CRASH]', err);
+    await logError('TELEGRAM_WEBHOOK', err, { url: req.url });
     return NextResponse.json({ status: 'error', message: err.message }, { status: 500 });
   }
 }

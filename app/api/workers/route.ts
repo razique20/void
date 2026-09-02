@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Worker from '@/models/Worker';
-import { getUserSubscription } from '@/lib/subscription';
+import { getUserSubscription, checkAccess } from '@/lib/subscription';
+import { logError } from '@/lib/errorLogger';
 import { broadcast } from '@/lib/notifications';
 
 export async function POST(req: Request) {
@@ -16,6 +17,13 @@ export async function POST(req: Request) {
 
     // Feature Gating: Check subscription limits
     const sub = await getUserSubscription(userId);
+    
+    // Enforce trial expiry
+    const accessCheck = checkAccess(sub);
+    if (!accessCheck.allowed) {
+      return accessCheck.response!;
+    }
+    
     const workerCount = await Worker.countDocuments({ userId });
     
     if (workerCount >= sub.planInfo.maxWorkers) {
@@ -46,6 +54,7 @@ export async function POST(req: Request) {
     return NextResponse.json(worker);
   } catch (error) {
     console.error('[WORKERS_POST]', error);
+    await logError('WORKERS_API', error, { action: 'create' });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -76,6 +85,7 @@ export async function GET() {
     return NextResponse.json(enhancedWorkers);
   } catch (error) {
     console.error('[WORKERS_GET]', error);
+    await logError('WORKERS_API', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

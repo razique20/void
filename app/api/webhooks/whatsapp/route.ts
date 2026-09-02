@@ -13,6 +13,7 @@ import { checkMessageLimit, incrementMessageCount } from '@/lib/messageUsage';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
 import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
+import { logError, logWarning, logInfo } from '@/lib/errorLogger';
 
 // 1. Webhook Verification (GET) - Required by Meta
 export async function GET(req: Request) {
@@ -163,9 +164,17 @@ export async function POST(req: Request) {
 
     console.log(`[WHATSAPP DEBUG] Found Operative: ${operative.name}. Active Status: ${operative.channels?.whatsapp?.isActive}`);
 
-    // 1b. Monthly message limit check for the account owner
-    const { getUserSubscription } = await import('@/lib/subscription');
+    // 1b. Check subscription and trial status
+    const { getUserSubscription, checkAccess } = await import('@/lib/subscription');
     const sub = await getUserSubscription(operative.userId);
+    
+    // Enforce trial expiry — drop message if trial expired
+    const accessCheck = checkAccess(sub);
+    if (!accessCheck.allowed) {
+      console.log(`[WHATSAPP] Trial expired for ${operative.userId}. Dropping message.`);
+      return NextResponse.json({ status: 'ok' });
+    }
+    
     const { allowed } = await checkMessageLimit(operative.userId, sub.planInfo.maxMessages);
     if (!allowed) {
       console.log(`[WHATSAPP] Monthly message limit reached for ${operative.userId}. Dropping message.`);
@@ -546,6 +555,7 @@ Once all conditions are met, execute the action by including the exact tag in yo
 
   } catch (error) {
     console.error('[WHATSAPP_WEBHOOK_ERROR]', error);
+    await logError('WHATSAPP_WEBHOOK', error, { url: req.url });
     return NextResponse.json({ status: 'error' }, { status: 500 });
   }
 }
