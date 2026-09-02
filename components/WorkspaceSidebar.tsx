@@ -11,6 +11,11 @@ import {
   Database,
   MessageSquare,
   Mail,
+  CalendarCheck,
+  Target,
+  Share2,
+  GitBranch,
+  BarChart3,
   PanelLeftClose,
   PanelLeft,
   Lock,
@@ -42,13 +47,18 @@ const allNavGroups: { label: string; links: NavLink[] }[] = [
       { label: 'Leads CRM', icon: Database, href: '/dashboard/leads', featureKey: 'lead_capture' },
       { label: 'Mission Control', icon: MessageSquare, href: '/dashboard/live', featureKey: 'mission_control' },
       { label: 'AI Email Hub', icon: Mail, href: '/dashboard/email', featureKey: 'email_agent' },
+      { label: 'Smart Booking', icon: CalendarCheck, href: '/dashboard/booking', featureKey: 'cal_booking' },
+      { label: 'AI Goals', icon: Target, href: '/dashboard/goals', featureKey: 'autonomous_goals' },
+      { label: 'Knowledge Hub', icon: Share2, href: '/dashboard/knowledge', featureKey: 'knowledge_sharing' },
+      { label: 'Branching Lab', icon: GitBranch, href: '/dashboard/branching', featureKey: 'conversation_branching' },
+      { label: 'AI Analytics', icon: BarChart3, href: '/dashboard/analytics/query', featureKey: 'natural_language_analytics' },
     ],
   },
 ];
 
 export default function WorkspaceSidebar() {
   const pathname = usePathname();
-  const { hasFeature, isEmailHubEnabled } = useData();
+  const { hasFeature, isEmailHubEnabled, isSmartBookingEnabled, isAutonomousGoalsEnabled, isKnowledgeSharingEnabled, isConversationBranchingEnabled, isNaturalLanguageAnalyticsEnabled } = useData();
   const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -69,10 +79,18 @@ export default function WorkspaceSidebar() {
     return pathname.startsWith(href);
   };
 
-  // Filter out email hub when disabled
+  // Filter out email hub, smart booking, autonomous goals, knowledge sharing, conversation branching, and natural language analytics when disabled
   const navGroups = allNavGroups.map(group => ({
     ...group,
-    links: group.links.filter(link => !(link.featureKey === 'email_agent' && !isEmailHubEnabled)),
+    links: group.links.filter(link => {
+      if (link.featureKey === 'email_agent' && !isEmailHubEnabled) return false;
+      if (link.featureKey === 'cal_booking' && !isSmartBookingEnabled) return false;
+      if (link.featureKey === 'autonomous_goals' && !isAutonomousGoalsEnabled) return false;
+      if (link.featureKey === 'knowledge_sharing' && !isKnowledgeSharingEnabled) return false;
+      if (link.featureKey === 'conversation_branching' && !isConversationBranchingEnabled) return false;
+      if (link.featureKey === 'natural_language_analytics' && !isNaturalLanguageAnalyticsEnabled) return false;
+      return true;
+    }),
   })).filter(group => group.links.length > 0);
 
   return (
@@ -130,7 +148,15 @@ export default function WorkspaceSidebar() {
             <nav className="space-y-0.5">
               {group.links.map((link) => {
                 const isActive = isTabActive(link.href);
-                const isLocked = mounted && link.featureKey && (link.featureKey === 'email_agent' ? !isEmailHubEnabled : !hasFeature(link.featureKey));
+                const isLocked = mounted && link.featureKey && (
+                  (link.featureKey === 'email_agent' && !isEmailHubEnabled) ||
+                  (link.featureKey === 'cal_booking' && !isSmartBookingEnabled) ||
+                  (link.featureKey === 'autonomous_goals' && !isAutonomousGoalsEnabled) ||
+                  (link.featureKey === 'knowledge_sharing' && !isKnowledgeSharingEnabled) ||
+                  (link.featureKey === 'conversation_branching' && !isConversationBranchingEnabled) ||
+                  (link.featureKey === 'natural_language_analytics' && !isNaturalLanguageAnalyticsEnabled) ||
+                  (link.featureKey !== 'email_agent' && link.featureKey !== 'cal_booking' && link.featureKey !== 'autonomous_goals' && link.featureKey !== 'knowledge_sharing' && link.featureKey !== 'conversation_branching' && link.featureKey !== 'natural_language_analytics' && !hasFeature(link.featureKey))
+                );
                 const Icon = link.icon;
                 return (
                   <Link

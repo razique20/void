@@ -38,7 +38,7 @@ export const PLANS = {
     name: 'Enterprise',
     maxWorkers: 20,
     maxMessages: 25000,
-    features: ['advanced_rag', 'web_chat', 'whatsapp', 'telegram', 'slack', 'memory', 'mission_control', 'marketplace', 'email_agent', 'actions_webhooks', 'cal_booking', 'lead_capture', 'dedicated_support', 'smart_routing'],
+    features: ['advanced_rag', 'web_chat', 'whatsapp', 'telegram', 'slack', 'memory', 'mission_control', 'marketplace', 'email_agent', 'actions_webhooks', 'cal_booking', 'smart_booking', 'autonomous_goals', 'knowledge_sharing', 'conversation_branching', 'natural_language_analytics', 'lead_capture', 'dedicated_support', 'smart_routing'],
     topicAnalysisPerWeek: Infinity,
     sentimentWorkflows: Infinity,
     invoicesPerMonth: Infinity,

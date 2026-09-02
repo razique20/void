@@ -7,6 +7,11 @@ const GlobalConfigSchema = new Schema({
     vision: { type: Boolean, default: false },
     leadManagement: { type: Boolean, default: false },
     emailHub: { type: Boolean, default: false },
+    smartBooking: { type: Boolean, default: false },
+    autonomousGoals: { type: Boolean, default: false },
+    knowledgeSharing: { type: Boolean, default: false },
+    conversationBranching: { type: Boolean, default: false },
+    naturalLanguageAnalytics: { type: Boolean, default: false },
   }
 }, { timestamps: true });
 

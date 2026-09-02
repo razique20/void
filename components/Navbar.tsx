@@ -29,7 +29,10 @@ import {  Menu,
   Route,
   DollarSign,
   FileText,
-  Tags
+  Tags,
+  AlertTriangle,
+  Trophy,
+  GraduationCap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -168,6 +171,9 @@ export default function Navbar() {
         { label: 'Invoices', href: '/dashboard/invoices', icon: FileText, locked: !hasFeature('lead_capture') },
         { label: 'Revenue Analytics', href: '/dashboard/analytics/revenue', icon: DollarSign, locked: !hasFeature('lead_capture') },
         { label: 'Topic Trends', href: '/dashboard/analytics/topics', icon: Tags, locked: !hasFeature('lead_capture') },
+        { label: 'Churn Prediction', href: '/dashboard/analytics/churn', icon: AlertTriangle, locked: !hasFeature('lead_capture') },
+        { label: 'Agent Scorecard', href: '/dashboard/analytics/agents', icon: Trophy, locked: !hasFeature('lead_capture') },
+        { label: 'Quality Grader', href: '/dashboard/analytics/quality', icon: GraduationCap, locked: !hasFeature('lead_capture') },
         { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
 
       ]
