@@ -54,6 +54,14 @@ export default function Navbar() {
   const publicPages = ['/', '/sign-in', '/sign-up', '/privacy', '/terms', '/dpa', '/docs', '/about', '/careers', '/contact', '/partners', '/changelog', '/pricing'];
   const isWorkspace = !publicPages.some(p => p === pathname) && !isAdmin;
 
+  // Synchronously remove has-sidebars when leaving workspace — prevents
+  // the view-transition snapshot from capturing sidebar padding on the
+  // landing page, which causes a left-side glitch during navigation.
+  if (!isWorkspace && typeof document !== 'undefined') {
+    document.body.classList.remove('has-sidebars', 'sidebar-collapsed', 'has-transitions');
+    document.documentElement.classList.remove('sidebar-collapsed');
+  }
+
   // Hydrate from localStorage + enable transitions after first paint
   useEffect(() => {
     // Hydrate collapsed state from localStorage
@@ -244,7 +252,7 @@ export default function Navbar() {
   // RENDER OPTION B: Authenticated Workspace View (Dual Sidebars: Left Wide Sidebar + Right Slim Dock)
   return (
     <>
-      <aside style={{ viewTransitionName: 'site-sidebar' }} className={cn(
+      <aside className={cn(
         "fixed top-0 left-0 h-full border-r border-border-strong bg-[var(--sidebar)] backdrop-blur-2xl z-40 hidden lg:flex flex-col justify-between select-none shadow-sm",
         mounted && "transition-all duration-200 ease-in-out",
         (mounted && isCollapsed) ? "w-16 p-2.5 py-4" : "w-64 p-4"
@@ -359,7 +367,7 @@ export default function Navbar() {
       </aside>
 
       {/* 2. RIGHT SLIM ACTION DOCK */}
-      <aside style={{ viewTransitionName: 'site-dock' }} className="fixed top-0 right-0 h-full w-16 border-l border-border-default bg-bg-subtle z-40 hidden lg:flex flex-col p-3 py-6 items-center justify-between select-none">
+      <aside className="fixed top-0 right-0 h-full w-16 border-l border-border-default bg-bg-subtle z-40 hidden lg:flex flex-col p-3 py-6 items-center justify-between select-none">
 
         {/* Center Icons Menu with Tooltips */}
         <nav className="flex flex-col gap-3">
@@ -426,7 +434,7 @@ export default function Navbar() {
       </div>
 
       {/* 3. MOBILE HEADER (lg:hidden fallback) */}
-      <nav style={{ viewTransitionName: 'site-mobile-nav' }} className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3 border-b lg:hidden bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]">
+      <nav className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3 border-b lg:hidden bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]">
         <div className="flex justify-between items-center px-2 md:px-4 max-w-full">
           <Link href="/" className="group flex items-center">
             <Logo />
