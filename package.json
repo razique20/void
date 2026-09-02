@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "stripe:listen": "stripe listen --forward-to localhost:3001/api/stripe/webhook",
-    "db:clear": "node scripts/cleanup.js"
+    "db:clear": "node scripts/cleanup.js",
+    "seed:blogs": "node scripts/seed-blogs.js"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.2.9",

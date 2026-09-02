@@ -20,26 +20,23 @@ export default function Page() {
   return (
     <div className="flex flex-row-reverse min-h-screen bg-zinc-950">
       {/* Right — Branding Panel (visually right via flex-row-reverse) */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center p-12">
-        {/* Background effects — matching landing page hero */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center p-12 bg-zinc-950">
+        {/* Background image */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950" />
-          <div className="absolute inset-0 animate-[pulse_8s_ease-in-out_infinite]" style={{
-            background: 'radial-gradient(ellipse 80% 60% at 30% 60%, rgba(16, 185, 129, 0.10) 0%, transparent 70%)'
-          }} />
-          <div className="absolute top-1/3 left-1/3 w-[500px] h-[500px] bg-emerald-500/[0.07] blur-[150px] rounded-full" />
+          <img
+            src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=900&fit=crop"
+            alt=""
+            className="w-full h-full object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-zinc-950/95 via-zinc-950/80 to-zinc-950/95" />
+        </div>
+        {/* Glow effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/3 left-1/3 w-[500px] h-[500px] bg-emerald-500/[0.08] blur-[120px] rounded-full" />
           <div className="absolute bottom-1/4 right-1/4 w-[350px] h-[350px] bg-cyan-500/[0.04] blur-[100px] rounded-full" />
         </div>
-
-        {/* Grid pattern overlay — matching landing page */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "80px 80px",
-          }}
-        />
+        {/* Grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '80px 80px' }} />
 
         <motion.div
           variants={containerVariants}
@@ -49,7 +46,7 @@ export default function Page() {
         >
           <motion.div variants={itemVariants} className="flex items-center gap-3 mb-8">
             <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[10px] font-bold text-emerald-400/80 uppercase tracking-[0.2em] font-mono">
+            <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-[0.2em]">
               Free Tier Available
             </span>
           </motion.div>

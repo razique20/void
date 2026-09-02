@@ -10,9 +10,10 @@ import { usePathname } from 'next/navigation';import {
   MessageSquare, 
   ArrowLeft, 
   BarChart3, 
-  HeartPulse, 
-  Megaphone, 
+  HeartPulse,  Megaphone,
   ScrollText,
+  Newspaper,
+  BookOpen,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -40,6 +41,8 @@ const navGroups = [
       { label: 'System Logs', icon: Activity, href: '/admin/logs' },
       { label: 'Audit Log', icon: ScrollText, href: '/admin/audit' },
       { label: 'Announcements', icon: Megaphone, href: '/admin/announcements' },
+      { label: 'News & Updates', icon: Newspaper, href: '/admin/news' },
+      { label: 'Blog Posts', icon: BookOpen, href: '/admin/blogs' },
     ],
   },
 ];
