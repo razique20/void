@@ -203,17 +203,17 @@ export default function Navbar() {
   // RENDER OPTION A: Public Header (Landing Page or Auth flows)
   if (!isWorkspace) {
     return (
-      <nav style={{ viewTransitionName: 'site-public-nav' }} className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b bg-black border-white/10 shadow-[0_2px_15px_rgba(0,0,0,0.15)]">
+      <nav style={{ viewTransitionName: 'site-public-nav' }} className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5 border-b border-white/[0.06] bg-black/60 backdrop-blur-xl shadow-[0_1px_0_rgba(16,185,129,0.08)]">
         <div className="flex justify-between items-center px-2 md:px-4 max-w-7xl mx-auto">
           <Link href="/" className="group flex items-center">
             <Logo className="text-lg md:text-xl" />
           </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             <Show when="signed-in">
               <Link 
                 href="/dashboard" 
-                className="text-[10px] uppercase tracking-wider font-extrabold px-4 py-2 bg-white text-black rounded-xl hover:opacity-90 transition-all shadow-sm"
+                className="text-[10px] uppercase tracking-wider font-extrabold px-4 py-2 bg-white text-black rounded-xl hover:bg-white/90 transition-all shadow-sm"
               >
                 Console
               </Link>
@@ -224,9 +224,15 @@ export default function Navbar() {
             <Show when="signed-out">
               <Link 
                 href="/sign-in" 
-                className="text-[10px] uppercase tracking-wider font-extrabold text-zinc-400 hover:text-white hover:bg-white/10 px-3.5 py-2 rounded-xl transition-all"
+                className="text-[10px] uppercase tracking-wider font-extrabold text-white/50 hover:text-white px-3.5 py-2 rounded-xl transition-all"
               >
                 Sign In
+              </Link>
+              <Link 
+                href="/sign-up" 
+                className="text-[10px] uppercase tracking-wider font-extrabold px-4 py-2 bg-white text-black rounded-xl hover:bg-white/90 transition-all shadow-sm"
+              >
+                Get Started
               </Link>
             </Show>
           </div>
