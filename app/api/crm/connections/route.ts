@@ -37,15 +37,15 @@ export async function GET() {
 
 /**
  * POST /api/crm/connections
- * Create a new CRM connection.
- * Body: { provider, label, accessToken?, mode?: 'oauth' | 'token' }
+ * Create a new CRM connection (initiates OAuth flow).
+ * Body: { provider: 'hubspot' | 'salesforce' | 'pipedrive', label: string }
  */
 export async function POST(req: Request) {
   try {
     const { userId } = await auth();
     if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
-    const { provider, label, accessToken, mode = 'oauth' } = await req.json();
+    const { provider, label } = await req.json();
 
     if (!provider || !label) {
       return NextResponse.json(
@@ -72,57 +72,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Manual token mode (for HubSpot Private Apps, etc.)
-    if (mode === 'token' && accessToken) {
-      const crmProvider = getCRMProvider(provider as CRMProviderName);
-
-      // Verify the token works by fetching profile
-      let profile;
-      try {
-        profile = await crmProvider.getProfile(accessToken);
-      } catch (err: any) {
-        return NextResponse.json(
-          { error: `Invalid token: ${err.message}` },
-          { status: 400 }
-        );
-      }
-
-      // Create connection with the token
-      await CRMConnection.findOneAndUpdate(
-        { userId, provider },
-        {
-          userId,
-          provider,
-          label,
-          isActive: true,
-          accessToken,
-          refreshToken: null,
-          tokenExpiresAt: null, // No expiry for private app tokens
-          externalUserId: profile.id,
-          syncConfig: {
-            direction: 'bidirectional',
-            syncLeads: true,
-            syncContacts: true,
-            syncDeals: false,
-            autoSync: true,
-            syncIntervalMinutes: 15,
-          },
-          syncState: { lastSyncStatus: 'idle' },
-        },
-        { upsert: true }
-      );
-
-      return NextResponse.json({
-        success: true,
-        connection: {
-          provider,
-          label,
-          mode: 'token',
-        },
-      });
-    }
-
-    // OAuth mode
+    // Generate OAuth URL
     const crmProvider = getCRMProvider(provider as CRMProviderName);
     const state = Buffer.from(JSON.stringify({ userId, provider, label })).toString('base64');
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';

@@ -70,8 +70,6 @@ export default function CRMPage() {
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [connectLabel, setConnectLabel] = useState('');
   const [selectedProvider, setSelectedProvider] = useState('');
-  const [connectMode, setConnectMode] = useState<'oauth' | 'token'>('token');
-  const [connectToken, setConnectToken] = useState('');
 
   const canAccess = hasFeature('crm_sync');
 
@@ -108,38 +106,20 @@ export default function CRMPage() {
       return;
     }
 
-    if (connectMode === 'token' && !connectToken.trim()) {
-      showToast('Please enter an access token', 'error');
-      return;
-    }
-
     try {
       const res = await fetch('/api/crm/connections', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: selectedProvider,
-          label: connectLabel.trim(),
-          mode: connectMode,
-          accessToken: connectMode === 'token' ? connectToken.trim() : undefined,
-        }),
+        body: JSON.stringify({ provider: selectedProvider, label: connectLabel.trim() }),
       });
 
       const data = await res.json();
 
       if (data.authUrl) {
-        // OAuth mode - redirect
+        // Redirect to OAuth
         window.location.href = data.authUrl;
-      } else if (data.success) {
-        // Token mode - connected directly
-        showToast(`Connected to ${PROVIDER_INFO[selectedProvider]?.label}!`, 'success');
-        setShowConnectModal(false);
-        setSelectedProvider('');
-        setConnectLabel('');
-        setConnectToken('');
-        fetchData();
       } else {
-        showToast(data.error || 'Failed to connect', 'error');
+        showToast(data.error || 'Failed to initiate connection', 'error');
       }
     } catch (err) {
       showToast('Failed to connect', 'error');
@@ -543,59 +523,7 @@ export default function CRMPage() {
                   />
                 </div>
 
-                {/* Connection Mode */}
                 {selectedProvider && (
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Connection Method</label>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setConnectMode('token')}
-                        className={cn(
-                          'flex-1 p-3 rounded-xl border text-center transition-all',
-                          connectMode === 'token'
-                            ? 'border-indigo-500 bg-indigo-500/10'
-                            : 'border-border-default hover:border-border-strong'
-                        )}
-                      >
-                        <p className="text-[10px] font-bold text-foreground">🔑 Access Token</p>
-                        <p className="text-[9px] text-silver mt-0.5">Paste a Private App token</p>
-                      </button>
-                      <button
-                        onClick={() => setConnectMode('oauth')}
-                        className={cn(
-                          'flex-1 p-3 rounded-xl border text-center transition-all',
-                          connectMode === 'oauth'
-                            ? 'border-indigo-500 bg-indigo-500/10'
-                            : 'border-border-default hover:border-border-strong'
-                        )}
-                      >
-                        <p className="text-[10px] font-bold text-foreground">🔐 OAuth Login</p>
-                        <p className="text-[9px] text-silver mt-0.5">Redirect to authorize</p>
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* Token Input */}
-                {selectedProvider && connectMode === 'token' && (
-                  <div className="space-y-2">
-                    <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Access Token</label>
-                    <input
-                      type="password"
-                      value={connectToken}
-                      onChange={(e) => setConnectToken(e.target.value)}
-                      placeholder="pat-na1-xxxx-xxxx-xxxx"
-                      className="w-full bg-bg-elevated border border-border-default rounded-xl px-4 py-2.5 text-xs font-mono text-foreground focus:outline-none"
-                    />
-                    <p className="text-[9px] text-silver/60">
-                      {selectedProvider === 'hubspot' && 'Find this in HubSpot → Settings → Integrations → Private Apps'}
-                      {selectedProvider === 'salesforce' && 'Create a Connected App in Salesforce Setup → App Manager'}
-                      {selectedProvider === 'pipedrive' && 'Find this in Pipedrive → Settings → API → API Token'}
-                    </p>
-                  </div>
-                )}
-
-                {selectedProvider && connectMode === 'oauth' && (
                   <p className="text-[10px] text-silver">
                     You'll be redirected to {PROVIDER_INFO[selectedProvider]?.label} to authorize the connection.
                   </p>
@@ -608,8 +536,6 @@ export default function CRMPage() {
                     setShowConnectModal(false);
                     setSelectedProvider('');
                     setConnectLabel('');
-                    setConnectToken('');
-                    setConnectMode('token');
                   }}
                   className="px-4 py-2 border border-border-default rounded-xl text-xs font-bold text-silver hover:bg-bg-surface"
                 >
