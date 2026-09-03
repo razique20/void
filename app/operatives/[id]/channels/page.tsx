@@ -469,7 +469,6 @@ export default function ChannelsPage() {
                         />
                       </div>
 
-
                     </div>
                   </div>
 
