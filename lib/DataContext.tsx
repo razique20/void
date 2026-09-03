@@ -13,9 +13,7 @@ interface DataContextValue {
   hasFeature: (feature: string) => boolean;
   isEmailHubEnabled: boolean;
   isSmartBookingEnabled: boolean;
-  isAutonomousGoalsEnabled: boolean;
   isKnowledgeSharingEnabled: boolean;
-  isConversationBranchingEnabled: boolean;
   isNaturalLanguageAnalyticsEnabled: boolean;
   refreshSub: () => Promise<void>;
 }
@@ -86,28 +84,25 @@ export function DataProvider({ children }: { children: ReactNode }) {
     return sub.features.includes(feature);
   };
 
-  // Email Hub is enabled only when both the global flag is on AND the user's plan includes it
-  // Default to false while loading to prevent showing the feature prematurely
-  const isEmailHubEnabled = loading ? false : (sub?.emailHubEnabled === true) && hasFeature('email_agent');
+  // Enterprise plan auto-enables ALL AI Intelligence features — no feature flag or plan feature check needed
+  // API returns plan name (e.g. "Enterprise") not the key (e.g. "enterprise")
+  const isEnterprise = sub?.plan?.toLowerCase() === 'enterprise';
 
-  // Smart Booking is enabled only when both the global flag is on AND the user's plan includes it
-  // Default to false while loading to prevent showing the feature prematurely
-  const isSmartBookingEnabled = loading ? false : (config?.featureFlags?.smartBooking === true) && (hasFeature('cal_booking') || hasFeature('smart_booking'));
+  // Email Hub — Enterprise auto-enables; others need flag + plan feature
+  const isEmailHubEnabled = loading ? false : isEnterprise || (sub?.emailHubEnabled === true && hasFeature('email_agent'));
 
-  // Autonomous Goals is enabled only when both the global flag is on AND the user's plan includes it
-  const isAutonomousGoalsEnabled = loading ? false : (config?.featureFlags?.autonomousGoals === true) && hasFeature('autonomous_goals');
+  // Smart Booking — Enterprise auto-enables; others need admin flag + plan feature
+  const isSmartBookingEnabled = loading ? false : isEnterprise || (config?.featureFlags?.smartBooking === true && (hasFeature('cal_booking') || hasFeature('smart_booking')));
 
-  // Knowledge Sharing is enabled only when both the global flag is on AND the user's plan includes it
-  const isKnowledgeSharingEnabled = loading ? false : (config?.featureFlags?.knowledgeSharing === true) && hasFeature('knowledge_sharing');
+  // Autonomous Goals
+  // Knowledge Sharing
+  const isKnowledgeSharingEnabled = loading ? false : isEnterprise || (config?.featureFlags?.knowledgeSharing === true && hasFeature('knowledge_sharing'));
 
-  // Conversation Branching is enabled only when both the global flag is on AND the user's plan includes it
-  const isConversationBranchingEnabled = loading ? false : (config?.featureFlags?.conversationBranching === true) && hasFeature('conversation_branching');
-
-  // Natural Language Analytics is enabled only when both the global flag is on AND the user's plan includes it
-  const isNaturalLanguageAnalyticsEnabled = loading ? false : (config?.featureFlags?.naturalLanguageAnalytics === true) && hasFeature('natural_language_analytics');
+  // Natural Language Analytics
+  const isNaturalLanguageAnalyticsEnabled = loading ? false : isEnterprise || (config?.featureFlags?.naturalLanguageAnalytics === true && hasFeature('natural_language_analytics'));
 
   return (
-    <DataContext.Provider value={{ sub, config, loading, hasFeature, isEmailHubEnabled, isSmartBookingEnabled, isAutonomousGoalsEnabled, isKnowledgeSharingEnabled, isConversationBranchingEnabled, isNaturalLanguageAnalyticsEnabled, refreshSub }}>
+    <DataContext.Provider value={{ sub, config, loading, hasFeature, isEmailHubEnabled, isSmartBookingEnabled, isKnowledgeSharingEnabled, isNaturalLanguageAnalyticsEnabled, refreshSub }}>
       {children}
     </DataContext.Provider>
   );

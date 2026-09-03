@@ -11,9 +11,7 @@ import {
   MessageSquare,
   Mail,
   CalendarCheck,
-  Target,
   Share2,
-  GitBranch,
   BarChart3,
   Beaker,
   PanelLeftClose,
@@ -52,9 +50,7 @@ const allNavGroups: { label: string; links: NavLink[] }[] = [
     label: 'AI Intelligence',
     links: [
       { label: 'Smart Booking', icon: CalendarCheck, href: '/dashboard/booking', featureKey: 'cal_booking' },
-      { label: 'AI Goals', icon: Target, href: '/dashboard/goals', featureKey: 'autonomous_goals' },
       { label: 'Knowledge Hub', icon: Share2, href: '/dashboard/knowledge', featureKey: 'knowledge_sharing' },
-      { label: 'Branching Lab', icon: GitBranch, href: '/dashboard/branching', featureKey: 'conversation_branching' },
       { label: 'AI Analytics', icon: BarChart3, href: '/dashboard/analytics/query', featureKey: 'natural_language_analytics' },
       { label: 'A/B Testing', icon: Beaker, href: '/dashboard/ab-tests' },
       { label: 'WA Catalog', icon: Share2, href: '/dashboard/catalog', featureKey: 'whatsapp_catalog' },
@@ -64,7 +60,7 @@ const allNavGroups: { label: string; links: NavLink[] }[] = [
 
 export default function WorkspaceSidebar() {
   const pathname = usePathname();
-  const { hasFeature, isEmailHubEnabled, isSmartBookingEnabled, isAutonomousGoalsEnabled, isKnowledgeSharingEnabled, isConversationBranchingEnabled, isNaturalLanguageAnalyticsEnabled } = useData();
+  const { hasFeature, isEmailHubEnabled, isSmartBookingEnabled, isKnowledgeSharingEnabled, isNaturalLanguageAnalyticsEnabled } = useData();
   const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -91,9 +87,7 @@ export default function WorkspaceSidebar() {
     links: group.links.filter(link => {
       if (link.featureKey === 'email_agent' && !isEmailHubEnabled) return false;
       if (link.featureKey === 'cal_booking' && !isSmartBookingEnabled) return false;
-      if (link.featureKey === 'autonomous_goals' && !isAutonomousGoalsEnabled) return false;
       if (link.featureKey === 'knowledge_sharing' && !isKnowledgeSharingEnabled) return false;
-      if (link.featureKey === 'conversation_branching' && !isConversationBranchingEnabled) return false;
       if (link.featureKey === 'natural_language_analytics' && !isNaturalLanguageAnalyticsEnabled) return false;
       return true;
     }),
@@ -157,11 +151,9 @@ export default function WorkspaceSidebar() {
                 const isLocked = mounted && link.featureKey && (
                   (link.featureKey === 'email_agent' && !isEmailHubEnabled) ||
                   (link.featureKey === 'cal_booking' && !isSmartBookingEnabled) ||
-                  (link.featureKey === 'autonomous_goals' && !isAutonomousGoalsEnabled) ||
                   (link.featureKey === 'knowledge_sharing' && !isKnowledgeSharingEnabled) ||
-                  (link.featureKey === 'conversation_branching' && !isConversationBranchingEnabled) ||
                   (link.featureKey === 'natural_language_analytics' && !isNaturalLanguageAnalyticsEnabled) ||
-                  (link.featureKey !== 'email_agent' && link.featureKey !== 'cal_booking' && link.featureKey !== 'autonomous_goals' && link.featureKey !== 'knowledge_sharing' && link.featureKey !== 'conversation_branching' && link.featureKey !== 'natural_language_analytics' && !hasFeature(link.featureKey))
+                  (link.featureKey !== 'email_agent' && link.featureKey !== 'cal_booking' && link.featureKey !== 'autonomous_goals' && link.featureKey !== 'knowledge_sharing' && link.featureKey !== 'natural_language_analytics' && !hasFeature(link.featureKey))
                 );
                 const Icon = link.icon;
                 return (

@@ -15,6 +15,11 @@ import {
   Lock,
   Route,
   Zap,
+  CalendarCheck,
+  Share2,
+  BarChart3,
+  Beaker,
+  ShoppingCart,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/Logo';
@@ -46,11 +51,20 @@ const allNavGroups: { label: string; links: NavLink[] }[] = [
       { label: 'AI Email Hub', icon: Mail, href: '/dashboard/email', featureKey: 'email_agent' },
     ],
   },
+  {
+    label: 'AI Intelligence',
+    links: [
+      { label: 'Smart Booking', icon: CalendarCheck, href: '/dashboard/booking', featureKey: 'cal_booking' },
+      { label: 'Knowledge Hub', icon: Share2, href: '/dashboard/knowledge', featureKey: 'knowledge_sharing' },
+      { label: 'AI Analytics', icon: BarChart3, href: '/dashboard/analytics/query', featureKey: 'natural_language_analytics' },
+      { label: 'A/B Testing', icon: Beaker, href: '/dashboard/ab-tests' },
+      { label: 'WA Catalog', icon: ShoppingCart, href: '/dashboard/catalog', featureKey: 'whatsapp_catalog' },
+    ],
+  },
 ];
 
 export default function UserSidebar() {
   const pathname = usePathname();
-  const { hasFeature, isEmailHubEnabled } = useData();
   const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -71,10 +85,18 @@ export default function UserSidebar() {
     return pathname.startsWith(href);
   };
 
-  // Filter out email hub when disabled
+  const { hasFeature, isEmailHubEnabled, isSmartBookingEnabled, isKnowledgeSharingEnabled, isNaturalLanguageAnalyticsEnabled } = useData();
+
+  // Filter out features that are disabled
   const navGroups = allNavGroups.map(group => ({
     ...group,
-    links: group.links.filter(link => !(link.featureKey === 'email_agent' && !isEmailHubEnabled)),
+    links: group.links.filter(link => {
+      if (link.featureKey === 'email_agent' && !isEmailHubEnabled) return false;
+      if (link.featureKey === 'cal_booking' && !isSmartBookingEnabled) return false;
+      if (link.featureKey === 'knowledge_sharing' && !isKnowledgeSharingEnabled) return false;
+      if (link.featureKey === 'natural_language_analytics' && !isNaturalLanguageAnalyticsEnabled) return false;
+      return true;
+    }),
   })).filter(group => group.links.length > 0);
 
   return (
@@ -129,7 +151,13 @@ export default function UserSidebar() {
             <nav className="space-y-1">
               {group.links.map((link) => {
                 const isActive = isTabActive(link.href);
-                const isLocked = mounted && link.featureKey && (link.featureKey === 'email_agent' ? !isEmailHubEnabled : !hasFeature(link.featureKey));
+                const isLocked = mounted && link.featureKey && (
+                  (link.featureKey === 'email_agent' && !isEmailHubEnabled) ||
+                  (link.featureKey === 'cal_booking' && !isSmartBookingEnabled) ||
+                  (link.featureKey === 'knowledge_sharing' && !isKnowledgeSharingEnabled) ||
+                  (link.featureKey === 'natural_language_analytics' && !isNaturalLanguageAnalyticsEnabled) ||
+                  (link.featureKey !== 'email_agent' && link.featureKey !== 'cal_booking' && link.featureKey !== 'autonomous_goals' && link.featureKey !== 'knowledge_sharing' && link.featureKey !== 'natural_language_analytics' && !hasFeature(link.featureKey))
+                );
                 const Icon = link.icon;
                 return (
                   <Link

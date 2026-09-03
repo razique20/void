@@ -31,7 +31,11 @@ import {  Menu,
   Tags,
   AlertTriangle,
   Trophy,
-  GraduationCap
+  GraduationCap,
+  CalendarCheck,
+  Share2,
+  BarChart3,
+  Beaker,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -47,7 +51,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   
-  const { sub, config, hasFeature } = useData();
+  const { sub, config, hasFeature, isSmartBookingEnabled, isKnowledgeSharingEnabled, isNaturalLanguageAnalyticsEnabled } = useData();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mounted, setMounted] = useState(cachedMounted);
@@ -188,6 +192,15 @@ export default function Navbar() {
         { label: 'Agent Scorecard', href: '/dashboard/analytics/agents', icon: Trophy, locked: !hasFeature('lead_capture') },
         { label: 'Quality Grader', href: '/dashboard/analytics/quality', icon: GraduationCap, locked: !hasFeature('lead_capture') },
         { label: 'WA Catalog', href: '/dashboard/catalog', icon: ShoppingBag, locked: !hasFeature('whatsapp_catalog') },
+      ]
+    },
+    {
+      title: 'AI Intelligence',
+      links: [
+        { label: 'Smart Booking', href: '/dashboard/booking', icon: CalendarCheck, locked: !isSmartBookingEnabled },
+        { label: 'Knowledge Hub', href: '/dashboard/knowledge', icon: Share2, locked: !isKnowledgeSharingEnabled },
+        { label: 'AI Analytics', href: '/dashboard/analytics/query', icon: BarChart3, locked: !isNaturalLanguageAnalyticsEnabled },
+        { label: 'A/B Testing', href: '/dashboard/ab-tests', icon: Beaker, locked: false },
       ]
     }
   ];
