@@ -616,11 +616,6 @@ export default function ChatPage() {
                             icon: Mail 
                           },
                           { 
-                            label: 'Cal.com Booking', 
-                            active: activeWorkerObj?.tools?.calcom?.isActive || false, 
-                            icon: Calendar 
-                          },
-                          { 
                             label: 'RAG Knowledge Core', 
                             active: (workerTrainingStats?.totalChunks ?? 0) > 0, 
                             icon: Layers,

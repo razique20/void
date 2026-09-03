@@ -55,16 +55,17 @@ const WorkerSchema = new Schema({
       user: { type: String },
       pass: { type: String }
     },
-    calcom: {
-      isActive: { type: Boolean, default: false },
-      apiKey: { type: String },
-      eventTypeId: { type: String },
-      username: { type: String }
-    }
+
   },
   settings: {
     autoDetectLanguage: { type: Boolean, default: true }, // Auto-detect customer language and respond in same language
     defaultLanguage: { type: String, default: 'English' }, // Fallback language if auto-detect is disabled
+    contextWindow: {
+      maxTokens: { type: Number, default: 4000 }, // Maximum tokens for context window
+      keepRecentMessages: { type: Number, default: 10 }, // Number of recent messages to always keep
+      summaryThreshold: { type: Number, default: 15 }, // Summarize messages older than this count
+      enableSummarization: { type: Boolean, default: true }, // Enable LLM summarization for older messages
+    }
   }
 }, { timestamps: true });
 

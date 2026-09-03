@@ -79,7 +79,6 @@ export default function ChannelsPage() {
   const hasTelegram = sub?.features?.includes('telegram');
   const hasSlack = sub?.features?.includes('slack');
   const hasEmail = isEmailHubEnabled;
-  const hasCalcom = sub?.features?.includes('cal_booking');
   const hasActions = sub?.features?.includes('actions_webhooks') || sub?.features?.includes('actions_full');
 
   const saveChannels = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -144,12 +143,6 @@ export default function ChannelsPage() {
           user: formData.get('tool_email_user'),
           pass: formData.get('tool_email_pass')
         },
-        calcom: {
-          isActive: hasCalcom && formData.get('tool_calcom_active') === 'on',
-          apiKey: formData.get('tool_calcom_apikey'),
-          eventTypeId: formData.get('tool_calcom_eventid'),
-          username: formData.get('tool_calcom_username')
-        }
       },
       voice: {
         isActive: formData.get('voice_active') === 'on',
@@ -638,55 +631,6 @@ export default function ChannelsPage() {
                       <div className="space-y-1.5">
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Password / App Code</label>
                         <input name="tool_email_pass" type="password" disabled={!hasEmail} defaultValue={operative.tools?.emailAgent?.pass} placeholder="••••••••" className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-amber-500 focus:outline-none text-foreground" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Cal.com */}
-                  <div className={cn(
-                    "bg-bg-surface border border-border-default rounded-[28px] overflow-hidden transition-all duration-300",
-                    !hasCalcom && "opacity-60"
-                  )}>
-                    <div className="p-6 flex items-center justify-between border-b border-border-subtle">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 shrink-0">
-                          <CheckCircle2 className="w-5.5 h-5.5" />
-                        </div>
-                        <div>
-                          <div className="font-bold text-base text-foreground flex items-center gap-2">
-                            Cal.com Scheduler
-                            {!hasCalcom && (
-                              <span className="text-[9px] font-extrabold text-amber-500 bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 rounded-full uppercase tracking-widest">
-                                Enterprise
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-[11px] text-silver">Provision scheduling slots directly in-chat</div>
-                        </div>
-                      </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          name="tool_calcom_active" 
-                          disabled={!hasCalcom}
-                          defaultChecked={hasCalcom && operative.tools?.calcom?.isActive}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500" />
-                      </label>
-                    </div>
-                    <div className={cn("p-6 bg-bg-subtle grid grid-cols-1 md:grid-cols-3 gap-4", !hasCalcom && "pointer-events-none opacity-50")}>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-bold text-silver uppercase tracking-widest">API Key</label>
-                        <input name="tool_calcom_apikey" type="password" disabled={!hasCalcom} defaultValue={operative.tools?.calcom?.apiKey} placeholder="cal_..." className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs font-mono focus:border-purple-500 focus:outline-none text-foreground" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Cal.com Username</label>
-                        <input name="tool_calcom_username" disabled={!hasCalcom} defaultValue={operative.tools?.calcom?.username} placeholder="john-doe" className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-purple-500 focus:outline-none text-foreground" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Event Type ID</label>
-                        <input name="tool_calcom_eventid" disabled={!hasCalcom} defaultValue={operative.tools?.calcom?.eventTypeId} placeholder="123456" className="w-full bg-background border border-border-strong rounded-2xl px-4 py-3.5 text-xs focus:border-purple-500 focus:outline-none text-foreground" />
                       </div>
                     </div>
                   </div>

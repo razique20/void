@@ -10,12 +10,14 @@ import Groq from 'groq-sdk';
 import { getContactMemory, updateMemorySummary, buildMemoryPrompt } from '@/lib/memory';
 import { checkRateLimit } from '@/lib/rateLimit';
 import { checkMessageLimit, incrementMessageCount } from '@/lib/messageUsage';
+import { BookingSettings } from '@/models/Booking';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
 import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
 import { logError, logWarning, logInfo } from '@/lib/errorLogger';
 import { buildCatalogPrompt } from '@/lib/whatsappCatalog';
 import { detectLanguage, translateText, getResponseLanguage, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/languageDetection';
+import { optimizeContextWindow } from '@/lib/contextWindowing';
 
 // 1. Webhook Verification (GET) - Required by Meta
 export async function GET(req: Request) {
@@ -286,8 +288,10 @@ You can continue your conversation after the tag.
       `;
     }
 
-    if (operative.tools?.calcom?.isActive && operative.tools.calcom.username && operative.tools.calcom.eventTypeId) {
-      const calLink = `https://cal.com/${operative.tools.calcom.username}/${operative.tools.calcom.eventTypeId}`;
+    // Calendar Booking Injection (via Smart Booking)
+    const bookingSettings = await BookingSettings.findOne({ userId: operative.userId });
+    if (bookingSettings?.enabled && bookingSettings.calendarId) {
+      const calLink = `https://cal.com/${bookingSettings.calendarId}`;
       systemPrompt += `
 \nCALENDAR BOOKING CAPABILITY: You have a live calendar for booking meetings.
 If the user wants to schedule a meeting, call, or appointment, you MUST provide them with this exact link to book a time: ${calLink}
@@ -334,10 +338,28 @@ Once all conditions are met, execute the action by including the exact tag in yo
 
     const dynamicGroq = new Groq({ apiKey });
 
-    // 6. Build conversation history (last 10 messages for context)
-    const history = conversation.messages.slice(-10).map((msg: any) => ({
+    // 6. Build conversation history with context windowing
+    const allMessages = conversation.messages.map((msg: any) => ({
       role: msg.role,
       content: msg.content
+    }));
+    
+    // Use operative's context window settings or defaults
+    const contextConfig = operative.settings?.contextWindow || {};
+    const contextResult = await optimizeContextWindow(
+      allMessages,
+      {
+        maxTokens: contextConfig.maxTokens || 4000,
+        keepRecentMessages: contextConfig.keepRecentMessages || 10,
+        summaryThreshold: contextConfig.summaryThreshold || 15,
+      },
+      dynamicGroq,
+      modelName
+    );
+    
+    const history = contextResult.messages.map(m => ({
+      role: m.role,
+      content: m.content
     }));
 
     // 7. Generate Response (now with history + memory)

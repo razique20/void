@@ -13,6 +13,7 @@ import { checkRateLimit } from '@/lib/rateLimit';
 import { checkMessageLimit, incrementMessageCount } from '@/lib/messageUsage';
 import { getUserSubscription, checkAccess } from '@/lib/subscription';
 import { logError, logInfo } from '@/lib/errorLogger';
+import { BookingSettings } from '@/models/Booking';
 import Lead from '@/models/Lead';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
@@ -20,6 +21,7 @@ import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
 import { buildCatalogPrompt } from '@/lib/whatsappCatalog';
 import { detectLanguage, translateText, getResponseLanguage, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/languageDetection';
 import { getActiveTestForWorker, getVariantForConversation, recordVariantMetric } from '@/lib/abTesting';
+import { optimizeContextWindow, estimateTokens } from '@/lib/contextWindowing';
 
 export async function POST(req: Request) {
   try {
@@ -183,9 +185,10 @@ Example: [LEAD: John Doe, john@gmail.com, +1234567, {"interest": "Pro Plan", "so
       `;
     }
 
-    // NEW: Calendar Booking Injection
-    if (activeWorker.tools?.calcom?.isActive && activeWorker.tools.calcom.username && activeWorker.tools.calcom.eventTypeId) {
-      const calLink = `https://cal.com/${activeWorker.tools.calcom.username}/${activeWorker.tools.calcom.eventTypeId}`;
+    // Calendar Booking Injection (via Smart Booking)
+    const bookingSettings = await BookingSettings.findOne({ userId: activeWorker.userId });
+    if (bookingSettings?.enabled && bookingSettings.calendarId) {
+      const calLink = `https://cal.com/${bookingSettings.calendarId}`;
       systemPrompt += `
 \nCALENDAR BOOKING CAPABILITY: You have a live calendar for booking meetings.
 If the user wants to schedule a meeting, call, or appointment, you MUST provide them with this exact link to book a time: ${calLink}
@@ -233,11 +236,6 @@ When a user asks for a task matching these descriptions, you MUST include the [A
       });
     }
 
-    const history = conversation.messages.slice(-10).map((msg: any) => ({
-      role: msg.role,
-      content: msg.content
-    }));
-
     // 6. Dynamic Provider Selection
     let apiKey = process.env.GROQ_API_KEY;
     let modelName = 'openai/gpt-oss-20b';
@@ -249,6 +247,30 @@ When a user asks for a task matching these descriptions, you MUST include the [A
     }
 
     const dynamicGroq = new Groq({ apiKey });
+
+    // 5b. Optimize context window (smart memory management)
+    const allMessages = conversation.messages.map((msg: any) => ({
+      role: msg.role,
+      content: msg.content
+    }));
+    
+    // Use worker's context window settings or defaults
+    const contextConfig = activeWorker.settings?.contextWindow || {};
+    const contextResult = await optimizeContextWindow(
+      allMessages,
+      {
+        maxTokens: contextConfig.maxTokens || 4000,
+        keepRecentMessages: contextConfig.keepRecentMessages || 10,
+        summaryThreshold: contextConfig.summaryThreshold || 15,
+      },
+      dynamicGroq,
+      modelName
+    );
+    
+    const history = contextResult.messages.map(m => ({
+      role: m.role,
+      content: m.content
+    }));
 
     // 7. Call AI
     const completion = await dynamicGroq.chat.completions.create({
@@ -483,6 +505,13 @@ When a user asks for a task matching these descriptions, you MUST include the [A
         variantName: abTestVariant.variantName,
         isControl: abTestVariant.isControl,
       } : null,
+      contextWindow: {
+        tokensUsed: contextResult.tokensUsed,
+        tokensSaved: contextResult.tokensSaved,
+        messagesSummarized: contextResult.messagesSummarized,
+        messagesKept: contextResult.messagesKept,
+        hasSummary: !!contextResult.summary,
+      },
     });
 
   } catch (error: any) {
