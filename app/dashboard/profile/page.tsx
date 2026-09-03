@@ -20,7 +20,8 @@ import {
   Cpu,
   Lock,
   ExternalLink,
-  ShieldCheck
+  ShieldCheck,
+  Copy,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -337,9 +338,33 @@ export default function ProfilePage() {
                       <div className="text-base font-bold text-foreground">
                         {user?.fullName || user?.username || 'Authenticated Agent Manager'}
                       </div>
-                      <div className="text-xs font-mono text-silver">
-                        {user?.primaryEmailAddress?.emailAddress || 'User ID: ' + (user?.id || 'active-user')}
+                      {user?.primaryEmailAddress?.emailAddress && (
+                        <div className="text-xs font-mono text-silver">
+                          {user.primaryEmailAddress.emailAddress}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* User ID */}
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-silver uppercase tracking-widest block px-1">User ID</label>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 bg-background border border-border-strong rounded-xl px-4 py-3 text-xs font-mono text-foreground truncate">
+                        {user?.id || '—'}
                       </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (user?.id) {
+                            navigator.clipboard.writeText(user.id);
+                          }
+                        }}
+                        className="p-3 bg-bg-elevated border border-border-default rounded-xl text-silver hover:text-foreground hover:bg-bg-active transition-all cursor-pointer shrink-0"
+                        title="Copy User ID"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
 
