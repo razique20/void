@@ -57,6 +57,7 @@ const allNavGroups: { label: string; links: NavLink[] }[] = [
       { label: 'Knowledge Hub', icon: Share2, href: '/dashboard/knowledge', featureKey: 'knowledge_sharing' },
       { label: 'Branching Lab', icon: GitBranch, href: '/dashboard/branching', featureKey: 'conversation_branching' },
       { label: 'AI Analytics', icon: BarChart3, href: '/dashboard/analytics/query', featureKey: 'natural_language_analytics' },
+      { label: 'WA Catalog', icon: Share2, href: '/dashboard/catalog', featureKey: 'whatsapp_catalog' },
     ],
   },
 ];

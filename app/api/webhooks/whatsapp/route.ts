@@ -14,6 +14,7 @@ import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
 import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
 import { logError, logWarning, logInfo } from '@/lib/errorLogger';
+import { buildCatalogPrompt } from '@/lib/whatsappCatalog';
 
 // 1. Webhook Verification (GET) - Required by Meta
 export async function GET(req: Request) {
@@ -290,6 +291,20 @@ Once all conditions are met, execute the action by including the exact tag in yo
           const safeName = action.name?.trim() || 'custom_action';
           systemPrompt += `\n- TOOL: ${safeName}. \n  INSTRUCTIONS: ${action.description}\n  FORMAT: [ACTION: ${safeName}, JSON_DATA_HERE]`;
         });
+      }
+    }
+
+    // NEW: WhatsApp Catalog Integration
+    if (sub.planInfo?.features?.includes('whatsapp_catalog')) {
+      try {
+        const catalogPrompt = await buildCatalogPrompt(
+          operative.userId,
+          customerText,
+          8
+        );
+        systemPrompt += catalogPrompt;
+      } catch (catalogErr: any) {
+        console.error('[WHATSAPP_CATALOG_INJECT]', catalogErr.message);
       }
     }
 

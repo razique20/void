@@ -17,6 +17,7 @@ import Lead from '@/models/Lead';
 import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
 import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
+import { buildCatalogPrompt } from '@/lib/whatsappCatalog';
 
 export async function POST(req: Request) {
   try {
@@ -151,6 +152,20 @@ When a user asks for a task matching these descriptions, you MUST include the [A
         activeActions.forEach((action: any) => {
           systemPrompt += `\n- TOOL: ${action.name}. USE CASE: ${action.description}. FORMAT: [ACTION: ${action.name}, JSON_DATA_HERE]`;
         });
+      }
+    }
+
+    // NEW: WhatsApp Catalog Integration
+    if (sub.planInfo?.features?.includes('whatsapp_catalog')) {
+      try {
+        const catalogPrompt = await buildCatalogPrompt(
+          worker.userId,
+          message,
+          8
+        );
+        systemPrompt += catalogPrompt;
+      } catch (catalogErr: any) {
+        console.error('[CHAT_CATALOG_INJECT]', catalogErr.message);
       }
     }
 

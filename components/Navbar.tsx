@@ -189,6 +189,7 @@ export default function Navbar() {
         { label: 'Churn Prediction', href: '/dashboard/analytics/churn', icon: AlertTriangle, locked: !hasFeature('lead_capture') },
         { label: 'Agent Scorecard', href: '/dashboard/analytics/agents', icon: Trophy, locked: !hasFeature('lead_capture') },
         { label: 'Quality Grader', href: '/dashboard/analytics/quality', icon: GraduationCap, locked: !hasFeature('lead_capture') },
+        { label: 'WA Catalog', href: '/dashboard/catalog', icon: ShoppingBag, locked: !hasFeature('whatsapp_catalog') },
       ]
     }
   ];
