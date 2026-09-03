@@ -61,6 +61,10 @@ const WorkerSchema = new Schema({
       eventTypeId: { type: String },
       username: { type: String }
     }
+  },
+  settings: {
+    autoDetectLanguage: { type: Boolean, default: true }, // Auto-detect customer language and respond in same language
+    defaultLanguage: { type: String, default: 'English' }, // Fallback language if auto-detect is disabled
   }
 }, { timestamps: true });
 

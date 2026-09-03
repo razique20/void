@@ -9,7 +9,6 @@ import {  Menu,
   ChevronDown,
   ShoppingBag,
   CreditCard,
-  Database,
   MessageSquare,
   Key,
   LifeBuoy,
@@ -173,9 +172,8 @@ export default function Navbar() {
       ]
     },
     {
-      title: 'Workspaces & CRM',
+      title: 'Workspaces',
       links: [
-        { label: 'Leads CRM', href: '/dashboard/leads', icon: Database, locked: !hasFeature('lead_capture') },
         { label: 'Customer Journey', href: '/dashboard/journey', icon: Route, locked: !hasFeature('lead_capture') },
         { label: 'Invoices', href: '/dashboard/invoices', icon: FileText, locked: !hasFeature('lead_capture') },
         { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },

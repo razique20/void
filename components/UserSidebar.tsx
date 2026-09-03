@@ -8,7 +8,6 @@ import {
   PlusCircle,
   BookOpen,
   Bot,
-  Database,
   MessageSquare,
   Mail,
   PanelLeftClose,
@@ -39,9 +38,8 @@ const allNavGroups: { label: string; links: NavLink[] }[] = [
     ],
   },
   {
-    label: 'Workspaces & CRM',
+    label: 'Workspaces',
     links: [
-      { label: 'Leads CRM', icon: Database, href: '/dashboard/leads', featureKey: 'lead_capture' },
       { label: 'Customer Journey', icon: Route, href: '/dashboard/journey', featureKey: 'lead_capture' },
       { label: 'Sentiment Workflows', icon: Zap, href: '/dashboard/sentiment-workflows', featureKey: 'lead_capture' },
       { label: 'Mission Control', icon: MessageSquare, href: '/dashboard/live', featureKey: 'mission_control' },

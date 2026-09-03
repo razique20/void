@@ -15,6 +15,7 @@ import { broadcast } from '@/lib/notifications';
 import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
 import { logError, logWarning, logInfo } from '@/lib/errorLogger';
 import { buildCatalogPrompt } from '@/lib/whatsappCatalog';
+import { detectLanguage, translateText, getResponseLanguage, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/languageDetection';
 
 // 1. Webhook Verification (GET) - Required by Meta
 export async function GET(req: Request) {
@@ -52,6 +53,10 @@ export async function POST(req: Request) {
     const phoneNumberId = body.entry[0].changes[0].value.metadata.phone_number_id;
 
     if (!customerText) return NextResponse.json({ status: 'ok' });
+
+    // 0. Multi-Language Auto-Detection
+    const detectedLanguage = await detectLanguage(customerText);
+    console.log(`[LANGUAGE_DETECTION] WhatsApp detected: ${detectedLanguage.languageName} (${detectedLanguage.language}) with confidence ${detectedLanguage.confidence}`);
 
     // 0. Rate Limiting (60 messages per hour per customer)
     // We do this BEFORE hitting the database for operatives to save resources
@@ -237,10 +242,19 @@ export async function POST(req: Request) {
     );
     const memoryContext = buildMemoryPrompt(contactMemory);
 
-    // 4. System Prompt (now with memory injection)
+    // 4. System Prompt (now with memory injection + language detection)
+    const responseLanguage = getResponseLanguage(
+      operative.language,
+      detectedLanguage.language,
+      operative.settings?.autoDetectLanguage !== false
+    );
+    const responseLanguageName = SUPPORTED_LANGUAGES[responseLanguage] || 'English';
+
     let systemPrompt = `
       You are ${operative.name}, an AI assistant with a ${operative.tone} tone.
       Your personality: ${operative.personality}
+      
+      IMPORTANT: Always respond in ${responseLanguageName}. The customer wrote in ${detectedLanguage.languageName}.
       
       Use the following knowledge base to answer questions:
       ${context}

@@ -13,6 +13,7 @@ import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
 import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
 import { logError } from '@/lib/errorLogger';
+import { detectLanguage, translateText, getResponseLanguage, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/languageDetection';
 
 /**
  * TELEGRAM WEBHOOK HANDLER
@@ -42,6 +43,10 @@ export async function POST(req: Request) {
     const chatId = message.chat.id;
     const userText = message.text;
     const userName = message.from?.first_name || 'User';
+
+    // 0. Multi-Language Auto-Detection
+    const detectedLanguage = await detectLanguage(userText);
+    console.log(`[LANGUAGE_DETECTION] Telegram detected: ${detectedLanguage.languageName} (${detectedLanguage.language}) with confidence ${detectedLanguage.confidence}`);
 
     // 0. Rate Limiting (60 messages per hour per chat)
     const rateLimit = await checkRateLimit(`tg_${chatId}`, 60, 60 * 60 * 1000);
@@ -141,10 +146,19 @@ export async function POST(req: Request) {
     );
     const memoryContext = buildMemoryPrompt(contactMemory);
 
-    // 4. System Prompt (now with memory injection)
+    // 4. System Prompt (now with memory injection + language detection)
+    const responseLanguage = getResponseLanguage(
+      operative.language,
+      detectedLanguage.language,
+      operative.settings?.autoDetectLanguage !== false
+    );
+    const responseLanguageName = SUPPORTED_LANGUAGES[responseLanguage] || 'English';
+
     let systemPrompt = `
       You are ${operative.name}, an AI assistant with a ${operative.tone} tone.
       Your personality: ${operative.personality}
+      
+      IMPORTANT: Always respond in ${responseLanguageName}. The customer wrote in ${detectedLanguage.languageName}.
       
       User Name: ${userName}
       Channel: Telegram

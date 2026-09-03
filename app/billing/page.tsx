@@ -103,7 +103,6 @@ const plans = [
       '25,000 messages/month',
       'Custom Webhook Actions',
       'Cal.com Booking Integration',
-      'Lead Capture & CRM Sync',
       'Dedicated Support',
       'Topic Analysis: Unlimited',
       'Sentiment Workflows: Unlimited',

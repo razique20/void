@@ -18,6 +18,8 @@ import { executeActions, syncLeadToWebhook } from '@/lib/actions';
 import { broadcast } from '@/lib/notifications';
 import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
 import { buildCatalogPrompt } from '@/lib/whatsappCatalog';
+import { detectLanguage, translateText, getResponseLanguage, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/languageDetection';
+import { getActiveTestForWorker, getVariantForConversation, recordVariantMetric } from '@/lib/abTesting';
 
 export async function POST(req: Request) {
   try {
@@ -27,6 +29,10 @@ export async function POST(req: Request) {
     }
 
     const { workerId, message, conversationId } = await req.json();
+
+    // 0. Multi-Language Auto-Detection
+    const detectedLanguage = await detectLanguage(message);
+    console.log(`[LANGUAGE_DETECTION] Detected: ${detectedLanguage.languageName} (${detectedLanguage.language}) with confidence ${detectedLanguage.confidence}`);
 
     // 0. Rate Limiting (100 messages per hour per user)
     const rateLimit = await checkRateLimit(`web_${userId}`, 100, 60 * 60 * 1000);
@@ -58,6 +64,43 @@ export async function POST(req: Request) {
     const worker = await Worker.findById(workerId);
     if (!worker) {
       return new NextResponse('Worker not found', { status: 404 });
+    }
+
+    // 1b. A/B Testing - Check for active test and get variant assignment
+    let abTestVariant = null;
+    let activeWorker = worker;
+    const activeTest = await getActiveTestForWorker(workerId, 'web');
+    
+    if (activeTest) {
+      // Get variant assignment for this user
+      abTestVariant = await getVariantForConversation(
+        conversationId || 'new',
+        userId,
+        activeTest,
+        'web'
+      );
+      
+      if (abTestVariant) {
+        console.log(`[AB_TEST] User ${userId} assigned to variant: ${abTestVariant.variantName}`);
+        
+        // If variant has overrides, create a modified worker object
+        if (abTestVariant.overrides && (abTestVariant.overrides.personality || abTestVariant.overrides.tone)) {
+          activeWorker = {
+            ...worker.toObject(),
+            personality: abTestVariant.overrides.personality || worker.personality,
+            tone: abTestVariant.overrides.tone || worker.tone,
+            language: abTestVariant.overrides.language || worker.language,
+          };
+        }
+        
+        // Record conversation start event
+        recordVariantMetric(
+          activeTest._id,
+          abTestVariant.variantId,
+          'conversation',
+          1
+        ).catch(err => console.error('[AB_TEST_METRIC_ERROR]', err));
+      }
     }
 
     // NEW: Fetch User Feature Flags
@@ -101,19 +144,27 @@ export async function POST(req: Request) {
     );
     const memoryContext = buildMemoryPrompt(contactMemory);
 
-    // 4. Construct System Prompt (now with memory injection)
+    // 4. Construct System Prompt (now with memory injection + language detection + A/B test overrides)
+    const responseLanguage = getResponseLanguage(
+      activeWorker.language,
+      detectedLanguage.language,
+      activeWorker.settings?.autoDetectLanguage !== false
+    );
+    const responseLanguageName = SUPPORTED_LANGUAGES[responseLanguage] || 'English';
+
     let systemPrompt = `
-You are a professional AI support agent named ${worker.name}.
-Personality: ${worker.personality}
-Tone: ${worker.tone}
-Language: You MUST respond strictly in ${worker.language || 'English'}, regardless of the language the user types in, unless explicitly instructed otherwise.
+You are a professional AI support agent named ${activeWorker.name}.
+Personality: ${activeWorker.personality}
+Tone: ${activeWorker.tone}
+
+IMPORTANT: Always respond in ${responseLanguageName}. The customer wrote in ${detectedLanguage.languageName}.
 ${memoryContext}
 Knowledge Base:
 ${contextText || "No specific knowledge base provided."}
     `.trim();
 
     // Check for Email Tool
-    if (worker.tools?.emailAgent?.isActive) {
+    if (activeWorker.tools?.emailAgent?.isActive) {
       systemPrompt += `
 \nCRITICAL CAPABILITY: You can send professional emails. 
 If the user asks you to send an email, YOU MUST execute it by including this exact tag in your response: 
@@ -133,8 +184,8 @@ Example: [LEAD: John Doe, john@gmail.com, +1234567, {"interest": "Pro Plan", "so
     }
 
     // NEW: Calendar Booking Injection
-    if (worker.tools?.calcom?.isActive && worker.tools.calcom.username && worker.tools.calcom.eventTypeId) {
-      const calLink = `https://cal.com/${worker.tools.calcom.username}/${worker.tools.calcom.eventTypeId}`;
+    if (activeWorker.tools?.calcom?.isActive && activeWorker.tools.calcom.username && activeWorker.tools.calcom.eventTypeId) {
+      const calLink = `https://cal.com/${activeWorker.tools.calcom.username}/${activeWorker.tools.calcom.eventTypeId}`;
       systemPrompt += `
 \nCALENDAR BOOKING CAPABILITY: You have a live calendar for booking meetings.
 If the user wants to schedule a meeting, call, or appointment, you MUST provide them with this exact link to book a time: ${calLink}
@@ -143,8 +194,8 @@ Always be polite and let them know they can pick a time that works best for them
     }
 
     // NEW: Option B Foundation - Custom Action Agents
-    if (worker.actions && worker.actions.length > 0) {
-      const activeActions = worker.actions.filter((a: any) => a.isActive);
+    if (activeWorker.actions && activeWorker.actions.length > 0) {
+      const activeActions = activeWorker.actions.filter((a: any) => a.isActive);
       if (activeActions.length > 0) {
         systemPrompt += `\n\nACTION CAPABILITIES: You have access to custom business tools. 
 When a user asks for a task matching these descriptions, you MUST include the [ACTION: name, data] tag.`;
@@ -364,9 +415,9 @@ When a user asks for a task matching these descriptions, you MUST include the [A
     }
 
     // NEW: Action Execution via shared utility
-    aiResponse = await executeActions(aiResponse, worker.actions || [], {
-      workerId: worker._id.toString(),
-      workerName: worker.name,
+    aiResponse = await executeActions(aiResponse, activeWorker.actions || [], {
+      workerId: activeWorker._id.toString(),
+      workerName: activeWorker.name,
       channel: 'web',
       contactId: userId,
     });
@@ -394,6 +445,16 @@ When a user asks for a task matching these descriptions, you MUST include the [A
     // 10d. Increment monthly message counter
     incrementMessageCount(userId).catch(() => {});
 
+    // 10e. A/B Test - Record message event
+    if (abTestVariant && activeTest) {
+      recordVariantMetric(
+        activeTest._id,
+        abTestVariant.variantId,
+        'message',
+        1
+      ).catch(err => console.error('[AB_TEST_METRIC_ERROR]', err));
+    }
+
     // 11. Broadcast real-time notification for new conversation activity
     const isNewConversation = conversation.messages.length <= 2; // user msg + assistant reply
     if (isNewConversation) {
@@ -408,7 +469,20 @@ When a user asks for a task matching these descriptions, you MUST include the [A
 
     return NextResponse.json({
       response: aiResponse,
-      conversationId: conversation._id
+      conversationId: conversation._id,
+      language: {
+        detected: detectedLanguage.language,
+        detectedName: detectedLanguage.languageName,
+        confidence: detectedLanguage.confidence,
+        responseIn: responseLanguage,
+        responseInName: responseLanguageName,
+      },
+      abTest: abTestVariant ? {
+        testId: activeTest?._id,
+        variantId: abTestVariant.variantId,
+        variantName: abTestVariant.variantName,
+        isControl: abTestVariant.isControl,
+      } : null,
     });
 
   } catch (error: any) {
