@@ -76,8 +76,8 @@ export default function SmartBookingPage() {
   const [daysAvailable, setDaysAvailable] = useState<number[]>([1, 2, 3, 4, 5]);
 
   // Check if feature is available
-  const isFeatureAvailable = sub?.planInfo?.features?.includes('cal_booking') || 
-                              sub?.planInfo?.features?.includes('smart_booking');
+  const isFeatureAvailable = sub?.plan === 'Enterprise' || sub?.features?.includes('cal_booking') || 
+                              sub?.features?.includes('smart_booking');
 
   useEffect(() => {
     if (!loadingSub && isFeatureAvailable) {

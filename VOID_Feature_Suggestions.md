@@ -60,11 +60,12 @@ Based on comprehensive analysis of the VOID platform architecture and current ca
 - **Priority**: 🟡 Medium
 - **Status**: Implemented with `models/ABTest.ts`, `lib/abTesting.ts`, full dashboard UI at `/dashboard/ab-tests`, statistical significance testing
 
-### 9. **Conversation Context Windowing**
+### 9. **Conversation Context Windowing** ✅ DONE
 - **Description**: Smart conversation memory that summarizes older messages to stay within token limits while preserving key context. Automatically decides what to keep vs summarize.
 - **Impact**: Longer conversations without losing context or hitting token limits
 - **Implementation**: Sliding window + LLM summarization + importance scoring
 - **Priority**: 🟡 Medium
+- **Status**: Implemented in `lib/contextWindowing.ts`, integrated into all chat routes, configurable per agent via Worker model settings
 
 ---
 
@@ -176,6 +177,6 @@ Based on comprehensive analysis of the VOID platform architecture and current ca
 ---
 
 *Generated: August 31, 2026*
-*Last Updated: September 3, 2026 — Marked 2 features as DONE (Multi-Language Auto-Detection, Agent A/B Testing)*
+*Last Updated: September 3, 2026 — Marked 3 features as DONE (Multi-Language Auto-Detection, Agent A/B Testing, Conversation Context Windowing)*
 *Platform: VOID AI Workforce Platform*
 *Analysis based on: Codebase review, feature roadmap, and market research*

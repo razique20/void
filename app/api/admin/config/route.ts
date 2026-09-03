@@ -12,11 +12,16 @@ export async function GET() {
     if (!config) {
       config = await GlobalConfig.create({
         featureFlags: {
-          actionAgents: false,
+          actionAgents: true,
           neuralVoice: false,
           vision: false,
           leadManagement: false,
           emailHub: false,
+          smartBooking: false,
+          autonomousGoals: false,
+          knowledgeSharing: false,
+          conversationBranching: false,
+          naturalLanguageAnalytics: false,
         }
       });
     }

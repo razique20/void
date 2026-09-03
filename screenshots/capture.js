@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 async function captureScreenshots() {
-  const outputDir = path.join(__dirname, 'output');
+  const outputDir = path.join(__dirname, '..', 'docs', 'screenshots');
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
   const browser = await chromium.launch({ headless: true });
@@ -17,22 +17,30 @@ async function captureScreenshots() {
   const mockupPath = path.join(__dirname, 'mockup.html');
   await page.goto(`file://${mockupPath}`, { waitUntil: 'networkidle', timeout: 60000 });
 
-  // Wait for Tailwind CSS to load
-  await page.waitForTimeout(2000);
+  // Wait for fonts to load
+  await page.waitForTimeout(3000);
 
-  // Define pages and their selectors
+  // Define pages and their selectors (matching new mockup structure)
   const pages = [
-    { name: '01_landing_page', selector: '.page:nth-child(1)' },
-    { name: '02_how_it_works', selector: '.page:nth-child(2)' },
-    { name: '03_use_cases', selector: '.page:nth-child(3)' },
-    { name: '04_onboarding_industry', selector: '.page:nth-child(4)' },
-    { name: '05_dashboard', selector: '.page:nth-child(5)' },
-    { name: '06_chat', selector: '.page:nth-child(6)' },
-    { name: '07_marketplace', selector: '.page:nth-child(7)' },
-    { name: '08_trust_security', selector: '.page:nth-child(8)' },
-    { name: '09_leads_crm', selector: '.page:nth-child(9)' },
-    { name: '10_email_hub', selector: '.page:nth-child(10)' },
-    { name: '11_mission_control', selector: '.page:nth-child(11)' },
+    { name: '01_landing_page', selector: '.page-landing' },
+    { name: '02_how_it_works', selector: '.page-how-it-works' },
+    { name: '03_use_cases', selector: '.page-use-cases' },
+    { name: '04_onboarding_industry', selector: '.page-onboarding' },
+    { name: '05_dashboard', selector: '.page-dashboard' },
+    { name: '06_chat', selector: '.page-chat-overview' },
+    { name: '07_marketplace', selector: '.page-marketplace' },
+    { name: '08_trust_security', selector: '.page-trust' },
+    { name: '09_leads_crm', selector: '.page-leads' },
+    { name: '10_email_hub', selector: '.page-email' },
+    { name: '11_mission_control', selector: '.page-chat-live' },
+    { name: '12_smart_booking', selector: '.page-booking' },
+    { name: '13_ai_goals', selector: '.page-goals' },
+    { name: '14_knowledge_hub', selector: '.page-knowledge' },
+    { name: '15_ab_testing', selector: '.page-abtests' },
+    { name: '16_customer_journey', selector: '.page-journey' },
+    { name: '17_sentiment_workflows', selector: '.page-sentiment' },
+    { name: '18_nl_analytics', selector: '.page-nlanalytics' },
+    { name: '19_revenue_attribution', selector: '.page-revenue' },
   ];
 
   for (const p of pages) {
@@ -43,7 +51,7 @@ async function captureScreenshots() {
         await element.screenshot({ path: filePath, type: 'png' });
         console.log(`✅ Captured: ${p.name}.png`);
       } else {
-        console.log(`⚠️  Element not found for: ${p.name}`);
+        console.log(`⚠️  Element not found for: ${p.name} (selector: ${p.selector})`);
       }
     } catch (err) {
       console.log(`❌ Error capturing ${p.name}: ${err.message}`);
@@ -52,10 +60,10 @@ async function captureScreenshots() {
 
   // Also capture full page
   try {
-    await page.screenshot({ 
-      path: path.join(outputDir, 'full_platform_mockup.png'), 
-      fullPage: true, 
-      type: 'png' 
+    await page.screenshot({
+      path: path.join(outputDir, 'full_platform_mockup.png'),
+      fullPage: true,
+      type: 'png'
     });
     console.log('✅ Captured: full_platform_mockup.png');
   } catch (err) {

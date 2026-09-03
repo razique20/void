@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Database, Plus, CheckCircle2, ShieldCheck, Cpu, RefreshCw, Zap, Globe } from 'lucide-react';
+import { Database, Plus, CheckCircle2, ShieldCheck, Cpu, RefreshCw, Zap, Globe, CalendarCheck, Target, Share2, GitBranch, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useData } from '@/lib/DataContext';
 import { motion, Variants } from 'framer-motion';
@@ -120,6 +120,36 @@ export default function NeuralConfigPage() {
               description="Autonomous email agent for connecting IMAP/SMTP mailboxes."
               isEnabled={globalConfig?.featureFlags?.emailHub}
               onToggle={() => toggleFeature('emailHub')}
+            />
+            <FeatureToggle
+              label="Smart Booking"
+              description="AI-powered meeting scheduling with Cal.com integration."
+              isEnabled={globalConfig?.featureFlags?.smartBooking}
+              onToggle={() => toggleFeature('smartBooking')}
+            />
+            <FeatureToggle
+              label="Autonomous Goals"
+              description="AI self-optimizing performance targets and goal tracking."
+              isEnabled={globalConfig?.featureFlags?.autonomousGoals}
+              onToggle={() => toggleFeature('autonomousGoals')}
+            />
+            <FeatureToggle
+              label="Knowledge Sharing"
+              description="Cross-agent knowledge graph with version control."
+              isEnabled={globalConfig?.featureFlags?.knowledgeSharing}
+              onToggle={() => toggleFeature('knowledgeSharing')}
+            />
+            <FeatureToggle
+              label="Conversation Branching"
+              description="What-if scenario analysis for agent optimization."
+              isEnabled={globalConfig?.featureFlags?.conversationBranching}
+              onToggle={() => toggleFeature('conversationBranching')}
+            />
+            <FeatureToggle
+              label="Natural Language Analytics"
+              description="Plain English queries with instant charts and insights."
+              isEnabled={globalConfig?.featureFlags?.naturalLanguageAnalytics}
+              onToggle={() => toggleFeature('naturalLanguageAnalytics')}
             />
           </div>
         </motion.div>

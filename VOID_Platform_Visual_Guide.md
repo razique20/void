@@ -16,7 +16,12 @@
 9. [Leads CRM Flow](#leads-crm-flow)
 10. [AI Email Hub Flow](#ai-email-hub-flow)
 11. [Mission Control Flow](#mission-control-flow)
-12. [Security & Trust](#security--trust)
+12. [AI Intelligence Suite](#ai-intelligence-suite)
+13. [Multi-Language & A/B Testing](#multi-language--ab-testing)
+14. [Advanced CRM Features](#advanced-crm-features)
+15. [Advanced Analytics Suite](#advanced-analytics-suite)
+16. [WhatsApp Business Catalog](#whatsapp-business-catalog)
+17. [Security & Trust](#security--trust)
 
 ---
 
@@ -51,6 +56,18 @@
 │  │  │  HUB    │ │  HUB    │ │ CONNECTOR│ │  PANEL  │       │   │
 │  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘       │   │
 │  │                                                         │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │            AI INTELLIGENCE SUITE (NEW)           │   │   │
+│  │  │  ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐       │   │   │
+│  │  │  │ SMART │ │  AI   │ │KNOWL. │ │BRANCH.│       │   │   │
+│  │  │  │BOOKING│ │ GOALS │ │ HUB   │ │  LAB  │       │   │   │
+│  │  │  └───────┘ └───────┘ └───────┘ └───────┘       │   │   │
+│  │  │  ┌───────┐ ┌───────┐ ┌───────┐ ┌───────┐       │   │   │
+│  │  │  │  A/B  │ │ N.L.  │ │  WA   │ │  CRM  │       │   │   │
+│  │  │  │TESTING│ │ANALYT.│ │CATALOG│ │  V2.0 │       │   │   │
+│  │  │  └───────┘ └───────┘ └───────┘ └───────┘       │   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  │                                                         │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                          │                                       │
 │                          ▼                                       │
@@ -59,7 +76,15 @@
 │  │  ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐       │   │
 │  │  │WHATSAPP │ │TELEGRAM │ │  WEB    │ │  EMAIL  │       │   │
 │  │  │   API   │ │   API   │ │  CHAT   │ │  SMTP   │       │   │
+│  │  │+CATALOG │ │         │ │         │ │         │       │   │
 │  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘       │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │              MULTI-LANGUAGE ENGINE (NEW)                 │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │  30+ Languages │ Heuristic Detection │ LLM Fallback│   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -84,8 +109,10 @@ START
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐  │   │
 │  │  │   VISIT     │───▶│   EXPLORE   │───▶│   DECIDE    │  │   │
-│  │  │  void.ai    │    │  Features   │    │   to Sign   │  │   │
+│  │  │  void.ai    │    │  Features   │    │  to Sign Up │  │   │
 │  │  └─────────────┘    └─────────────┘    └─────────────┘  │   │
+│  │         │                                    │            │   │
+│  │         └────── 14-Day Free Trial ──────────┘            │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                          │                                      │
 │                          ▼                                      │
@@ -107,12 +134,14 @@ START
 │  └─────────────────────────────────────────────────────────┘   │
 │                          │                                      │
 │                          ▼                                      │
-│  PHASE 4: OPTIMIZATION                                         │
+│  PHASE 4: OPTIMIZATION (NEW)                                   │
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐  │   │
-│  │  │   MONITOR   │───▶│   OPTIMIZE  │───▶│    SCALE    │  │   │
-│  │  │ PERFORMANCE │    │   & TUNE    │    │   FLEET     │  │   │
+│  │  │  A/B TEST   │───▶│   ANALYZE   │───▶│   SCALE     │  │   │
+│  │  │  AGENTS     │    │  & OPTIMIZE │    │   FLEET     │  │   │
 │  │  └─────────────┘    └─────────────┘    └─────────────┘  │   │
+│  │         │                                    │            │   │
+│  │         └────── AI Goals & Analytics ────────┘            │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 END
@@ -132,6 +161,7 @@ END
 - **Headline**: "Hire an AI workforce that never sleeps."
 - **Subheadline**: "Deploy autonomous agents that handle support, sales, and workflows 24/7."
 - **CTA Button**: "Talk to our team" (for signed-out users) or "Deploy an Agent" (for signed-in users)
+- **14-Day Free Trial**: No credit card required — start immediately
 - **Floating UI Cards**:
   - Agent Deployed card (shows active status)
   - Performance Chart (shows resolution rate)
@@ -141,6 +171,7 @@ END
 #### Metrics Band
 | Metric | Value | Description |
 |--------|-------|-------------|
+| Free Trial | 14 Days | No credit card required |
 | Beta | Currently in early access | Platform status |
 | Free | Tier to get started | Pricing entry point |
 | <100ms | Target response time | Performance guarantee |
@@ -317,6 +348,31 @@ END
   - Active Gateways count
 - **Events Log**: Terminal-style event logging
 
+### Sidebar Navigation (3 Sections)
+
+```
+┌──────────────────────────────────────┐
+│  CORE INTELLIGENCE                   │
+│  ├── Overview                        │
+│  ├── Hire Agent                      │
+│  ├── Brain & Knowledge               │
+│  └── Live Chat                       │
+│                                      │
+│  WORKSPACES                          │
+│  ├── Mission Control                 │
+│  └── AI Email Hub                    │
+│                                      │
+│  AI INTELLIGENCE                     │
+│  ├── Smart Booking                   │
+│  ├── AI Goals                        │
+│  ├── Knowledge Hub                   │
+│  ├── Branching Lab                   │
+│  ├── AI Analytics                    │
+│  ├── A/B Testing                     │
+│  └── WA Catalog                      │
+└──────────────────────────────────────┘
+```
+
 ---
 
 # Chat Flow
@@ -337,6 +393,17 @@ END
 - **Telegram**: Bot API integration
 - **Web Chat**: Embedded widget for websites
 - **Email**: SMTP integration for email support
+
+#### Multi-Language Support *(New)*
+- **Auto-Detection**: AI detects customer language automatically
+- **30+ Languages**: English, Spanish, French, German, Chinese, Japanese, Korean, Arabic, Hindi, and more
+- **Zero-Token Heuristics**: Character patterns detect most languages without LLM calls
+- **Translation**: Human agents can translate conversations during takeover
+
+#### Context Windowing *(New)*
+- **Smart Memory**: Summarizes older messages to preserve context
+- **Importance Scoring**: Prioritizes messages with actions, leads, and decisions
+- **Token Optimization**: Reduces usage by 40-60% without losing critical context
 
 #### Chat Interface Components:
 1. **Chat Header**: Agent name, status, and controls
@@ -400,6 +467,7 @@ END
 #### Filter Bar
 - **Search**: Filter by name, email, or company
 - **Status Filters**: All / New / Exported / Junk
+- **Saved Filters** *(New)*: Save and reuse custom search filters
 
 #### Leads Table
 | Column | Description |
@@ -407,13 +475,29 @@ END
 | Contact | Lead name and email |
 | Company | Organization name |
 | Source | Channel (WhatsApp, Telegram, Web) |
-| Score | AI-powered lead score (0-100) |
+| Score | AI-powered lead score (0-100) with deal value estimation *(New)* |
 | Status | New / Exported / Junk |
-| Actions | Export, Junk, View, Restore |
+| Actions | Export, Junk, View, Restore, Bulk Update *(New)* |
 
 #### Pagination
 - Navigate through leads pages
 - Shows total lead count
+
+### New CRM Features:
+
+#### Dynamic Lead Segmentation *(New)*
+- AI automatically segments leads based on behavior and engagement
+- Segments update in real-time as new interactions occur
+- Custom segment rules configurable per business
+
+#### Lead Activity Timeline *(New)*
+- Visual timeline of all interactions per lead
+- Status change history with timestamps
+- Channel-specific activity tracking
+
+#### Bulk Lead Status Update *(New)*
+- Select multiple leads and update status simultaneously
+- Efficient pipeline management for high-volume operations
 
 ---
 
@@ -476,6 +560,7 @@ END
   - User messages (left-aligned)
   - AI/Human responses (right-aligned)
   - Timestamps and channel info
+  - AI Conversation Summary *(New)*
 - **Takeover Banner**: AI status notification
 - **Input Area**: Message composition with send button
 
@@ -489,6 +574,661 @@ END
 - **Instant Takeover**: Take control of any conversation
 - **Multi-Channel View**: See all channels in one place
 - **AI Status Tracking**: Monitor AI vs human handling
+- **Conversation PDF Export** *(New)*: Export conversations to PDF for documentation
+
+---
+
+# AI Intelligence Suite
+
+## Smart Meeting Booking *(New)*
+
+![Smart Meeting Booking](docs/screenshots/12_smart_booking.png)
+
+### Booking Flow:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                 SMART MEETING BOOKING                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  CUSTOMER: "I'd like to book a demo for next week"             │
+│       │                                                         │
+│       ▼                                                         │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  AI INTENT DETECTION                                    │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │  Detected: BOOKING_INTENT                       │   │   │
+│  │  │  Confidence: 95%                                │   │   │
+│  │  │  Entity: Demo Meeting                           │   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│                          ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  AVAILABILITY CHECK                                    │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │  Calendar: Cal.com Integration                  │   │   │
+│  │  │  Time Zones: Auto-detected                      │   │   │
+│  │  │  Available Slots: [Mon 2pm] [Tue 10am] [Wed 3pm]│   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│                          ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  BOOKING CONFIRMATION                                  │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │  ✅ Demo booked for Tuesday 10:00 AM EST        │   │   │
+│  │  │  📧 Calendar invite sent to customer@email.com  │   │   │
+│  │  │  🔗 Meeting link: meet.void.ai/abc123           │   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Features:
+- **Cal.com Integration**: Real-time calendar sync
+- **Intent Detection**: AI recognizes booking requests in natural conversation
+- **Time Zone Support**: Automatic time zone detection and conversion
+- **Plan Gating**: Available for Pro/Enterprise plans
+
+---
+
+## Autonomous Goal Setting *(New)*
+
+![AI Goals](docs/screenshots/13_ai_goals.png)
+
+### Goal Management Flow:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                AUTONOMOUS GOAL SETTING                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  GOAL TYPES                                             │   │
+│  │  ┌───────────────┐  ┌───────────────┐  ┌─────────────┐  │   │
+│  │  │ Response Time │  │  Satisfaction │  │ Conversion  │  │   │
+│  │  │   < 100ms     │  │    > 4.5/5    │  │   > 25%     │  │   │
+│  │  │   ████████░░  │  │   █████████░  │  │  ██████░░░  │  │   │
+│  │  │   80% Complete│  │   90% Complete│  │  60% Done   │  │   │
+│  │  └───────────────┘  └───────────────┘  └─────────────┘  │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│                          ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  AI OPTIMIZATION ENGINE                                 │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │  Based on goal performance, AI suggests:        │   │   │
+│  │  │  • Adjusting agent tone for higher satisfaction  │   │   │
+│  │  │  • Adding knowledge base entries for faster      │   │   │
+│  │  │    resolution                                     │   │   │
+│  │  │  • Modifying conversation flow for better        │   │   │
+│  │  │    conversion                                     │   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Cross-Agent Knowledge Sharing *(New)*
+
+![Knowledge Hub](docs/screenshots/14_knowledge_hub.png)
+
+### Knowledge Graph Flow:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              CROSS-AGENT KNOWLEDGE SHARING                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                    KNOWLEDGE GRAPH                      │   │
+│  │                                                         │   │
+│  │     ┌─────────┐     ┌─────────┐     ┌─────────┐       │   │
+│  │     │ Agent A │────▶│ Shared  │◀────│ Agent B │       │   │
+│  │     │ (Sales) │     │Knowledge│     │(Support)│       │   │
+│  │     └─────────┘     │  Graph  │     └─────────┘       │   │
+│  │                      └────┬────┘                        │   │
+│  │                           │                             │   │
+│  │                      ┌────┴────┐                        │   │
+│  │                      │Version  │                        │   │
+│  │                      │Control  │                        │   │
+│  │                      └─────────┘                        │   │
+│  │                                                         │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  Features:                                                      │
+│  • Agents share learned knowledge automatically                 │
+│  • Version control tracks knowledge evolution                   │
+│  • Conflict resolution merges contradictory information        │
+│  • Full-text search across all shared knowledge                 │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Conversation Branching Lab *(New)*
+
+### Branching Analysis Flow:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              CONVERSATION BRANCHING LAB                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ORIGINAL CONVERSATION                                          │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  User: "I want to return this product"                  │   │
+│  │  AI: "I'd be happy to help with your return..."         │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│              ┌───────────┼───────────┐                          │
+│              ▼           ▼           ▼                          │
+│  ┌───────────────┐ ┌───────────┐ ┌───────────────┐            │
+│  │  BRANCH A     │ │ BRANCH B  │ │  BRANCH C     │            │
+│  │  "Standard    │ │ "Empathetic│ │ "Upsell      │            │
+│  │   Return"     │ │  Return"  │ │  Exchange"    │            │
+│  │               │ │           │ │               │            │
+│  │ Conv: 5 msgs  │ │ Conv: 8   │ │ Conv: 12 msgs│            │
+│  │ CSAT: 3.8/5   │ │ CSAT: 4.5 │ │ CSAT: 4.2/5  │            │
+│  │ Conv: 15%     │ │ Conv: 22% │ │ Conv: 35%     │            │
+│  └───────────────┘ └───────────┘ └───────────────┘            │
+│                                                                 │
+│  AI RECOMMENDATION: Branch B (Empathetic Return)               │
+│  Reason: Highest satisfaction with good conversion rate         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Natural Language Analytics *(New)*
+
+![Natural Language Analytics](docs/screenshots/18_nl_analytics.png)
+
+### Analytics Query Flow:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              NATURAL LANGUAGE ANALYTICS                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  QUERY INPUT                                                    │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  💬 "Show me the top 5 conversations by lead score     │   │
+│  │      this week, grouped by channel"                     │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│                          ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  AI QUERY PARSER                                        │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │  Entities: conversations, lead_score, week       │   │   │
+│  │  │  Grouping: channel                               │   │   │
+│  │  │  Limit: 5                                        │   │   │
+│  │  │  Sort: lead_score DESC                           │   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│                          ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  GENERATED CHART                                        │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │  📊 Bar Chart: Top Conversations by Channel     │   │   │
+│  │  │                                                   │   │   │
+│  │  │  WhatsApp  ████████████████  Score: 92           │   │   │
+│  │  │  Telegram  ██████████████    Score: 87           │   │   │
+│  │  │  Web       ████████████      Score: 78           │   │   │
+│  │  │  Email     ██████████        Score: 71           │   │   │
+│  │  │  WhatsApp  ████████          Score: 65           │   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## A/B Testing Flow *(New)*
+
+![A/B Testing](docs/screenshots/15_ab_testing.png)
+
+### A/B Test Creation & Analysis:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    A/B TESTING FLOW                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  TEST SETUP                                             │   │
+│  │  ┌───────────────────────┐  ┌───────────────────────┐   │   │
+│  │  │  CONTROL VARIANT      │  │  TEST VARIANT         │   │   │
+│  │  │  ─────────────        │  │  ──────────           │   │   │
+│  │  │  Tone: Professional   │  │  Tone: Friendly       │   │   │
+│  │  │  Traffic: 50%         │  │  Traffic: 50%         │   │   │
+│  │  │  Knowledge: Base KB   │  │  Knowledge: Base KB   │   │   │
+│  │  └───────────────────────┘  └───────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│                          ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  TRAFFIC SPLITTING                                      │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │  Deterministic Hash (SHA-256)                    │   │   │
+│  │  │  Same user → Same variant (always)               │   │   │
+│  │  │  hash(userId:testId) → variant assignment        │   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│                          ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  RESULTS                                                │   │
+│  │  ┌───────────────────────┐  ┌───────────────────────┐   │   │
+│  │  │  CONTROL              │  │  TEST (WINNER) 🏆     │   │   │
+│  │  │  Conversations: 1,247 │  │  Conversations: 1,253 │   │   │
+│  │  │  Conversion: 18.2%    │  │  Conversion: 24.7%    │   │   │
+│  │  │  Satisfaction: 4.1/5  │  │  Satisfaction: 4.6/5  │   │   │
+│  │  │  p-value: 0.003       │  │  Confidence: 99.7%    │   │   │
+│  │  └───────────────────────┘  └───────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# Multi-Language & A/B Testing
+
+## Multi-Language Auto-Detection *(New)*
+
+### Detection Flow:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              MULTI-LANGUAGE DETECTION                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  INPUT: Customer message                                        │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  "Bonjour, je voudrais connaître le prix de ce produit" │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│              ┌───────────┴───────────┐                          │
+│              ▼                       ▼                          │
+│  ┌───────────────────┐   ┌───────────────────┐                 │
+│  │  HEURISTIC (Fast) │   │  LLM (Fallback)   │                 │
+│  │                   │   │                   │                 │
+│  │  Character-based: │   │  Only used when    │                 │
+│  │  zh, ja, ko, ar,  │   │  heuristic fails   │                 │
+│  │  he, hi, th, ru   │   │  (ambiguous text)  │                 │
+│  │                   │   │                   │                 │
+│  │  Word patterns:   │   │  Minimal tokens:   │                 │
+│  │  es, fr, de, it,  │   │  200 chars input   │                 │
+│  │  pt, nl           │   │  10 tokens output  │                 │
+│  │                   │   │                   │                 │
+│  │  0 tokens used!   │   │  ~50 tokens used   │                 │
+│  │  90%+ accuracy    │   │  95%+ accuracy     │                 │
+│  └───────────────────┘   └───────────────────┘                 │
+│              │                       │                          │
+│              └───────────┬───────────┘                          │
+│                          ▼                                      │
+│  RESULT: French (fr) - 95% confidence                          │
+│                                                                 │
+│  RESPONSE: AI responds in French automatically                  │
+│                                                                 │
+│  SUPPORTED LANGUAGES (30+):                                     │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  🇺🇸 English    🇪🇸 Spanish    🇫🇷 French    🇩🇪 German    │   │
+│  │  🇮🇹 Italian    🇵🇹 Portuguese  🇳🇱 Dutch     🇷🇺 Russian   │   │
+│  │  🇨🇳 Chinese    🇯🇵 Japanese   🇰🇷 Korean    🇸🇦 Arabic     │   │
+│  │  🇮🇳 Hindi      🇹🇷 Turkish    🇵🇱 Polish    🇻🇳 Vietnamese │   │
+│  │  🇹🇭 Thai       🇮🇩 Indonesian 🇸🇪 Swedish   🇳🇴 Norwegian  │   │
+│  │  🇩🇰 Danish     🇫🇮 Finnish    🇨🇿 Czech     🇸🇰 Slovak     │   │
+│  │  🇷🇴 Romanian   🇭🇺 Hungarian  🇬🇷 Greek     🇮🇱 Hebrew     │   │
+│  │  🇺🇦 Ukrainian  🇲🇾 Malay      🇵🇭 Filipino                   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# Advanced CRM Features
+
+## Customer Journey Mapping *(New)*
+
+![Customer Journey](docs/screenshots/16_customer_journey.png)
+
+### Journey Visualization:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              CUSTOMER JOURNEY MAPPING                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  CUSTOMER: John Smith (john@example.com)                       │
+│                                                                 │
+│  ┌──────┐   ┌──────┐   ┌──────┐   ┌──────┐   ┌──────┐        │
+│  │First │──▶│Product│──▶│ Demo │──▶│Negot-│──▶│ CLOSE│        │
+│  │Contact│  │Browse │   │ Booked│  │ iation│  │  ✅  │        │
+│  │  📱   │  │  🔍   │   │  📅  │   │  💬  │   │  🎉  │        │
+│  └──────┘   └──────┘   └──────┘   └──────┘   └──────┘        │
+│                                                                 │
+│  Channel: WhatsApp    Source: Website CTA                       │
+│  Duration: 5 days     Value: $12,500                           │
+│                                                                 │
+│  Friction Points Detected:                                      │
+│  ⚠️ 3-step delay in onboarding (reduced drop-off by 35%)        │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Predictive Lead Scoring v2.0 *(New)*
+
+### Scoring Visualization:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              PREDICTIVE LEAD SCORING v2.0                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  LEAD SCORE: 87/100           DEAL VALUE: $45,000       │   │
+│  │  ████████████████████████████░░░░  (87%)                │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  SCORING FACTORS:                                               │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  📊 Engagement Score:     92/100  ████████████████████  │   │
+│  │  🎯 Intent Signals:       85/100  █████████████████     │   │
+│  │  📈 Historical Pattern:   78/100  ████████████████      │   │
+│  │  🏢 Company Fit:          91/100  ████████████████████  │   │
+│  │  ⏱️  Response Time:        88/100  ██████████████████    │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  DEAL VALUE ESTIMATION:                                         │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Based on: Industry, company size, engagement depth,     │   │
+│  │  conversation topics, and historical conversion patterns │   │
+│  │                                                          │   │
+│  │  Confidence: 82%    Range: $38,000 - $52,000            │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Sentiment-Triggered Workflows *(New)*
+
+![Sentiment Workflows](docs/screenshots/17_sentiment_workflows.png)
+
+### Workflow Flow:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              SENTIMENT-TRIGGERED WORKFLOWS                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  REAL-TIME SENTIMENT ANALYSIS                                   │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Customer: "This is terrible, I've been waiting 2 hours"│   │
+│  │                                                          │   │
+│  │  Sentiment: 😡 Negative (-0.85)                         │   │
+│  │  Urgency: HIGH                                          │   │
+│  │  Topic: Wait Time Complaint                             │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│                          ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  WORKFLOW TRIGGER                                       │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │  Rule: sentiment < -0.5 AND urgency == HIGH     │   │   │
+│  │  │  Action: ESCALATE_TO_HUMAN                       │   │   │
+│  │  │  Priority: IMMEDIATE                             │   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│                          ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  OUTCOME                                                │   │
+│  │  ✅ Conversation escalated to senior agent              │   │
+│  │  ✅ Customer received priority response in <2 minutes   │   │
+│  │  ✅ Retention offer sent: 20% discount on next order    │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Automated Deal Pipeline *(New)*
+
+### Pipeline Visualization:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              AUTOMATED DEAL PIPELINE                            │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
+│  │   LEAD   │─▶│QUALIFIED │─▶│PROPOSAL  │─▶│ NEGOTIAT.│       │
+│  │   12     │  │    8     │  │    5     │  │    3     │       │
+│  │ $480K    │  │ $320K    │  │ $200K    │  │ $150K    │       │
+│  └──────────┘  └──────────┘  └──────────┘  └──────────┘       │
+│                                                  │              │
+│                                                  ▼              │
+│                                          ┌──────────┐          │
+│                                          │   WON    │          │
+│                                          │    2     │          │
+│                                          │ $95K     │          │
+│                                          └──────────┘          │
+│                                                                 │
+│  Velocity: 2.3 days/stage (industry avg: 4.1)                  │
+│  Win Rate: 28.6% (industry avg: 21%)                           │
+│  Avg Deal Size: $47,500                                         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# Advanced Analytics Suite
+
+## Revenue Attribution Analytics *(New)*
+
+![Revenue Attribution](docs/screenshots/19_revenue_attribution.png)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              REVENUE ATTRIBUTION ANALYTICS                      │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  TOTAL REVENUE ATTRIBUTED: $127,500                      │   │
+│  │  ████████████████████████████████████████  (+18% MoM)    │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  BY CHANNEL:                                                    │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  WhatsApp    ████████████████████  $52,000  (41%)        │   │
+│  │  Web Chat    ██████████████        $38,000  (30%)        │   │
+│  │  Telegram    ██████████            $22,500  (18%)        │   │
+│  │  Email       ██████                $15,000  (11%)        │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  BY AGENT:                                                       │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Agent Alpha    $45,000  ████████████████████           │   │
+│  │  Agent Beta     $38,000  ████████████████               │   │
+│  │  Agent Gamma    $27,500  ████████████                   │   │
+│  │  Agent Delta    $17,000  ████████                       │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Topic Clustering & Trend Detection *(New)*
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              TOPIC CLUSTERING & TREND DETECTION                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  DETECTED TOPICS (This Week):                                   │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  📦 Shipping Delays        ████████████  342 convos ↑15%│   │
+│  │  💰 Pricing Questions      ██████████    287 convos ↓5% │   │
+│  │  🔧 Technical Issues       ████████      234 convos ↑8% │   │
+│  │  📋 Order Status           ██████        178 convos ↓2% │   │
+│  │  🔄 Returns & Refunds      █████         145 convos ↑22%│   │
+│  │  ⚠️  NEW: Product Defects   ███           89 convos  🆕  │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  TREND ALERT: "Returns & Refunds" increased 22% week-over-week  │
+│  AI RECOMMENDATION: Review return policy messaging in agents    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Agent Performance Analytics *(New)*
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              AGENT PERFORMANCE ANALYTICS                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  AGENT: Sales Alpha                                             │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Overall Score: 92/100  ████████████████████████        │   │
+│  │                                                          │   │
+│  │  Resolution Rate:     94%  ████████████████████         │   │
+│  │  Avg Response Time:   67ms ████████████████████████     │   │
+│  │  Customer Sat:        4.7/5 ████████████████████        │   │
+│  │  Conversion Rate:     28%  ████████████████             │   │
+│  │  Conversations/Day:   156  ████████████████████         │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  IMPROVEMENT RECOMMENDATIONS:                                   │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  💡 Add knowledge entry for "enterprise pricing"        │   │
+│  │     (12% of questions unanswered)                       │   │
+│  │  💡 Adjust tone to be more concise in follow-ups        │   │
+│  │     (response length correlates with satisfaction)       │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Conversation Quality Analytics *(New)*
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              CONVERSATION QUALITY ANALYTICS                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  QUALITY SCORE DISTRIBUTION:                                    │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  Excellent (90-100)  ████████████████  42%               │   │
+│  │  Good (70-89)        ██████████        28%               │   │
+│  │  Fair (50-69)        ████████          18%               │   │
+│  │  Poor (<50)          ████              12%               │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  COMPLIANCE MONITORING:                                         │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  ✅ Brand Tone Compliance:    96%                       │   │
+│  │  ✅ Policy Adherence:         94%                       │   │
+│  │  ⚠️  Response Accuracy:       89% (target: 95%)         │   │
+│  │  ✅ First-Contact Resolution: 78%                       │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Churn Analytics *(New)*
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    CHURN ANALYTICS                              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  CHURN RISK SEGMENTS:                                           │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  🔴 High Risk (Churn >60%):     23 customers  ($184K)   │   │
+│  │  🟡 Medium Risk (Churn 30-60%): 47 customers  ($376K)   │   │
+│  │  🟢 Low Risk (Churn <30%):     312 customers ($2.4M)    │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  TOP CHURN REASONS:                                             │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  1. Slow Response Time      34%  ████████████████       │   │
+│  │  2. Poor Resolution Quality 28%  █████████████          │   │
+│  │  3. Missing Features        22%  ██████████             │   │
+│  │  4. Pricing Concerns        16%  ████████               │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  RETENTION WORKFLOWS TRIGGERED: 156 this month                  │
+│  SUCCESS RATE: 68% (customers retained)                         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+# WhatsApp Business Catalog *(New)*
+
+## Catalog Integration Flow:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              WHATSAPP BUSINESS CATALOG                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  CATALOG SYNC                                           │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │  📦 Products Synced: 247                        │   │   │
+│  │  │  📁 Categories: 12                              │   │   │
+│  │  │  🔄 Last Sync: 2 minutes ago                    │   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                          │                                      │
+│                          ▼                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │  AI PRODUCT RECOMMENDATION                              │   │
+│  │  ┌─────────────────────────────────────────────────┐   │   │
+│  │  │  Customer: "I'm looking for a wireless headset"  │   │   │
+│  │  │                                                  │   │   │
+│  │  │  AI recommends:                                  │   │   │
+│  │  │  🎧 ProSound Elite    $149.99  ⭐ 4.8/5         │   │   │
+│  │  │  🎧 AirWave Pro       $129.99  ⭐ 4.6/5         │   │   │
+│  │  │  🎧 BassKing Max      $89.99   ⭐ 4.4/5         │   │   │
+│  │  └─────────────────────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  Features:                                                      │
+│  • Relevance-scored search across title, description, category  │
+│  • AI injects catalog data into conversation context            │
+│  • Plan-gated: Pro and Enterprise only                          │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
@@ -548,6 +1288,16 @@ END
 12. **Admin Panel** - Platform overview
 13. **Agent Details** - Channel configuration
 
+### New Feature Screenshots *(New)*:
+14. **Smart Booking** (`docs/screenshots/12_smart_booking.png`) - Cal.com integration flow
+15. **AI Goals** (`docs/screenshots/13_ai_goals.png`) - Goal progress dashboard
+16. **Knowledge Hub** (`docs/screenshots/14_knowledge_hub.png`) - Shared knowledge graph
+17. **A/B Testing** (`docs/screenshots/15_ab_testing.png`) - Test creation and results
+18. **Customer Journey** (`docs/screenshots/16_customer_journey.png`) - Visual timeline
+19. **Sentiment Workflows** (`docs/screenshots/17_sentiment_workflows.png`) - Workflow triggers
+20. **NL Analytics** (`docs/screenshots/18_nl_analytics.png`) - Natural language query interface
+21. **Revenue Attribution** (`docs/screenshots/19_revenue_attribution.png`) - Revenue tracking
+
 ---
 
 # Platform Flow Summary
@@ -561,7 +1311,7 @@ START
 ┌─────────────────────────────────────────────────────────────────┐
 │  1. VISIT void.ai                                               │
 │  2. EXPLORE landing page features                               │
-│  3. CLICK "Talk to our team" or "Deploy an Agent"              │
+│  3. START 14-day free trial (no credit card required)           │
 └─────────────────────────────────────────────────────────────────┘
   │
   ▼
@@ -593,7 +1343,28 @@ START
 └─────────────────────────────────────────────────────────────────┘
   │
   ▼
-END (Ongoing operation and optimization)
+┌─────────────────────────────────────────────────────────────────┐
+│  NEW: AI INTELLIGENCE PHASE                                     │
+│                                                                 │
+│  17. A/B TEST agents for performance optimization               │
+│  18. SET autonomous goals for continuous improvement             │
+│  19. ANALYZE conversations with natural language queries        │
+│  20. SHARE knowledge across agents                              │
+│  21. BRANCH conversations for what-if analysis                  │
+│  22. BOOK meetings with Smart Booking integration               │
+│  23. SYNC WhatsApp product catalog                              │
+│  24. MAP customer journeys for funnel optimization              │
+│  25. TRIGGER sentiment-based retention workflows                │
+│  26. ATTRIBUTE revenue to agents and channels                   │
+│  27. DETECT topic trends and emerging issues                    │
+│  28. SCORE leads with predictive deal value estimation          │
+│  29. AUTOMATE deal pipeline management                          │
+│  30. DETECT churn risk and trigger retention                    │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+  │
+  ▼
+END (Ongoing operation, optimization, and AI-driven improvement)
 ```
 
 ---
@@ -611,5 +1382,5 @@ For additional details on specific features, refer to the technical documentatio
 
 ---
 
-*VOID Platform Visual Guide - Version 1.0*
-*Last Updated: August 30, 2026*
+*VOID Platform Visual Guide - Version 2.0*
+*Last Updated: September 3, 2026*
