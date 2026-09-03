@@ -32,8 +32,7 @@ import {  Menu,
   Tags,
   AlertTriangle,
   Trophy,
-  GraduationCap,
-  Link2
+  GraduationCap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -177,7 +176,6 @@ export default function Navbar() {
       title: 'Workspaces & CRM',
       links: [
         { label: 'Leads CRM', href: '/dashboard/leads', icon: Database, locked: !hasFeature('lead_capture') },
-        { label: 'CRM Sync', href: '/dashboard/crm', icon: Link2, locked: !hasFeature('crm_sync') },
         { label: 'Customer Journey', href: '/dashboard/journey', icon: Route, locked: !hasFeature('lead_capture') },
         { label: 'Invoices', href: '/dashboard/invoices', icon: FileText, locked: !hasFeature('lead_capture') },
         { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
