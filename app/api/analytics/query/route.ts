@@ -50,81 +50,160 @@ export async function POST(req: Request) {
 
     const groq = new Groq({ apiKey });
 
-    // Get data context for the AI
+    // ── Server-side aggregation (replaces sending 200 raw records) ──
     const now = new Date();
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(now.getDate() - 30);
 
-    const [totalConversations, totalLeads, recentConversations, recentLeads] = await Promise.all([
+    const [
+      totalConversations,
+      totalLeads,
+      convByChannel,
+      convByWorker,
+      dailyConvVolume,
+      leadBySource,
+      leadBySentiment,
+      leadByStatus,
+      dailyLeadVolume,
+      recentConversations,
+      recentLeads,
+    ] = await Promise.all([
+      // Counts
       Conversation.countDocuments({ workerId: { $in: workerIds } }),
       Lead.countDocuments({ userId }),
+
+      // Conversations grouped by channel
+      Conversation.aggregate([
+        { $match: { workerId: { $in: workerIds } } },
+        { $group: { _id: '$channel', count: { $sum: 1 }, avgMessages: { $avg: { $size: '$messages' } } } },
+        { $sort: { count: -1 } },
+      ]),
+
+      // Conversations grouped by worker
+      Conversation.aggregate([
+        { $match: { workerId: { $in: workerIds } } },
+        { $group: { _id: '$workerId', count: { $sum: 1 } } },
+        { $lookup: { from: 'workers', localField: '_id', foreignField: '_id', as: 'worker' } },
+        { $unwind: { path: '$worker', preserveNullAndEmptyArrays: true } },
+        { $project: { name: '$worker.name', count: 1 } },
+        { $sort: { count: -1 } },
+        { $limit: 10 },
+      ]),
+
+      // Daily conversation volume (last 30 days)
+      Conversation.aggregate([
+        { $match: { workerId: { $in: workerIds }, createdAt: { $gte: thirtyDaysAgo } } },
+        { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } },
+        { $sort: { _id: 1 } },
+      ]),
+
+      // Leads grouped by source
+      Lead.aggregate([
+        { $match: { userId } },
+        { $group: { _id: '$source', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+      ]),
+
+      // Leads grouped by sentiment
+      Lead.aggregate([
+        { $match: { userId } },
+        { $group: { _id: '$sentiment', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+      ]),
+
+      // Leads grouped by status
+      Lead.aggregate([
+        { $match: { userId } },
+        { $group: { _id: '$status', count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+      ]),
+
+      // Daily lead volume (last 30 days)
+      Lead.aggregate([
+        { $match: { userId, createdAt: { $gte: thirtyDaysAgo } } },
+        { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, count: { $sum: 1 } } },
+        { $sort: { _id: 1 } },
+      ]),
+
+      // Small sample for reference (15 recent conversations)
       Conversation.find({ workerId: { $in: workerIds } })
         .sort({ createdAt: -1 })
-        .limit(100)
-        .select('channel createdAt messages workerId externalId')
+        .limit(15)
+        .select('channel createdAt messages workerId')
         .lean(),
+
+      // Small sample for reference (15 recent leads)
       Lead.find({ userId })
         .sort({ createdAt: -1 })
-        .limit(100)
-        .select('source sentiment contactInfo interest createdAt status')
+        .limit(15)
+        .select('source sentiment status createdAt interest')
         .lean(),
     ]);
 
-    // Prepare data summary for AI
-    const dataContext = `
-Available Data Summary:
+    // ── Build compact context string (~800-1200 tokens vs ~8000 before) ──
+    const convByChannelStr = convByChannel
+      .map((c: any) => `${c._id || 'unknown'}: ${c.count} conversations (avg ${Math.round(c.avgMessages || 0)} msgs)`)
+      .join(', ') || 'none';
+
+    const convByWorkerStr = convByWorker
+      .map((w: any) => `${w.name || 'unknown'}: ${w.count}`)
+      .join(', ') || 'none';
+
+    const dailyConvStr = dailyConvVolume
+      .map((d: any) => `${d._id}: ${d.count}`)
+      .join(', ') || 'none';
+
+    const leadBySourceStr = leadBySource
+      .map((l: any) => `${l._id || 'unknown'}: ${l.count}`)
+      .join(', ') || 'none';
+
+    const leadBySentimentStr = leadBySentiment
+      .map((l: any) => `${l._id || 'unknown'}: ${l.count}`)
+      .join(', ') || 'none';
+
+    const leadByStatusStr = leadByStatus
+      .map((l: any) => `${l._id || 'unknown'}: ${l.count}`)
+      .join(', ') || 'none';
+
+    const dailyLeadStr = dailyLeadVolume
+      .map((d: any) => `${d._id}: ${d.count}`)
+      .join(', ') || 'none';
+
+    const recentConvsSample = recentConversations
+      .map((c: any) => `{channel:${c.channel}, date:${new Date(c.createdAt).toISOString().slice(0,10)}, msgs:${c.messages?.length || 0}}`)
+      .join(' ');
+
+    const recentLeadsSample = recentLeads
+      .map((l: any) => `{source:${l.source}, sentiment:${l.sentiment}, status:${l.status}, date:${new Date(l.createdAt).toISOString().slice(0,10)}, interest:${(l.interest || '').slice(0,40)}}`)
+      .join(' ');
+
+    const dataContext = `Available Data (aggregated):
 - Total Conversations: ${totalConversations}
 - Total Leads: ${totalLeads}
-- Workers: ${userWorkers.map((w: any) => w.name).join(', ')}
-
-Recent Conversations (last 100):
-${recentConversations.map((c: any) => `Channel: ${c.channel}, Date: ${new Date(c.createdAt).toLocaleDateString()}, Messages: ${c.messages?.length || 0}`).join('\n')}
-
-Recent Leads (last 100):
-${recentLeads.map((l: any) => `Source: ${l.source}, Sentiment: ${l.sentiment}, Status: ${l.status}, Date: ${new Date(l.createdAt).toLocaleDateString()}`).join('\n')}
-`;
+- Workers: ${userWorkers.map((w: any) => w.name).join(', ') || 'none'}
+- Conversations by Channel: ${convByChannelStr}
+- Conversations by Worker: ${convByWorkerStr}
+- Daily Conversation Volume (last 30d): ${dailyConvStr}
+- Leads by Source: ${leadBySourceStr}
+- Leads by Sentiment: ${leadBySentimentStr}
+- Leads by Status: ${leadByStatusStr}
+- Daily Lead Volume (last 30d): ${dailyLeadStr}
+- Recent Conversations (sample of ${recentConversations.length}): ${recentConvsSample || 'none'}
+- Recent Leads (sample of ${recentLeads.length}): ${recentLeadsSample || 'none'}`;
 
     // Use AI to understand the question and generate appropriate response
-    const systemPrompt = `You are a data analyst AI that helps users understand their business data. 
+    const systemPrompt = `You are a data analyst. The user's data is already aggregated server-side — use the numbers directly, do NOT fabricate data.
 
-Based on the user's question and the available data, you should:
-1. Understand what the user is asking
-2. Determine what data would answer their question
-3. Generate appropriate chart/table configurations
-4. Provide insights and recommendations
-
-Respond with a JSON object containing:
+Respond with JSON:
 {
-  "understanding": "What the user is asking about",
-  "queryType": "kpi" | "chart" | "table" | "insight",
-  "results": [
-    {
-      "type": "kpi" | "chart" | "table" | "insight",
-      "title": "Descriptive title",
-      "data": {}, // Chart data, table rows, or KPI values
-      "config": {} // Chart configuration (type: bar/line/pie, axes, colors, etc.)
-    }
-  ],
-  "insights": {
-    "summary": "Executive summary of findings",
-    "keyFindings": ["finding 1", "finding 2"],
-    "recommendations": ["recommendation 1", "recommendation 2"],
-    "confidence": 85
-  },
-  "dateRange": {
-    "start": "YYYY-MM-DD",
-    "end": "YYYY-MM-DD"
-  }
+  "understanding": "string",
+  "queryType": "kpi|chart|table|insight",
+  "results": [{ "type": "kpi|chart|table|insight", "title": "string", "data": {}, "config": {} }],
+  "insights": { "summary": "string", "keyFindings": ["string"], "recommendations": ["string"], "confidence": 0-100 },
+  "dateRange": { "start": "YYYY-MM-DD", "end": "YYYY-MM-DD" }
 }
 
-Chart types available: bar, line, pie, doughnut, area, scatter
-KPI formats: number, percentage, currency, comparison
-
-Example data formats:
-- Bar/Line chart: { labels: ["Mon", "Tue"], datasets: [{ label: "Conversations", data: [10, 15] }] }
-- Pie chart: { labels: ["Hot", "Warm", "Cold"], data: [30, 50, 20] }
-- KPI: { value: 1234, previousValue: 1100, change: 12, unit: "conversations" }
-- Table: { columns: ["Name", "Count"], rows: [["WhatsApp", 150], ["Web", 80]] }`;
+Data formats: bar/line charts use {labels:[], datasets:[{label:"",data:[]}]}, pie uses {labels:[],data:[]}, KPI uses {value,change,unit}, table uses {columns:[],rows:[[]]}.`;
 
     const completion = await groq.chat.completions.create({
       model: modelName,
@@ -170,7 +249,7 @@ Example data formats:
         results: parsedResult.results || [],
         insights: parsedResult.insights,
         executionTime,
-        dataPointsAnalyzed: recentConversations.length + recentLeads.length,
+        dataPointsAnalyzed: totalConversations + totalLeads,
         dateRange: parsedResult.dateRange ? {
           start: new Date(parsedResult.dateRange.start),
           end: new Date(parsedResult.dateRange.end),
@@ -191,7 +270,7 @@ Example data formats:
         insights: parsedResult.insights,
         dateRange: parsedResult.dateRange,
         executionTime,
-        dataPointsAnalyzed: recentConversations.length + recentLeads.length,
+        dataPointsAnalyzed: totalConversations + totalLeads,
         savedQueryId: savedQuery?._id,
       },
     });

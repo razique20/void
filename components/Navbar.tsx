@@ -29,9 +29,6 @@ import {  Menu,
   DollarSign,
   FileText,
   Tags,
-  AlertTriangle,
-  Trophy,
-  GraduationCap,
   CalendarCheck,
   Share2,
   BarChart3,
@@ -181,17 +178,14 @@ export default function Navbar() {
         { label: 'Customer Journey', href: '/dashboard/journey', icon: Route, locked: !hasFeature('lead_capture') },
         { label: 'Invoices', href: '/dashboard/invoices', icon: FileText, locked: !hasFeature('lead_capture') },
         { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
+        { label: 'Revenue Analytics', href: '/dashboard/analytics/revenue', icon: DollarSign, locked: !hasFeature('lead_capture') },
+        { label: 'WA Catalog', href: '/dashboard/catalog', icon: Share2, locked: !hasFeature('whatsapp_catalog') },
       ]
     },
     {
-      title: 'Analytics & Intelligence',
+      title: 'Analytics',
       links: [
-        { label: 'Revenue Analytics', href: '/dashboard/analytics/revenue', icon: DollarSign, locked: !hasFeature('lead_capture') },
         { label: 'Topic Trends', href: '/dashboard/analytics/topics', icon: Tags, locked: !hasFeature('lead_capture') },
-        { label: 'Churn Prediction', href: '/dashboard/analytics/churn', icon: AlertTriangle, locked: !hasFeature('lead_capture') },
-        { label: 'Agent Scorecard', href: '/dashboard/analytics/agents', icon: Trophy, locked: !hasFeature('lead_capture') },
-        { label: 'Quality Grader', href: '/dashboard/analytics/quality', icon: GraduationCap, locked: !hasFeature('lead_capture') },
-        { label: 'WA Catalog', href: '/dashboard/catalog', icon: ShoppingBag, locked: !hasFeature('whatsapp_catalog') },
       ]
     },
     {

@@ -34,8 +34,12 @@ import {
   Plus,
   Activity,
   Award,
-  Settings
+  Settings,
+  Trophy,
+  GraduationCap
 } from 'lucide-react';
+import AgentPerformancePage from '../agents/page';
+import ConversationQualityPage from '../quality/page';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';
@@ -161,7 +165,7 @@ export default function NaturalLanguageAnalyticsPage() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   // Goals state
-  const [viewMode, setViewMode] = useState<'query' | 'goals'>('query');
+  const [viewMode, setViewMode] = useState<'query' | 'goals' | 'agents' | 'quality'>('query');
   const [goals, setGoals] = useState<Goal[]>([]);
   const [loadingGoals, setLoadingGoals] = useState(true);
   const [expandedGoal, setExpandedGoal] = useState<string | null>(null);
@@ -579,7 +583,7 @@ export default function NaturalLanguageAnalyticsPage() {
               AI Analytics
             </h1>
             <p className="text-xs text-silver mt-1">
-              Ask questions in plain English and manage performance goals
+              Query analytics, manage goals, and review agent performance
             </p>
           </div>
           
@@ -627,7 +631,31 @@ export default function NaturalLanguageAnalyticsPage() {
             )}
           >
             <Target className="w-3.5 h-3.5 inline mr-2" />
-            Performance Goals ({goals.length})
+            Goals ({goals.length})
+          </button>
+          <button
+            onClick={() => setViewMode('agents')}
+            className={cn(
+              "px-4 py-2 rounded-xl text-xs font-bold transition-all",
+              viewMode === 'agents'
+                ? "bg-foreground text-background"
+                : "bg-bg-subtle text-silver hover:text-foreground"
+            )}
+          >
+            <Trophy className="w-3.5 h-3.5 inline mr-2" />
+            Agent Scorecard
+          </button>
+          <button
+            onClick={() => setViewMode('quality')}
+            className={cn(
+              "px-4 py-2 rounded-xl text-xs font-bold transition-all",
+              viewMode === 'quality'
+                ? "bg-foreground text-background"
+                : "bg-bg-subtle text-silver hover:text-foreground"
+            )}
+          >
+            <GraduationCap className="w-3.5 h-3.5 inline mr-2" />
+            Quality Grader
           </button>
         </div>
       </div>
@@ -1012,6 +1040,16 @@ export default function NaturalLanguageAnalyticsPage() {
             })
           )}
         </div>
+      )}
+
+      {/* ===== AGENTS VIEW ===== */}
+      {viewMode === 'agents' && (
+        <AgentPerformancePage />
+      )}
+
+      {/* ===== QUALITY VIEW ===== */}
+      {viewMode === 'quality' && (
+        <ConversationQualityPage />
       )}
 
       {/* Create Goal Modal */}
