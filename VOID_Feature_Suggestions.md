@@ -91,7 +91,7 @@ Based on comprehensive analysis of the VOID platform architecture and current ca
 - **Description**: Visual log of all webhook events (inbound/outbound) with payload inspection, retry status, and error details. Like Stripe's webhook dashboard.
 - **Impact**: Debug integration issues in seconds instead of hours
 - **Implementation**: Webhook event store + dashboard UI with payload viewer
-- **Priority**: 🔴 High
+- **Priority**: 🔴 Highh
 
 ### 13. **Custom AI Model Selection Per Agent**
 - **Description**: Allow different agents to use different AI models (GPT-4 for complex support, cheaper models for simple FAQ). Optimize cost vs quality.
