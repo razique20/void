@@ -63,7 +63,7 @@ export default function NewABTestPage() {
       const res = await fetch('/api/workers');
       if (res.ok) {
         const data = await res.json();
-        setWorkers(data.workers || []);
+        setWorkers(Array.isArray(data) ? data : (data.workers || []));
       }
     } catch (error) {
       console.error('Failed to fetch workers:', error);

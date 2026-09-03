@@ -120,7 +120,7 @@ export default function KnowledgeSharingPage() {
     visibility: 'shared' as 'private' | 'shared' | 'public',
   });
 
-  const isFeatureAvailable = sub?.planInfo?.features?.includes('knowledge_sharing');
+  const isFeatureAvailable = sub?.features?.includes('knowledge_sharing') || sub?.plan === 'Enterprise';
 
   useEffect(() => {
     if (!loadingSub && isFeatureAvailable) {
@@ -149,7 +149,8 @@ export default function KnowledgeSharingPage() {
 
       if (workersRes.ok) {
         const data = await workersRes.json();
-        setAgents(data.workers || data.agents || []);
+        // API returns an array of workers directly
+        setAgents(Array.isArray(data) ? data : (data.workers || data.agents || []));
       }
     } catch (err) {
       console.error('Failed to fetch data:', err);
