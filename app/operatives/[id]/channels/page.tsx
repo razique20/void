@@ -309,15 +309,8 @@ export default function ChannelsPage() {
                             defaultChecked={hasWhatsApp && operative.channels?.whatsapp?.isActive}
                             className="sr-only peer"
                           />
-                          <div className={cn(
-                            "w-9 h-5 bg-bg-active rounded-full transition-all",
-                            operative.channels?.whatsapp?.isActive && "bg-emerald-500"
-                          )}>
-                            <div className={cn(
-                              "m-0.5 h-4 bg-white rounded-full shadow-sm transition-transform",
-                              operative.channels?.whatsapp?.isActive && "translate-x-4"
-                            )} />
-                          </div>
+                          <div className="w-9 h-5 bg-bg-active rounded-full transition-all peer-checked:bg-emerald-500" />
+                          <div className="absolute left-[6px] top-[6px] h-4 w-4 bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-4" />
                         </label>
                       </div>
                     </div>
@@ -475,15 +468,8 @@ export default function ChannelsPage() {
                             defaultChecked={hasTelegram && operative.channels?.telegram?.isActive}
                             className="sr-only peer"
                           />
-                          <div className={cn(
-                            "w-9 h-5 bg-bg-active rounded-full transition-all",
-                            operative.channels?.telegram?.isActive && "bg-sky-500"
-                          )}>
-                            <div className={cn(
-                              "m-0.5 h-4 bg-white rounded-full shadow-sm transition-transform",
-                              operative.channels?.telegram?.isActive && "translate-x-4"
-                            )} />
-                          </div>
+                          <div className="w-9 h-5 bg-bg-active rounded-full transition-all peer-checked:bg-sky-500" />
+                          <div className="absolute left-[6px] top-[6px] h-4 w-4 bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-4" />
                         </label>
                       </div>
                     </div>
@@ -543,15 +529,8 @@ export default function ChannelsPage() {
                             defaultChecked={hasSlack && operative.channels?.slack?.isActive}
                             className="sr-only peer"
                           />
-                          <div className={cn(
-                            "w-9 h-5 bg-bg-active rounded-full transition-all",
-                            operative.channels?.slack?.isActive && "bg-purple-500"
-                          )}>
-                            <div className={cn(
-                              "m-0.5 h-4 bg-white rounded-full shadow-sm transition-transform",
-                              operative.channels?.slack?.isActive && "translate-x-4"
-                            )} />
-                          </div>
+                          <div className="w-9 h-5 bg-bg-active rounded-full transition-all peer-checked:bg-purple-500" />
+                          <div className="absolute left-[6px] top-[6px] h-4 w-4 bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-4" />
                         </label>
                       </div>
                     </div>
@@ -678,15 +657,8 @@ export default function ChannelsPage() {
                             defaultChecked={hasEmail && operative.tools?.emailAgent?.isActive}
                             className="sr-only peer"
                           />
-                          <div className={cn(
-                            "w-9 h-5 bg-bg-active rounded-full transition-all",
-                            operative.tools?.emailAgent?.isActive && "bg-amber-500"
-                          )}>
-                            <div className={cn(
-                              "m-0.5 h-4 bg-white rounded-full shadow-sm transition-transform",
-                              operative.tools?.emailAgent?.isActive && "translate-x-4"
-                            )} />
-                          </div>
+                          <div className="w-9 h-5 bg-bg-active rounded-full transition-all peer-checked:bg-amber-500" />
+                          <div className="absolute left-[6px] top-[6px] h-4 w-4 bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-4" />
                         </label>
                       </div>
                     </div>
