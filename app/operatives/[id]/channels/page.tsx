@@ -292,16 +292,34 @@ export default function ChannelsPage() {
                           <div className="text-[11px] text-silver">Meta cloud connection gateway</div>
                         </div>
                       </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          name="wa_active" 
-                          disabled={!hasWhatsApp}
-                          defaultChecked={hasWhatsApp && operative.channels?.whatsapp?.isActive}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500" />
-                      </label>
+                      <div className="flex items-center gap-3">
+                        <Link
+                          href={`/dashboard/credentials#whatsapp`}
+                          className="inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/8 border border-emerald-500/15 hover:bg-emerald-500/12 hover:border-emerald-500/25 rounded-xl px-4 py-2 transition-all"
+                          title="Open WhatsApp setup guide in Credentials"
+                        >
+                          Setup Guide
+                          <ArrowUpRight className="w-3 h-3" />
+                        </Link>
+                        <label className="relative inline-flex items-center cursor-pointer border border-border-default rounded-xl p-1 hover:bg-bg-hover transition-colors">
+                          <input 
+                            type="checkbox" 
+                            name="wa_active" 
+                            disabled={!hasWhatsApp}
+                            defaultChecked={hasWhatsApp && operative.channels?.whatsapp?.isActive}
+                            className="sr-only peer"
+                          />
+                          <div className={cn(
+                            "w-9 h-5 bg-bg-active rounded-full transition-all",
+                            operative.channels?.whatsapp?.isActive && "bg-emerald-500"
+                          )}>
+                            <div className={cn(
+                              "m-0.5 h-4 bg-white rounded-full shadow-sm transition-transform",
+                              operative.channels?.whatsapp?.isActive && "translate-x-4"
+                            )} />
+                          </div>
+                        </label>
+                      </div>
                     </div>
 
                     <div className={cn("p-6 bg-bg-subtle space-y-4", !hasWhatsApp && "pointer-events-none opacity-50")}>
@@ -392,15 +410,7 @@ export default function ChannelsPage() {
                           <div className="space-y-1.5">
                             <div className="flex items-center justify-between">
                               <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Access Token</label>
-                              <Link
-                                href="/dashboard/credentials#whatsapp"
-                                className="flex items-center gap-1 text-[9px] font-bold text-emerald-500 hover:text-emerald-400 hover:underline transition-colors"
-                                title="View WhatsApp setup steps"
-                              >
-                                Setup Guide
-                                <ArrowUpRight className="w-3 h-3" />
-                              </Link>
-                            </div>
+                              </div>
                             <input 
                               name="wa_apiKey" 
                               disabled={!hasWhatsApp}
@@ -448,30 +458,38 @@ export default function ChannelsPage() {
                           <div className="text-[11px] text-silver">Direct BotFather API handshake</div>
                         </div>
                       </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          name="tg_active" 
-                          disabled={!hasTelegram}
-                          defaultChecked={hasTelegram && operative.channels?.telegram?.isActive}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500" />
-                      </label>
+                      <div className="flex items-center gap-3">
+                        <Link
+                          href={`/dashboard/credentials#telegram`}
+                          className="inline-flex items-center gap-1.5 text-[10px] font-bold text-sky-600 dark:text-sky-400 bg-sky-500/8 border border-sky-500/15 hover:bg-sky-500/12 hover:border-sky-500/25 rounded-xl px-4 py-2 transition-all"
+                          title="Open Telegram setup guide in Credentials"
+                        >
+                          Setup Guide
+                          <ArrowUpRight className="w-3 h-3" />
+                        </Link>
+                        <label className="relative inline-flex items-center cursor-pointer border border-border-default rounded-xl p-1 hover:bg-bg-hover transition-colors">
+                          <input 
+                            type="checkbox" 
+                            name="tg_active" 
+                            disabled={!hasTelegram}
+                            defaultChecked={hasTelegram && operative.channels?.telegram?.isActive}
+                            className="sr-only peer"
+                          />
+                          <div className={cn(
+                            "w-9 h-5 bg-bg-active rounded-full transition-all",
+                            operative.channels?.telegram?.isActive && "bg-sky-500"
+                          )}>
+                            <div className={cn(
+                              "m-0.5 h-4 bg-white rounded-full shadow-sm transition-transform",
+                              operative.channels?.telegram?.isActive && "translate-x-4"
+                            )} />
+                          </div>
+                        </label>
+                      </div>
                     </div>
                     <div className={cn("p-6 bg-bg-subtle space-y-3", !hasTelegram && "pointer-events-none opacity-50")}>
                       <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot Token</label>
-                          <Link
-                            href="/dashboard/credentials#telegram"
-                            className="flex items-center gap-1 text-[9px] font-bold text-sky-500 hover:text-sky-400 hover:underline transition-colors"
-                            title="View Telegram setup steps"
-                          >
-                            Setup Guide
-                            <ArrowUpRight className="w-3 h-3" />
-                          </Link>
-                        </div>
+                        <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot Token</label>
                         <input 
                           name="tg_token" 
                           disabled={!hasTelegram}
@@ -508,30 +526,38 @@ export default function ChannelsPage() {
                           <div className="text-[11px] text-silver">Slack Application Bot Integration</div>
                         </div>
                       </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          name="slack_active" 
-                          disabled={!hasSlack}
-                          defaultChecked={hasSlack && operative.channels?.slack?.isActive}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500" />
-                      </label>
+                      <div className="flex items-center gap-3">
+                        <Link
+                          href={`/dashboard/credentials#slack`}
+                          className="inline-flex items-center gap-1.5 text-[10px] font-bold text-purple-600 dark:text-purple-400 bg-purple-500/8 border border-purple-500/15 hover:bg-purple-500/12 hover:border-purple-500/25 rounded-xl px-4 py-2 transition-all"
+                          title="Open Slack setup guide in Credentials"
+                        >
+                          Setup Guide
+                          <ArrowUpRight className="w-3 h-3" />
+                        </Link>
+                        <label className="relative inline-flex items-center cursor-pointer border border-border-default rounded-xl p-1 hover:bg-bg-hover transition-colors">
+                          <input 
+                            type="checkbox" 
+                            name="slack_active" 
+                            disabled={!hasSlack}
+                            defaultChecked={hasSlack && operative.channels?.slack?.isActive}
+                            className="sr-only peer"
+                          />
+                          <div className={cn(
+                            "w-9 h-5 bg-bg-active rounded-full transition-all",
+                            operative.channels?.slack?.isActive && "bg-purple-500"
+                          )}>
+                            <div className={cn(
+                              "m-0.5 h-4 bg-white rounded-full shadow-sm transition-transform",
+                              operative.channels?.slack?.isActive && "translate-x-4"
+                            )} />
+                          </div>
+                        </label>
+                      </div>
                     </div>
                     <div className={cn("p-6 bg-bg-subtle grid grid-cols-1 md:grid-cols-2 gap-4", !hasSlack && "pointer-events-none opacity-50")}>
                       <div className="space-y-1.5">
-                        <div className="flex items-center justify-between">
-                          <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot User OAuth Token</label>
-                          <Link
-                            href="/dashboard/credentials#slack"
-                            className="flex items-center gap-1 text-[9px] font-bold text-purple-500 hover:text-purple-400 hover:underline transition-colors"
-                            title="View Slack setup steps"
-                          >
-                            Setup Guide
-                            <ArrowUpRight className="w-3 h-3" />
-                          </Link>
-                        </div>
+                        <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot User OAuth Token</label>
                         <input 
                           name="slack_token" 
                           disabled={!hasSlack}
@@ -542,17 +568,7 @@ export default function ChannelsPage() {
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <div className="flex items-center justify-between">
-                          <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Signing Secret</label>
-                          <Link
-                            href="/dashboard/credentials#slack"
-                            className="flex items-center gap-1 text-[9px] font-bold text-purple-500 hover:text-purple-400 hover:underline transition-colors"
-                            title="View Slack setup steps"
-                          >
-                            Setup Guide
-                            <ArrowUpRight className="w-3 h-3" />
-                          </Link>
-                        </div>
+                        <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Signing Secret</label>
                         <input 
                           name="slack_secret" 
                           disabled={!hasSlack}
@@ -645,16 +661,34 @@ export default function ChannelsPage() {
                           <div className="text-[11px] text-silver">Autonomous IMAP/SMTP corporate mail dispatch</div>
                         </div>
                       </div>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input 
-                          type="checkbox" 
-                          name="tool_email_active" 
-                          disabled={!hasEmail}
-                          defaultChecked={hasEmail && operative.tools?.emailAgent?.isActive}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-bg-toggle peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background dark:after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500" />
-                      </label>
+                      <div className="flex items-center gap-3">
+                        <Link
+                          href={`/dashboard/credentials#smtp`}
+                          className="inline-flex items-center gap-1.5 text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/8 border border-amber-500/15 hover:bg-amber-500/12 hover:border-amber-500/25 rounded-xl px-4 py-2 transition-all"
+                          title="Open Email setup guide in Credentials"
+                        >
+                          Setup Guide
+                          <ArrowUpRight className="w-3 h-3" />
+                        </Link>
+                        <label className="relative inline-flex items-center cursor-pointer border border-border-default rounded-xl p-1 hover:bg-bg-hover transition-colors">
+                          <input 
+                            type="checkbox" 
+                            name="tool_email_active" 
+                            disabled={!hasEmail}
+                            defaultChecked={hasEmail && operative.tools?.emailAgent?.isActive}
+                            className="sr-only peer"
+                          />
+                          <div className={cn(
+                            "w-9 h-5 bg-bg-active rounded-full transition-all",
+                            operative.tools?.emailAgent?.isActive && "bg-amber-500"
+                          )}>
+                            <div className={cn(
+                              "m-0.5 h-4 bg-white rounded-full shadow-sm transition-transform",
+                              operative.tools?.emailAgent?.isActive && "translate-x-4"
+                            )} />
+                          </div>
+                        </label>
+                      </div>
                     </div>
                     <div className={cn("p-6 bg-bg-subtle grid grid-cols-1 md:grid-cols-2 gap-4", !hasEmail && "pointer-events-none opacity-50")}>
                       <div className="space-y-1.5">
