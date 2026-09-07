@@ -326,7 +326,7 @@ export default function ChannelsPage() {
 
             {/* Summary Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-bg-surface border border-border-default rounded-2xl p-4 flex items-center gap-3">
+              <div className="bg-bg-subtle border border-border-default rounded-2xl p-4 flex items-center gap-3">
                 <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center">
                   <Activity className="w-4.5 h-4.5 text-emerald-500" />
                 </div>
@@ -335,7 +335,7 @@ export default function ChannelsPage() {
                   <div className="text-[9px] font-bold text-silver uppercase tracking-widest">Active Systems</div>
                 </div>
               </div>
-              <div className="bg-bg-surface border border-border-default rounded-2xl p-4 flex items-center gap-3">
+              <div className="bg-bg-subtle border border-border-default rounded-2xl p-4 flex items-center gap-3">
                 <div className="w-10 h-10 bg-apple-blue/10 rounded-xl flex items-center justify-center">
                   <MessageSquare className="w-4.5 h-4.5 text-apple-blue" />
                 </div>
@@ -344,7 +344,7 @@ export default function ChannelsPage() {
                   <div className="text-[9px] font-bold text-silver uppercase tracking-widest">Channels</div>
                 </div>
               </div>
-              <div className="bg-bg-surface border border-border-default rounded-2xl p-4 flex items-center gap-3">
+              <div className="bg-bg-subtle border border-border-default rounded-2xl p-4 flex items-center gap-3">
                 <div className="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center">
                   <Zap className="w-4.5 h-4.5 text-purple-400" />
                 </div>
@@ -353,7 +353,7 @@ export default function ChannelsPage() {
                   <div className="text-[9px] font-bold text-silver uppercase tracking-widest">Tools</div>
                 </div>
               </div>
-              <div className="bg-bg-surface border border-border-default rounded-2xl p-4 flex items-center gap-3">
+              <div className="bg-bg-subtle border border-border-default rounded-2xl p-4 flex items-center gap-3">
                 <div className="w-10 h-10 bg-rose-500/10 rounded-xl flex items-center justify-center">
                   <Zap className="w-4.5 h-4.5 text-rose-500" />
                 </div>
@@ -377,7 +377,7 @@ export default function ChannelsPage() {
                   
                   {/* WhatsApp Business Card */}
                   <div className={cn(
-                    "bg-bg-surface border border-border-default rounded-2xl overflow-hidden transition-all duration-300",
+                    "bg-bg-subtle border border-border-default rounded-2xl overflow-hidden transition-all duration-300",
                     !hasWhatsApp && "opacity-60"
                   )}>
                     <div className="p-5 flex items-center justify-between">
@@ -430,7 +430,7 @@ export default function ChannelsPage() {
                     </button>
 
                     <div className={cn("transition-all duration-300 overflow-hidden", expandedCards.whatsapp ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0")}>
-                      <div className={cn("p-5 bg-bg-subtle space-y-4 border-t border-border-subtle", !hasWhatsApp && "pointer-events-none opacity-50")}>
+                      <div className={cn("p-5 bg-bg-surface space-y-4 border-t border-border-subtle", !hasWhatsApp && "pointer-events-none opacity-50")}>
                         {isShared && (
                           <div className={cn(
                             "p-3 rounded-xl border text-xs font-semibold leading-relaxed flex flex-col gap-1",
@@ -539,7 +539,7 @@ export default function ChannelsPage() {
 
                   {/* Telegram Bot Card */}
                   <div className={cn(
-                    "bg-bg-surface border border-border-default rounded-2xl overflow-hidden transition-all duration-300",
+                    "bg-bg-subtle border border-border-default rounded-2xl overflow-hidden transition-all duration-300",
                     !hasTelegram && "opacity-60"
                   )}>
                     <div className="p-5 flex items-center justify-between">
@@ -591,7 +591,7 @@ export default function ChannelsPage() {
                     </button>
 
                     <div className={cn("transition-all duration-300 overflow-hidden", expandedCards.telegram ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0")}>
-                      <div className={cn("p-5 bg-bg-subtle space-y-3 border-t border-border-subtle", !hasTelegram && "pointer-events-none opacity-50")}>
+                      <div className={cn("p-5 bg-bg-surface space-y-3 border-t border-border-subtle", !hasTelegram && "pointer-events-none opacity-50")}>
                         <div className="space-y-1.5">
                           <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot Token</label>
                           <input 
@@ -610,7 +610,7 @@ export default function ChannelsPage() {
 
                   {/* Slack Workspace Card */}
                   <div className={cn(
-                    "bg-bg-surface border border-border-default rounded-2xl overflow-hidden transition-all duration-300",
+                    "bg-bg-subtle border border-border-default rounded-2xl overflow-hidden transition-all duration-300",
                     !hasSlack && "opacity-60"
                   )}>
                     <div className="p-5 flex items-center justify-between">
@@ -662,7 +662,7 @@ export default function ChannelsPage() {
                     </button>
 
                     <div className={cn("transition-all duration-300 overflow-hidden", expandedCards.slack ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0")}>
-                      <div className={cn("p-5 bg-bg-subtle grid grid-cols-1 gap-3 border-t border-border-subtle", !hasSlack && "pointer-events-none opacity-50")}>
+                      <div className={cn("p-5 bg-bg-surface grid grid-cols-1 gap-3 border-t border-border-subtle", !hasSlack && "pointer-events-none opacity-50")}>
                         <div className="space-y-1.5">
                           <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot User OAuth Token</label>
                           <input 
@@ -691,7 +691,7 @@ export default function ChannelsPage() {
 
                   {/* Email Agent Card */}
                   <div className={cn(
-                    "bg-bg-surface border border-border-default rounded-2xl overflow-hidden transition-all duration-300",
+                    "bg-bg-subtle border border-border-default rounded-2xl overflow-hidden transition-all duration-300",
                     !hasEmail && "opacity-60"
                   )}>
                     <div className="p-5 flex items-center justify-between">
@@ -743,7 +743,7 @@ export default function ChannelsPage() {
                     </button>
 
                     <div className={cn("transition-all duration-300 overflow-hidden", expandedCards.email ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0")}>
-                      <div className={cn("p-5 bg-bg-subtle grid grid-cols-1 gap-3 border-t border-border-subtle", !hasEmail && "pointer-events-none opacity-50")}>
+                      <div className={cn("p-5 bg-bg-surface grid grid-cols-1 gap-3 border-t border-border-subtle", !hasEmail && "pointer-events-none opacity-50")}>
                         <div className="space-y-1.5">
                           <label className="text-[9px] font-bold text-silver uppercase tracking-widest">SMTP Host</label>
                           <input name="tool_email_host" disabled={!hasEmail} defaultValue={operative.tools?.emailAgent?.host} placeholder="smtp.gmail.com" className="w-full bg-background border border-border-strong rounded-xl px-3 py-2.5 text-[11px] focus:border-amber-500 focus:outline-none text-foreground" />
@@ -777,7 +777,7 @@ export default function ChannelsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
                   
                   {/* System Guard */}
-                  <div className="bg-bg-surface border border-border-default rounded-2xl overflow-hidden">
+                  <div className="bg-bg-subtle border border-border-default rounded-2xl overflow-hidden">
                     <div className="p-5 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-rose-500/10 border border-rose-500/10 rounded-xl flex items-center justify-center text-rose-500 shrink-0">
@@ -809,7 +809,7 @@ export default function ChannelsPage() {
                     </button>
 
                     <div className={cn("transition-all duration-300 overflow-hidden", expandedCards.systemGuard ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0")}>
-                      <div className="p-5 bg-bg-subtle grid grid-cols-1 gap-3 border-t border-border-subtle">
+                      <div className="p-5 bg-bg-surface grid grid-cols-1 gap-3 border-t border-border-subtle">
                         <div className="space-y-1.5">
                           <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Alert Threshold</label>
                           <select 
@@ -835,7 +835,7 @@ export default function ChannelsPage() {
                   </div>
 
                   {/* Action Agents / Webhooks */}
-                  <div className="bg-bg-surface border border-border-default rounded-2xl overflow-hidden">
+                  <div className="bg-bg-subtle border border-border-default rounded-2xl overflow-hidden">
                     <div className="p-5 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-apple-blue/10 border border-apple-blue/10 rounded-xl flex items-center justify-center text-apple-blue shrink-0">
@@ -922,6 +922,26 @@ export default function ChannelsPage() {
               </div>
 
             </form>
+
+            {/* Setup Guides CTA */}
+            <div className="bg-bg-subtle border border-border-default rounded-2xl p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-bold text-foreground">Channel Setup & Credentials</h3>
+                  <p className="text-[11px] text-silver leading-relaxed">
+                    Register webhooks, generate API tokens, and complete the required setup for each channel.
+                  </p>
+                </div>
+                <Link
+                  href="/dashboard/credentials"
+                  className="inline-flex items-center gap-1.5 text-[10px] font-bold text-apple-blue bg-apple-blue/8 border border-apple-blue/15 hover:bg-apple-blue/12 rounded-xl px-4 py-2 transition-all shrink-0"
+                >
+                  Open Credentials Page
+                  <ArrowUpRight className="w-3 h-3" />
+                </Link>
+              </div>
+            </div>
+
           </div>
         </main>
 
