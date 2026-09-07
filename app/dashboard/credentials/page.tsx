@@ -21,7 +21,8 @@ import {
   Trash2,
   Pencil,
   Shield,
-  ChevronRight
+  ChevronRight,
+  Hash
 } from 'lucide-react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -34,10 +35,24 @@ declare global {
   }
 }
 
-type TabType = 'calcom' | 'whatsapp' | 'telegram' | 'smtp' | 'crm';
+type TabType = 'calcom' | 'whatsapp' | 'telegram' | 'smtp' | 'crm' | 'slack';
 
 export default function CredentialsPage() {
   const [activeTab, setActiveTab] = useState<TabType>('calcom');
+
+  useEffect(() => {
+    // Handle hash-based navigation from other pages
+    const handleHash = () => {
+      const hash = window.location.hash.replace('#', '') as TabType;
+      if (hash && ['calcom', 'whatsapp', 'telegram', 'smtp', 'crm', 'slack'].includes(hash)) {
+        setActiveTab(hash);
+      }
+    };
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
+
   const [copiedText, setCopiedText] = useState<string | null>(null);
   const [webhookUrl, setWebhookUrl] = useState('');
   const [savingWebhook, setSavingWebhook] = useState(false);
@@ -216,6 +231,7 @@ export default function CredentialsPage() {
     { id: 'telegram', label: 'Telegram', icon: Send, color: 'text-sky-500', glow: 'bg-sky-500/10', borderGlow: 'border-sky-500/20' },
     { id: 'smtp', label: 'SMTP Mail', icon: Mail, color: 'text-amber-500', glow: 'bg-amber-500/10', borderGlow: 'border-amber-500/20' },
     { id: 'crm', label: 'External CRM', icon: Database, color: 'text-indigo-500', glow: 'bg-indigo-500/10', borderGlow: 'border-indigo-500/20' },
+    { id: 'slack', label: 'Slack', icon: Hash, color: 'text-purple-500', glow: 'bg-purple-500/10', borderGlow: 'border-purple-500/20' },
   ];
 
   const activeTabData = tabs.find(t => t.id === activeTab);
@@ -319,7 +335,7 @@ export default function CredentialsPage() {
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
           >
             {activeTab === 'calcom' && (
-              <div className="space-y-6">
+              <div id="calcom" className="space-y-6">
                 <div className="space-y-1.5">
                   <h2 className="text-lg font-bold flex items-center gap-2.5">
                     <Calendar className="w-5 h-5 text-rose-500" />
@@ -370,11 +386,13 @@ export default function CredentialsPage() {
             )}
 
             {activeTab === 'whatsapp' && (
+              <div id="whatsapp">
               <WhatsAppCredentialsTab showToast={showToast} copyToClipboard={copyToClipboard} copiedText={copiedText} />
+              </div>
             )}
 
             {activeTab === 'telegram' && (
-              <div className="space-y-6">
+              <div id="telegram" className="space-y-6">
                 <div className="space-y-1.5">
                   <h2 className="text-lg font-bold flex items-center gap-2.5">
                     <Send className="w-5 h-5 text-sky-500" />
@@ -410,7 +428,7 @@ export default function CredentialsPage() {
             )}
 
             {activeTab === 'smtp' && (
-              <div className="space-y-6">
+              <div id="smtp" className="space-y-6">
                 <div className="space-y-1.5">
                   <h2 className="text-lg font-bold flex items-center gap-2.5">
                     <Mail className="w-5 h-5 text-amber-500" />
@@ -453,7 +471,7 @@ export default function CredentialsPage() {
             )}
 
             {activeTab === 'crm' && (
-              <div className="space-y-6">
+              <div id="crm" className="space-y-6">
                 <div className="space-y-1.5">
                   <h2 className="text-lg font-bold flex items-center gap-2.5">
                     <Database className="w-5 h-5 text-indigo-500" />
@@ -519,6 +537,55 @@ export default function CredentialsPage() {
   }
 }`}
                     </pre>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'slack' && (
+              <div id="slack" className="space-y-6">
+                <div className="space-y-1.5">
+                  <h2 className="text-lg font-bold flex items-center gap-2.5">
+                    <Hash className="w-5 h-5 text-purple-500" />
+                    Slack Workspace Integration
+                  </h2>
+                  <p className="text-silver text-xs font-medium">
+                    Deploy agents inside Slack workspaces to respond in channels, groups, and direct messages.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+                  <div className="space-y-5">
+                    <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">Slack App Setup</h3>
+                    <ol className="space-y-3.5 text-xs text-silver/80 list-decimal pl-4 leading-relaxed">
+                      <li>
+                        Go to <a href="https://api.slack.com/apps" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline inline-flex items-center gap-1">Slack API <ExternalLink className="w-3 h-3" /></a> and click <strong>Create New App</strong>.
+                      </li>
+                      <li>Select <strong>From scratch</strong> and choose your Slack workspace.</li>
+                      <li>Set a <strong>Display Name</strong> and <strong>Default Username</strong> for your app.</li>
+                      <li>Under <strong className="text-foreground">OAuth & Permissions</strong>, add these Bot Token Scopes:
+                        <ul className="list-disc pl-5 mt-2 space-y-1">
+                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-purple-400 font-mono text-[10px]">chat:write</code> — send messages</li>
+                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-purple-400 font-mono text-[10px]">channels:read</code> — list channels</li>
+                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-purple-400 font-mono text-[10px]">im:read</code> — access DMs</li>
+                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-purple-400 font-mono text-[10px]">app_mentions:read</code> — react to mentions</li>
+                        </ul>
+                      </li>
+                      <li>Click <strong className="text-foreground">Install to Workspace</strong> and copy the <strong className="text-foreground">Bot User OAuth Token</strong> (starts with <code className="px-1 py-0.5 bg-bg-active rounded text-purple-400 font-mono text-[10px]">xoxb-</code>).</li>
+                      <li>Copy your <strong className="text-foreground">Signing Secret</strong> from the <strong className="text-foreground">Basic Information</strong> page.</li>
+                    </ol>
+                  </div>
+
+                  <div className="bg-bg-surface border border-border-default rounded-2xl p-5 space-y-4">
+                    <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver flex items-center gap-1.5">
+                      <HelpCircle className="w-3.5 h-3.5 text-purple-500" />
+                      Security Notes
+                    </h3>
+                    <ul className="text-xs text-silver/80 space-y-3 list-disc pl-4 leading-relaxed">
+                      <li>Never commit tokens or secrets to version control. Use environment variables or the credential vault.</li>
+                      <li>The <strong className="text-foreground">Signing Secret</strong> verifies that incoming events are genuinely from Slack.</li>
+                      <li>Restrict your app to specific channels using the <strong className="text-foreground">Channel ID</strong> whitelist in your agent config.</li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -679,6 +746,12 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
           <p className="text-silver text-xs font-medium">
             Save multiple WhatsApp credential sets. Assign them to agents from their Integrations page.
           </p>
+          <div className="flex items-start gap-2.5 p-3 bg-amber-500/10 border border-amber-500/15 rounded-xl mt-3">
+            <HelpCircle className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+            <p className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold leading-relaxed">
+              <strong>Important:</strong> Saving credentials here is <em>not enough</em>. You must also register the webhook URL below in your Meta App dashboard so messages can reach this platform.
+            </p>
+          </div>
         </div>
         <button
           onClick={() => { resetForm(); setShowForm(true); }}
@@ -830,19 +903,54 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
         </div>
       )}
 
-      {/* Webhook Info */}
-      <div className="bg-bg-surface border border-border-default rounded-2xl p-5 space-y-3">
-        <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">Webhook Configuration</h3>
-        <div className="space-y-3">
-          <p className="text-xs text-silver/70 leading-relaxed font-medium">Ensure you point your Meta App webhook callback to your platform.</p>
-          <div className="p-3 bg-background border border-border-default rounded-xl font-mono text-xs flex items-center justify-between gap-3 overflow-hidden">
-            <span className="truncate text-silver text-[10px]">https://void-rho-navy.vercel.app/api/webhooks/whatsapp?id=OPERATIVE_ID</span>
-            <button
-              onClick={() => copyToClipboard('https://void-rho-navy.vercel.app/api/webhooks/whatsapp?id=OPERATIVE_ID', 'wa_url')}
-              className="p-1.5 hover:bg-bg-hover border border-border-default rounded-lg shrink-0 transition-colors cursor-pointer"
-            >
-              {copiedText === 'wa_url' ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-silver/60" />}
-            </button>
+      {/* Webhook Registration — Step-by-Step Guide */}
+      <div className="bg-bg-surface border border-emerald-500/20 rounded-2xl p-5 space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center">
+            <ExternalLink className="w-4 h-4 text-emerald-500" />
+          </div>
+          <div>
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-foreground">Webhook Registration (Required)</h3>
+            <p className="text-[10px] text-silver font-medium">You must point your Meta App webhook to this platform for messages to be delivered.</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <div className="space-y-4">
+            <h4 className="text-[9px] font-bold uppercase tracking-widest text-silver">How to Register</h4>
+            <ol className="space-y-3 text-xs text-silver/80 list-decimal pl-4 leading-relaxed">
+              <li>Go to <a href="https://developers.facebook.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline inline-flex items-center gap-1">Meta for Developers <ExternalLink className="w-3 h-3" /></a> and open your App.</li>
+              <li>Navigate to <strong className="text-foreground">WhatsApp → Configuration → Webhook</strong>.</li>
+              <li>Paste the <strong className="text-foreground">Callback URL</strong> below into the <em>Callback URL</em> field.</li>
+              <li>Enter <strong className="text-foreground">void_secret_token</strong> (or your custom <code className="px-1 py-0.5 bg-bg-active rounded text-emerald-400 font-mono text-[10px]">WHATSAPP_VERIFY_TOKEN</code>) as the <em>Verify Token</em>.</li>
+              <li>Click <strong className="text-foreground">Verify and Save</strong>.</li>
+              <li>Under <strong className="text-foreground">Webhook fields</strong>, subscribe to <code className="px-1 py-0.5 bg-bg-active rounded text-emerald-400 font-mono text-[10px]">messages</code> and <code className="px-1 py-0.5 bg-bg-active rounded text-emerald-400 font-mono text-[10px]">messaging_postbacks</code>.</li>
+            </ol>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-[9px] font-bold uppercase tracking-widest text-silver">Callback URL (copy this)</h4>
+            <div className="p-3.5 bg-background border border-border-default rounded-xl font-mono text-xs flex items-center justify-between gap-3 overflow-hidden">
+              <span className="truncate text-emerald-400 text-[10px] font-bold">https://void.aethyl.com/api/webhooks/whatsapp</span>
+              <button
+                onClick={() => copyToClipboard('https://void.aethyl.com/api/webhooks/whatsapp', 'wa_callback')}
+                className="p-1.5 hover:bg-bg-hover border border-border-default rounded-lg shrink-0 transition-colors cursor-pointer"
+              >
+                {copiedText === 'wa_callback' ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-silver/60" />}
+              </button>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Verify Token</label>
+              <div className="p-3.5 bg-background border border-border-default rounded-xl font-mono text-xs flex items-center justify-between gap-3 overflow-hidden">
+                <span className="truncate text-silver text-[10px]">void_secret_token</span>
+                <button
+                  onClick={() => copyToClipboard('void_secret_token', 'wa_token')}
+                  className="p-1.5 hover:bg-bg-hover border border-border-default rounded-lg shrink-0 transition-colors cursor-pointer"
+                >
+                  {copiedText === 'wa_token' ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-silver/60" />}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

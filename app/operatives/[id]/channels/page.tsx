@@ -19,7 +19,8 @@ import {
   Globe, 
   ArrowLeft,
   ChevronRight,
-  Link2
+  Link2,
+  ArrowUpRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useParams, useRouter } from 'next/navigation';
@@ -389,7 +390,17 @@ export default function ChannelsPage() {
                       ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                           <div className="space-y-1.5">
-                            <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Access Token</label>
+                            <div className="flex items-center justify-between">
+                              <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Access Token</label>
+                              <Link
+                                href="/dashboard/credentials#whatsapp"
+                                className="flex items-center gap-1 text-[9px] font-bold text-emerald-500 hover:text-emerald-400 hover:underline transition-colors"
+                                title="View WhatsApp setup steps"
+                              >
+                                Setup Guide
+                                <ArrowUpRight className="w-3 h-3" />
+                              </Link>
+                            </div>
                             <input 
                               name="wa_apiKey" 
                               disabled={!hasWhatsApp}
@@ -450,7 +461,17 @@ export default function ChannelsPage() {
                     </div>
                     <div className={cn("p-6 bg-bg-subtle space-y-3", !hasTelegram && "pointer-events-none opacity-50")}>
                       <div className="space-y-2">
-                        <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot Token</label>
+                        <div className="flex items-center justify-between">
+                          <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot Token</label>
+                          <Link
+                            href="/dashboard/credentials#telegram"
+                            className="flex items-center gap-1 text-[9px] font-bold text-sky-500 hover:text-sky-400 hover:underline transition-colors"
+                            title="View Telegram setup steps"
+                          >
+                            Setup Guide
+                            <ArrowUpRight className="w-3 h-3" />
+                          </Link>
+                        </div>
                         <input 
                           name="tg_token" 
                           disabled={!hasTelegram}
@@ -500,7 +521,17 @@ export default function ChannelsPage() {
                     </div>
                     <div className={cn("p-6 bg-bg-subtle grid grid-cols-1 md:grid-cols-2 gap-4", !hasSlack && "pointer-events-none opacity-50")}>
                       <div className="space-y-1.5">
-                        <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot User OAuth Token</label>
+                        <div className="flex items-center justify-between">
+                          <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Bot User OAuth Token</label>
+                          <Link
+                            href="/dashboard/credentials#slack"
+                            className="flex items-center gap-1 text-[9px] font-bold text-purple-500 hover:text-purple-400 hover:underline transition-colors"
+                            title="View Slack setup steps"
+                          >
+                            Setup Guide
+                            <ArrowUpRight className="w-3 h-3" />
+                          </Link>
+                        </div>
                         <input 
                           name="slack_token" 
                           disabled={!hasSlack}
@@ -511,7 +542,17 @@ export default function ChannelsPage() {
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Signing Secret</label>
+                        <div className="flex items-center justify-between">
+                          <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Signing Secret</label>
+                          <Link
+                            href="/dashboard/credentials#slack"
+                            className="flex items-center gap-1 text-[9px] font-bold text-purple-500 hover:text-purple-400 hover:underline transition-colors"
+                            title="View Slack setup steps"
+                          >
+                            Setup Guide
+                            <ArrowUpRight className="w-3 h-3" />
+                          </Link>
+                        </div>
                         <input 
                           name="slack_secret" 
                           disabled={!hasSlack}

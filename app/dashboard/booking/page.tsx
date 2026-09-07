@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { 
   Calendar, 
   Clock, 
@@ -16,7 +17,8 @@ import {
   Video,
   Mail,
   Phone,
-  MessageSquare
+  MessageSquare,
+  ArrowUpRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -204,6 +206,27 @@ export default function SmartBookingPage() {
       case 'whatsapp': return <MessageSquare className="w-3.5 h-3.5" />;
       case 'web': return <Globe className="w-3.5 h-3.5" />;
       default: return <MessageSquare className="w-3.5 h-3.5" />;
+    }
+  };
+
+  const getChannelCredentialLink = (channel: string) => {
+    switch (channel) {
+      case 'whatsapp': return '/dashboard/credentials#whatsapp';
+      case 'email': return '/dashboard/credentials#smtp';
+      case 'telegram': return '/dashboard/credentials#telegram';
+      case 'calcom': return '/dashboard/credentials#calcom';
+      default: return '/dashboard/credentials';
+    }
+  };
+
+  const getChannelLabel = (channel: string) => {
+    switch (channel) {
+      case 'email': return 'SMTP Mail';
+      case 'whatsapp': return 'WhatsApp';
+      case 'telegram': return 'Telegram';
+      case 'calcom': return 'Cal.com';
+      case 'web': return 'Web Chat';
+      default: return channel;
     }
   };
 
@@ -545,8 +568,16 @@ export default function SmartBookingPage() {
                         </span>
                         <span className="flex items-center gap-1.5">
                           {getChannelIcon(booking.channel)}
-                          {booking.channel}
+                          {getChannelLabel(booking.channel)}
                         </span>
+                        <Link
+                          href={getChannelCredentialLink(booking.channel)}
+                          className="flex items-center gap-1 text-apple-blue hover:underline"
+                          title="Configure this channel"
+                        >
+                          <ArrowUpRight className="w-3 h-3" />
+                          <span className="text-[10px] font-bold uppercase">Configure</span>
+                        </Link>
                       </div>
                     </div>
 
