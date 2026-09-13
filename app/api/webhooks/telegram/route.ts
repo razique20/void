@@ -16,6 +16,7 @@ import { processSentimentWorkflows } from '@/lib/sentimentWorkflow';
 import { logError } from '@/lib/errorLogger';
 import { detectLanguage, translateText, getResponseLanguage, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/languageDetection';
 import { optimizeContextWindow } from '@/lib/contextWindowing';
+import { fetchRelevantSheetContext, renderSheetContext, sheetBehaviorNoteForWorker } from '@/lib/sheetRetriever';
 
 /**
  * TELEGRAM WEBHOOK HANDLER
@@ -139,6 +140,36 @@ export async function POST(req: Request) {
     const trainingData = await TrainingData.find({ workerId: operative._id });
     const context = trainingData.map(d => d.content).join('\n\n');
 
+    // 2b. Google Sheets retrieval for attached active sheets
+    let sheetContext = '';
+    let sheetBehaviorNote = '';
+    let sheetDebug = null;
+    try {
+      const workerPrefs = (operative as any)?.sheets ?? {};
+      const sheetItems = await fetchRelevantSheetContext(
+        operative._id.toString(),
+        operative.userId,
+        userText,
+        {
+          enabled: workerPrefs?.enabled ?? true,
+          scope: workerPrefs?.scope ?? 'all',
+          primarySheetId: workerPrefs?.primarySheetId ?? undefined,
+          relevanceMode: workerPrefs?.relevanceMode ?? 'keyword',
+          maxSheets: workerPrefs?.maxSheets ?? 3,
+          maxRowsPerSheet: workerPrefs?.maxRowsPerSheet ?? 25,
+        }
+      );
+      sheetContext = renderSheetContext(sheetItems);
+      sheetBehaviorNote = sheetBehaviorNoteForWorker(workerPrefs?.answerBehavior);
+      sheetDebug = {
+        itemsCount: sheetItems.length,
+        items: sheetItems.map(i => ({ sheetName: i.sheetName, matchedFields: i.matchedFields, rowCount: i.rows.length, rowsSample: i.rows.slice(0, 3), spreadsheetId: i.spreadsheetId }))
+      };
+      console.log('[TELEGRAM_SHEET_RETRIEVER]', JSON.stringify(sheetDebug, null, 2));
+    } catch (sheetErr) {
+      console.error('[TELEGRAM_SHEET_RETRIEVER]', sheetErr);
+    }
+
     // 3. Longitudinal Memory — retrieve persistent context for this contact
     const contactMemory = await getContactMemory(
       operative._id.toString(),
@@ -168,6 +199,7 @@ export async function POST(req: Request) {
       Use the following knowledge base to answer questions:
       ${context || "No specific knowledge base provided. Use your general intelligence."}
       ${memoryContext}
+      ${sheetContext ? `\n\nSheet Data:\n${sheetContext}` : ''}${sheetBehaviorNote}
       Rules:
       - Be helpful and stay in character.
       - Keep responses relatively concise for chat.

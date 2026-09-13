@@ -222,6 +222,76 @@ export default function LandingPage() {
     research: 'text-rose-600 bg-rose-50',
   };
 
+  const INDUSTRY_DATA: { title: string; desc: string; gradient: string; messages: { text: string; subtitle?: string; icon?: string; badge?: boolean }[]; features?: string[] }[] = [
+    {
+      title: 'Retail & E-commerce',
+      desc: 'Win back abandoned carts, push real-time tracking updates, and foster repeat sales. Convert casual window shoppers into lifelong brand advocates.',
+      gradient: 'from-emerald-400 to-green-500',
+      messages: [
+        { text: 'On the Way', subtitle: 'ETA 1 hour', icon: 'check' },
+        { text: 'Shipped!', icon: 'truck' },
+        { text: 'Processing', icon: 'building' },
+        { text: 'Order Placed!', icon: 'bag' },
+      ],
+      features: ['Abandoned cart recovery', 'Order tracking', 'Repeat purchase nudges'],
+    },
+    {
+      title: 'Schools & Education',
+      desc: 'Keep students and parents in the loop with instant alerts on deadlines and campus events. Instantly resolve admission FAQs without manual effort.',
+      gradient: 'from-purple-400 to-violet-600',
+      messages: [
+        { text: 'Course Update: New Material Posted!' },
+        { text: 'Admissions Query?' },
+        { text: 'DEADLINE: Physics Assignment, 11:59 PM' },
+      ],
+      features: ['Student enrollment', 'Parent notifications', 'FAQ automation'],
+    },
+    {
+      title: 'Real Estate',
+      desc: 'Coordinate house tours, broadcast new property listings, and nurture leads around the clock. Accelerate closings with lightning-fast chat responses.',
+      gradient: 'from-orange-400 to-amber-600',
+      messages: [
+        { text: 'Viewing Confirmed: 2 PM', icon: 'calendar' },
+        { text: 'New Listing: $750k, 3 Bed, 2 Bath' },
+        { text: 'Is this house near a park?' },
+      ],
+      features: ['Lead qualification', 'Viewing scheduling', 'Listing alerts'],
+    },
+    {
+      title: 'Travel & Hospitality',
+      desc: 'Instantly confirm reservations, send curated itineraries, and offer exclusive upgrades. Deliver a five-star guest experience from check-in to check-out.',
+      gradient: 'from-blue-400 to-sky-600',
+      messages: [
+        { text: 'Hotel Booking Confirmed' },
+        { text: 'Trip Planning Assistant Ready' },
+        { text: 'Flight Reminder: 2 hours before departure' },
+      ],
+      features: ['Booking confirmation', 'Itinerary generation', 'Guest engagement'],
+    },
+    {
+      title: 'Automotive',
+      desc: 'Drive foot traffic to your dealership, launch flash promotions, and run automated loyalty campaigns. Rev up your sales pipeline effortlessly.',
+      gradient: 'from-fuchsia-400 to-purple-600',
+      messages: [
+        { text: 'New Model Alerts' },
+        { text: 'BOOK TEST DRIVE', badge: true },
+        { text: 'FLASH SALE! - 25% OFF', badge: true },
+      ],
+      features: ['Test drive booking', 'Promotional campaigns', 'Lead routing'],
+    },
+    {
+      title: 'Medical & Healthcare',
+      desc: 'Automate patient scheduling, dispatch health reminders, and streamline follow-ups. Enhance care delivery and cut down on missed appointments seamlessly.',
+      gradient: 'from-red-500 to-rose-700',
+      messages: [
+        { text: "I'd like to book an appointment." },
+        { text: 'Let\'s find a time. Any preferred date?' },
+        { text: 'Yes, this Tuesday at 11 AM works.' },
+      ],
+      features: ['Appointment booking', 'Health reminders', 'Follow-up automation'],
+    },
+  ];
+
   return (
     <div className="flex flex-col min-h-screen bg-white text-zinc-900 selection:bg-emerald-500/20 overflow-x-hidden">
       <ScrollProgress />
@@ -588,7 +658,7 @@ export default function LandingPage() {
               </h2>
             </motion.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-zinc-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white">
               {FEATURES.map((f, i) => (
                 <motion.div
                   key={f.title}
@@ -601,6 +671,82 @@ export default function LandingPage() {
                   <f.icon className="w-6 h-6 text-emerald-600 mb-6" strokeWidth={1.5} />
                   <h3 className="text-lg font-bold text-zinc-900 mb-3">{f.title}</h3>
                   <p className="text-zinc-500 text-sm font-medium leading-relaxed">{f.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+{/* ============================================================ */}
+        {/* INDUSTRY SOLUTIONS — Cards with gradient backgrounds         */}
+        {/* ============================================================ */}
+        <section className="relative py-24 md:py-36 bg-white overflow-hidden">
+          <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
+            <motion.div variants={fadeInUp} initial="hidden" whileInView="visible" viewport={viewport} className="max-w-2xl mb-16 md:mb-24">
+              <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-4 block">Industry Solutions</span>
+              <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-[-0.03em] text-zinc-900">
+                Built for every
+                <br />
+                industry.
+              </h2>
+              <p className="mt-6 text-zinc-500 text-lg md:text-xl font-medium">
+                From retail to healthcare, deploy AI agents that understand your business.
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-white">
+              {INDUSTRY_DATA.map((industry, idx) => (
+                <motion.div
+                  key={industry.title}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={viewport}
+                  transition={{ duration: 0.5, delay: idx * 0.06, ease }}
+                  className="bg-white p-8 md:p-10 group hover:bg-zinc-50 transition-colors duration-300"
+                >
+                  <Link href="/create-worker" className="block">
+                    {/* Illustration / Visual area */}
+                    <div className="relative mb-6 overflow-hidden rounded-sm aspect-[4/3] bg-zinc-100">
+                      <div className={`absolute inset-0 bg-gradient-to-br ${industry.gradient} opacity-90`} />
+                      {/* Stylized character illustration */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <svg viewBox="0 0 100 100" className="w-20 h-20 text-white/30">
+                          <ellipse cx="50" cy="70" rx="30" ry="10" fill="currentColor" />
+                          <circle cx="50" cy="40" r="25" fill="currentColor" />
+                          <ellipse cx="40" cy="38" rx="4" ry="6" fill="rgba(255,255,255,0.4)" />
+                          <ellipse cx="60" cy="38" rx="4" ry="6" fill="rgba(255,255,255,0.4)" />
+                          <path d="M40 45 Q50 52 60 45" stroke="rgba(255,255,255,0.5)" strokeWidth="2" fill="none" strokeLinecap="round" />
+                        </svg>
+                      </div>
+                      {/* Message bubbles floating */}
+                      <div className="absolute bottom-3 left-3 right-3 flex flex-wrap gap-1.5 justify-end">
+                        {industry.messages.slice(0, 3).map((msg, j) => (
+                          <div key={j} className="bg-white/30 backdrop-blur-sm rounded-lg px-2.5 py-1.5 text-[10px] font-bold text-white max-w-[60%]">
+                            {msg.text}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Content */}
+                    <span className="text-xs font-bold uppercase tracking-widest text-emerald-600 mb-3 block">{industry.title}</span>
+                    <h3 className="text-lg font-bold text-zinc-900 mb-3 leading-snug">{industry.desc}</h3>
+                    
+                    {/* Features row */}
+                    {industry.features && (
+                      <div className="flex flex-wrap gap-2 mb-6">
+                        {industry.features.map((feature, fIdx) => (
+                          <span key={fIdx} className="px-2.5 py-1 bg-emerald-50 text-emerald-600 rounded-md text-[10px] font-bold uppercase tracking-wider">
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* CTA */}
+                    <div className="flex items-center gap-2 text-sm font-bold text-zinc-900 group-hover:text-emerald-600 group-hover:gap-3 transition-all">
+                      Explore <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </Link>
                 </motion.div>
               ))}
             </div>

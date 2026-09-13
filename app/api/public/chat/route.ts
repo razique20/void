@@ -5,6 +5,7 @@ import TrainingData from '@/models/TrainingData';
 import Conversation from '@/models/Conversation';
 import AIProvider from '@/models/AIProvider';
 import Groq from 'groq-sdk';
+import { fetchRelevantSheetContext, renderSheetContext, sheetBehaviorNoteForWorker } from '@/lib/sheetRetriever';
 
 export async function POST(req: Request) {
   try {
@@ -26,6 +27,36 @@ export async function POST(req: Request) {
     const trainingData = await TrainingData.find({ workerId });
     const context = trainingData.map(d => d.content).join('\n\n');
 
+    // 2b. Google Sheets retrieval for attached active sheets
+    let sheetContext = '';
+    let sheetBehaviorNote = '';
+    let sheetDebug = null;
+    try {
+      const workerPrefs = (worker as any)?.sheets ?? {};
+      const sheetItems = await fetchRelevantSheetContext(
+        workerId,
+        worker.userId ?? 'anonymous',
+        message,
+        {
+          enabled: workerPrefs?.enabled ?? true,
+          scope: workerPrefs?.scope ?? 'all',
+          primarySheetId: workerPrefs?.primarySheetId ?? undefined,
+          relevanceMode: workerPrefs?.relevanceMode ?? 'keyword',
+          maxSheets: workerPrefs?.maxSheets ?? 3,
+          maxRowsPerSheet: workerPrefs?.maxRowsPerSheet ?? 25,
+        }
+      );
+      sheetContext = renderSheetContext(sheetItems);
+      sheetBehaviorNote = sheetBehaviorNoteForWorker(workerPrefs?.answerBehavior);
+      sheetDebug = {
+        itemsCount: sheetItems.length,
+        items: sheetItems.map(i => ({ sheetName: i.sheetName, matchedFields: i.matchedFields, rowCount: i.rows.length, rowsSample: i.rows.slice(0, 3), spreadsheetId: i.spreadsheetId }))
+      };
+      console.log('[PUBLIC_CHAT_SHEET_RETRIEVER]', JSON.stringify(sheetDebug, null, 2));
+    } catch (sheetErr) {
+      console.error('[PUBLIC_CHAT_SHEET_RETRIEVER]', sheetErr);
+    }
+
     // 3. System Prompt
     const systemPrompt = `
       You are ${worker.name}, an AI assistant with a ${worker.tone} tone.
@@ -34,6 +65,7 @@ export async function POST(req: Request) {
       
       Use the following knowledge base to answer questions:
       ${context}
+      ${sheetContext ? `\n\nSheet Data:\n${sheetContext}` : ''}${sheetBehaviorNote}
       
       Rules:
       - If the answer is not in the knowledge base, use your general intelligence but stay in character.

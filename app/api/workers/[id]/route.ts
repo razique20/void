@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Worker from '@/models/Worker';
+import { z } from 'zod';
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {

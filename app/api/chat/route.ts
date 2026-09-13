@@ -22,6 +22,7 @@ import { buildCatalogPrompt } from '@/lib/whatsappCatalog';
 import { detectLanguage, translateText, getResponseLanguage, SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/languageDetection';
 import { getActiveTestForWorker, getVariantForConversation, recordVariantMetric } from '@/lib/abTesting';
 import { optimizeContextWindow, estimateTokens } from '@/lib/contextWindowing';
+import { fetchRelevantSheetContext, renderSheetContext, sheetBehaviorNoteForWorker } from '@/lib/sheetRetriever';
 
 export async function POST(req: Request) {
   try {
@@ -112,10 +113,10 @@ export async function POST(req: Request) {
 
     // 2. RAG Retrieval Logic
     const trainingDocs = await TrainingData.find({ workerId });
-    
+
     // Simple Keyword-based Retrieval (Semantic search simulator)
     const keywords = message.toLowerCase().split(' ').filter((w: string) => w.length > 3);
-    
+
     let contextText = '';
     if (trainingDocs.length > 0) {
       // Rank chunks based on keyword matches
@@ -131,11 +132,41 @@ export async function POST(req: Request) {
       .slice(0, 5); // Take top 5 most relevant chunks
 
       contextText = rankedChunks.map(c => c.content).join('\n\n');
-      
+
       // If no relevant chunks found, fallback to most recent training data
       if (!contextText) {
         contextText = trainingDocs.slice(-2).map(doc => doc.content).join('\n\n');
       }
+    }
+
+    // 2b. Google Sheets retrieval for attached active sheets
+    let sheetContext = '';
+    let sheetBehaviorNote = '';
+    let sheetDebug = null;
+    try {
+      const workerPrefs = (worker as any)?.sheets ?? {};
+      const sheetItems = await fetchRelevantSheetContext(
+        workerId,
+        worker.userId,
+        message,
+        {
+          enabled: workerPrefs?.enabled ?? true,
+          scope: workerPrefs?.scope ?? 'all',
+          primarySheetId: workerPrefs?.primarySheetId ?? undefined,
+          relevanceMode: workerPrefs?.relevanceMode ?? 'keyword',
+          maxSheets: workerPrefs?.maxSheets ?? 3,
+          maxRowsPerSheet: workerPrefs?.maxRowsPerSheet ?? 25,
+        }
+      );
+      sheetContext = renderSheetContext(sheetItems);
+      sheetBehaviorNote = sheetBehaviorNoteForWorker(workerPrefs?.answerBehavior);
+      sheetDebug = {
+        itemsCount: sheetItems.length,
+        items: sheetItems.map(i => ({ sheetName: i.sheetName, matchedFields: i.matchedFields, rowCount: i.rows.length, rowsSample: i.rows.slice(0, 3), spreadsheetId: i.spreadsheetId }))
+      };
+      console.log('[CHAT_SHEET_RETRIEVER]', JSON.stringify(sheetDebug, null, 2));
+    } catch (sheetErr) {
+      console.error('[CHAT_SHEET_RETRIEVER]', sheetErr);
     }
 
     // 3. Longitudinal Memory — retrieve persistent context for this user
@@ -163,6 +194,7 @@ IMPORTANT: Always respond in ${responseLanguageName}. The customer wrote in ${de
 ${memoryContext}
 Knowledge Base:
 ${contextText || "No specific knowledge base provided."}
+${sheetContext ? `\n\nSheet Data:\n${sheetContext}` : ''}${sheetBehaviorNote}
     `.trim();
 
     // Check for Email Tool

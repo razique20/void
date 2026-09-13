@@ -17,6 +17,7 @@ import {
   PanelLeftClose,
   PanelLeft,
   Lock,
+  Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '@/components/Logo';
@@ -43,6 +44,7 @@ const allNavGroups: { label: string; links: NavLink[] }[] = [
     label: 'Workspaces',
     links: [
       { label: 'Mission Control', icon: MessageSquare, href: '/dashboard/live', featureKey: 'mission_control' },
+      { label: 'Leads CRM', icon: Users, href: '/dashboard/leads', featureKey: 'lead_capture' },
       { label: 'AI Email Hub', icon: Mail, href: '/dashboard/email', featureKey: 'email_agent' },
     ],
   },

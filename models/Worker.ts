@@ -66,6 +66,27 @@ const WorkerSchema = new Schema({
       summaryThreshold: { type: Number, default: 15 }, // Summarize messages older than this count
       enableSummarization: { type: Boolean, default: true }, // Enable LLM summarization for older messages
     }
+  },
+  sheets: {
+    enabled: { type: Boolean, default: true }, // Whether this agent may use its connected sheets at answer time
+    scope: {
+      type: String,
+      enum: ['all', 'relevant'],
+      default: 'all',
+    }, // all = all connected sheets, relevant = keyword-filtered sheets/rows
+    primarySheetId: { type: String }, // optional preferred sheet when scope is relevant
+    answerBehavior: {
+      type: String,
+      enum: ['balanced', 'prefers_sheet', 'prefers_training'],
+      default: 'balanced',
+    }, // balanced = use both and let the prompt decide; prefers_sheet = sheet takes priority; prefers_training = training takes priority
+    relevanceMode: {
+      type: String,
+      enum: ['keyword', 'semantic'],
+      default: 'keyword',
+    }, // keyword = current best-match filtering; semantic = future semantic retrieval
+    maxSheets: { type: Number, default: 3 }, // max sheets to load per answer
+    maxRowsPerSheet: { type: Number, default: 25 }, // max rows to include per sheet
   }
 }, { timestamps: true });
 

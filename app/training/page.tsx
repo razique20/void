@@ -29,7 +29,8 @@ import {
   FileText,
   Layers,
   Activity,
-  Plus
+  Plus,
+  Link2,
 } from 'lucide-react';
 
 export default function TrainingPage() {
@@ -762,6 +763,25 @@ export default function TrainingPage() {
                     </p>
                   </div>
                 </div>
+
+                {/* Google Sheets Integration Link */}
+                <Link
+                  href={`/dashboard/integrations?id=${selectedWorker}`}
+                  className="block p-4 bg-apple-blue/5 border border-apple-blue/15 rounded-2xl hover:bg-apple-blue/10 transition-all"
+                >
+                  <div className="flex items-start gap-3">
+                    <Link2 className="w-4 h-4 text-apple-blue shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[11px] text-apple-blue uppercase tracking-wider">Google Sheets Integration</h4>
+                      <p className="text-[10px] text-apple-blue/70 font-medium leading-relaxed">
+                        Connect live Google Sheets to this agent so its knowledge stays in sync with your spreadsheet data.
+                      </p>
+                      <span className="text-[9px] font-bold text-apple-blue/80 mt-1 inline-block">
+                        Configure sync →
+                      </span>
+                    </div>
+                  </div>
+                </Link>
 
               </div>
 

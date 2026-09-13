@@ -945,48 +945,55 @@ export default function CreateWorkerPage() {
             <motion.div variants={itemVariants} className="lg:col-span-5 lg:sticky lg:top-8 space-y-6">
 
               {/* Identity Card */}
-              <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 relative overflow-hidden group">
-                <div className="flex justify-between items-center mb-5">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Live Preview</h3>
+              <div className="bg-bg-subtle border border-border-default rounded-2xl overflow-hidden">
+                {/* Header bar */}
+                <div className="px-5 py-3.5 border-b border-border-subtle flex items-center justify-between">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-silver">Live Preview</h3>
                   <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/15 rounded-full">
                     <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                     <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Active</span>
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center text-center space-y-4">
-                  <div className="w-14 h-14 bg-bg-elevated border border-border-strong rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <Bot className="w-7 h-7 text-foreground" />
+                {/* Agent identity */}
+                <div className="p-5 flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-apple-blue/20 to-apple-blue/5 border border-apple-blue/15 rounded-2xl flex items-center justify-center shrink-0">
+                    <span className="text-lg font-bold text-apple-blue">
+                      {(formData.name || 'U').charAt(0).toUpperCase()}
+                    </span>
                   </div>
-
-                  <div className="space-y-1">
-                    <h3 className="text-base font-bold tracking-tight text-foreground truncate max-w-[220px]">
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-sm font-bold text-foreground truncate">
                       {formData.name || 'Unassigned Node'}
-                    </h3>
-                    <div className="flex items-center justify-center gap-1.5 text-[10px] font-semibold text-silver">
+                    </h4>
+                    <div className="flex items-center gap-1.5 text-[10px] text-silver font-medium mt-0.5">
                       <span className="text-apple-blue capitalize font-bold">{formData.tone}</span>
-                      <span>·</span>
+                      <span className="text-foreground/20">·</span>
                       <span>{formData.language}</span>
-                      <span>·</span>
-                      <span className="uppercase tracking-wider">Neural</span>
+                      <span className="text-foreground/20">·</span>
+                      <span className="uppercase tracking-wider text-silver/60">Neural</span>
                     </div>
                   </div>
+                </div>
 
-                  <div className="w-full p-4 bg-bg-surface border border-border-default rounded-xl min-h-[100px] flex items-center justify-center">
-                    <p className="text-[11px] text-silver leading-relaxed italic text-left w-full line-clamp-5">
+                {/* Personality preview */}
+                <div className="px-5 pb-5">
+                  <div className="w-full p-4 bg-bg-surface border border-border-default rounded-xl min-h-[80px]">
+                    <p className="text-[11px] text-silver leading-relaxed italic line-clamp-4">
                       {formData.personality
                         ? `"${formData.personality}"`
                         : 'Awaiting directives to preview compiled operational parameters...'}
                     </p>
                   </div>
+                </div>
 
-                  <div className="flex gap-2 w-full pt-1">
-                    <div className="flex-1 h-1 bg-bg-strong rounded-full overflow-hidden">
-                      <div className="h-full bg-apple-blue w-[50%] animate-[pulse_2s_infinite]" />
-                    </div>
-                    <div className="flex-1 h-1 bg-bg-strong rounded-full overflow-hidden">
-                      <div className="h-full bg-emerald-500 w-[75%] animate-[pulse_1.5s_infinite]" />
-                    </div>
+                {/* Activity bars */}
+                <div className="px-5 pb-5 flex gap-2">
+                  <div className="flex-1 h-1 bg-border-default rounded-full overflow-hidden">
+                    <div className="h-full bg-apple-blue w-[50%] rounded-full animate-[pulse_2s_infinite]" />
+                  </div>
+                  <div className="flex-1 h-1 bg-border-default rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 w-[75%] rounded-full animate-[pulse_1.5s_infinite]" />
                   </div>
                 </div>
               </div>

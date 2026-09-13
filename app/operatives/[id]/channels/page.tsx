@@ -364,6 +364,25 @@ export default function ChannelsPage() {
               </div>
             </div>
 
+            {/* Google Sheets Integration Link */}
+            <Link
+              href={`/dashboard/integrations?id=${operativeId}`}
+              className="block p-4 bg-apple-blue/5 border border-apple-blue/15 rounded-2xl hover:bg-apple-blue/10 transition-all"
+            >
+              <div className="flex items-start gap-3">
+                <Link2 className="w-4 h-4 text-apple-blue shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <h4 className="font-bold text-[11px] text-apple-blue uppercase tracking-wider">Google Sheets Integration</h4>
+                  <p className="text-[10px] text-apple-blue/70 font-medium leading-relaxed">
+                    Attach live spreadsheets to this agent so its knowledge base stays in sync with your row data.
+                  </p>
+                  <span className="text-[9px] font-bold text-apple-blue/80 mt-1 inline-block">
+                    Configure sheets →
+                  </span>
+                </div>
+              </div>
+            </Link>
+
             <form id="channels-form" onSubmit={saveChannels} className="space-y-8">
               
               {/* External Channels — 2-Column Grid */}

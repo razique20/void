@@ -22,6 +22,7 @@ export async function GET() {
           knowledgeSharing: false,
           conversationBranching: false,
           naturalLanguageAnalytics: false,
+          sheetsIntegration: false,
         }
       });
     }

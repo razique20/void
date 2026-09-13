@@ -15,6 +15,8 @@ interface DataContextValue {
   isSmartBookingEnabled: boolean;
   isKnowledgeSharingEnabled: boolean;
   isNaturalLanguageAnalyticsEnabled: boolean;
+  isSheetsIntegrationEnabled: boolean;
+  isLeadCaptureEnabled: boolean;
   refreshSub: () => Promise<void>;
 }
 
@@ -101,8 +103,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
   // Natural Language Analytics
   const isNaturalLanguageAnalyticsEnabled = loading ? false : isEnterprise || (config?.featureFlags?.naturalLanguageAnalytics === true && hasFeature('natural_language_analytics'));
 
+  // Google Sheets Integration
+  const isSheetsIntegrationEnabled = loading ? false : isEnterprise || (config?.featureFlags?.sheetsIntegration === true && hasFeature('sheets'));
+
+  // Leads CRM — gated by plan feature + admin leadManagement flag
+  const isLeadCaptureEnabled = loading ? false : isEnterprise || (hasFeature('lead_capture'));
   return (
-    <DataContext.Provider value={{ sub, config, loading, hasFeature, isEmailHubEnabled, isSmartBookingEnabled, isKnowledgeSharingEnabled, isNaturalLanguageAnalyticsEnabled, refreshSub }}>
+    <DataContext.Provider value={{ sub, config, loading, hasFeature, isEmailHubEnabled, isSmartBookingEnabled, isKnowledgeSharingEnabled, isNaturalLanguageAnalyticsEnabled,  isSheetsIntegrationEnabled,
+  isLeadCaptureEnabled,
+  refreshSub }}>
       {children}
     </DataContext.Provider>
   );

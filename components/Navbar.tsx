@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { UserButton, Show } from '@clerk/nextjs';
-import {  Menu,
+import { UserButton, Show } from '@clerk/nextjs';import {
+  Menu,
   X,
   ChevronDown,
   ShoppingBag,
@@ -33,6 +33,7 @@ import {  Menu,
   Share2,
   BarChart3,
   Beaker,
+  Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
@@ -48,7 +49,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   
-  const { sub, config, hasFeature, isSmartBookingEnabled, isKnowledgeSharingEnabled, isNaturalLanguageAnalyticsEnabled } = useData();
+  const { sub, config, hasFeature, isSmartBookingEnabled, isKnowledgeSharingEnabled, isNaturalLanguageAnalyticsEnabled, isLeadCaptureEnabled } = useData();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mounted, setMounted] = useState(cachedMounted);
@@ -175,17 +176,17 @@ export default function Navbar() {
     {
       title: 'Workspaces',
       links: [
-        { label: 'Customer Journey', href: '/dashboard/journey', icon: Route, locked: !hasFeature('lead_capture') },
-        { label: 'Invoices', href: '/dashboard/invoices', icon: FileText, locked: !hasFeature('lead_capture') },
+        { label: 'Customer Journey', href: '/dashboard/journey', icon: Route, locked: !isLeadCaptureEnabled },
+        { label: 'Leads CRM', href: '/dashboard/leads', icon: Users, locked: !isLeadCaptureEnabled },
+        { label: 'Invoices', href: '/dashboard/invoices', icon: FileText, locked: !isLeadCaptureEnabled },
         { label: 'Mission Control', href: '/dashboard/live', icon: MessageSquare, locked: !hasFeature('mission_control') },
-        { label: 'Revenue Analytics', href: '/dashboard/analytics/revenue', icon: DollarSign, locked: !hasFeature('lead_capture') },
+        { label: 'Revenue Analytics', href: '/dashboard/analytics/revenue', icon: DollarSign, locked: !isLeadCaptureEnabled },
         { label: 'WA Catalog', href: '/dashboard/catalog', icon: Share2, locked: !hasFeature('whatsapp_catalog') },
       ]
     },
     {
       title: 'Analytics',
-      links: [
-        { label: 'Topic Trends', href: '/dashboard/analytics/topics', icon: Tags, locked: !hasFeature('lead_capture') },
+      links: [              { label: 'Topic Trends', href: '/dashboard/analytics/topics', icon: Tags, locked: !isLeadCaptureEnabled },
       ]
     },
     {
@@ -225,8 +226,8 @@ export default function Navbar() {
 
   // Right-aligned System & Billing Links (Slim Dock)
   const rightLinks = [
-    { label: 'System Tour', href: '#tour', icon: Compass, isAction: true },
-    { label: 'Profile', href: '/dashboard/profile', icon: User },
+    { label: 'System Tour', href: '#tour', icon: Compass, isAction: true },        { label: 'Profile', href: '/dashboard/profile', icon: User },
+        { label: 'Leads CRM', href: '/dashboard/leads', icon: Users, locked: !isLeadCaptureEnabled },
     { label: 'Marketplace', href: '/marketplace', icon: ShoppingBag, locked: !hasFeature('marketplace') },
     { label: 'Billing', href: '/billing', icon: CreditCard },
     { label: 'Credentials', href: '/dashboard/credentials', icon: Key },
@@ -296,11 +297,6 @@ export default function Navbar() {
             <Link href="/" className="group flex items-center gap-2 transition-transform hover:scale-[1.02]">
               <div className="flex flex-col">
                 <Logo iconOnly={mounted && isCollapsed} compact={mounted && isCollapsed} />
-                {(!mounted || !isCollapsed) && (
-                  <span className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-white/50 uppercase mt-1 flex items-center gap-1">
-                    AUTONOMOUS OS <span className="text-emerald-400/80 font-normal lowercase tracking-normal">by Aethyl</span>
-                  </span>
-                )}
               </div>
             </Link>
 
@@ -483,9 +479,7 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-      </nav>
-
-      {/* 4. MOBILE OVERLAY MENU */}
+      </nav>      {/* 4. MOBILE OVERLAY MENU */}
       <div className={cn(
         "fixed inset-0 bg-[#0a0a0c] flex flex-col justify-between p-6 transition-all duration-500 lg:hidden z-[990]",
         isOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
@@ -522,8 +516,8 @@ export default function Navbar() {
             </div>
           </div>
           
-          {/* System Utilities Section */}
-          <div className="space-y-4">                      <p className="text-[9px] font-bold text-silver/40 uppercase tracking-widest border-b border-border-default pb-2">System Utilities</p>
+          {/* System Utilities Section */}            <div className="space-y-4">
+              <p className="text-[9px] font-bold text-silver/40 uppercase tracking-widest border-b border-border-default pb-2">System Utilities</p>
             <div className="flex flex-col gap-3">
               {rightLinks.map((link) => {
                 const Icon = link.icon;
@@ -554,16 +548,11 @@ export default function Navbar() {
               })}
             </div>
           </div>
-        </div>
-
-        {/* Mobile Footer */}
+        </div>        {/* Mobile Footer */}
         <div className="text-center w-full space-y-2 pb-6 border-t border-white/10 pt-4">
           <Link href="/" className="inline-flex items-center gap-1.5">
             <Logo />
           </Link>
-          <p className="text-[8.5px] font-mono font-bold tracking-[0.15em] text-silver/40 uppercase">
-            AUTONOMOUS OS <span className="text-emerald-400/80 font-normal lowercase tracking-normal">by Aethyl</span>
-          </p>
         </div>
       </div>
 

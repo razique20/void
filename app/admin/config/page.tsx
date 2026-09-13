@@ -1,10 +1,34 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Database, Plus, CheckCircle2, ShieldCheck, Cpu, RefreshCw, Zap, Globe, CalendarCheck, Target, Share2, GitBranch, BarChart3 } from 'lucide-react';
+import {
+  Plus,
+  ShieldCheck,
+  Cpu,
+  Zap,
+  Globe,
+  Link2,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useData } from '@/lib/DataContext';
 import { motion, Variants } from 'framer-motion';
+
+type FeatureFlags = {
+  leadManagement?: boolean;
+  actionAgents?: boolean;
+  neuralVoice?: boolean;
+  emailHub?: boolean;
+  smartBooking?: boolean;
+  autonomousGoals?: boolean;
+  knowledgeSharing?: boolean;
+  conversationBranching?: boolean;
+  naturalLanguageAnalytics?: boolean;
+  sheetsIntegration?: boolean;
+};
+
+type GlobalConfig = {
+  featureFlags: FeatureFlags;
+};
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -18,23 +42,19 @@ const itemVariants: Variants = {
 
 export default function NeuralConfigPage() {
   const { config: sharedConfig } = useData();
-  const [providers, setProviders] = useState<any[]>([]);
-  const [globalConfig, setGlobalConfig] = useState<any>(sharedConfig);
+  const [providers, setProviders] = useState<Array<{ _id: string; name: string; models: string[]; isDefault?: boolean }>>([]);
+  const [globalConfig, setGlobalConfig] = useState<GlobalConfig | null>(sharedConfig ?? null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (sharedConfig && !globalConfig) setGlobalConfig(sharedConfig);
-  }, [sharedConfig]);
-
-  useEffect(() => {
     fetch('/api/admin/providers')
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data?.error) setError(data.error);
         else setProviders(data);
       })
-      .catch(err => setError(err.message))
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -46,47 +66,96 @@ export default function NeuralConfigPage() {
         </div>
         <h1 className="text-xl font-bold mb-2">Access Restricted</h1>
         <p className="text-silver text-sm text-center max-w-md mb-6">{error}</p>
-        <button onClick={() => window.location.href = '/dashboard'} className="px-6 py-2.5 bg-foreground text-background rounded-xl text-xs font-bold hover:opacity-90 transition-all">
+        <button
+          onClick={() => (window.location.href = '/dashboard')}
+          className="px-6 py-2.5 bg-foreground text-background rounded-xl text-xs font-bold hover:opacity-90 transition-all"
+        >
           Return to Dashboard
         </button>
       </div>
     );
   }
 
-  const toggleFeature = async (feature: string) => {
-    const newFlags = { ...globalConfig.featureFlags, [feature]: !globalConfig.featureFlags[feature] };
+  const toggleFeature = async (
+    feature: keyof FeatureFlags,
+    currentEnabled: boolean,
+    currentFlags: FeatureFlags | undefined
+  ) => {
+    if (!currentFlags) {
+      return;
+    }
+    const newFlags = {
+      ...currentFlags,
+      [feature]: !currentEnabled,
+    };
     setGlobalConfig({ ...globalConfig, featureFlags: newFlags });
-    const res = await fetch('/api/admin/config', { method: 'PATCH', body: JSON.stringify({ featureFlags: newFlags }) });
-    if (!res.ok) { setGlobalConfig(globalConfig); alert('Failed to update.'); }
+    const res = await fetch('/api/admin/config', {
+      method: 'PATCH',
+      body: JSON.stringify({ featureFlags: newFlags }),
+    });
+    if (!res.ok) {
+      setGlobalConfig(globalConfig);
+      alert('Failed to update.');
+    }
   };
 
   const handleAddProvider = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    const payload = { name: fd.get('name'), apiKey: fd.get('apiKey'), models: (fd.get('models') as string).split(',').map(m => m.trim()), isDefault: providers.length === 0 };
-    const res = await fetch('/api/admin/providers', { method: 'POST', body: JSON.stringify(payload) });
-    if (res.ok) { const np = await res.json(); setProviders([np, ...providers]); (e.target as HTMLFormElement).reset(); }
+    const payload = {
+      name: fd.get('name'),
+      apiKey: fd.get('apiKey'),
+      models: (fd.get('models') as string).split(',').map((m) => m.trim()),
+      isDefault: providers.length === 0,
+    };
+    const res = await fetch('/api/admin/providers', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      const np = await res.json();
+      setProviders([np, ...providers]);
+      (e.target as HTMLFormElement).reset();
+    }
   };
 
   const setDefault = async (id: string) => {
-    const res = await fetch('/api/admin/providers', { method: 'PATCH', body: JSON.stringify({ id, isDefault: true, isActive: true }) });
-    if (res.ok) setProviders(providers.map(p => ({ ...p, isDefault: p._id === id })));
+    const res = await fetch('/api/admin/providers', {
+      method: 'PATCH',
+      body: JSON.stringify({ id, isDefault: true, isActive: true }),
+    });
+    if (res.ok) setProviders(providers.map((p) => ({ ...p, isDefault: p._id === id })));
   };
 
   return (
-    <motion.div variants={containerVariants} initial="hidden" animate="show" className="space-y-8">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="space-y-8"
+    >
       {/* Header */}
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-border-default pb-6">
+      <motion.div
+        variants={itemVariants}
+        className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-border-default pb-6"
+      >
         <div className="space-y-1">
-          <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">Neural Config</h1>
-          <p className="text-silver text-xs font-medium">Manage AI providers, API keys, feature flags, and model routing.</p>
+          <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
+            Neural Config
+          </h1>
+          <p className="text-silver text-xs font-medium">
+            Manage AI providers, API keys, feature flags, and model routing.
+          </p>
         </div>
       </motion.div>
 
       {/* Two-Column Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Feature Flags */}
-        <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 space-y-4">
+        <motion.div
+          variants={itemVariants}
+          className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 space-y-4"
+        >
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-apple-blue/10 flex items-center justify-center">
               <Zap className="w-4 h-4 text-apple-blue" />
@@ -100,62 +169,72 @@ export default function NeuralConfigPage() {
             <FeatureToggle
               label="Lead Management"
               description="Automated lead extraction from conversations to CRM."
-              isEnabled={globalConfig?.featureFlags?.leadManagement}
-              onToggle={() => toggleFeature('leadManagement')}
+              isEnabled={globalConfig?.featureFlags?.leadManagement ?? false}
+              onToggle={() => toggleFeature('leadManagement', globalConfig?.featureFlags?.leadManagement ?? false, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Action Agents"
               description="Allow agents to execute custom business tools."
-              isEnabled={globalConfig?.featureFlags?.actionAgents}
-              onToggle={() => toggleFeature('actionAgents')}
+              isEnabled={globalConfig?.featureFlags?.actionAgents ?? false}
+              onToggle={() => toggleFeature('actionAgents', globalConfig?.featureFlags?.actionAgents ?? false, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Neural Voice"
               description="High-fidelity STT/TTS for WhatsApp voice notes."
-              isEnabled={globalConfig?.featureFlags?.neuralVoice}
-              onToggle={() => toggleFeature('neuralVoice')}
+              isEnabled={globalConfig?.featureFlags?.neuralVoice ?? false}
+              onToggle={() => toggleFeature('neuralVoice', globalConfig?.featureFlags?.neuralVoice ?? false, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="AI Email Hub"
               description="Autonomous email agent for connecting IMAP/SMTP mailboxes."
-              isEnabled={globalConfig?.featureFlags?.emailHub}
-              onToggle={() => toggleFeature('emailHub')}
+              isEnabled={globalConfig?.featureFlags?.emailHub ?? false}
+              onToggle={() => toggleFeature('emailHub', globalConfig?.featureFlags?.emailHub ?? false, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Smart Booking"
               description="AI-powered meeting scheduling with Cal.com integration."
-              isEnabled={globalConfig?.featureFlags?.smartBooking}
-              onToggle={() => toggleFeature('smartBooking')}
+              isEnabled={globalConfig?.featureFlags?.smartBooking ?? false}
+              onToggle={() => toggleFeature('smartBooking', globalConfig?.featureFlags?.smartBooking ?? false, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Autonomous Goals"
               description="AI self-optimizing performance targets and goal tracking."
-              isEnabled={globalConfig?.featureFlags?.autonomousGoals}
-              onToggle={() => toggleFeature('autonomousGoals')}
+              isEnabled={globalConfig?.featureFlags?.autonomousGoals ?? false}
+              onToggle={() => toggleFeature('autonomousGoals', globalConfig?.featureFlags?.autonomousGoals ?? false, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Knowledge Sharing"
               description="Cross-agent knowledge graph with version control."
-              isEnabled={globalConfig?.featureFlags?.knowledgeSharing}
-              onToggle={() => toggleFeature('knowledgeSharing')}
+              isEnabled={globalConfig?.featureFlags?.knowledgeSharing ?? false}
+              onToggle={() => toggleFeature('knowledgeSharing', globalConfig?.featureFlags?.knowledgeSharing ?? false, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Conversation Branching"
               description="What-if scenario analysis for agent optimization."
-              isEnabled={globalConfig?.featureFlags?.conversationBranching}
-              onToggle={() => toggleFeature('conversationBranching')}
+              isEnabled={globalConfig?.featureFlags?.conversationBranching ?? false}
+              onToggle={() => toggleFeature('conversationBranching', globalConfig?.featureFlags?.conversationBranching ?? false, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Natural Language Analytics"
               description="Plain English queries with instant charts and insights."
-              isEnabled={globalConfig?.featureFlags?.naturalLanguageAnalytics}
-              onToggle={() => toggleFeature('naturalLanguageAnalytics')}
+              isEnabled={globalConfig?.featureFlags?.naturalLanguageAnalytics ?? false}
+              onToggle={() => toggleFeature('naturalLanguageAnalytics', globalConfig?.featureFlags?.naturalLanguageAnalytics ?? false, globalConfig?.featureFlags)}
+            />
+            <FeatureToggle
+              label="Google Sheets Integration"
+              description="Let agents query live spreadsheets before answering."
+              isEnabled={globalConfig?.featureFlags?.sheetsIntegration ?? false}
+              onToggle={() => toggleFeature('sheetsIntegration', globalConfig?.featureFlags?.sheetsIntegration ?? false, globalConfig?.featureFlags)}
+              icon={Link2}
             />
           </div>
         </motion.div>
 
         {/* Add Provider Form */}
-        <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 space-y-4">
+        <motion.div
+          variants={itemVariants}
+          className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 space-y-4"
+        >
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center">
               <Plus className="w-4 h-4 text-emerald-500" />
@@ -168,15 +247,31 @@ export default function NeuralConfigPage() {
           <form onSubmit={handleAddProvider} className="space-y-3">
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-silver uppercase tracking-widest">Name</label>
-              <input name="name" required placeholder="e.g. Groq Production" className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40" />
+              <input
+                name="name"
+                required
+                placeholder="e.g. Groq Production"
+                className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
+              />
             </div>
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-silver uppercase tracking-widest">API Key</label>
-              <input name="apiKey" required type="password" placeholder="sk-..." className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40" />
+              <input
+                name="apiKey"
+                required
+                type="password"
+                placeholder="sk-..."
+                className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
+              />
             </div>
             <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-silver uppercase tracking-widest">Models (CSV)</label>
-              <input name="models" required placeholder="openai/gpt-oss-20b, openai/gpt-oss-120b" className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40" />
+              <input
+                name="models"
+                required
+                placeholder="openai/gpt-oss-20b, openai/gpt-oss-120b"
+                className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40"
+              />
             </div>
             <button className="w-full py-3 bg-foreground text-background font-bold rounded-xl text-xs hover:opacity-90 transition-all">
               Inject Provider
@@ -189,60 +284,103 @@ export default function NeuralConfigPage() {
       <motion.div variants={itemVariants} className="space-y-3">
         <h3 className="text-xs font-bold uppercase tracking-wider text-silver px-1">Active Infrastructure</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {loading ? [1, 2].map(i => (
-            <div key={i} className="h-32 bg-bg-subtle border border-border-default rounded-2xl animate-pulse" />
-          )) : providers.length === 0 ? (
+          {loading ? (
+            [1, 2].map((i) => (
+              <div key={i} className="h-32 bg-bg-subtle border border-border-default rounded-2xl animate-pulse" />
+            ))
+          ) : providers.length === 0 ? (
             <div className="col-span-2 p-12 bg-bg-subtle border border-border-default rounded-2xl text-center text-silver text-xs">
               <Cpu className="w-10 h-10 mx-auto mb-3 opacity-20" />
               No providers configured yet.
             </div>
-          ) : providers.map((p) => (
-            <div key={p._id} className={cn(
-              "bg-bg-subtle border rounded-2xl p-5 transition-all",
-              p.isDefault ? "border-apple-blue/30" : "border-border-default hover:border-border-hover"
-            )}>
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-bg-elevated border border-border-default rounded-xl flex items-center justify-center">
-                    <Globe className="w-4 h-4 text-silver" />
+          ) : (
+            providers.map((p) => (
+              <div
+                key={p._id}
+                className={cn(
+                  'bg-bg-subtle border rounded-2xl p-5 transition-all',
+                  p.isDefault ? 'border-apple-blue/30' : 'border-border-default hover:border-border-hover'
+                )}
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 bg-bg-elevated border border-border-default rounded-xl flex items-center justify-center">
+                      <Globe className="w-4 h-4 text-silver" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-foreground">{p.name}</h4>
+                      <p className="text-[10px] text-silver">{p.models.length} models</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-foreground">{p.name}</h4>
-                    <p className="text-[10px] text-silver">{p.models.length} models</p>
-                  </div>
+                  {p.isDefault && (
+                    <span className="px-2 py-0.5 bg-apple-blue/10 text-apple-blue text-[9px] font-bold rounded-md uppercase">
+                      Default
+                    </span>
+                  )}
                 </div>
-                {p.isDefault && (
-                  <span className="px-2 py-0.5 bg-apple-blue/10 text-apple-blue text-[9px] font-bold rounded-md uppercase">Default</span>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {p.models.slice(0, 3).map((m: string) => (
+                    <span key={m} className="px-2 py-0.5 bg-bg-elevated text-[9px] text-silver font-mono rounded-md">
+                      {m}
+                    </span>
+                  ))}
+                  {p.models.length > 3 && (
+                    <span className="text-[9px] text-silver self-center">+{p.models.length - 3}</span>
+                  )}
+                </div>
+                {!p.isDefault && (
+                  <button
+                    onClick={() => setDefault(p._id)}
+                    className="w-full py-2 text-[10px] font-bold bg-bg-elevated border border-border-default rounded-lg hover:bg-bg-active transition-colors text-foreground"
+                  >
+                    Set as Default
+                  </button>
                 )}
               </div>
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {p.models.slice(0, 3).map((m: string) => (
-                  <span key={m} className="px-2 py-0.5 bg-bg-elevated text-[9px] text-silver font-mono rounded-md">{m}</span>
-                ))}
-                {p.models.length > 3 && <span className="text-[9px] text-silver self-center">+{p.models.length - 3}</span>}
-              </div>
-              {!p.isDefault && (
-                <button onClick={() => setDefault(p._id)} className="w-full py-2 text-[10px] font-bold bg-bg-elevated border border-border-default rounded-lg hover:bg-bg-active transition-colors text-foreground">
-                  Set as Default
-                </button>
-              )}
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </motion.div>
     </motion.div>
   );
 }
 
-function FeatureToggle({ label, description, isEnabled, onToggle }: { label: string; description: string; isEnabled: boolean; onToggle: () => void }) {
+function FeatureToggle({
+  label,
+  description,
+  isEnabled,
+  onToggle,
+  icon: Icon,
+}: {
+  label: string;
+  description: string;
+  isEnabled: boolean;
+  onToggle: () => void;
+  icon?: React.ComponentType<{ className?: string }> | undefined;
+}) {
+  void Icon;
   return (
     <div className="flex items-center justify-between p-3 bg-bg-surface border border-border-default rounded-xl hover:border-border-hover transition-all">
       <div className="space-y-0.5">
-        <div className="text-xs font-bold text-foreground">{label}</div>
+        <div className="flex items-center gap-2">
+          {Icon && <Icon className="w-3.5 h-3.5 text-apple-blue" />}
+          <span className="text-xs font-bold text-foreground">{label}</span>
+        </div>
         <div className="text-[10px] text-silver font-medium">{description}</div>
       </div>
-      <button onClick={onToggle} className={cn("w-10 h-5 rounded-full relative transition-all duration-300 shrink-0", isEnabled ? "bg-apple-blue" : "bg-border-strong")}>
-        <div className={cn("absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all shadow-sm", isEnabled ? "left-5.5" : "left-0.5")} />
+      <button
+        onClick={onToggle}
+        className={cn(
+          'w-10 h-5 rounded-full relative transition-all duration-300 shrink-0',
+          isEnabled ? 'bg-apple-blue' : 'bg-border-strong'
+        )}
+      >
+        <div
+          className={cn(
+            'absolute top-0.5 w-4 h-4 bg-white rounded-full transition-all shadow-sm',
+            isEnabled ? 'left-5.5' : 'left-0.5'
+          )}
+        />
       </button>
     </div>
   );
