@@ -54,9 +54,19 @@ export function DataProvider({ children }: { children: ReactNode }) {
       }
     } catch (e) {}
 
+    const fetcher = async (url: string) => {
+      const res = await fetch(url);
+      if (!res.ok) {
+        // API returned an error page (e.g. sign-in HTML) — don't try to parse it as JSON
+        console.warn(`[DataContext] ${url} returned status ${res.status}`);
+        return {};
+      }
+      return res.json();
+    };
+
     Promise.all([
-      fetch('/api/subscription').then(res => res.json()),
-      fetch('/api/admin/config').then(res => res.json())
+      fetcher('/api/subscription'),
+      fetcher('/api/admin/config'),
     ]).then(([subData, configData]) => {
       cachedSub = subData;
       cachedConfig = configData;
@@ -70,7 +80,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const refreshSub = async () => {
     try {
-      const subData = await fetch('/api/subscription').then(res => res.json());
+      const res = await fetch('/api/subscription');
+      if (!res.ok) {
+        console.warn('[DataContext] /api/subscription returned status', res.status);
+        return;
+      }
+      const subData = await res.json();
       cachedSub = subData;
       setSub(subData);
       localStorage.setItem('void_navbar_sub', JSON.stringify(subData));

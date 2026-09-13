@@ -140,7 +140,7 @@ export async function POST(req: Request) {
         name: data.name || `Sheet ${data.spreadsheetId.slice(0, 8)}`,
         spreadsheetId: data.spreadsheetId,
         spreadsheetName: testData.headers.length > 0 ? `Sheet with ${testData.totalRows} rows` : 'Google Sheet',
-        range: data.range || 'Sheet1',
+        range: data.range || undefined,
         credentials: data.credentials,
         updateInterval: data.updateInterval,
         data: {
@@ -319,7 +319,7 @@ export async function CONNECT(req: Request) {
         : `Sheet ${data.spreadsheetId.slice(0, 8)}`,
       spreadsheetId: data.spreadsheetId,
       spreadsheetName: testData.headers.length > 0 ? `Sheet with ${testData.totalRows} rows` : 'Google Sheet',
-      range: data.range || 'Sheet1',
+      range: data.range || undefined,
       credentials: data.credentials,
       updateInterval: data.updateInterval,
       data: {

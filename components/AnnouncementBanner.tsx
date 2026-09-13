@@ -24,7 +24,10 @@ export default function AnnouncementBanner() {
 
   useEffect(() => {
     fetch('/api/admin/announcements?public=true')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) return [];
+        return res.json();
+      })
       .then(data => { if (Array.isArray(data)) setAnnouncements(data); })
       .catch(() => {});
   }, []);

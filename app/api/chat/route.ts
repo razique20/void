@@ -165,6 +165,11 @@ export async function POST(req: Request) {
         items: sheetItems.map(i => ({ sheetName: i.sheetName, matchedFields: i.matchedFields, rowCount: i.rows.length, rowsSample: i.rows.slice(0, 3), spreadsheetId: i.spreadsheetId }))
       };
       console.log('[CHAT_SHEET_RETRIEVER]', JSON.stringify(sheetDebug, null, 2));
+      if (sheetContext) {
+        console.log('[CHAT_SHEET_RETRIEVER] sheetContext sample:', sheetContext.slice(0, 1200));
+      } else {
+        console.log('[CHAT_SHEET_RETRIEVER] sheetContext was empty after renderSheetContext');
+      }
     } catch (sheetErr) {
       console.error('[CHAT_SHEET_RETRIEVER]', sheetErr);
     }
@@ -313,7 +318,11 @@ When a user asks for a task matching these descriptions, you MUST include the [A
       ],
       model: modelName,
       temperature: 0.7,
+      tool_choice: 'none',
     });
+
+
+
 
     let aiResponse = completion.choices[0]?.message?.content || "I'm sorry, I couldn't process that.";
 
@@ -443,7 +452,7 @@ When a user asks for a task matching these descriptions, you MUST include the [A
             { architectId: userId, operativeId: worker._id.toString() }
           );
 
-          aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, `(System: Lead captured for ${name.trim()})`);
+          aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, ``);
 
           // Broadcast real-time lead notification
           broadcast(userId, {
@@ -455,7 +464,7 @@ When a user asks for a task matching these descriptions, you MUST include the [A
           });
         } catch (err) {
           console.error('[LEAD_CAPTURE_ERROR]', err);
-          aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, `(System: Lead capture failed)`);
+          aiResponse = aiResponse.replace(/\[LEAD:.*?\]/, ``);
 
           // Broadcast system error notification
           broadcast(userId, {

@@ -59,6 +59,10 @@ if (!(global as any).automationStarted) {
         const port = process.env.PORT || '3001';
         // Hit the internal cron endpoint
         const res = await fetch(`http://localhost:${port}/api/cron/email-checker?token=${token}`);
+        if (!res.ok) {
+          console.warn('[PULSE] email-checker returned status', res.status);
+          return;
+        }
         const data = await res.json();
         
         if (data.processed > 0) {

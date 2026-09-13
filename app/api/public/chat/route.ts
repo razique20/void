@@ -53,6 +53,11 @@ export async function POST(req: Request) {
         items: sheetItems.map(i => ({ sheetName: i.sheetName, matchedFields: i.matchedFields, rowCount: i.rows.length, rowsSample: i.rows.slice(0, 3), spreadsheetId: i.spreadsheetId }))
       };
       console.log('[PUBLIC_CHAT_SHEET_RETRIEVER]', JSON.stringify(sheetDebug, null, 2));
+      if (sheetContext) {
+        console.log('[PUBLIC_CHAT_SHEET_RETRIEVER] sheetContext sample:', sheetContext.slice(0, 1200));
+      } else {
+        console.log('[PUBLIC_CHAT_SHEET_RETRIEVER] sheetContext was empty after renderSheetContext');
+      }
     } catch (sheetErr) {
       console.error('[PUBLIC_CHAT_SHEET_RETRIEVER]', sheetErr);
     }
@@ -110,7 +115,9 @@ export async function POST(req: Request) {
       ],
       model: modelName,
       temperature: 0.7,
+      tool_choice: 'none',
     });
+
 
     const aiResponse = completion.choices[0]?.message?.content || "I'm sorry, I couldn't process that.";
 

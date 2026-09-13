@@ -78,19 +78,39 @@ Respond in this exact JSON format only, no markdown:
 
     const raw = result.choices[0]?.message?.content || '';
     
-    // Try to extract JSON from the response (handle potential markdown wrapping)
+    // Try to extract JSON from the response (handle markdown wrapping, trailing text, etc.)
+    let parsed: { summary?: string; newFacts?: string[] } | null = null;
+    
+    // Strategy 1: try to find a JSON object anywhere in the response
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
+    if (jsonMatch) {
+      try {
+        parsed = JSON.parse(jsonMatch[0]);
+      } catch {
+        // fall through to strategy 2
+      }
+    }
+    
+    // Strategy 2: strip markdown code fences and try parsing the whole thing
+    if (!parsed) {
+      const stripped = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+      try {
+        parsed = JSON.parse(stripped);
+      } catch {
+        // fall through
+      }
+    }
+    
+    if (!parsed) {
       console.warn('[MEMORY] Could not extract JSON from LLM response');
+      console.log('[MEMORY] Raw response:', raw.slice(0, 500));
       return;
     }
 
-    const parsed = JSON.parse(jsonMatch[0]);
-
-    if (parsed.summary) {
+    if (parsed?.summary) {
       memory.memorySummary = parsed.summary;
     }
-    if (parsed.newFacts?.length > 0) {
+    if (parsed?.newFacts && parsed.newFacts.length > 0) {
       // Merge new facts, avoid duplicates
       const existingSet = new Set(memory.facts.map((f: string) => f.toLowerCase()));
       const merged = [...memory.facts];

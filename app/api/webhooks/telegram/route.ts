@@ -166,6 +166,11 @@ export async function POST(req: Request) {
         items: sheetItems.map(i => ({ sheetName: i.sheetName, matchedFields: i.matchedFields, rowCount: i.rows.length, rowsSample: i.rows.slice(0, 3), spreadsheetId: i.spreadsheetId }))
       };
       console.log('[TELEGRAM_SHEET_RETRIEVER]', JSON.stringify(sheetDebug, null, 2));
+      if (sheetContext) {
+        console.log('[TELEGRAM_SHEET_RETRIEVER] sheetContext sample:', sheetContext.slice(0, 1200));
+      } else {
+        console.log('[TELEGRAM_SHEET_RETRIEVER] sheetContext was empty after renderSheetContext');
+      }
     } catch (sheetErr) {
       console.error('[TELEGRAM_SHEET_RETRIEVER]', sheetErr);
     }
@@ -293,7 +298,9 @@ When a user asks for a task matching these descriptions, include the [ACTION: na
       ],
       model: modelName,
       temperature: 0.7,
+      tool_choice: 'none',
     });
+
 
     let aiResponse = completion.choices[0]?.message?.content || "I'm processing your request...";
 
