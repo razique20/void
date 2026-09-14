@@ -1,5 +1,6 @@
 import Subscription from "@/models/Subscription";
 import connectDB from "./mongodb";
+import { getFeaturesForPlan } from "./planFeatures";
 
 export const PLANS = {
   free: {
@@ -73,7 +74,11 @@ export async function getUserSubscription(userId: string) {
     await sub.save();
   }
   
-  const planInfo = PLANS[sub.plan as keyof typeof PLANS] || PLANS.free;
+  // planInfo features are admin-manageable: per-plan overrides (see /admin/plans)
+  // replace the code defaults, so a saved plan change takes effect immediately.
+  const basePlan = PLANS[sub.plan as keyof typeof PLANS] || PLANS.free;
+  const effectiveFeatures = await getFeaturesForPlan(sub.plan);
+  const planInfo = { ...basePlan, features: effectiveFeatures };
   const isTrialActive = sub.plan === 'free' && sub.status === 'trialing' && sub.trialEndsAt && new Date() < new Date(sub.trialEndsAt);
   const trialDaysLeft = sub.trialEndsAt ? Math.max(0, Math.ceil((new Date(sub.trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24))) : 0;
   
@@ -84,6 +89,58 @@ export async function getUserSubscription(userId: string) {
     trialDaysLeft,
     isTrialExpired: sub.status === 'expired'
   };
+}
+
+/**
+ * Server-side feature gate for API routes.
+ * Returns null if allowed, or a 403 Response to return directly.
+ * Checks (in order):
+ *   1. per-plan effective features (admin-managed via /admin/plans)
+ *   2. user-level flag aliases — some features are also unlocked per-user
+ *      (legacy userFlags) so we honour those as equivalents
+ */
+const FEATURE_FLAG_ALIASES: Record<string, string[]> = {
+  // lead_capture is also unlocked by the legacy per-user leadManagement flag
+  lead_capture: ['leadManagement'],
+};
+
+export async function hasFeatureAccess(userId: string, feature: string): Promise<boolean> {
+  const sub = await getUserSubscription(userId);
+  if (sub.planInfo.features?.includes(feature)) return true;
+
+  const aliases = FEATURE_FLAG_ALIASES[feature];
+  if (aliases?.length) {
+    const user = await (await import('@/models/User')).default
+      .findOne({ clerkId: userId })
+      .select('featureFlags')
+      .lean();
+    const flags = (user as any)?.featureFlags || {};
+    if (aliases.some(a => flags[a] === true)) return true;
+  }
+  return false;
+}
+
+export function featureGateResponse(feature: string): Response {
+  return Response.json(
+    {
+      error: 'Feature not available on your plan',
+      feature,
+      upgradeUrl: '/billing',
+    },
+    { status: 403 }
+  );
+}
+
+/**
+ * Convenience for API route handlers: resolves the user, checks the feature
+ * server-side, and returns a 403 Response if not entitled. Usage:
+ *
+ *   const denied = await requireFeature(userId, 'lead_capture');
+ *   if (denied) return denied;
+ */
+export async function requireFeature(userId: string, feature: string): Promise<Response | null> {
+  if (await hasFeatureAccess(userId, feature)) return null;
+  return featureGateResponse(feature);
 }
 
 /**

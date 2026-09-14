@@ -4,6 +4,7 @@ import connectDB from '@/lib/mongodb';
 import Lead from '@/models/Lead';
 import Worker from '@/models/Worker';
 import { logError } from '@/lib/errorLogger';
+import { requireFeature } from '@/lib/subscription';
 
 export async function GET(req: Request) {
   try {
@@ -11,6 +12,8 @@ export async function GET(req: Request) {
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get('page') || '1');
@@ -52,6 +55,8 @@ export async function PATCH(req: Request) {
     if (!userId) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
     

@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import Conversation from '@/models/Conversation';
 import Lead from '@/models/Lead';
+import { requireFeature } from '@/lib/subscription';
 
 export async function GET(req: Request) {
   try {
@@ -10,6 +11,8 @@ export async function GET(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 

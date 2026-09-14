@@ -4,6 +4,7 @@ import connectDB from '@/lib/mongodb';
 import SentimentWorkflow from '@/models/SentimentWorkflow';
 import { TRIGGER_CONDITIONS, WORKFLOW_ACTIONS } from '@/models/SentimentWorkflow';
 import { getUserPlan, checkCountLimit } from '@/lib/planLimits';
+import { requireFeature } from '@/lib/subscription';
 
 // GET: Fetch all workflows or a specific workflow
 export async function GET(req: Request) {
@@ -12,6 +13,8 @@ export async function GET(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 
@@ -81,6 +84,8 @@ export async function POST(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 
@@ -140,6 +145,8 @@ export async function PATCH(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 
@@ -180,6 +187,8 @@ export async function DELETE(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 

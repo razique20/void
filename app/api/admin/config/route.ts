@@ -8,25 +8,25 @@ export async function GET() {
   try {
     await connectDB();
     let config = await GlobalConfig.findOne();
-    
+
     if (!config) {
-      config = await GlobalConfig.create({
-        featureFlags: {
-          actionAgents: true,
-          neuralVoice: false,
-          vision: false,
-          leadManagement: false,
-          emailHub: false,
-          smartBooking: false,
-          autonomousGoals: false,
-          knowledgeSharing: false,
-          conversationBranching: false,
-          naturalLanguageAnalytics: false,
-          sheetsIntegration: false,
-        }
-      });
+      // First run: create with model defaults (kill switches ON, opt-ins OFF)
+      config = await GlobalConfig.create({});
     }
-    
+
+    if (config && (config as any).schemaVersion !== 1) {
+      // Legacy doc (seeded all-false before the kill-switch change): flip
+      // shipped-feature switches ON so plan features aren't silently locked.
+      // Deliberately-enabled opt-ins (emailHub, leadManagement, ...) persist.
+      const ff: Record<string, boolean> = { ...(config.featureFlags || {}) };
+      for (const k of ['smartBooking', 'autonomousGoals', 'knowledgeSharing', 'conversationBranching', 'naturalLanguageAnalytics', 'sheetsIntegration']) {
+        ff[k] = true;
+      }
+      config.featureFlags = ff as any;
+      (config as any).schemaVersion = 1;
+      await config.save();
+    }
+
     return NextResponse.json(config);
   } catch (error) {
     console.error('[GLOBAL_CONFIG_GET]', error);

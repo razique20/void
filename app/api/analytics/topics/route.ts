@@ -7,6 +7,7 @@ import Lead from '@/models/Lead';
 import AIProvider from '@/models/AIProvider';
 import Groq from 'groq-sdk';
 import { getUserPlan, checkWeeklyLimit, incrementWeeklyLimit } from '@/lib/planLimits';
+import { requireFeature } from '@/lib/subscription';
 
 // GET: Fetch topic clusters and trends
 export async function GET(req: Request) {
@@ -15,6 +16,8 @@ export async function GET(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'natural_language_analytics');
+    if (denied) return denied;
 
     await connectDB();
 
@@ -83,6 +86,8 @@ export async function POST(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'natural_language_analytics');
+    if (denied) return denied;
 
     await connectDB();
 

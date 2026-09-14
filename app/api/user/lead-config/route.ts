@@ -3,6 +3,9 @@ import { auth } from '@clerk/nextjs/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
 
+// Note: NOT feature-gated. This is user-level webhook config rendered on the
+// ungated Setup & Credentials page; actual lead ingestion is feature-checked
+// in chat/ and webhooks/ routes.
 export async function GET() {
   try {
     const { userId } = await auth();

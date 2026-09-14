@@ -33,7 +33,6 @@ import { useToast } from '@/lib/useToast';
 import { detectProviderFromEmail } from '@/lib/emailProviders';
 import { useData } from '@/lib/DataContext';
 import Link from 'next/link';
-import FeatureLocked from '@/components/FeatureLocked';
 
 export default function EmailWorkspacePage() {
   // Subscription from shared context
@@ -474,13 +473,26 @@ export default function EmailWorkspacePage() {
     );
   }
 
-  // Gated Access wall
+  // Unshipped feature wall — Email Hub is not launched yet, so no upgrade CTA
   if (!isEmailHubEnabled) {
     return (
-      <FeatureLocked
-        title="AI Email Hub Locked"
-        description="This feature is not available yet. The AI Email Hub is not enabled for your plan or has been disabled by the administrator."
-      />
+      <div className="min-h-[70vh] w-full flex flex-col items-center justify-center text-center p-6 text-foreground relative">
+        <div className="max-w-md mx-auto py-16 px-6 bg-bg-subtle-alt border border-border-default rounded-2xl backdrop-blur-3xl shadow-sm relative z-10">
+          <div className="w-16 h-16 bg-apple-blue/10 border border-apple-blue/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Lock className="w-6 h-6 text-apple-blue" />
+          </div>
+          <h2 className="text-xl font-bold mb-3 text-foreground">AI Email Hub — Coming Soon</h2>
+          <p className="text-silver text-xs leading-relaxed mb-2">
+            This feature is in the works and isn&apos;t available yet. We&apos;ll announce it here when it ships.
+          </p>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center justify-center bg-foreground text-background px-8 py-3.5 rounded-full text-xs font-bold transition-all hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] shadow-md cursor-pointer"
+          >
+            Back to Overview
+          </Link>
+        </div>
+      </div>
     );
   }
 

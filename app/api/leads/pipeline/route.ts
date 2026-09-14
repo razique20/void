@@ -9,6 +9,7 @@ import SystemLog from '@/models/SystemLog';
 import Groq from 'groq-sdk';
 import { PIPELINE_STAGES, STAGE_META } from '@/models/Deal';
 import type { PipelineStage } from '@/models/Deal';
+import { requireFeature } from '@/lib/subscription';
 
 // POST: Analyze a lead's conversation and automatically advance/transition pipeline stage
 export async function POST(req: Request) {
@@ -17,6 +18,8 @@ export async function POST(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 

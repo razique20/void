@@ -35,6 +35,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setSub(cachedSub);
       setConfig(cachedConfig);
       setLoading(false);
+      // Still revalidate in the background so admin changes (plan features,
+      // kill switches) propagate without a hard refresh.
+      revalidate();
       return;
     }
 
@@ -50,33 +53,48 @@ export function DataProvider({ children }: { children: ReactNode }) {
         setSub(parsedSub);
         setConfig(parsedConfig);
         setLoading(false);
+        // Revalidate in the background — cached/localStorage data can be stale
+        revalidate();
         return;
       }
     } catch (e) {}
 
+    revalidate();
+  }, []);
+
+  const revalidate = async () => {
     const fetcher = async (url: string) => {
       const res = await fetch(url);
       if (!res.ok) {
         // API returned an error page (e.g. sign-in HTML) — don't try to parse it as JSON
         console.warn(`[DataContext] ${url} returned status ${res.status}`);
-        return {};
+        return null;
       }
       return res.json();
     };
 
-    Promise.all([
-      fetcher('/api/subscription'),
-      fetcher('/api/admin/config'),
-    ]).then(([subData, configData]) => {
-      cachedSub = subData;
-      cachedConfig = configData;
-      setSub(subData);
-      setConfig(configData);
-      localStorage.setItem('void_navbar_sub', JSON.stringify(subData));
-      localStorage.setItem('void_navbar_config', JSON.stringify(configData));
-    }).catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+    try {
+      const [subData, configData] = await Promise.all([
+        fetcher('/api/subscription'),
+        fetcher('/api/admin/config'),
+      ]);
+      if (subData && Object.keys(subData).length > 0) {
+        cachedSub = subData;
+        setSub(subData);
+        localStorage.setItem('void_navbar_sub', JSON.stringify(subData));
+      }
+      if (configData && Object.keys(configData).length > 0) { 
+        cachedConfig = configData;
+        setConfig(configData);
+        localStorage.setItem('void_navbar_config', JSON.stringify(configData));
+      }
+    } catch (err) {
+      console.error('[DataContext] Failed to revalidate', err);
+    } finally {
+      // First-load path relies on this; harmless on background revalidations
+      setLoading(false);
+    }
+  };
 
   const refreshSub = async () => {
     try {
@@ -101,28 +119,29 @@ export function DataProvider({ children }: { children: ReactNode }) {
     return sub.features.includes(feature);
   };
 
-  // Enterprise plan auto-enables ALL AI Intelligence features — no feature flag or plan feature check needed
-  // API returns plan name (e.g. "Enterprise") not the key (e.g. "enterprise")
-  const isEnterprise = sub?.plan?.toLowerCase() === 'enterprise';
+  // Feature gating is driven entirely by the per-plan effective feature list
+  // (admin-managed via /admin/plans) combined with the global kill switches in
+  // /admin/config. There is NO isEnterprise bypass: removing a feature from the
+  // Enterprise plan cuts it off, and global switches apply to every plan.
+  // (The default Enterprise feature list already includes everything.)
 
-  // Email Hub — Enterprise auto-enables; others need flag + plan feature
-  const isEmailHubEnabled = loading ? false : isEnterprise || (sub?.emailHubEnabled === true && hasFeature('email_agent'));
+  // Email Hub — NOT SHIPPED YET: hard-disabled everywhere regardless of plan/flags.
+  // To launch, restore: (sub?.emailHubEnabled === true && hasFeature('email_agent'))
+  const isEmailHubEnabled = false;
 
-  // Smart Booking — Enterprise auto-enables; others need admin flag + plan feature
-  const isSmartBookingEnabled = loading ? false : isEnterprise || (config?.featureFlags?.smartBooking === true && (hasFeature('cal_booking') || hasFeature('smart_booking')));
+  // Smart Booking — plan feature gated; global flag is a kill switch (default ON)
+  const isSmartBookingEnabled = loading ? false : (config?.featureFlags?.smartBooking !== false && (hasFeature('cal_booking') || hasFeature('smart_booking')));
 
-  // Autonomous Goals
-  // Knowledge Sharing
-  const isKnowledgeSharingEnabled = loading ? false : isEnterprise || (config?.featureFlags?.knowledgeSharing === true && hasFeature('knowledge_sharing'));
+  // Knowledge Sharing — plan feature gated; global flag is a kill switch (default ON)
+  const isKnowledgeSharingEnabled = loading ? false : (config?.featureFlags?.knowledgeSharing !== false && hasFeature('knowledge_sharing'));
+  // Natural Language Analytics — plan feature gated; global flag is a kill switch (default ON)
+  const isNaturalLanguageAnalyticsEnabled = loading ? false : (config?.featureFlags?.naturalLanguageAnalytics !== false && hasFeature('natural_language_analytics'));
 
-  // Natural Language Analytics
-  const isNaturalLanguageAnalyticsEnabled = loading ? false : isEnterprise || (config?.featureFlags?.naturalLanguageAnalytics === true && hasFeature('natural_language_analytics'));
-
-  // Google Sheets Integration
-  const isSheetsIntegrationEnabled = loading ? false : isEnterprise || (config?.featureFlags?.sheetsIntegration === true && hasFeature('sheets'));
+  // Google Sheets Integration — plan feature gated; global flag is a kill switch (default ON)
+  const isSheetsIntegrationEnabled = loading ? false : (config?.featureFlags?.sheetsIntegration !== false && hasFeature('sheets'));
 
   // Leads CRM — gated by plan feature + admin leadManagement flag
-  const isLeadCaptureEnabled = loading ? false : isEnterprise || (hasFeature('lead_capture'));
+  const isLeadCaptureEnabled = loading ? false : hasFeature('lead_capture');
   return (
     <DataContext.Provider value={{ sub, config, loading, hasFeature, isEmailHubEnabled, isSmartBookingEnabled, isKnowledgeSharingEnabled, isNaturalLanguageAnalyticsEnabled,  isSheetsIntegrationEnabled,
   isLeadCaptureEnabled,

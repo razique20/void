@@ -4,6 +4,7 @@ import connectDB from '@/lib/mongodb';
 import Invoice from '@/models/Invoice';
 import Stripe from 'stripe';
 import { getUserPlan, checkMonthlyLimit, incrementMonthlyLimit } from '@/lib/planLimits';
+import { requireFeature } from '@/lib/subscription';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -13,6 +14,8 @@ export async function GET(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get('page') || '1');
@@ -56,6 +59,8 @@ export async function POST(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 
@@ -129,6 +134,8 @@ export async function PATCH(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 
@@ -197,6 +204,8 @@ export async function DELETE(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');

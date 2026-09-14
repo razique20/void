@@ -6,6 +6,7 @@ import Lead from '@/models/Lead';
 import Conversation from '@/models/Conversation';
 import AIProvider from '@/models/AIProvider';
 import Groq from 'groq-sdk';
+import { requireFeature } from '@/lib/subscription';
 
 // GET: Fetch follow-ups for a lead, or all follow-ups for the user
 export async function GET(req: Request) {
@@ -14,6 +15,8 @@ export async function GET(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 
@@ -76,6 +79,8 @@ export async function POST(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 
@@ -244,6 +249,8 @@ export async function PATCH(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 
@@ -307,6 +314,8 @@ export async function DELETE(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 

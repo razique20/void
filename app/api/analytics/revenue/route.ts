@@ -5,6 +5,7 @@ import Invoice from '@/models/Invoice';
 import Lead from '@/models/Lead';
 import Worker from '@/models/Worker';
 import Conversation from '@/models/Conversation';
+import { requireFeature } from '@/lib/subscription';
 
 export async function GET(req: Request) {
   try {
@@ -12,6 +13,8 @@ export async function GET(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'natural_language_analytics');
+    if (denied) return denied;
 
     await connectDB();
 

@@ -11,6 +11,7 @@ import { usePathname } from 'next/navigation';import {
   ArrowLeft, 
   BarChart3, 
   HeartPulse,  Megaphone,
+  Layers,
   ScrollText,
   Newspaper,
   BookOpen,
@@ -29,6 +30,7 @@ const navGroups = [
     links: [
       { label: 'User Directory', icon: Users, href: '/admin/users' },
       { label: 'Usage Analytics', icon: BarChart3, href: '/admin/usage' },
+      { label: 'Plan Features', icon: Layers, href: '/admin/plans' },
       { label: 'Support Tickets', icon: MessageSquare, href: '/admin/tickets' },
       { label: 'Marketplace', icon: ShoppingBag, href: '/admin/marketplace' },
     ],

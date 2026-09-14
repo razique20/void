@@ -162,7 +162,7 @@ export default function NeuralConfigPage() {
             </div>
             <div>
               <h2 className="text-sm font-bold text-foreground">Feature Flags</h2>
-              <p className="text-[10px] text-silver font-medium">Toggle platform features globally.</p>
+              <p className="text-[10px] text-silver font-medium">Toggle platform features globally. Shipped features are ON unless killed; beta features are opt-in.</p>
             </div>
           </div>
           <div className="space-y-2">
@@ -193,38 +193,38 @@ export default function NeuralConfigPage() {
             <FeatureToggle
               label="Smart Booking"
               description="AI-powered meeting scheduling with Cal.com integration."
-              isEnabled={globalConfig?.featureFlags?.smartBooking ?? false}
-              onToggle={() => toggleFeature('smartBooking', globalConfig?.featureFlags?.smartBooking ?? false, globalConfig?.featureFlags)}
+              isEnabled={globalConfig?.featureFlags?.smartBooking ?? true}
+              onToggle={() => toggleFeature('smartBooking', globalConfig?.featureFlags?.smartBooking ?? true, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Autonomous Goals"
               description="AI self-optimizing performance targets and goal tracking."
-              isEnabled={globalConfig?.featureFlags?.autonomousGoals ?? false}
-              onToggle={() => toggleFeature('autonomousGoals', globalConfig?.featureFlags?.autonomousGoals ?? false, globalConfig?.featureFlags)}
+              isEnabled={globalConfig?.featureFlags?.autonomousGoals ?? true}
+              onToggle={() => toggleFeature('autonomousGoals', globalConfig?.featureFlags?.autonomousGoals ?? true, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Knowledge Sharing"
               description="Cross-agent knowledge graph with version control."
-              isEnabled={globalConfig?.featureFlags?.knowledgeSharing ?? false}
-              onToggle={() => toggleFeature('knowledgeSharing', globalConfig?.featureFlags?.knowledgeSharing ?? false, globalConfig?.featureFlags)}
+              isEnabled={globalConfig?.featureFlags?.knowledgeSharing ?? true}
+              onToggle={() => toggleFeature('knowledgeSharing', globalConfig?.featureFlags?.knowledgeSharing ?? true, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Conversation Branching"
               description="What-if scenario analysis for agent optimization."
-              isEnabled={globalConfig?.featureFlags?.conversationBranching ?? false}
-              onToggle={() => toggleFeature('conversationBranching', globalConfig?.featureFlags?.conversationBranching ?? false, globalConfig?.featureFlags)}
+              isEnabled={globalConfig?.featureFlags?.conversationBranching ?? true}
+              onToggle={() => toggleFeature('conversationBranching', globalConfig?.featureFlags?.conversationBranching ?? true, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Natural Language Analytics"
               description="Plain English queries with instant charts and insights."
-              isEnabled={globalConfig?.featureFlags?.naturalLanguageAnalytics ?? false}
-              onToggle={() => toggleFeature('naturalLanguageAnalytics', globalConfig?.featureFlags?.naturalLanguageAnalytics ?? false, globalConfig?.featureFlags)}
+              isEnabled={globalConfig?.featureFlags?.naturalLanguageAnalytics ?? true}
+              onToggle={() => toggleFeature('naturalLanguageAnalytics', globalConfig?.featureFlags?.naturalLanguageAnalytics ?? true, globalConfig?.featureFlags)}
             />
             <FeatureToggle
               label="Google Sheets Integration"
               description="Let agents query live spreadsheets before answering."
-              isEnabled={globalConfig?.featureFlags?.sheetsIntegration ?? false}
-              onToggle={() => toggleFeature('sheetsIntegration', globalConfig?.featureFlags?.sheetsIntegration ?? false, globalConfig?.featureFlags)}
+              isEnabled={globalConfig?.featureFlags?.sheetsIntegration ?? true}
+              onToggle={() => toggleFeature('sheetsIntegration', globalConfig?.featureFlags?.sheetsIntegration ?? true, globalConfig?.featureFlags)}
               icon={Link2}
             />
           </div>

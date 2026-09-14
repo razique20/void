@@ -5,6 +5,7 @@ import Lead from '@/models/Lead';
 import Conversation from '@/models/Conversation';
 import AIProvider from '@/models/AIProvider';
 import Groq from 'groq-sdk';
+import { requireFeature } from '@/lib/subscription';
 
 // Dynamic segment definitions
 const SEGMENTS = ['vip', 'at_risk', 'new', 'loyal', 'champion', 'prospect'] as const;
@@ -25,6 +26,8 @@ export async function POST(req: Request) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const denied = await requireFeature(userId, 'lead_capture');
+    if (denied) return denied;
 
     await connectDB();
 
