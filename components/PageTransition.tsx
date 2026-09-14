@@ -9,7 +9,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
   return (
     <ViewTransition
       key={pathname}
-      name="page-content"
+      name={pathname === '/' ? 'page-content-home' : 'page-content'}
       enter="page-enter"
       exit="page-exit"
       default="auto"

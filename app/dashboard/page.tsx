@@ -115,19 +115,20 @@ export default function DashboardPage() {
   });
 
   const containerVariants: Variants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, y: 12 },
     show: {
       opacity: 1,
-      transition: { staggerChildren: 0.04 }
+      y: 0,
+      transition: { staggerChildren: 0.05, delayChildren: 0.1 }
     }
   };
 
   const rowVariants: Variants = {
-    hidden: { opacity: 0, y: 8 },
-    show: { 
-      opacity: 1, 
+    hidden: { opacity: 0, y: 10 },
+    show: {
+      opacity: 1,
       y: 0,
-      transition: { type: 'spring', stiffness: 400, damping: 30 }
+      transition: { type: 'spring', stiffness: 350, damping: 35, delay: 0.05 }
     }
   };
 
@@ -135,7 +136,8 @@ export default function DashboardPage() {
   const gatewayCount = workers.filter(w => w.channels?.whatsapp?.isActive || w.channels?.telegram?.isActive).length;
 
   return (
-    <div className="space-y-8 font-sans antialiased">
+    <div className="font-sans antialiased page-wrapper">
+      <main className="page-content space-y-8 pt-20 overflow-x-hidden">
 
       {Toast}
 
@@ -281,7 +283,8 @@ export default function DashboardPage() {
                       layout
                       variants={rowVariants}
                       key={worker._id}
-                      className="group bg-bg-subtle hover:bg-bg-elevated border border-border-default hover:border-border-hover rounded-xl px-5 py-4 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3"
+                      onClick={() => router.push(`/operatives/${worker._id}/channels`)}
+                      className="group bg-bg-subtle hover:bg-bg-elevated border border-border-default hover:border-border-hover rounded-xl px-5 py-4 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 cursor-pointer"
                     >
                       {/* Left: Identity */}
                       <div className="flex items-center gap-3.5 min-w-0 flex-1">
@@ -325,8 +328,11 @@ export default function DashboardPage() {
                         </div>
                       </div>
 
-                      {/* Right: Actions */}
-                      <div className="flex items-center gap-1 shrink-0 self-end md:self-center opacity-70 group-hover:opacity-100 transition-opacity">
+                      {/* Right: Actions (stopPropagation so card click doesn't fire) */}
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex items-center gap-1 shrink-0 self-end md:self-center opacity-70 group-hover:opacity-100 transition-opacity"
+                      >
                         <Link
                           href="/chat"
                           className="px-2.5 py-1.5 bg-bg-elevated border border-border-default hover:bg-bg-border hover:border-border-hover text-silver hover:text-foreground rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1"
@@ -496,6 +502,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </motion.div>
+      </main>
 
       {/* Share Modal */}
       <AnimatePresence>

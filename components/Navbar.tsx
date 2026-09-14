@@ -53,8 +53,9 @@ export default function Navbar() {
   const { sub, config, hasFeature, isSmartBookingEnabled, isKnowledgeSharingEnabled, isNaturalLanguageAnalyticsEnabled, isLeadCaptureEnabled } = useData();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [mounted, setMounted] = useState(cachedMounted);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   // Track scroll position for transparent navbar effect
   useEffect(() => {
@@ -74,7 +75,7 @@ export default function Navbar() {
   // landing page, which causes a left-side glitch during navigation.
   if (!isWorkspace && typeof document !== 'undefined') {
     document.body.classList.remove('has-sidebars', 'sidebar-collapsed', 'has-transitions');
-    document.documentElement.classList.remove('sidebar-collapsed');
+    document.documentElement.classList.remove('has-sidebars', 'sidebar-collapsed');
   }
 
   // Hydrate from localStorage + enable transitions after first paint
@@ -87,12 +88,20 @@ export default function Navbar() {
       document.body.classList.add('sidebar-collapsed');
     }
 
-    // Use requestAnimationFrame to ensure the initial paint is complete
-    // before enabling transitions, preventing the flash/blink
-    requestAnimationFrame(() => {
-      cachedMounted = true;
-      setMounted(true);
-    });
+    // Re-assert html-level has-sidebars (the inline head script set it
+    // pre-paint; keep it in sync in case navigation changed the class)
+    if (isWorkspace) {
+      document.documentElement.classList.add('has-sidebars');
+    }
+
+    // Mark mount complete synchronously to prevent sidebar flicker on refresh.
+    // The inline head script already set has-sidebars pre-paint, and the
+    // CSS padding rule (body.has-sidebars) is already applied. Setting
+    // mounted=true immediately prevents the sidebar from toggling classes
+    // on the first render which causes the blink.
+    cachedMounted = true;
+    setMounted(true);
+    setIsFirstRender(false);
   }, []);
 
   const toggleCollapse = () => {
@@ -106,6 +115,10 @@ export default function Navbar() {
     } else {
       document.documentElement.classList.remove('sidebar-collapsed');
       document.body.classList.remove('sidebar-collapsed');
+    }
+    // Keep html-level has-sidebars aligned (workspace pages only)
+    if (isWorkspace) {
+      document.documentElement.classList.add('has-sidebars');
     }
   };
 
@@ -122,6 +135,7 @@ export default function Navbar() {
   useEffect(() => {
     if (isWorkspace) {
       document.body.classList.add('has-sidebars');
+      document.documentElement.classList.add('has-sidebars');
       if (isCollapsed) {
         document.body.classList.add('sidebar-collapsed');
         document.documentElement.classList.add('sidebar-collapsed');
@@ -129,17 +143,17 @@ export default function Navbar() {
         document.body.classList.remove('sidebar-collapsed');
         document.documentElement.classList.remove('sidebar-collapsed');
       }
-      
-      if (mounted) {
+
+      if (mounted && !isFirstRender) {
         document.body.classList.add('has-transitions');
       } else {
         document.body.classList.remove('has-transitions');
       }
     } else {
       document.body.classList.remove('has-sidebars', 'sidebar-collapsed', 'has-transitions');
-      document.documentElement.classList.remove('sidebar-collapsed');
+      document.documentElement.classList.remove('has-sidebars', 'sidebar-collapsed');
     }
-  }, [isWorkspace, isCollapsed, mounted]);
+  }, [isWorkspace, isCollapsed, mounted, isFirstRender]);
 
   // Lock scroll when mobile menu is open
   useEffect(() => {
@@ -301,10 +315,9 @@ export default function Navbar() {
 
   // RENDER OPTION B: Authenticated Workspace View (Dual Sidebars: Left Wide Sidebar + Right Slim Dock)
   return (
-    <>
-      <aside className={cn(
+    <>        <aside className={cn(
         "fixed top-0 left-0 h-full border-r border-border-strong bg-[var(--sidebar)] backdrop-blur-2xl z-40 hidden lg:flex flex-col justify-between select-none shadow-sm",
-        mounted && "transition-all duration-200 ease-in-out",
+        !isFirstRender && mounted && "transition-all duration-200 ease-in-out",
         (mounted && isCollapsed) ? "w-16 p-2.5 py-4" : "w-64 p-4"
       )}>
         <div className="space-y-5">

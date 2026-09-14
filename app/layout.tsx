@@ -95,10 +95,24 @@ export default function RootLayout({
                 try {
                   var theme = localStorage.getItem('color-theme') || 'slate';
                   document.documentElement.setAttribute('data-color-theme', theme);
-                  
+
                   var collapsed = localStorage.getItem('sidebar-collapsed') === 'true';
                   if (collapsed) {
                     document.documentElement.classList.add('sidebar-collapsed');
+                  }
+
+                  // Reserve sidebar space before first paint on workspace pages.
+                  // Without this, server-rendered content paints full-width under
+                  // the fixed navbar/sidebar and snaps over on hydration (flash).
+                  var p = location.pathname;
+                  var publicPages = ['/', '/sign-in', '/sign-up', '/privacy', '/terms', '/dpa', '/docs', '/about', '/careers', '/contact', '/partners', '/changelog', '/pricing'];
+                  var isAdmin = p.indexOf('/admin') === 0;
+                  var isPublic = publicPages.indexOf(p) !== -1;
+                  if (!isPublic && !isAdmin) {
+                    document.documentElement.classList.add('has-sidebars');
+                    if (collapsed) {
+                      document.documentElement.classList.add('sidebar-collapsed');
+                    }
                   }
                 } catch (e) {}
               })();
