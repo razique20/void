@@ -45,9 +45,66 @@ This document outlines the strategic technical and product upgrades recommended 
 
 ---
 
+## 📰 Recent Updates
+
+### September 14, 2026 — v2.5.0
+- **Per-plan feature gating with kill-switch flags** — plans can now gate individual features more precisely, with admin-facing plan controls.
+- **Admin plans UI** — plan configuration is now manageable from the dashboard instead of being hardcoded only at the feature level.
+- **Dashboard layout fixes** — fixed dashboard content overlapping the navbar and removed sidebar scrollbar flicker on refresh.
+
+### September 13, 2026 — v2.4.2
+- **Google Sheets integration** — sheets are now a first-class workspace channel for knowledge and context sync.
+- **Leads CRM feature flag** — lead capture can now be toggled independently, instead of only relying on legacy flags.
+- **Sheets retry/fallback improvements** — better handling for empty stored ranges and sheet deletion edge cases.
+- **Chat and memory hardening** — safer JSON parsing in the memory updater and stronger API fetch guards.
+
+### September 7, 2026 — v2.4.1
+- **Channels page redesign** — 2-column grid, accordion cards, header save button, and more responsive channel toggles.
+- **Per-channel setup guides** — one setup page per channel with a clear primary setup link.
+- **Channel credential linking** — booking and operative channel setup can now link credentials more directly.
+
+### September 3, 2026 — v2.4.0
+- **Multi-language auto-detection** — agents detect customer language and reply in the same language.
+- **Agent A/B testing** — run two agent variants side-by-side and compare results.
+- **WhatsApp Business Catalog integration**.
+- **Bi-directional CRM sync scaffolding** for Salesforce, HubSpot, and Pipedrive, plus manual CRM token input. This flow was later reverted; the CRM sync direction remains on the roadmap.
+- **Analytics nav consolidation + query token optimization**.
+- **Smart Booking consolidation** — removed the per-agent Cal.com scheduler and consolidated scheduling into Smart Booking.
+- **AI Goals merged into Analytics** — removed the Branching Lab and folded goals into analytics.
+- **Platform docs, screenshots, and mockup updates**.
+- **Knowledge Hub and A/B test fix** for raw array responses from `/api/workers`.
+
+### September 2, 2026 — v2.3.1
+- **Public company pages** and footer auth gating fixes.
+- **Auth pages redesign** with a two-section split layout and updated navbar.
+- **Landing page navbar scroll effect** — transparent navbar at the top that changes on scroll.
+- **Sidebar reorganization** into clearer logical sections.
+
+### September 1, 2026 — v2.3.0
+- **Topic clustering and trend detection** for conversation analytics.
+- **Plan-based rate limits and usage quotas** for AI features.
+
+### September 1, 2026 — v2.2.0
+- **AI conversation summary and Smart Follow-Up scheduler**.
+- **Sentiment-triggered workflows** for proactive retention.
+
+### September 1, 2026 — v2.1.0
+- **Predictive lead scoring v2.0** with deal value estimation.
+- **Automated deal pipeline management**.
+
+### September 1, 2026 — v2.0.0
+- **Revenue attribution dashboard**.
+- **Customer journey mapping** with visual timeline.
+- **AI-powered dynamic lead segmentation**.
+- **Saved search filters for leads** and redesigns across dashboard surfaces.
+- **Agent uptime dashboard and bulk lead status updates**.
+- **Conversation PDF export and lead activity timeline**.
+
+---
+
 ## 🔮 Upcoming Features
 
-### 11. 🎙️ Voice Operatives (Multi-Modal)
+### 1. 🎙️ Voice Operatives (Multi-Modal)
 WhatsApp and Telegram are heavily driven by voice interaction.
 - **The Feature**: Integrate **Whisper (STT)** for transcription and **OpenAI/ElevenLabs (TTS)** for realistic voice synthesis. AI receives voice notes and responds with natural voice.
 - **Impact**: 60% of WhatsApp interactions are voice-based; this unlocks massive accessibility.
@@ -153,4 +210,4 @@ Beyond plain text.
 ---
 
 *Created on: May 5, 2026*
-*Last updated: September 3, 2026 — Removed implemented features, added 14 new strategic features*
+*Last updated: September 14, 2026 — Added recent updates section, updated completed/unfinished feature status after v2.4.x ship, and kept voice operatives as the next unfinished top priority*

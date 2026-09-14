@@ -176,7 +176,32 @@ Based on comprehensive analysis of the VOID platform architecture and current ca
 
 ---
 
+## 📰 Recent Ship Notes
+
+### September 14, 2026
+- Per-plan feature gating with kill-switch flags and an admin plans UI.
+- Dashboard layout fix for navbar overlap and sidebar scrollbar flicker.
+
+### September 13, 2026
+- Google Sheets integration shipped.
+- Leads CRM feature flag shipped.
+- Chat and memory hardening: safer JSON parsing and API fetch guards.
+
+### September 7, 2026
+- Channels page redesign with 2-col grid, accordion, and header save button.
+- Per-channel setup guide pages.
+- Channel credential linking from booking and operative setup.
+
+### September 3, 2026
+- Multi-language auto-detection and agent A/B testing marked DONE.
+- WhatsApp Business Catalog integration.
+- Bi-directional CRM sync and manual CRM token input were added, then reverted; CRM sync remains in progress on the roadmap.
+- Analytics nav consolidation, Smart Booking consolidation, and AI Goals merged into Analytics.
+- Knowledge Hub and A/B test fix for raw array responses from `/api/workers`.
+
+---
+
 *Generated: August 31, 2026*
-*Last Updated: September 3, 2026 — Marked 3 features as DONE (Multi-Language Auto-Detection, Agent A/B Testing, Conversation Context Windowing)*
+*Last Updated: September 14, 2026 — Added recent ship notes and updated status for recently completed/reverted items*
 *Platform: VOID AI Workforce Platform*
 *Analysis based on: Codebase review, feature roadmap, and market research*
