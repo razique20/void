@@ -82,7 +82,7 @@ const statusColors = {
   draft: 'bg-zinc-500/10 text-zinc-500 border-zinc-500/20',
   running: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
   paused: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-  completed: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
+  completed: 'bg-muted text-foreground border-border',
 };
 
 export default function ABTestDetailPage() {
@@ -167,7 +167,6 @@ export default function ABTestDetailPage() {
     <div className="flex flex-1 overflow-hidden pt-20">
       <div className="flex flex-1 flex-col overflow-hidden relative">
         {/* Background effects */}
-        <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
 
         {Toast}
 
@@ -200,7 +199,7 @@ export default function ABTestDetailPage() {
                   Base Agent: {test.baseWorkerId?.name} • Created {formatDate(test.createdAt)}
                 </p>
                 {test.description && (
-                  <p className="text-silver/70 text-xs">{test.description}</p>
+                  <p className="text-muted-foreground text-xs">{test.description}</p>
                 )}
               </div>
 
@@ -225,7 +224,7 @@ export default function ABTestDetailPage() {
                     </button>
                     <button
                       onClick={() => handleStatusChange('completed')}
-                      className="flex items-center gap-1.5 px-4 py-2 bg-purple-500 text-white rounded-xl text-xs font-bold hover:bg-purple-600 transition-colors"
+                      className="flex items-center gap-1.5 px-4 py-2 bg-foreground text-white rounded-xl text-xs font-bold hover:bg-foreground transition-colors"
                     >
                       <CheckCircle className="w-3.5 h-3.5" />
                       Complete
@@ -239,7 +238,7 @@ export default function ABTestDetailPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-bg-subtle border border-border-default rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Users className="w-4 h-4 text-purple-500" />
+                  <Users className="w-4 h-4 text-foreground" />
                   <span className="text-[10px] font-bold text-silver uppercase tracking-wider">Conversations</span>
                 </div>
                 <p className="text-2xl font-bold text-foreground">{test.metrics.totalConversations}</p>
@@ -272,7 +271,7 @@ export default function ABTestDetailPage() {
                       width: `${Math.min(100, (test.metrics.totalConversations / test.config.targetConversations) * 100)}%` 
                     }}
                     transition={{ duration: 0.8, ease: 'easeOut' }}
-                    className="h-full bg-purple-500 rounded-full"
+                    className="h-full bg-foreground rounded-full"
                   />
                 </div>
               </div>
@@ -362,25 +361,25 @@ export default function ABTestDetailPage() {
                       className={cn(
                         "bg-bg-subtle border rounded-2xl p-6 relative",
                         isWinner 
-                          ? "border-purple-500/30 shadow-lg shadow-purple-500/10" 
+                          ? "border-border shadow-lg shadow-black/5" 
                           : "border-border-default"
                       )}
                     >
                       {isWinner && (
-                        <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 bg-purple-500/10 rounded-lg">
-                          <Trophy className="w-3 h-3 text-purple-500" />
-                          <span className="text-[9px] font-bold text-purple-500">WINNER</span>
+                        <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-lg">
+                          <Trophy className="w-3 h-3 text-foreground" />
+                          <span className="text-[9px] font-bold text-foreground">WINNER</span>
                         </div>
                       )}
                       
                       <div className="flex items-start gap-3 mb-4">
                         <div className={cn(
                           "w-10 h-10 rounded-xl flex items-center justify-center",
-                          isControl ? "bg-zinc-500/10" : "bg-purple-500/10"
+                          isControl ? "bg-zinc-500/10" : "bg-muted"
                         )}>
                           <Beaker className={cn(
                             "w-5 h-5",
-                            isControl ? "text-zinc-500" : "text-purple-500"
+                            isControl ? "text-zinc-500" : "text-foreground"
                           )} />
                         </div>
                         <div>
@@ -441,10 +440,10 @@ export default function ABTestDetailPage() {
 
             {/* Results Summary */}
             {test.results?.recommendation && (
-              <div className="bg-purple-500/5 border border-purple-500/20 rounded-2xl p-6">
+              <div className="bg-muted border border-border rounded-2xl p-6">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                    <Star className="w-5 h-5 text-purple-500" />
+                  <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
+                    <Star className="w-5 h-5 text-foreground" />
                   </div>
                   <h3 className="font-semibold text-foreground">Recommendation</h3>
                 </div>

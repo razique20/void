@@ -30,7 +30,7 @@ const INDUSTRIES = [
   { id: 'warehouse', label: 'Warehouse & Logistics', icon: Boxes, desc: 'Inventory Control, Stock & Shipping Logs', color: 'text-sky-500', defaultCompany: 'LogiTrack Hub', defaultHours: '24/7 Operations', defaultContact: 'support@logitrack.com' },
   { id: 'grocery', label: 'Grocery Store & Retail', icon: Store, desc: 'Retail Support, Deliveries & Refunds', color: 'text-amber-500', defaultCompany: 'FreshCart Market', defaultHours: 'Daily 7 AM - 10 PM', defaultContact: '+1 (555) 0145' },
   { id: 'realestate', label: 'Real Estate', icon: Home, desc: 'Property Leasing & Tenant Qualification', color: 'text-emerald-500', defaultCompany: 'Apex Realty', defaultHours: 'Mon-Sat 9 AM - 6 PM', defaultContact: 'sales@apex.com' },
-  { id: 'hotel', label: 'Hotel Desk & Concierge', icon: Hotel, desc: 'Hospitality Bookings, Amenities & Guest Desk', color: 'text-indigo-500', defaultCompany: 'Grand Plaza Hotel', defaultHours: '24/7 Front Desk', defaultContact: 'frontdesk@grandplaza.com' },
+  { id: 'hotel', label: 'Hotel Desk & Concierge', icon: Hotel, desc: 'Hospitality Bookings, Amenities & Guest Desk', color: 'text-foreground', defaultCompany: 'Grand Plaza Hotel', defaultHours: '24/7 Front Desk', defaultContact: 'frontdesk@grandplaza.com' },
 ];
 
 export default function ProfilePage() {
@@ -238,7 +238,7 @@ export default function ProfilePage() {
                             <span>{ind.label}</span>
                             {isSelected && <Check className="w-4 h-4 text-emerald-400 shrink-0" />}
                           </div>
-                          <div className={cn("text-[10px] font-medium leading-normal mt-0.5", isSelected ? "text-background/70" : "text-silver/60")}>
+                          <div className={cn("text-[10px] font-medium leading-normal mt-0.5", isSelected ? "text-background/70" : "text-muted-foreground")}>
                             {ind.desc}
                           </div>
                         </button>

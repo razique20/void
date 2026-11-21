@@ -264,7 +264,7 @@ export default function ChurnPredictionPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <BarChart3 className="w-8 h-8 text-silver/30 mb-2" />
+                <BarChart3 className="w-8 h-8 text-muted-foreground mb-2" />
                 <p className="text-xs text-silver">No risk data yet</p>
               </div>
             )}
@@ -273,7 +273,7 @@ export default function ChurnPredictionPage() {
           {/* Churn Score Trend */}
           <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-4">
-              <Activity className="w-4 h-4 text-purple-500" />
+              <Activity className="w-4 h-4 text-foreground" />
               <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Churn Score Trend</h3>
             </div>
             {loading ? (
@@ -307,7 +307,7 @@ export default function ChurnPredictionPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <Activity className="w-8 h-8 text-silver/30 mb-2" />
+                <Activity className="w-8 h-8 text-muted-foreground mb-2" />
                 <p className="text-xs text-silver">No trend data yet</p>
               </div>
             )}
@@ -356,7 +356,7 @@ export default function ChurnPredictionPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <Heart className="w-8 h-8 text-silver/30 mb-2" />
+                <Heart className="w-8 h-8 text-muted-foreground mb-2" />
                 <p className="text-xs text-silver">No sentiment data yet</p>
               </div>
             )}
@@ -508,9 +508,9 @@ export default function ChurnPredictionPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <ShieldCheck className="w-10 h-10 text-silver/30 mb-3" />
+                <ShieldCheck className="w-10 h-10 text-muted-foreground mb-3" />
                 <p className="text-sm font-bold text-silver">No at-risk contacts detected</p>
-                <p className="text-[10px] text-silver/60 mt-1">All contacts are showing healthy engagement patterns</p>
+                <p className="text-[10px] text-muted-foreground mt-1">All contacts are showing healthy engagement patterns</p>
               </div>
             )}
           </motion.div>

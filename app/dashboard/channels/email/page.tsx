@@ -86,9 +86,6 @@ export default function EmailSetupPage() {
   return (
     <div className="relative">
       {/* Ambient background */}
-      <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-amber-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
       <main className="relative z-10 max-w-5xl mx-auto px-4 md:px-12 py-8 md:py-10">
         {/* Back link */}
@@ -213,16 +210,16 @@ export default function EmailSetupPage() {
                       <p
                         className={cn(
                           'text-[11px] leading-relaxed transition-colors',
-                          step.status === 'done' && 'text-silver/70',
+                          step.status === 'done' && 'text-muted-foreground',
                           step.status === 'active' && 'text-silver font-medium',
-                          step.status === 'pending' && 'text-silver/60'
+                          step.status === 'pending' && 'text-muted-foreground'
                         )}
                       >
                         {step.description}
                       </p>
 
                       {step.note && (
-                        <p className="text-[10px] text-silver/60 italic mt-0.5">
+                        <p className="text-[10px] text-muted-foreground italic mt-0.5">
                           {step.note}
                         </p>
                       )}
@@ -243,7 +240,7 @@ export default function EmailSetupPage() {
                 </h3>
               </div>
 
-              <div className="space-y-3 text-xs text-silver/80 leading-relaxed">
+              <div className="space-y-3 text-xs text-muted-foreground leading-relaxed">
                 <div className="p-3.5 bg-background border border-border-default rounded-xl space-y-1.5">
                   <span className="text-[9px] font-bold text-amber-500 uppercase tracking-wider block">
                     Gmail / Google Workspace
@@ -255,7 +252,7 @@ export default function EmailSetupPage() {
                     Port: <span className="font-mono text-silver text-[10px]">465 (SSL)</span> or{' '}
                     <span className="font-mono text-silver text-[10px]">587 (TLS)</span>
                   </p>
-                  <p className="text-[10px] text-silver/60 italic">
+                  <p className="text-[10px] text-muted-foreground italic">
                     If 2FA is enabled, use an app password.
                   </p>
                 </div>
@@ -285,7 +282,7 @@ export default function EmailSetupPage() {
                 </h3>
               </div>
 
-              <div className="space-y-3 text-xs text-silver/80 leading-relaxed">
+              <div className="space-y-3 text-xs text-muted-foreground leading-relaxed">
                 <div className="p-3.5 bg-background border border-border-default rounded-xl flex justify-between items-start gap-2">
                   <span className="text-amber-400 font-bold text-[10px]">SMTP Host</span>
                   <span className="text-silver text-[10px] truncate">e.g. smtp.gmail.com</span>
@@ -323,7 +320,7 @@ export default function EmailSetupPage() {
             <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest">
               Example SMTP Fields
             </h2>
-            <span className="text-[9px] text-silver/60 font-medium">Reference only</span>
+            <span className="text-[9px] text-muted-foreground font-medium">Reference only</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -440,7 +437,7 @@ export default function EmailSetupPage() {
             </div>
           </div>
 
-          <p className="text-[10px] text-silver/60 mt-3 italic">
+          <p className="text-[10px] text-muted-foreground mt-3 italic">
             Replace these with the real SMTP details from your provider.
           </p>
         </div>

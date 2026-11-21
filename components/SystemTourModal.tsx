@@ -87,7 +87,7 @@ const TOUR_STEPS: TourStep[] = [
     subtitle: 'Prime agent brains with company documents and guidelines.',
     badge: 'Step 3 of 6 · Neural Core',
     icon: BookOpen,
-    color: 'text-purple-400',
+    color: 'text-foreground',
     highlightRoute: '/training',
     description: 'Upload your company documents, FAQs, pricing sheets, or SOPs so your agents answer questions with 100% precision.',
     bullets: [
@@ -224,8 +224,6 @@ export default function SystemTourModal({
           className="relative max-w-2xl w-full bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-10 text-foreground"
         >
           {/* Background Ambient Glow */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-apple-blue/10 blur-[100px] rounded-full pointer-events-none" />
 
           {/* Modal Header */}
           <div className="p-6 sm:p-8 pb-4 flex items-center justify-between border-b border-zinc-900 relative z-10">

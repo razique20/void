@@ -153,7 +153,6 @@ export default function UptimePage() {
         {/* Hero Section */}
         <motion.div variants={itemVariants} className="relative overflow-hidden bg-bg-subtle border border-border-default rounded-2xl p-8">
           {/* Background glow */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[100px] rounded-full pointer-events-none" />
           <div className="absolute bottom-0 left-1/3 w-48 h-48 bg-apple-blue/5 blur-[80px] rounded-full pointer-events-none" />
 
           <div className="relative flex flex-col md:flex-row items-center gap-8">
@@ -204,7 +203,7 @@ export default function UptimePage() {
                   { label: 'Online', value: onlineCount, icon: Wifi, color: 'text-emerald-500' },
                   { label: 'Offline', value: (totalCount - onlineCount), icon: Server, color: 'text-silver' },
                   { label: 'Today', value: data?.summary?.totalConversationsToday ?? 0, icon: MessageSquare, color: 'text-apple-blue' },
-                  { label: '7 Days', value: data?.summary?.totalConversationsWeek ?? 0, icon: TrendingUp, color: 'text-purple-500' },
+                  { label: '7 Days', value: data?.summary?.totalConversationsWeek ?? 0, icon: TrendingUp, color: 'text-foreground' },
                 ].map((s, i) => (
                   <div key={i} className="flex items-center gap-2 text-sm">
                     <s.icon className={cn("w-4 h-4", s.color)} />
@@ -254,7 +253,7 @@ export default function UptimePage() {
           <>
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold uppercase tracking-wider text-silver">Agent Fleet</h2>
-              <span className="text-[10px] font-bold text-silver/60">{totalCount} total</span>
+              <span className="text-[10px] font-bold text-muted-foreground">{totalCount} total</span>
             </div>
 
             <motion.div
@@ -329,7 +328,7 @@ export default function UptimePage() {
                                 : ch.key === 'telegram'
                                 ? "bg-sky-500/5 border-sky-500/15 text-sky-600 dark:text-sky-400"
                                 : "bg-bg-active border-border-default text-foreground"
-                              : "bg-bg-elevated border-border-subtle text-silver/40"
+                              : "bg-bg-elevated border-border-subtle text-muted-foreground"
                           )}
                         >
                           <ch.icon className="w-3 h-3" />

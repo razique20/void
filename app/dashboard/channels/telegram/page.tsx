@@ -86,9 +86,6 @@ export default function TelegramSetupPage() {
   return (
     <div className="relative">
       {/* Ambient background */}
-      <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-sky-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
       <main className="relative z-10 max-w-5xl mx-auto px-4 md:px-12 py-8 md:py-10">
         {/* Back link */}
@@ -213,16 +210,16 @@ export default function TelegramSetupPage() {
                       <p
                         className={cn(
                           'text-[11px] leading-relaxed transition-colors',
-                          step.status === 'done' && 'text-silver/70',
+                          step.status === 'done' && 'text-muted-foreground',
                           step.status === 'active' && 'text-silver font-medium',
-                          step.status === 'pending' && 'text-silver/60'
+                          step.status === 'pending' && 'text-muted-foreground'
                         )}
                       >
                         {step.description}
                       </p>
 
                       {step.note && (
-                        <p className="text-[10px] text-silver/60 italic mt-0.5">
+                        <p className="text-[10px] text-muted-foreground italic mt-0.5">
                           {step.note}
                         </p>
                       )}
@@ -243,7 +240,7 @@ export default function TelegramSetupPage() {
                 </h3>
               </div>
 
-              <div className="space-y-3 text-xs text-silver/80 leading-relaxed">
+              <div className="space-y-3 text-xs text-muted-foreground leading-relaxed">
                 <p className="font-medium text-foreground/80">
                   To connect Telegram, you need:
                 </p>
@@ -297,7 +294,7 @@ export default function TelegramSetupPage() {
             <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest">
               Example Token Format
             </h2>
-            <span className="text-[9px] text-silver/60 font-medium">Reference only</span>
+            <span className="text-[9px] text-muted-foreground font-medium">Reference only</span>
           </div>
 
           <div className="space-y-1.5">
@@ -328,7 +325,7 @@ export default function TelegramSetupPage() {
             </div>
           </div>
 
-          <p className="text-[10px] text-silver/60 mt-3 italic">
+          <p className="text-[10px] text-muted-foreground mt-3 italic">
             This is a sample format only. Use the real token returned by BotFather.
           </p>
         </div>

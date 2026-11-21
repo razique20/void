@@ -397,12 +397,12 @@ export default function SentimentWorkflowsPage() {
                         <span className="text-[10px] text-silver">
                           When <span className="font-semibold">{condMeta.label.toLowerCase()}</span>
                         </span>
-                        <span className="text-silver/40">→</span>
+                        <span className="text-muted-foreground">→</span>
                         <span className="text-[10px] text-silver">
                           <span className="font-semibold">{actionMeta.label}</span>
                         </span>
                         {wf.channels?.length > 0 && (
-                          <span className="text-[9px] text-silver/60">
+                          <span className="text-[9px] text-muted-foreground">
                             ({wf.channels.join(', ')})
                           </span>
                         )}
@@ -416,7 +416,7 @@ export default function SentimentWorkflowsPage() {
                           {wf.totalTriggers || 0} triggers
                         </p>
                         {wf.lastTriggeredAt && (
-                          <p className="text-[9px] text-silver/60 font-mono">
+                          <p className="text-[9px] text-muted-foreground font-mono">
                             Last: {new Date(wf.lastTriggeredAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                           </p>
                         )}
@@ -522,7 +522,7 @@ export default function SentimentWorkflowsPage() {
                         {event.channel}
                       </span>
                     )}
-                    <span className="text-[9px] text-silver/60 font-mono">
+                    <span className="text-[9px] text-muted-foreground font-mono">
                       {new Date(event.triggeredAt).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
@@ -566,7 +566,7 @@ export default function SentimentWorkflowsPage() {
                     value={formName}
                     onChange={(e) => setFormName(e.target.value)}
                     placeholder="e.g., Escalate frustrated customers"
-                    className="w-full bg-bg-elevated border border-border-strong rounded-xl px-4 py-2.5 text-xs text-foreground focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver/40"
+                    className="w-full bg-bg-elevated border border-border-strong rounded-xl px-4 py-2.5 text-xs text-foreground focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-muted-foreground"
                   />
                 </div>
 
@@ -578,7 +578,7 @@ export default function SentimentWorkflowsPage() {
                     value={formDescription}
                     onChange={(e) => setFormDescription(e.target.value)}
                     placeholder="What this workflow does..."
-                    className="w-full bg-bg-elevated border border-border-strong rounded-xl px-4 py-2.5 text-xs text-foreground focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver/40"
+                    className="w-full bg-bg-elevated border border-border-strong rounded-xl px-4 py-2.5 text-xs text-foreground focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-muted-foreground"
                   />
                 </div>
 
@@ -667,7 +667,7 @@ export default function SentimentWorkflowsPage() {
                       value={formActionConfig.webhookUrl || ''}
                       onChange={(e) => setFormActionConfig({ ...formActionConfig, webhookUrl: e.target.value })}
                       placeholder="https://hooks.example.com/..."
-                      className="w-full bg-bg-elevated border border-border-strong rounded-xl px-4 py-2.5 text-xs font-mono text-foreground focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver/40"
+                      className="w-full bg-bg-elevated border border-border-strong rounded-xl px-4 py-2.5 text-xs font-mono text-foreground focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-muted-foreground"
                     />
                   </div>
                 )}
@@ -675,14 +675,14 @@ export default function SentimentWorkflowsPage() {
                 {formAction === 'send_winback_offer' && (
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-silver uppercase tracking-wider">
-                      Offer Template <span className="text-silver/60 font-normal">(optional — uses default if empty)</span>
+                      Offer Template <span className="text-muted-foreground font-normal">(optional — uses default if empty)</span>
                     </label>
                     <textarea
                       rows={3}
                       value={formActionConfig.offerTemplate || ''}
                       onChange={(e) => setFormActionConfig({ ...formActionConfig, offerTemplate: e.target.value })}
                       placeholder="Use {{name}} and {{channel}} as placeholders..."
-                      className="w-full bg-bg-elevated border border-border-strong rounded-xl p-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all resize-none font-sans"
+                      className="w-full bg-bg-elevated border border-border-strong rounded-xl p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-apple-blue/40 transition-all resize-none font-sans"
                     />
                   </div>
                 )}
@@ -717,7 +717,7 @@ export default function SentimentWorkflowsPage() {
                 {/* Channel Filter */}
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-silver uppercase tracking-wider">
-                    Channels <span className="text-silver/60 font-normal">(leave empty for all)</span>
+                    Channels <span className="text-muted-foreground font-normal">(leave empty for all)</span>
                   </label>
                   <div className="flex gap-2">
                     {['web', 'whatsapp', 'telegram', 'email'].map(ch => (

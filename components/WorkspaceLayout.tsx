@@ -21,10 +21,6 @@ export default function WorkspaceLayout({
 
       {/* Main Content */}
       <div className="flex flex-1 flex-col overflow-hidden relative">
-        {/* Subtle dot grid background */}
-        <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-purple-500/[0.02] blur-[150px] rounded-full pointer-events-none" />
 
         {/* Mobile-only: open on PC banner */}
         {showBanner && (

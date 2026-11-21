@@ -133,7 +133,7 @@ export default function InboxPage() {
         {/* Header */}
         <div className="p-5 border-b border-border-default">
           <div className="flex items-center gap-2 mb-1">
-            <InboxIcon className="w-5 h-5 text-purple-500" />
+            <InboxIcon className="w-5 h-5 text-foreground" />
             <h1 className="text-sm font-bold text-foreground">Universal Inbox</h1>
           </div>
           <p className="text-[10px] text-silver font-medium">All channels, one view.</p>
@@ -143,7 +143,7 @@ export default function InboxPage() {
         <div className="p-4 space-y-2">
           <h3 className="text-[9px] font-bold text-silver uppercase tracking-wider mb-2">Channels</h3>
           {[
-            { id: 'all', label: 'All Channels', count: channelCounts.all || 0, icon: InboxIcon, color: 'text-purple-500' },
+            { id: 'all', label: 'All Channels', count: channelCounts.all || 0, icon: InboxIcon, color: 'text-foreground' },
             { id: 'web', label: 'Web Chat', count: channelCounts.web || 0, icon: Globe, color: 'text-silver' },
             { id: 'whatsapp', label: 'WhatsApp', count: channelCounts.whatsapp || 0, icon: Smartphone, color: 'text-emerald-500' },
             { id: 'telegram', label: 'Telegram', count: channelCounts.telegram || 0, icon: Send, color: 'text-sky-500' },
@@ -202,7 +202,7 @@ export default function InboxPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className="w-full bg-bg-elevated border border-border-default rounded-xl pl-10 pr-4 py-2.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-border-hover"
+                className="w-full bg-bg-elevated border border-border-default rounded-xl pl-10 pr-4 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-border-hover"
               />
             </div>
             <button
@@ -293,15 +293,15 @@ export default function InboxPage() {
                       <span className="text-[10px] text-silver font-mono">
                         {formatTime(conv.lastMessageTime)}
                       </span>
-                      <span className="text-[9px] text-silver/60">
+                      <span className="text-[9px] text-muted-foreground">
                         {conv.workerName}
                       </span>
-                      <span className="text-[9px] text-silver/40">
+                      <span className="text-[9px] text-muted-foreground">
                         {conv.messageCount} msgs
                       </span>
                     </div>
 
-                    <ChevronRight className="w-4 h-4 text-silver/40 shrink-0" />
+                    <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
                   </motion.div>
                 );
               })}

@@ -79,8 +79,6 @@ export default function SystemLogsPage() {
     <div className="relative space-y-8 pb-10 transition-colors duration-300">
       
       {/* Background Ambience */}
-      <div className="absolute top-[-10%] left-[-15%] w-[45%] h-[40%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[20%] right-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
 
       {/* Breadcrumb Header */}
       <div className="space-y-4 relative z-10">

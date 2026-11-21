@@ -37,7 +37,7 @@ const TOUCHPOINT_COLORS: Record<string, string> = {
   conversation_start: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
   message: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
   conversation_end: 'bg-red-500/10 text-red-500 border-red-500/20',
-  activity: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
+  activity: 'bg-muted text-foreground border-border',
 };
 
 const TOUCHPOINT_ICONS: Record<string, string> = {
@@ -150,11 +150,11 @@ export default function JourneyPage() {
               <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
                 Customer Journey
               </h1>
-              <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-purple-500/10 border border-purple-500/15 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-500 relative flex shrink-0">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-purple-500 opacity-75 animate-ping" />
+              <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-muted border border-border rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-foreground relative flex shrink-0">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75 animate-ping" />
                 </span>
-                <span className="text-[9px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest">
+                <span className="text-[9px] font-bold text-foreground dark:text-foreground uppercase tracking-widest">
                   Touchpoint Timeline
                 </span>
               </div>
@@ -191,7 +191,7 @@ export default function JourneyPage() {
                 placeholder="Search contacts..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-bg-surface border border-border-default rounded-xl pl-9 pr-4 py-2.5 text-xs focus:outline-none focus:border-apple-blue/40 text-foreground placeholder:text-silver/50"
+                className="w-full bg-bg-surface border border-border-default rounded-xl pl-9 pr-4 py-2.5 text-xs focus:outline-none focus:border-apple-blue/40 text-foreground placeholder:text-muted-foreground"
               />
             </div>
 
@@ -362,7 +362,7 @@ export default function JourneyPage() {
                                   {tp.description}
                                 </p>
                               </div>
-                              <div className="text-[9px] text-silver/60 font-mono shrink-0">
+                              <div className="text-[9px] text-muted-foreground font-mono shrink-0">
                                 {new Date(tp.timestamp).toLocaleString([], {
                                   month: 'short',
                                   day: 'numeric',
@@ -375,7 +375,7 @@ export default function JourneyPage() {
                             {/* Message preview */}
                             {tp.type === 'message' && tp.metadata?.fullContent && (
                               <div className="mt-2 pt-2 border-t border-border-subtle">
-                                <p className="text-[10px] text-silver/80 font-mono leading-relaxed bg-bg-elevated rounded-lg p-2">
+                                <p className="text-[10px] text-muted-foreground font-mono leading-relaxed bg-bg-elevated rounded-lg p-2">
                                   {tp.metadata.fullContent}
                                 </p>
                               </div>

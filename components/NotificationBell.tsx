@@ -39,7 +39,7 @@ function colorForType(type: Notification['type']) {
     case 'message': return 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20';
     case 'lead': return 'bg-apple-blue/10 text-apple-blue border-apple-blue/20';
     case 'ticket': return 'bg-amber-500/10 text-amber-500 border-amber-500/20';
-    case 'worker': return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
+    case 'worker': return 'bg-muted text-foreground border-border';
     case 'billing': return 'bg-sky-500/10 text-sky-500 border-sky-500/20';
     case 'system': return 'bg-bg-active text-silver border-border-default';
   }
@@ -75,37 +75,33 @@ export default function NotificationBell() {
       <button
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          'relative w-10 h-10 rounded-xl flex items-center justify-center transition-all border cursor-pointer',
+          'relative size-8 rounded-md flex items-center justify-center transition-colors cursor-pointer',
           open
-            ? 'bg-bg-active border-border-default text-foreground shadow-sm'
-            : 'text-silver border-transparent hover:bg-bg-surface hover:text-foreground'
+            ? 'bg-accent text-foreground'
+            : 'text-muted-foreground hover:bg-accent hover:text-foreground'
         )}
-        title="Notifications"
+        aria-label="Notifications"
       >
-        <Bell className={cn('w-4.5 h-4.5', open ? 'text-apple-blue' : 'text-silver')} />
+        <Bell className="size-4" strokeWidth={1.75} />
 
         {/* Unread badge */}
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-apple-blue text-background text-[9px] font-bold rounded-full flex items-center justify-center shadow-sm">
+          <span className="absolute top-0.5 right-0.5 min-w-[15px] h-[15px] px-1 bg-foreground text-background text-[10px] font-medium tabular-nums rounded-full flex items-center justify-center ring-2 ring-background">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
       </button>
 
-      {/* Immersive Tooltip (when collapsed) */}
-      <div className="absolute right-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background dark:bg-white dark:text-black text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-right shadow-xl pointer-events-none whitespace-nowrap z-50">
-        Notifications
-      </div>
 
       {/* Dropdown */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -8, scale: 0.95 }}
+            initial={{ opacity: 0, y: -4, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="absolute right-4 bottom-6 w-80 max-h-[400px] bg-background/95 dark:bg-black/95 backdrop-blur-2xl border border-border-strong rounded-2xl shadow-2xl overflow-hidden z-[9999] flex flex-col origin-bottom-right"
+            exit={{ opacity: 0, y: -4, scale: 0.98 }}
+            transition={{ duration: 0.15, ease: [0.2, 0, 0, 1] }}
+            className="absolute right-0 top-full mt-2 w-80 max-h-[420px] bg-popover border border-border rounded-lg shadow-lg overflow-hidden z-[9999] flex flex-col origin-top-right"
           >
             {/* Header */}
             <div className="px-4 py-3 border-b border-border-default flex items-center justify-between shrink-0">
@@ -135,7 +131,7 @@ export default function NotificationBell() {
               {notifications.length === 0 ? (
                 <div className="py-12 text-center">
                   <div className="w-10 h-10 bg-bg-elevated border border-border-default rounded-xl flex items-center justify-center mx-auto mb-3">
-                    <Bell className="w-5 h-5 text-silver/60" />
+                    <Bell className="w-5 h-5 text-muted-foreground" />
                   </div>
                   <p className="text-xs font-semibold text-foreground">All quiet</p>
                   <p className="text-[10px] text-silver mt-0.5">No notifications yet</p>
@@ -180,7 +176,7 @@ export default function NotificationBell() {
                           {n.body}
                         </p>
                         <div className="flex items-center gap-2 mt-1.5">
-                          <span className="text-[9px] text-silver/60 font-mono">
+                          <span className="text-[9px] text-muted-foreground font-mono">
                             {timeAgo(n.createdAt)}
                           </span>
                           {n.href && (
@@ -194,7 +190,7 @@ export default function NotificationBell() {
                       {/* Dismiss */}
                       <button
                         onClick={() => dismiss(n.id)}
-                        className="p-1 text-silver/40 hover:text-foreground opacity-0 group-hover:opacity-100 transition-all shrink-0"
+                        className="p-1 text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-all shrink-0"
                       >
                         <X className="w-3 h-3" />
                       </button>

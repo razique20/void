@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { UserButton, Show } from '@clerk/nextjs';import {
+import { UserButton, Show } from '@clerk/nextjs';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
   Menu,
   X,
   ChevronDown,
@@ -18,11 +20,8 @@ import { UserButton, Show } from '@clerk/nextjs';import {
   PlusCircle,
   Lock,
   ChevronRight,
-  Sliders,
   Activity,
-  Cpu,
   PanelLeftClose,
-  Building2,
   User,
   Route,
   DollarSign,
@@ -43,6 +42,18 @@ import SystemTourModal from './SystemTourModal';
 import UpgradeModal from './UpgradeModal';
 import NotificationBell from './NotificationBell';
 import { useData } from '@/lib/DataContext';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 let cachedMounted = false; // survives SPA remounts so transitions stay enabled
 
@@ -313,329 +324,300 @@ export default function Navbar() {
     );
   }
 
-  // RENDER OPTION B: Authenticated Workspace View (Dual Sidebars: Left Wide Sidebar + Right Slim Dock)
+  // RENDER OPTION B: Authenticated workspace — single sidebar + top bar
+  const collapsed = mounted && isCollapsed;
+  const allLinks = [...leftLinks, ...rightLinks.filter(l => !l.isAction)];
+  const currentPage =
+    [...allLinks].sort((a, b) => b.href.length - a.href.length).find(l => isTabActive(l.href))?.label ??
+    (pathname.split('/').filter(Boolean).pop() ?? 'Overview')
+      .replace(/[-_]/g, ' ')
+      .replace(/^\w/, c => c.toUpperCase());
+  const currentSection =
+    menuCategories.find(c => c.links.some(l => isTabActive(l.href) || l.children?.some(ch => isTabActive(ch.href))))?.title ??
+    'Account';
+
+  const openLocked = (label: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    setUpgradeModal({ open: true, feature: label });
+  };
+
+  const renderNavItem = (link: SidebarLink) => {
+    const Icon = link.icon;
+    const isActive = isTabActive(link.href);
+    const isLocked = mounted && link.locked;
+    const hasChildren = !!link.children?.length;
+    const isSubmenuOpen = mounted && openSubmenus.has(link.href);
+    const childActive = link.children?.some(ch => isTabActive(ch.href));
+
+    const item = (
+      <Link
+        href={link.href}
+        onClick={isLocked ? openLocked(link.label) : undefined}
+        aria-current={isActive ? 'page' : undefined}
+        className={cn(
+          'group/item relative flex h-8 items-center rounded-md text-[13px] transition-colors',
+          collapsed ? 'mx-auto w-9 justify-center' : 'gap-2.5 px-2',
+          isLocked
+            ? 'text-muted-foreground/60 hover:bg-sidebar-accent/60'
+            : isActive
+              ? 'bg-sidebar-accent font-medium text-sidebar-accent-foreground'
+              : 'text-sidebar-foreground hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground'
+        )}
+      >
+        <Icon
+          className={cn(
+            'size-4 shrink-0',
+            isActive ? 'text-foreground' : 'text-muted-foreground group-hover/item:text-foreground',
+            isLocked && 'text-muted-foreground/50'
+          )}
+          strokeWidth={1.75}
+        />
+        {!collapsed && <span className="flex-1 truncate">{link.label}</span>}
+        {!collapsed && isLocked && <Lock className="size-3 text-muted-foreground/60" />}
+        {!collapsed && hasChildren && !isLocked && (
+          <span
+            role="button"
+            aria-label={isSubmenuOpen ? `Hide ${link.label} pages` : `Show ${link.label} pages`}
+            onClick={(e: React.MouseEvent) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggleSubmenu(link.href);
+            }}
+            className="-mr-1 rounded p-1 text-muted-foreground hover:bg-black/5 hover:text-foreground"
+          >
+            <ChevronRight className={cn('size-3.5 transition-transform duration-150', isSubmenuOpen && 'rotate-90')} />
+          </span>
+        )}
+        {collapsed && childActive && <span className="absolute right-1 top-1 size-1.5 rounded-full bg-foreground" />}
+      </Link>
+    );
+
+    return (
+      <li key={link.href}>
+        {collapsed ? (
+          <Tooltip>
+            <TooltipTrigger asChild>{item}</TooltipTrigger>
+            <TooltipContent side="right" sideOffset={8}>
+              {link.label}
+              {isLocked && <span className="ml-1.5 text-background/60">Upgrade</span>}
+            </TooltipContent>
+          </Tooltip>
+        ) : (
+          item
+        )}
+        <AnimatePresence initial={false}>
+          {hasChildren && isSubmenuOpen && !collapsed && (
+            <motion.ul
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.18, ease: [0.2, 0, 0, 1] }}
+              className="ml-[17px] overflow-hidden border-l border-sidebar-border pl-2.5"
+            >
+              {link.children!.map((child) => {
+                const active = isTabActive(child.href);
+                const locked = mounted && child.locked;
+                return (
+                  <li key={child.href} className="py-px first:pt-1 last:pb-1">
+                    <Link
+                      href={child.href}
+                      onClick={locked ? openLocked(child.label) : undefined}
+                      aria-current={active ? 'page' : undefined}
+                      className={cn(
+                        'flex h-7 items-center gap-2 rounded-md px-2 text-[13px] transition-colors',
+                        locked
+                          ? 'text-muted-foreground/60'
+                          : active
+                            ? 'bg-sidebar-accent font-medium text-foreground'
+                            : 'text-muted-foreground hover:bg-sidebar-accent/70 hover:text-foreground'
+                      )}
+                    >
+                      <span className="flex-1 truncate">{child.label}</span>
+                      {locked && <Lock className="size-3 text-muted-foreground/60" />}
+                    </Link>
+                  </li>
+                );
+              })}
+            </motion.ul>
+          )}
+        </AnimatePresence>
+      </li>
+    );
+  };
+
   return (
-    <>        <aside className={cn(
-        "fixed top-0 left-0 h-full border-r border-border-strong bg-[var(--sidebar)] backdrop-blur-2xl z-40 hidden lg:flex flex-col justify-between select-none shadow-sm",
-        !isFirstRender && mounted && "transition-all duration-200 ease-in-out",
-        (mounted && isCollapsed) ? "w-16 p-2.5 py-4" : "w-64 p-4"
-      )}>
-        <div className="space-y-5">
-          {/* Modernized Brand & Platform Status Header */}
-          <div className={cn(
-            "pb-3.5 pt-1 border-b border-border-default flex items-center justify-between px-1 transition-all",
-            (mounted && isCollapsed) && "justify-center px-0 pb-3"
-          )}>
-            <Link href="/" className="group flex items-center gap-2 transition-transform hover:scale-[1.02]">
-              <div className="flex flex-col">
-                <Logo iconOnly={mounted && isCollapsed} compact={mounted && isCollapsed} />
-              </div>
-            </Link>
-
-
-          </div>
-
-          {/* Categorized Workspaces Navigation */}
-          <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-210px)] custom-scrollbar pr-0.5" suppressHydrationWarning>
-            {menuCategories.map((cat) => (
-              <div key={cat.title} className="space-y-1.5">
-                {(!mounted || !isCollapsed) && (
-                  <span className="block px-1 text-[9px] font-black text-silver/40 uppercase tracking-widest">
-                    {cat.title}
-                  </span>
-                )}
-                <nav className="space-y-0.5">
-                  {cat.links.map((link) => {
-                    const Icon = link.icon;
-                    const isActive = isTabActive(link.href);
-                    // Only apply locked state after mount to prevent SSR/CSR mismatch
-                    const isLocked = mounted && link.locked;
-                    const hasChildren = !!link.children?.length;
-                    const isSubmenuOpen = mounted && openSubmenus.has(link.href);
-
-                    return (
-                      <div key={link.href}>
-                        <Link
-                          href={link.href}
-                          onClick={isLocked ? (e: React.MouseEvent) => {
-                            e.preventDefault();
-                            setUpgradeModal({ open: true, feature: link.label });
-                          } : undefined}
-                          className={cn(
-                            "flex items-center rounded-xl text-xs font-bold transition-all relative group",
-                            (mounted && isCollapsed) ? "justify-center w-10 h-10 mx-auto" : "gap-3 px-3 py-2.5",
-                            isLocked
-                              ? "cursor-not-allowed opacity-50 text-silver/30"
-                              : isActive
-                                ? "bg-foreground text-background cursor-pointer"
-                                : "text-silver hover:text-foreground hover:bg-bg-active cursor-pointer"
-                          )}
-                        >
-                          <Icon className={cn(
-                            "w-4 h-4 shrink-0 transition-colors",
-                            isLocked ? "text-silver/30" : isActive ? "text-background" : "text-silver"
-                          )} />
-                          {(!mounted || !isCollapsed) && <span className="flex-1 truncate">{link.label}</span>}
-                          {isLocked && (!mounted || !isCollapsed) && <Lock className="w-3 h-3 text-silver/30" />}
-                          {!isLocked && isActive && !hasChildren && (!mounted || !isCollapsed) && (
-                            <span className="ml-auto w-1.5 h-1.5 rounded-full bg-background/40 shrink-0" />
-                          )}
-                          {hasChildren && !isLocked && (!mounted || !isCollapsed) && (
-                            <span
-                              role="button"
-                              aria-label={isSubmenuOpen ? `Hide ${link.label} pages` : `Show ${link.label} pages`}
-                              onClick={(e: React.MouseEvent) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                toggleSubmenu(link.href);
-                              }}
-                              className="p-1 -m-1 shrink-0 cursor-pointer"
-                            >
-                              <ChevronDown className={cn(
-                                "w-3.5 h-3.5 transition-transform duration-200",
-                                isActive ? "text-background/70" : "text-silver/50",
-                                isSubmenuOpen && "rotate-180"
-                              )} />
-                            </span>
-                          )}
-                          {(mounted && isCollapsed) && (
-                            <div className={cn(
-                              "absolute left-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-left shadow-xl pointer-events-none whitespace-nowrap z-50",
-                              isLocked
-                                ? "bg-red-500 text-white"
-                                : "bg-foreground text-background"
-                            )}>
-                              {link.label}{isLocked ? ' — UPGRADE' : ''}
-                            </div>
-                          )}
-                        </Link>
-                        {hasChildren && isSubmenuOpen && (!mounted || !isCollapsed) && (
-                          <div className="mt-0.5 mb-1 ml-[26px] pl-3 border-l border-border-default space-y-0.5">
-                            {link.children!.map((child) => {
-                              const childActive = isTabActive(child.href);
-                              const childLocked = mounted && child.locked;
-                              return (
-                                <Link
-                                  key={child.href}
-                                  href={child.href}
-                                  onClick={childLocked ? (e: React.MouseEvent) => {
-                                    e.preventDefault();
-                                    setUpgradeModal({ open: true, feature: child.label });
-                                  } : undefined}
-                                  className={cn(
-                                    "flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[11px] font-bold transition-colors",
-                                    childLocked
-                                      ? "cursor-not-allowed text-silver/30"
-                                      : childActive
-                                        ? "text-foreground bg-bg-active"
-                                        : "text-silver hover:text-foreground hover:bg-bg-active"
-                                  )}
-                                >
-                                  <child.icon className={cn(
-                                    "w-3.5 h-3.5 shrink-0",
-                                    childLocked ? "text-silver/30" : childActive ? "text-foreground" : "text-silver/60"
-                                  )} />
-                                  <span className="flex-1 truncate">{child.label}</span>
-                                  {childLocked && <Lock className="w-2.5 h-2.5 text-silver/30" />}
-                                </Link>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </nav>
-              </div>
-            ))}
-          </div>
+    <>
+      {/* 1. SIDEBAR */}
+      <aside
+        className={cn(
+          'fixed left-0 top-0 z-40 hidden h-full select-none flex-col border-r border-sidebar-border bg-sidebar lg:flex',
+          !isFirstRender && mounted && 'transition-[width] duration-200 ease-out',
+          collapsed ? 'w-16' : 'w-60'
+        )}
+      >
+        {/* Workspace header */}
+        <div className={cn('flex h-[var(--topbar-height)] shrink-0 items-center', collapsed ? 'justify-center' : 'px-3')}>
+          <Link href="/dashboard" className="flex min-w-0 items-center gap-2.5 rounded-md p-1 hover:bg-sidebar-accent/70">
+            <Logo iconOnly compact />
+            {!collapsed && (
+              <span className="min-w-0 leading-tight">
+                <span className="block text-[13px] font-semibold tracking-tight text-foreground">VOID</span>
+                <span className="block truncate text-xs text-muted-foreground">
+                  {sub?.plan ? `${String(sub.plan).replace(/^\w/, (c: string) => c.toUpperCase())} plan` : 'Workspace'}
+                </span>
+              </span>
+            )}
+          </Link>
         </div>
 
-        {/* Bottom: Collapse Control */}
-        <div className="pt-2">
-          {/* Collapse / Expand Toggle */}
+        {/* Navigation */}
+        <nav
+          className="flex-1 space-y-5 overflow-y-auto overflow-x-hidden px-2 py-2 scrollbar-hide"
+          suppressHydrationWarning
+          aria-label="Workspace"
+        >
+          {menuCategories.map((cat) => (
+            <div key={cat.title}>
+              {!collapsed ? (
+                <p className="mb-1 px-2 text-xs font-medium text-muted-foreground">{cat.title}</p>
+              ) : (
+                <div className="mx-auto mb-2 h-px w-6 bg-sidebar-border first:hidden" />
+              )}
+              <ul className="space-y-px">
+                {cat.links.map((link) => renderNavItem(link))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+
+        {/* Footer: secondary links + collapse */}
+        <div className="shrink-0 border-t border-sidebar-border p-2">
+          <ul className="space-y-px">
+            {renderNavItem({ label: 'Marketplace', href: '/marketplace', icon: ShoppingBag, locked: !hasFeature('marketplace') })}
+            {renderNavItem({ label: 'Support', href: '/dashboard/support', icon: LifeBuoy })}
+          </ul>
           <button
             onClick={toggleCollapse}
             className={cn(
-              "flex items-center justify-center rounded-xl text-silver hover:text-foreground hover:bg-bg-active transition-all cursor-pointer",
-              (mounted && isCollapsed) ? "w-10 h-10 mx-auto" : "w-full py-2 gap-2"
+              'mt-1 flex h-8 items-center rounded-md text-[13px] text-muted-foreground transition-colors hover:bg-sidebar-accent/70 hover:text-foreground',
+              collapsed ? 'mx-auto w-9 justify-center' : 'w-full gap-2.5 px-2'
             )}
-            aria-label={(mounted && isCollapsed) ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
-            <PanelLeftClose className={cn("w-4 h-4 shrink-0 transition-transform duration-200", (mounted && isCollapsed) && "rotate-180")} />
-            {(!mounted || !isCollapsed) && <span className="text-[9px] font-extrabold uppercase tracking-widest">Collapse</span>}
+            <PanelLeftClose className={cn('size-4 shrink-0', collapsed && 'rotate-180')} strokeWidth={1.75} />
+            {!collapsed && <span>Collapse</span>}
           </button>
         </div>
       </aside>
 
-      {/* 2. RIGHT SLIM ACTION DOCK */}
-      <aside className="fixed top-0 right-0 h-full w-16 border-l border-border-default bg-bg-subtle z-40 hidden lg:flex flex-col p-3 py-6 items-center justify-between select-none">
+      {/* 2. TOP BAR */}
+      <header
+        className={cn(
+          'fixed right-0 top-0 z-30 hidden h-[var(--topbar-height)] items-center justify-between border-b border-border bg-background/85 px-6 backdrop-blur-md lg:flex',
+          !isFirstRender && mounted && 'transition-[left] duration-200 ease-out',
+          collapsed ? 'left-16' : 'left-60'
+        )}
+      >
+        <Breadcrumb>
+          <BreadcrumbList className="text-[13px]">
+            <BreadcrumbItem>
+              <span className="text-muted-foreground">{currentSection}</span>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="font-medium">{currentPage}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
-        {/* Center Icons Menu with Tooltips */}
-        <nav className="flex flex-col gap-3">
-          {rightLinks.map((link) => {
-            const Icon = link.icon;
-            const isActive = isTabActive(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={(e: React.MouseEvent) => {
-                  if (link.isAction) {
-                    e.preventDefault();
-                    setIsTourOpen(true);
-                  } else if (link.locked) {
-                    e.preventDefault();
-                    setUpgradeModal({ open: true, feature: link.label });
-                  }
-                }}
-                className={cn(
-                  "relative group w-10 h-10 rounded-xl flex items-center justify-center transition-all border cursor-pointer",
-                  isActive
-                    ? "bg-bg-active border-border-default text-foreground shadow-sm"
-                    : link.locked
-                      ? "text-silver/40 border-transparent hover:bg-bg-surface hover:text-foreground/60"
-                      : "text-silver border-transparent hover:bg-bg-surface hover:text-foreground"
-                )}
-              >
-                <Icon className={cn("w-4.5 h-4.5", isActive ? "text-apple-blue" : "text-silver")} />
-                {link.locked && (
-                  <div className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-background" />
-                )}
-                
-                {/* Immersive Tooltip */}
-                <div className="absolute right-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-right shadow-xl pointer-events-none whitespace-nowrap">
-                  {link.label}
-                  {link.locked && " (LOCKED)"}
-                </div>
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="flex items-center gap-1">
+          <NotificationBell />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 gap-1.5 px-2 text-[13px] text-muted-foreground hover:text-foreground">
+                Account <ChevronDown className="size-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-52">
+              <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">Account</DropdownMenuLabel>
+              <DropdownMenuItem asChild><Link href="/dashboard/profile"><User /> Profile</Link></DropdownMenuItem>
+              <DropdownMenuItem asChild><Link href="/billing"><CreditCard /> Billing</Link></DropdownMenuItem>
+              <DropdownMenuItem asChild><Link href="/dashboard/credentials"><Key /> Credentials</Link></DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={() => setIsTourOpen(true)}><Compass /> Product tour</DropdownMenuItem>
+              <DropdownMenuItem asChild><Link href="/dashboard/uptime"><Activity /> System status</Link></DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Separator orientation="vertical" className="mx-1.5 !h-5" />
+          <UserButton />
+        </div>
+      </header>
 
-        {/* System Status Indicator */}
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-bg-active border border-border-default flex items-center justify-center group relative">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 relative">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-            </span>
-            {/* Tooltip */}
-            <div className="absolute right-14 scale-0 group-hover:scale-100 px-2.5 py-1.5 rounded-lg bg-foreground text-background text-[9px] font-extrabold uppercase tracking-widest transition-all duration-150 origin-right shadow-xl pointer-events-none whitespace-nowrap">
-              System Online — 99.9%
-            </div>
-          </div>
-          <div className="scale-90">
+      {/* 3. MOBILE HEADER */}
+      <nav className="fixed top-0 z-[999] w-full border-b border-border bg-background/90 px-4 py-2.5 backdrop-blur-md lg:hidden">
+        <div className="flex items-center justify-between">
+          <Link href="/dashboard" className="flex items-center gap-2">
+            <Logo iconOnly compact />
+            <span className="text-sm font-semibold tracking-tight">VOID</span>
+          </Link>
+          <div className="flex items-center gap-2">
             <UserButton />
-          </div>
-        </div>
-      </aside>
-
-      {/* Notification Bell — rendered outside the aside so its dropdown isn't clipped */}
-      <div className="fixed bottom-[164px] right-0 w-16 z-50 hidden lg:flex justify-center">
-        <NotificationBell />
-      </div>
-
-      {/* 3. MOBILE HEADER (lg:hidden fallback) */}
-      <nav className="fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3 border-b lg:hidden bg-background/45 backdrop-blur-xl border-sidebar-border shadow-[0_2px_15px_rgba(0,0,0,0.015)]">
-        <div className="flex justify-between items-center px-2 md:px-4 max-w-full">
-          <Link href="/" className="group flex items-center">
-            <Logo />
-          </Link>
-
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="scale-90 origin-right">
-              <UserButton />
-            </div>
-
-            <button 
+            <Button
+              variant="outline"
+              size="icon-sm"
               onClick={() => setIsOpen(!isOpen)}
-              className="text-foreground hover:text-foreground/85 transition-colors p-1.5 rounded-xl bg-bg-elevated border border-border-subtle cursor-pointer"
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
             >
-              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
+              {isOpen ? <X /> : <Menu />}
+            </Button>
           </div>
         </div>
-      </nav>      {/* 4. MOBILE OVERLAY MENU */}
-      <div className={cn(
-        "fixed inset-0 bg-[#0a0a0c] flex flex-col justify-between p-6 transition-all duration-500 lg:hidden z-[990]",
-        isOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0 pointer-events-none"
-      )}>
-        <div className="flex-1 flex flex-col justify-center gap-8 max-h-[75vh] overflow-y-auto w-full px-4 pt-16">
-          {/* Core Workspaces Section */}
-          <div className="space-y-4">
-            <p className="text-[9px] font-bold text-silver/40 uppercase tracking-widest border-b border-border-default pb-2">Core Workspaces</p>
-            <div className="flex flex-col gap-3">
-              {leftLinks.map((link) => {
+      </nav>
+
+      {/* 4. MOBILE MENU */}
+      <div
+        className={cn(
+          'fixed inset-0 z-[990] overflow-y-auto bg-background px-4 pb-10 pt-16 transition-opacity duration-200 lg:hidden',
+          isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        )}
+      >
+        {[...menuCategories, { title: 'Account', links: rightLinks as SidebarLink[] }].map((cat) => (
+          <div key={cat.title} className="border-b border-border py-4 last:border-0">
+            <p className="mb-2 px-2 text-xs font-medium text-muted-foreground">{cat.title}</p>
+            <ul className="space-y-px">
+              {cat.links.flatMap(l => [l, ...(l.children ?? [])]).map((link: SidebarChild & { isAction?: boolean }) => {
                 const Icon = link.icon;
                 return (
-                  <Link 
-                    key={link.href}
-                    href={link.href} 
-                    onClick={(e) => {
-                      setIsOpen(false);
-                      if (link.locked) {
-                        e.preventDefault();
-                        setUpgradeModal({ open: true, feature: link.label });
-                      }
-                    }}
-                    className={cn(
-                      "font-extrabold tracking-tight transition-all text-lg flex items-center gap-2.5",
-                      isTabActive(link.href) ? "text-foreground" : "text-silver hover:text-foreground"
-                    )}
-                  >
-                    <Icon className="w-5 h-5" />
-                    <span>{link.label}</span>
-                    {link.locked && <Lock className="w-3.5 h-3.5 text-silver/30" />}
-                  </Link>
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      onClick={(e) => {
+                        setIsOpen(false);
+                        if (link.isAction) {
+                          e.preventDefault();
+                          setIsTourOpen(true);
+                        } else if (link.locked) {
+                          openLocked(link.label)(e);
+                        }
+                      }}
+                      className={cn(
+                        'flex h-10 items-center gap-3 rounded-md px-2 text-sm',
+                        isTabActive(link.href) ? 'bg-accent font-medium text-foreground' : 'text-foreground/80'
+                      )}
+                    >
+                      {Icon && <Icon className="size-4 text-muted-foreground" strokeWidth={1.75} />}
+                      <span className="flex-1">{link.label}</span>
+                      {link.locked && <Lock className="size-3.5 text-muted-foreground" />}
+                    </Link>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
           </div>
-          
-          {/* System Utilities Section */}            <div className="space-y-4">
-              <p className="text-[9px] font-bold text-silver/40 uppercase tracking-widest border-b border-border-default pb-2">System Utilities</p>
-            <div className="flex flex-col gap-3">
-              {rightLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Link 
-                    key={link.href}
-                    href={link.href} 
-                    onClick={(e) => {
-                      setIsOpen(false);
-                      if (link.isAction) {
-                        e.preventDefault();
-                        setIsTourOpen(true);
-                      } else if (link.locked) {
-                        e.preventDefault();
-                        setUpgradeModal({ open: true, feature: link.label });
-                      }
-                    }}
-                    className={cn(
-                      "font-extrabold tracking-tight transition-all text-base flex items-center gap-2.5",
-                      isTabActive(link.href) ? "text-white" : "text-white/60 hover:text-white"
-                    )}
-                  >
-                    <Icon className="w-4.5 h-4.5" />
-                    <span>{link.label}</span>
-                    {link.locked && <Lock className="w-3.5 h-3.5 text-white/30" />}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        </div>        {/* Mobile Footer */}
-        <div className="text-center w-full space-y-2 pb-6 border-t border-white/10 pt-4">
-          <Link href="/" className="inline-flex items-center gap-1.5">
-            <Logo />
-          </Link>
-        </div>
+        ))}
       </div>
 
-      {/* Interactive System Tour Modal */}
       <SystemTourModal isOpen={isTourOpen} onClose={() => setIsTourOpen(false)} />
-
-      {/* Upgrade Modal for locked features */}
       <UpgradeModal
         isOpen={upgradeModal.open}
         onClose={() => setUpgradeModal({ open: false, feature: '' })}

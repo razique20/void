@@ -158,8 +158,6 @@ export default function WhatsAppCatalogPage() {
   return (
     <div className="min-h-[calc(100vh-100px)] w-full relative">
       {/* Ambience */}
-      <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-green-500/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
 
       {Toast}
 
@@ -199,7 +197,7 @@ export default function WhatsAppCatalogPage() {
             className={cn(
               'px-6 py-2.5 rounded-xl text-xs font-bold transition-all hover:opacity-90 flex items-center gap-2',
               syncing
-                ? 'bg-bg-elevated text-silver/50 cursor-not-allowed'
+                ? 'bg-bg-elevated text-muted-foreground cursor-not-allowed'
                 : 'bg-foreground text-background'
             )}
           >
@@ -264,13 +262,13 @@ export default function WhatsAppCatalogPage() {
         </div>
       ) : displayProducts.length === 0 ? (
         <div className="text-center py-16 bg-bg-subtle rounded-2xl border border-border-default">
-          <Package className="w-16 h-16 text-silver/30 mx-auto mb-4" />
+          <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <p className="text-lg font-bold text-silver">
             {searchResults !== null
               ? 'No products match your search.'
               : 'No products synced yet.'}
           </p>
-          <p className="text-xs text-silver/60 mt-2 max-w-md mx-auto">
+          <p className="text-xs text-muted-foreground mt-2 max-w-md mx-auto">
             {searchResults !== null
               ? 'Try a different search term or sync your catalog first.'
               : 'Enter your WABA ID above and click "Sync Products" to get started.'}
@@ -300,7 +298,7 @@ export default function WhatsAppCatalogPage() {
                 </div>
               ) : (
                 <div className="h-40 bg-bg-elevated flex items-center justify-center">
-                  <ImageIcon className="w-10 h-10 text-silver/30" />
+                  <ImageIcon className="w-10 h-10 text-muted-foreground" />
                 </div>
               )}
 

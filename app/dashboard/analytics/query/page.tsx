@@ -422,7 +422,7 @@ export default function NaturalLanguageAnalyticsPage() {
     if (config.type === 'pie' || config.type === 'doughnut') {
       const total = (data.data || []).reduce((sum: number, val: number) => sum + val, 0);
       let cumulativePercent = 0;
-      const colors = ['bg-apple-blue', 'bg-emerald-500', 'bg-purple-500', 'bg-amber-500', 'bg-rose-500', 'bg-cyan-500'];
+      const colors = ['bg-apple-blue', 'bg-emerald-500', 'bg-foreground', 'bg-amber-500', 'bg-rose-500', 'bg-cyan-500'];
       
       return (
         <div className="bg-bg-surface border border-border-default rounded-xl p-4">
@@ -569,8 +569,6 @@ export default function NaturalLanguageAnalyticsPage() {
   return (
     <div className="min-h-[calc(100vh-100px)] w-full relative">
       {/* Ambience */}
-      <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
 
       {Toast}
 
@@ -579,7 +577,7 @@ export default function NaturalLanguageAnalyticsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-black tracking-tight flex items-center gap-3">
-              <Brain className="w-6 h-6 text-purple-500" />
+              <Brain className="w-6 h-6 text-foreground" />
               AI Analytics
             </h1>
             <p className="text-xs text-silver mt-1">
@@ -667,7 +665,7 @@ export default function NaturalLanguageAnalyticsPage() {
             {/* Query Input */}
             <div className="bg-bg-subtle border border-border-default rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-4">
-                <MessageSquare className="w-5 h-5 text-purple-500" />
+                <MessageSquare className="w-5 h-5 text-foreground" />
                 <h2 className="text-sm font-bold">Ask a Question</h2>
               </div>
               
@@ -679,13 +677,13 @@ export default function NaturalLanguageAnalyticsPage() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleQuery()}
-                  className="w-full bg-bg-elevated border border-border-default rounded-xl pl-4 pr-12 py-3 text-sm text-foreground focus:outline-none focus:border-purple-500"
+                  className="w-full bg-bg-elevated border border-border-default rounded-xl pl-4 pr-12 py-3 text-sm text-foreground focus:outline-none focus:border-border"
                   disabled={loading}
                 />
                 <button
                   onClick={() => handleQuery()}
                   disabled={loading || !query.trim()}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-purple-500 text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition-all"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-foreground text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition-all"
                 >
                   {loading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -704,7 +702,7 @@ export default function NaturalLanguageAnalyticsPage() {
                       setQuery(suggestion);
                       handleQuery(suggestion);
                     }}
-                    className="px-3 py-1.5 bg-bg-surface border border-border-default rounded-lg text-[10px] text-silver hover:text-foreground hover:border-purple-500 transition-all"
+                    className="px-3 py-1.5 bg-bg-surface border border-border-default rounded-lg text-[10px] text-silver hover:text-foreground hover:border-border transition-all"
                   >
                     {suggestion}
                   </button>
@@ -723,7 +721,7 @@ export default function NaturalLanguageAnalyticsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-xs text-silver">Querying: "{currentResult.question}"</p>
-                      <p className="text-[10px] text-silver/60 mt-1">
+                      <p className="text-[10px] text-muted-foreground mt-1">
                         Analyzed {currentResult.dataPointsAnalyzed} data points in {currentResult.executionTime}ms
                       </p>
                     </div>
@@ -740,11 +738,11 @@ export default function NaturalLanguageAnalyticsPage() {
                 </div>
 
                 {currentResult.insights && (
-                  <div className="bg-purple-500/5 border border-purple-500/20 rounded-2xl p-5">
+                  <div className="bg-muted border border-border rounded-2xl p-5">
                     <div className="flex items-center gap-2 mb-3">
-                      <Lightbulb className="w-4 h-4 text-purple-500" />
-                      <h3 className="text-xs font-bold text-purple-500">AI Insights</h3>
-                      <span className="px-2 py-0.5 bg-purple-500/10 rounded text-[9px] font-bold text-purple-500">
+                      <Lightbulb className="w-4 h-4 text-foreground" />
+                      <h3 className="text-xs font-bold text-foreground">AI Insights</h3>
+                      <span className="px-2 py-0.5 bg-muted rounded text-[9px] font-bold text-foreground">
                         {currentResult.insights.confidence}% confidence
                       </span>
                     </div>
@@ -755,7 +753,7 @@ export default function NaturalLanguageAnalyticsPage() {
                         <ul className="space-y-1">
                           {currentResult.insights.keyFindings.map((finding, i) => (
                             <li key={i} className="text-xs text-foreground/80 flex items-start gap-2">
-                              <span className="text-purple-500 mt-0.5">•</span>{finding}
+                              <span className="text-foreground mt-0.5">•</span>{finding}
                             </li>
                           ))}
                         </ul>
@@ -789,9 +787,9 @@ export default function NaturalLanguageAnalyticsPage() {
 
             {!currentResult && !loading && (
               <div className="text-center py-16 bg-bg-subtle rounded-2xl border border-border-default">
-                <Brain className="w-16 h-16 text-silver/30 mx-auto mb-4" />
+                <Brain className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
                 <p className="text-lg font-bold text-silver">Ask anything about your data</p>
-                <p className="text-xs text-silver/60 mt-2 max-w-md mx-auto">
+                <p className="text-xs text-muted-foreground mt-2 max-w-md mx-auto">
                   Type a question in natural language and get instant charts, tables, and insights.
                 </p>
               </div>
@@ -826,7 +824,7 @@ export default function NaturalLanguageAnalyticsPage() {
                       key={q._id}
                       className={cn(
                         "p-3 rounded-xl border cursor-pointer transition-all hover:shadow-md",
-                        selectedQuery?._id === q._id ? "border-purple-500 bg-purple-500/5" : "border-border-default hover:border-border-hover"
+                        selectedQuery?._id === q._id ? "border-border bg-muted" : "border-border-default hover:border-border-hover"
                       )}
                       onClick={() => {
                         setSelectedQuery(q);
@@ -870,9 +868,9 @@ export default function NaturalLanguageAnalyticsPage() {
             </div>
           ) : goals.length === 0 ? (
             <div className="text-center py-16 bg-bg-subtle rounded-2xl border border-border-default">
-              <Target className="w-16 h-16 text-silver/30 mx-auto mb-4" />
+              <Target className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
               <p className="text-lg font-bold text-silver">No goals configured</p>
-              <p className="text-xs text-silver/60 mt-2 max-w-md mx-auto">
+              <p className="text-xs text-muted-foreground mt-2 max-w-md mx-auto">
                 Create performance goals for your AI agents. The system will self-optimize based on conversation outcomes.
               </p>
               <button
@@ -915,7 +913,7 @@ export default function NaturalLanguageAnalyticsPage() {
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="text-sm font-bold text-foreground truncate">{goal.name}</h3>
                             {goal.autoOptimize && (
-                              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-purple-500/10 text-purple-500 flex items-center gap-1">
+                              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-muted text-foreground flex items-center gap-1">
                                 <Sparkles className="w-2.5 h-2.5" />Auto-Optimize
                               </span>
                             )}
@@ -973,7 +971,7 @@ export default function NaturalLanguageAnalyticsPage() {
                             <div className="bg-bg-surface rounded-xl p-4 space-y-3">
                               <h4 className="text-[10px] font-bold text-silver uppercase tracking-wider">AI Learning</h4>
                               <div className="space-y-2 text-xs">
-                                <div className="flex justify-between"><span className="text-silver">Adjustments</span><span className="font-bold text-purple-500">{goal.learningData.adjustmentsMade}</span></div>
+                                <div className="flex justify-between"><span className="text-silver">Adjustments</span><span className="font-bold text-foreground">{goal.learningData.adjustmentsMade}</span></div>
                                 <div className="flex justify-between"><span className="text-silver">Strategy</span><span className="font-bold text-foreground capitalize">{goal.optimizationStrategy}</span></div>
                               </div>
                             </div>
@@ -996,14 +994,14 @@ export default function NaturalLanguageAnalyticsPage() {
                           </div>
 
                           {goal.learningData.insights.length > 0 && (
-                            <div className="bg-purple-500/5 border border-purple-500/20 rounded-xl p-4 mb-4">
-                              <h4 className="text-[10px] font-bold text-purple-500 uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <div className="bg-muted border border-border rounded-xl p-4 mb-4">
+                              <h4 className="text-[10px] font-bold text-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
                                 <Brain className="w-3.5 h-3.5" />AI Insights
                               </h4>
                               <ul className="space-y-1">
                                 {goal.learningData.insights.slice(-3).map((insight, i) => (
                                   <li key={i} className="text-xs text-foreground/80 flex items-start gap-2">
-                                    <span className="text-purple-500 mt-0.5">•</span>{insight}
+                                    <span className="text-foreground mt-0.5">•</span>{insight}
                                   </li>
                                 ))}
                               </ul>
@@ -1015,7 +1013,7 @@ export default function NaturalLanguageAnalyticsPage() {
                               <button
                                 onClick={() => handleOptimize(goal._id)}
                                 disabled={optimizing === goal._id}
-                                className="px-3 py-1.5 bg-purple-500 text-white rounded-lg text-[10px] font-bold transition-all hover:opacity-90 disabled:opacity-50 flex items-center gap-1.5"
+                                className="px-3 py-1.5 bg-foreground text-white rounded-lg text-[10px] font-bold transition-all hover:opacity-90 disabled:opacity-50 flex items-center gap-1.5"
                               >
                                 {optimizing === goal._id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                                 Run Optimization
@@ -1058,7 +1056,7 @@ export default function NaturalLanguageAnalyticsPage() {
           <div className="w-full max-w-lg bg-background border border-border-strong rounded-[28px] overflow-hidden shadow-2xl">
             <div className="p-5 border-b border-border-default flex justify-between items-center">
               <h2 className="text-sm font-bold flex items-center gap-2">
-                <Target className="w-4 h-4 text-purple-500" />Create New Goal
+                <Target className="w-4 h-4 text-foreground" />Create New Goal
               </h2>
               <button onClick={() => setShowCreateGoal(false)} className="text-silver hover:text-foreground cursor-pointer">
                 <X className="w-4 h-4" />
@@ -1107,15 +1105,15 @@ export default function NaturalLanguageAnalyticsPage() {
                   </select>
                 </div>
               </div>
-              <div className="bg-purple-500/5 border border-purple-500/20 rounded-xl p-4">
+              <div className="bg-muted border border-border rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-purple-500" />
+                    <Sparkles className="w-4 h-4 text-foreground" />
                     <span className="text-xs font-bold text-foreground">AI Auto-Optimization</span>
                   </div>
                   <button
                     onClick={() => setNewGoal(prev => ({ ...prev, autoOptimize: !prev.autoOptimize }))}
-                    className={cn("relative w-10 h-5 rounded-full transition-colors duration-200", newGoal.autoOptimize ? "bg-purple-500" : "bg-silver/30")}
+                    className={cn("relative w-10 h-5 rounded-full transition-colors duration-200", newGoal.autoOptimize ? "bg-foreground" : "bg-silver/30")}
                   >
                     <span className={cn("absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-200", newGoal.autoOptimize ? "left-5" : "left-0.5")} />
                   </button>

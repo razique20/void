@@ -233,9 +233,6 @@ export default function TrainingPage() {
   return (
     <div className="flex pt-20 flex-1 overflow-hidden">
       {/* Dot grid & ambient glows (matching create-worker) */}
-      <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-[0.04] pointer-events-none" />
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
       {Toast}
 
@@ -256,11 +253,11 @@ export default function TrainingPage() {
                 <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
                   Knowledge Core
                 </h1>
-                <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-purple-500/10 border border-purple-500/15 rounded-full">
-                  <span className="w-1.5 h-1.5 rounded-full bg-purple-500 relative flex shrink-0">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-purple-500 opacity-75 animate-ping" />
+                <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-muted border border-border rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-foreground relative flex shrink-0">
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75 animate-ping" />
                   </span>
-                  <span className="text-[9px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest">
+                  <span className="text-[9px] font-bold text-foreground dark:text-foreground uppercase tracking-widest">
                     Neural Sync
                   </span>
                 </div>
@@ -284,7 +281,7 @@ export default function TrainingPage() {
                 className={cn(
                   "flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all border",
                   showSandbox
-                    ? "bg-purple-500/10 border-purple-500/30 text-purple-500"
+                    ? "bg-muted border-border text-foreground"
                     : "bg-foreground text-background border-transparent hover:opacity-90"
                 )}
               >
@@ -307,7 +304,7 @@ export default function TrainingPage() {
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-lg font-bold text-foreground">{isRefreshing ? '—' : stat.value}</span>
                   {stat.trend && (
-                    <span className="text-[9px] font-bold text-purple-500 flex items-center gap-0.5">
+                    <span className="text-[9px] font-bold text-foreground flex items-center gap-0.5">
                       <Cpu className="w-2.5 h-2.5" />
                       {stat.trend}
                     </span>
@@ -348,10 +345,10 @@ export default function TrainingPage() {
                   <div className="flex justify-between items-center">
                     <div>
                       <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-2">
-                        <BrainCircuit className="w-3.5 h-3.5 text-purple-500" />
+                        <BrainCircuit className="w-3.5 h-3.5 text-foreground" />
                         Target Agent
                       </h2>
-                      <p className="text-[10px] text-silver/60 font-medium mt-0.5">Select agent profile to ingest knowledge</p>
+                      <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Select agent profile to ingest knowledge</p>
                     </div>
                     {activeWorkerObj && (
                       <div className="hidden sm:flex items-center gap-2">
@@ -369,7 +366,7 @@ export default function TrainingPage() {
                     <select
                       value={selectedWorker}
                       onChange={(e) => setSelectedWorker(e.target.value)}
-                      className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold text-foreground focus:outline-none focus:border-purple-500/40 transition-all cursor-pointer appearance-none"
+                      className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold text-foreground focus:outline-none focus:border-border transition-all cursor-pointer appearance-none"
                     >
                       {workers.length === 0 ? (
                         <option value="">No agents available</option>
@@ -396,7 +393,7 @@ export default function TrainingPage() {
                           <Database className="w-3.5 h-3.5 text-apple-blue" />
                           Ingestion Mode
                         </h2>
-                        <p className="text-[10px] text-silver/60 font-medium mt-0.5">Choose source type for RAG vectorization</p>
+                        <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Choose source type for RAG vectorization</p>
                       </div>
 
                       <div className="flex p-1 bg-bg-elevated border border-border-subtle rounded-xl gap-0.5">
@@ -436,7 +433,7 @@ export default function TrainingPage() {
                               className={cn(
                                 "px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all border",
                                 source === t
-                                  ? "bg-purple-500/10 border-purple-500/30 text-purple-500"
+                                  ? "bg-muted border-border text-foreground"
                                   : "bg-bg-surface border-border-default text-silver hover:text-foreground"
                               )}
                             >
@@ -449,7 +446,7 @@ export default function TrainingPage() {
                           required
                           rows={7}
                           placeholder="Paste custom knowledge base entries, standard operating procedures (SOPs), or product FAQs here..."
-                          className="w-full bg-bg-surface border border-border-default rounded-xl p-4 text-xs font-mono leading-relaxed text-foreground placeholder:text-silver/40 focus:outline-none focus:border-purple-500/40 transition-all resize-none"
+                          className="w-full bg-bg-surface border border-border-default rounded-xl p-4 text-xs font-mono leading-relaxed text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-border transition-all resize-none"
                           value={content}
                           onChange={(e) => setContent(e.target.value)}
                         />
@@ -464,7 +461,7 @@ export default function TrainingPage() {
                     {/* File Mode */}
                     {mode === 'file' && (
                       <div className="space-y-3">
-                        <div className="border-2 border-dashed border-border-strong hover:border-purple-500/30 bg-bg-subtle rounded-xl p-8 transition-all relative group flex flex-col items-center justify-center text-center">
+                        <div className="border-2 border-dashed border-border-strong hover:border-border bg-bg-subtle rounded-xl p-8 transition-all relative group flex flex-col items-center justify-center text-center">
                           <input
                             type="file"
                             accept=".pdf,.docx,.csv,.txt"
@@ -473,8 +470,8 @@ export default function TrainingPage() {
                           />
                           {file ? (
                             <div className="flex flex-col items-center gap-3">
-                              <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/20 rounded-xl flex items-center justify-center">
-                                <FileText className="w-6 h-6 text-purple-500" />
+                              <div className="w-12 h-12 bg-muted border border-border rounded-xl flex items-center justify-center">
+                                <FileText className="w-6 h-6 text-foreground" />
                               </div>
                               <div>
                                 <p className="font-bold text-xs text-foreground">{file.name}</p>
@@ -524,7 +521,7 @@ export default function TrainingPage() {
                           <input
                             type="url"
                             placeholder="https://docs.company.com/knowledge-base"
-                            className="w-full bg-background border border-border-strong rounded-lg px-4 py-2.5 text-xs font-mono text-foreground focus:outline-none focus:border-purple-500/40 transition-all placeholder:text-silver/40"
+                            className="w-full bg-background border border-border-strong rounded-lg px-4 py-2.5 text-xs font-mono text-foreground focus:outline-none focus:border-border transition-all placeholder:text-muted-foreground"
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
                           />
@@ -563,10 +560,10 @@ export default function TrainingPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border-subtle pb-4">
                     <div>
                       <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-2">
-                        <Layers className="w-3.5 h-3.5 text-purple-500" />
+                        <Layers className="w-3.5 h-3.5 text-foreground" />
                         Memory Bank Index
                       </h2>
-                      <p className="text-[10px] text-silver/60 font-medium mt-0.5">Active RAG vector chunks for selected agent</p>
+                      <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Active RAG vector chunks for selected agent</p>
                     </div>
 
                     <div className="relative w-full sm:w-64">
@@ -576,7 +573,7 @@ export default function TrainingPage() {
                         placeholder="Search ingested memory..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-bg-elevated border border-border-default rounded-lg pl-9 pr-4 py-1.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
+                        className="w-full bg-bg-elevated border border-border-default rounded-lg pl-9 pr-4 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
                       />
                       {searchQuery && (
                         <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-silver hover:text-foreground">
@@ -589,8 +586,8 @@ export default function TrainingPage() {
                   {/* Chunks List */}
                   {filteredEntries.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-14 border border-border-default border-dashed rounded-xl text-center">
-                      <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/15 rounded-xl flex items-center justify-center mb-3">
-                        <BrainCircuit className="w-6 h-6 text-purple-500" />
+                      <div className="w-12 h-12 bg-muted border border-border rounded-xl flex items-center justify-center mb-3">
+                        <BrainCircuit className="w-6 h-6 text-foreground" />
                       </div>
                       <p className="text-sm font-semibold text-foreground">{searchQuery ? 'No chunks match your search' : 'Knowledge core is empty'}</p>
                       <p className="text-xs text-silver mt-1.5 max-w-xs leading-relaxed">
@@ -602,7 +599,7 @@ export default function TrainingPage() {
                         <div className="mt-4 flex gap-2">
                           <button
                             onClick={() => { setMode('text'); document.querySelector('textarea')?.focus(); }}
-                            className="px-4 py-2 bg-purple-500/10 border border-purple-500/20 text-purple-500 rounded-xl text-[11px] font-bold hover:bg-purple-500/15 transition-all flex items-center gap-1.5 cursor-pointer"
+                            className="px-4 py-2 bg-muted border border-border text-foreground rounded-xl text-[11px] font-bold hover:bg-muted transition-all flex items-center gap-1.5 cursor-pointer"
                           >
                             <Type className="w-3 h-3" /> Add FAQ / SOP
                           </button>
@@ -626,7 +623,7 @@ export default function TrainingPage() {
                           >
                             <div className="space-y-1.5 min-w-0 flex-1">
                               <div className="flex items-center gap-2">
-                                <span className="text-[8px] font-extrabold uppercase px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/15">
+                                <span className="text-[8px] font-extrabold uppercase px-2 py-0.5 rounded bg-muted text-foreground border border-border">
                                   {entry.source || 'TEXT'}
                                 </span>
                                 {entry.metadata?.fileName && (
@@ -634,7 +631,7 @@ export default function TrainingPage() {
                                     {entry.metadata.fileName}
                                   </span>
                                 )}
-                                <span className="text-[9px] text-silver/50 font-mono ml-auto">
+                                <span className="text-[9px] text-muted-foreground font-mono ml-auto">
                                   {dateStr}
                                 </span>
                               </div>
@@ -666,12 +663,12 @@ export default function TrainingPage() {
                 <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-4">
                   <div className="flex justify-between items-center">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Vector Telemetry</h3>
-                    <Cpu className="w-3.5 h-3.5 text-purple-500" />
+                    <Cpu className="w-3.5 h-3.5 text-foreground" />
                   </div>
 
                   <div className="space-y-3">
                     {[
-                      { icon: Cpu, label: 'Engine Indexing', value: 'Neural RAG', color: 'text-purple-400' },
+                      { icon: Cpu, label: 'Engine Indexing', value: 'Neural RAG', color: 'text-foreground' },
                       { icon: Activity, label: 'Vector Status', value: 'Optimal', color: 'text-emerald-600 dark:text-emerald-400' },
                       { icon: Database, label: 'Window Size', value: '1,000 chars', color: '' },
                       { icon: Layers, label: 'Overlap Margin', value: '200 chars', color: '' },
@@ -695,7 +692,7 @@ export default function TrainingPage() {
                     className="p-5 flex justify-between items-center w-full focus:outline-none hover:bg-bg-surface transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <MessageSquare className="w-4 h-4 text-purple-500" />
+                      <MessageSquare className="w-4 h-4 text-foreground" />
                       <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Test Sandbox</h3>
                     </div>
                     <div className="flex items-center gap-2">
@@ -727,13 +724,13 @@ export default function TrainingPage() {
                       <Terminal className="w-3.5 h-3.5" />
                       Ingestion Events
                     </h3>
-                    <span className="text-[9px] font-bold text-purple-500 uppercase tracking-wider">Live Log</span>
+                    <span className="text-[9px] font-bold text-foreground uppercase tracking-wider">Live Log</span>
                   </div>
 
                   <div className="bg-bg-surface border border-border-subtle rounded-xl p-3 font-mono text-[10px] text-silver space-y-1.5 max-h-44 overflow-y-auto">
                     {eventLogs.length > 0 ? (
                       eventLogs.map((log) => {
-                        let dotColor = "bg-purple-500";
+                        let dotColor = "bg-foreground";
                         if (log.type === 'error') dotColor = "bg-red-500 animate-pulse";
                         else if (log.type === 'success') dotColor = "bg-emerald-500";
 
@@ -741,24 +738,24 @@ export default function TrainingPage() {
                           <div key={log.id} className="flex items-start gap-1.5">
                             <span className={cn("w-1 h-1 rounded-full mt-1.5 flex-shrink-0", dotColor)} />
                             <span className="break-all leading-relaxed">
-                              <span className="text-silver/50">[{log.timestamp}]</span>{' '}
+                              <span className="text-muted-foreground">[{log.timestamp}]</span>{' '}
                               {log.message}
                             </span>
                           </div>
                         );
                       })
                     ) : (
-                      <div className="text-center py-5 text-silver/60 italic text-[10px]">Awaiting ingestion activity...</div>
+                      <div className="text-center py-5 text-muted-foreground italic text-[10px]">Awaiting ingestion activity...</div>
                     )}
                   </div>
                 </motion.div>
 
                 {/* Security Info Banner */}
-                <div className="p-4 bg-purple-500/5 border border-purple-500/15 rounded-2xl flex gap-3 shadow-sm">
-                  <Info className="w-4 h-4 text-purple-400 flex-shrink-0 mt-0.5" />
+                <div className="p-4 bg-muted border border-border rounded-2xl flex gap-3 shadow-sm">
+                  <Info className="w-4 h-4 text-foreground flex-shrink-0 mt-0.5" />
                   <div className="space-y-1">
-                    <h4 className="font-bold text-[11px] text-purple-400 uppercase tracking-wider">Encrypted Neural Memory</h4>
-                    <p className="text-[10px] text-purple-300/80 font-medium leading-relaxed">
+                    <h4 className="font-bold text-[11px] text-foreground uppercase tracking-wider">Encrypted Neural Memory</h4>
+                    <p className="text-[10px] text-foreground/80 font-medium leading-relaxed">
                       Datasets are isolated per agent workspace and chunked automatically for high-precision semantic lookup.
                     </p>
                   </div>

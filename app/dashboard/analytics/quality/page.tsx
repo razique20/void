@@ -118,11 +118,11 @@ export default function ConversationQualityPage() {
               <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
                 Conversation Quality Grader
               </h1>
-              <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-purple-500/10 border border-purple-500/15 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-500 relative flex shrink-0">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-purple-500 opacity-75 animate-ping" />
+              <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-muted border border-border rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-foreground relative flex shrink-0">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75 animate-ping" />
                 </span>
-                <span className="text-[9px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest">
+                <span className="text-[9px] font-bold text-foreground dark:text-foreground uppercase tracking-widest">
                   LLM-as-Judge
                 </span>
               </div>
@@ -264,7 +264,7 @@ export default function ConversationQualityPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <TrendingUp className="w-8 h-8 text-silver/30 mb-2" />
+                <TrendingUp className="w-8 h-8 text-muted-foreground mb-2" />
                 <p className="text-xs text-silver">No trend data yet</p>
               </div>
             )}
@@ -498,9 +498,9 @@ export default function ConversationQualityPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <GraduationCap className="w-10 h-10 text-silver/30 mb-3" />
+                <GraduationCap className="w-10 h-10 text-muted-foreground mb-3" />
                 <p className="text-sm font-bold text-silver">No conversations to grade</p>
-                <p className="text-[10px] text-silver/60 mt-1">Conversations with 2+ messages will be automatically graded</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Conversations with 2+ messages will be automatically graded</p>
               </div>
             )}
           </motion.div>

@@ -103,9 +103,9 @@ export default function KnowledgePage() {
     faq: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
     procedure: 'bg-sky-500/10 text-sky-600 border-sky-500/20',
     product: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
-    policy: 'bg-purple-500/10 text-purple-600 border-purple-500/20',
+    policy: 'bg-muted text-foreground border-border',
     troubleshooting: 'bg-rose-500/10 text-rose-600 border-rose-500/20',
-    best_practice: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20',
+    best_practice: 'bg-muted text-foreground border-border',
     spreadsheet: 'bg-apple-blue/10 text-apple-blue border-apple-blue/20',
     custom: 'bg-silver/10 text-silver border-border-default',
   };
@@ -189,7 +189,7 @@ export default function KnowledgePage() {
                     <FileText className="w-3.5 h-3.5 text-apple-blue" />
                     Items
                   </h2>
-                  <p className="text-[10px] text-silver/60 font-medium mt-0.5">
+                  <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
                     {loading ? 'Loading…' : `${items.length} total`}
                   </p>
                 </div>
@@ -280,7 +280,7 @@ export default function KnowledgePage() {
                           </span>
                         </div>
 
-                        <p className="text-[10px] text-silver/70 leading-relaxed line-clamp-3 whitespace-pre-wrap">
+                        <p className="text-[10px] text-muted-foreground leading-relaxed line-clamp-3 whitespace-pre-wrap">
                           {item.content}
                         </p>
 

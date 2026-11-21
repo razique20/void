@@ -213,7 +213,6 @@ export default function NewABTestPage() {
     <div className="flex flex-1 overflow-hidden pt-20">
       <div className="flex flex-1 flex-col overflow-hidden relative">
         {/* Background effects */}
-        <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
 
         {Toast}
 
@@ -231,8 +230,8 @@ export default function NewABTestPage() {
             {/* Header */}
             <div className="border-b border-border-default pb-6">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                  <Beaker className="w-5 h-5 text-purple-500" />
+                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
+                  <Beaker className="w-5 h-5 text-foreground" />
                 </div>
                 <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
                   Create A/B Test
@@ -260,7 +259,7 @@ export default function NewABTestPage() {
                     value={testName}
                     onChange={(e) => setTestName(e.target.value)}
                     placeholder="e.g., Personality Comparison Test"
-                    className="w-full px-3 py-2.5 bg-bg-active border border-border-default rounded-xl text-sm text-foreground placeholder:text-silver/40 focus:outline-none focus:border-purple-500/50 transition-colors"
+                    className="w-full px-3 py-2.5 bg-bg-active border border-border-default rounded-xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors"
                   />
                 </div>
                 <div>
@@ -270,7 +269,7 @@ export default function NewABTestPage() {
                   <select
                     value={baseWorkerId}
                     onChange={(e) => setBaseWorkerId(e.target.value)}
-                    className="w-full px-3 py-2.5 bg-bg-active border border-border-default rounded-xl text-sm text-foreground focus:outline-none focus:border-purple-500/50 transition-colors"
+                    className="w-full px-3 py-2.5 bg-bg-active border border-border-default rounded-xl text-sm text-foreground focus:outline-none focus:border-border transition-colors"
                   >
                     <option value="">Select a worker</option>
                     {workers.map((worker) => (
@@ -291,7 +290,7 @@ export default function NewABTestPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe what this test is evaluating..."
                   rows={2}
-                  className="w-full px-3 py-2.5 bg-bg-active border border-border-default rounded-xl text-sm text-foreground placeholder:text-silver/40 focus:outline-none focus:border-purple-500/50 transition-colors resize-none"
+                  className="w-full px-3 py-2.5 bg-bg-active border border-border-default rounded-xl text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-border transition-colors resize-none"
                 />
               </div>
 
@@ -305,7 +304,7 @@ export default function NewABTestPage() {
                   onChange={(e) => setTargetConversations(parseInt(e.target.value) || 100)}
                   min={10}
                   max={10000}
-                  className="w-32 px-3 py-2.5 bg-bg-active border border-border-default rounded-xl text-sm text-foreground focus:outline-none focus:border-purple-500/50 transition-colors"
+                  className="w-32 px-3 py-2.5 bg-bg-active border border-border-default rounded-xl text-sm text-foreground focus:outline-none focus:border-border transition-colors"
                 />
                 <p className="text-[9px] text-silver mt-1">Test will auto-complete after this many conversations</p>
               </div>
@@ -321,7 +320,7 @@ export default function NewABTestPage() {
                 <button
                   onClick={addVariant}
                   disabled={variants.length >= 5}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/10 text-purple-500 rounded-lg text-[10px] font-bold hover:bg-purple-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-muted text-foreground rounded-lg text-[10px] font-bold hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Plus className="w-3 h-3" />
                   Add Variant
@@ -349,7 +348,7 @@ export default function NewABTestPage() {
                       key={index}
                       className={cn(
                         "h-full transition-all",
-                        index === 0 ? "bg-zinc-400" : "bg-purple-500"
+                        index === 0 ? "bg-zinc-400" : "bg-foreground"
                       )}
                       style={{ width: `${variant.trafficPercentage}%` }}
                     />
@@ -370,11 +369,11 @@ export default function NewABTestPage() {
                       <div className="flex items-center gap-3">
                         <div className={cn(
                           "w-8 h-8 rounded-lg flex items-center justify-center",
-                          index === 0 ? "bg-zinc-500/10" : "bg-purple-500/10"
+                          index === 0 ? "bg-zinc-500/10" : "bg-muted"
                         )}>
                           <Beaker className={cn(
                             "w-4 h-4",
-                            index === 0 ? "text-zinc-500" : "text-purple-500"
+                            index === 0 ? "text-zinc-500" : "text-foreground"
                           )} />
                         </div>
                         <input
@@ -402,7 +401,7 @@ export default function NewABTestPage() {
                         <select
                           value={variant.workerId}
                           onChange={(e) => updateVariant(index, { workerId: e.target.value })}
-                          className="w-full px-3 py-2 bg-bg-active border border-border-default rounded-lg text-xs text-foreground focus:outline-none focus:border-purple-500/50 transition-colors"
+                          className="w-full px-3 py-2 bg-bg-active border border-border-default rounded-lg text-xs text-foreground focus:outline-none focus:border-border transition-colors"
                         >
                           <option value="">Select worker</option>
                           {workers.map((worker) => (
@@ -422,7 +421,7 @@ export default function NewABTestPage() {
                           onChange={(e) => handleTrafficChange(index, parseInt(e.target.value) || 0)}
                           min={0}
                           max={100}
-                          className="w-full px-3 py-2 bg-bg-active border border-border-default rounded-lg text-xs text-foreground focus:outline-none focus:border-purple-500/50 transition-colors"
+                          className="w-full px-3 py-2 bg-bg-active border border-border-default rounded-lg text-xs text-foreground focus:outline-none focus:border-border transition-colors"
                         />
                       </div>
                       <div className="flex items-end">
@@ -430,7 +429,7 @@ export default function NewABTestPage() {
                           "w-full px-3 py-2 rounded-lg text-center text-[10px] font-bold",
                           index === 0 
                             ? "bg-zinc-500/10 text-zinc-500" 
-                            : "bg-purple-500/10 text-purple-500"
+                            : "bg-muted text-foreground"
                         )}>
                           {index === 0 ? 'CONTROL' : `VARIANT ${String.fromCharCode(65 + index - 1)}`}
                         </div>

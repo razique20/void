@@ -33,8 +33,6 @@ export default function MarketplacePage() {
     <div className="flex flex-1 overflow-hidden pt-20">
       
       {/* Background Ambience */}
-      <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
       {Toast}
         
@@ -172,7 +170,6 @@ export default function MarketplacePage() {
                   </div>
 
                   {/* Decorative Background */}
-                  <div className="absolute -bottom-20 -right-20 w-[350px] h-[350px] bg-apple-blue/8 blur-[100px] rounded-full group-hover:bg-apple-blue/12 transition-all duration-700 pointer-events-none" />
                 </motion.div>
 
                 {/* Neural Voice - Secondary Card */}
@@ -183,8 +180,8 @@ export default function MarketplacePage() {
                     !(config?.featureFlags?.neuralVoice !== false) && "opacity-50 grayscale"
                   )}
                 >
-                  <div className="w-10 h-10 bg-purple-500/10 border border-purple-500/20 rounded-xl flex items-center justify-center mb-5">
-                    <Mic className="w-5 h-5 text-purple-500" />
+                  <div className="w-10 h-10 bg-muted border border-border rounded-xl flex items-center justify-center mb-5">
+                    <Mic className="w-5 h-5 text-foreground" />
                   </div>
                   <div>
                     <h4 className="text-sm font-bold mb-1.5 text-foreground">Neural Voice</h4>

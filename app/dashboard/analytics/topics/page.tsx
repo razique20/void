@@ -205,7 +205,7 @@ export default function TopicsPage() {
                   analyzing
                     ? "bg-amber-500/10 border-amber-500/20 text-amber-500"
                     : usage && usage.used >= usage.limit && usage.limit !== Infinity
-                      ? "bg-bg-elevated border-border-default text-silver/50 cursor-not-allowed"
+                      ? "bg-bg-elevated border-border-default text-muted-foreground cursor-not-allowed"
                       : "bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500/20"
                 )}
               >
@@ -285,9 +285,9 @@ export default function TopicsPage() {
               ) : (
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center">
-                    <Tags className="w-8 h-8 text-silver/30 mx-auto mb-2" />
+                    <Tags className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                     <p className="text-xs text-silver">No topics yet</p>
-                    <p className="text-[10px] text-silver/60 mt-1">Run AI Analysis to detect topics</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">Run AI Analysis to detect topics</p>
                   </div>
                 </div>
               )}
@@ -297,7 +297,7 @@ export default function TopicsPage() {
           {/* Sentiment Distribution */}
           <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-6">
             <h3 className="text-xs font-bold uppercase tracking-wider text-silver mb-4 flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+              <Sparkles className="w-3.5 h-3.5 text-foreground" />
               Topic Sentiment
             </h3>
             <div className="h-64">
@@ -529,7 +529,7 @@ export default function TopicsPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-16 bg-bg-surface border border-border-default border-dashed rounded-2xl">
-              <Tags className="w-12 h-12 text-silver/30 mb-3" />
+              <Tags className="w-12 h-12 text-muted-foreground mb-3" />
               <h3 className="text-sm font-semibold text-foreground">No topics analyzed yet</h3>
               <p className="text-silver text-xs mt-1 mb-4">Run AI Analysis to auto-categorize your conversations</p>
               <button

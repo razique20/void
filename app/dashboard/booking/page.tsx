@@ -253,8 +253,6 @@ export default function SmartBookingPage() {
   return (
     <div className="min-h-[calc(100vh-100px)] w-full relative">
       {/* Ambience */}
-      <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
       {Toast}
 
@@ -348,7 +346,7 @@ export default function SmartBookingPage() {
                   onChange={(e) => setApiKey(e.target.value)}
                   className="w-full bg-bg-elevated border border-border-default rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none focus:border-apple-blue"
                 />
-                <p className="text-[10px] text-silver/60">
+                <p className="text-[10px] text-muted-foreground">
                   {settings?.hasApiKey ? '✓ API key configured' : 'Enter your Cal.com API key'}
                 </p>
               </div>
@@ -364,7 +362,7 @@ export default function SmartBookingPage() {
                   onChange={(e) => setCalendarId(e.target.value)}
                   className="w-full bg-bg-elevated border border-border-default rounded-xl px-3 py-2 text-xs text-foreground focus:outline-none focus:border-apple-blue"
                 />
-                <p className="text-[10px] text-silver/60">
+                <p className="text-[10px] text-muted-foreground">
                   From your Cal.com event type URL
                 </p>
               </div>
@@ -443,7 +441,7 @@ export default function SmartBookingPage() {
           {/* Business Hours */}
           <div className="bg-bg-subtle border border-border-default rounded-2xl p-6 space-y-4">
             <h2 className="text-sm font-bold flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-purple-500" />
+              <Calendar className="w-4 h-4 text-foreground" />
               Business Hours
             </h2>
 
@@ -526,9 +524,9 @@ export default function SmartBookingPage() {
             </div>
           ) : bookings.length === 0 ? (
             <div className="text-center py-12 bg-bg-subtle rounded-2xl border border-border-default">
-              <Calendar className="w-12 h-12 text-silver/30 mx-auto mb-4" />
+              <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-sm font-bold text-silver">No bookings yet</p>
-              <p className="text-xs text-silver/60 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Bookings will appear here once customers schedule meetings
               </p>
             </div>

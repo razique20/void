@@ -510,8 +510,6 @@ export default function EmailWorkspacePage() {
       )}
       
       {/* Ambience grids */}
-      <div className="absolute top-[-10%] left-[-10%] w-[35%] h-[35%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
 
       {Toast}
 
@@ -615,7 +613,7 @@ export default function EmailWorkspacePage() {
 
         {/* Footer brand details */}
         <div className="p-4 border-t border-border-subtle text-center">
-          <p className="text-[9px] font-mono text-silver/60">SECURE UPLINK ACTIVE</p>
+          <p className="text-[9px] font-mono text-muted-foreground">SECURE UPLINK ACTIVE</p>
         </div>
       </div>
 
@@ -651,7 +649,7 @@ export default function EmailWorkspacePage() {
                 setSearchQuery(e.target.value);
                 setPage(1);
               }}
-              className="w-full bg-bg-elevated border border-border-default rounded-xl pl-10 pr-4 py-2 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
+              className="w-full bg-bg-elevated border border-border-default rounded-xl pl-10 pr-4 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
           </div>
 
@@ -709,7 +707,7 @@ export default function EmailWorkspacePage() {
                     }}
                     className="shrink-0 mt-0.5"
                   >
-                    <Star className={cn("w-4 h-4 transition-colors", email.isStarred ? "text-amber-500 fill-amber-500" : "text-silver/40 hover:text-silver")} />
+                    <Star className={cn("w-4 h-4 transition-colors", email.isStarred ? "text-amber-500 fill-amber-500" : "text-muted-foreground hover:text-silver")} />
                   </button>
 
                   <div className="flex-1 min-w-0 space-y-1.5">
@@ -718,7 +716,7 @@ export default function EmailWorkspacePage() {
                       <span className={cn("text-xs truncate max-w-[140px]", !email.isRead ? "font-extrabold text-foreground" : "font-medium text-silver")}>
                         {email.from.name || email.from.address.split('@')[0]}
                       </span>
-                      <span className="text-[10px] text-silver/50 font-mono shrink-0">
+                      <span className="text-[10px] text-muted-foreground font-mono shrink-0">
                         {new Date(email.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                       </span>
                     </div>
@@ -850,58 +848,58 @@ export default function EmailWorkspacePage() {
                         <span className="text-xs font-bold text-foreground block truncate max-w-[200px]">
                           {selectedEmail.from.name || selectedEmail.from.address.split('@')[0]}
                         </span>
-                        <span className="text-[10px] text-silver/60 truncate font-mono">
+                        <span className="text-[10px] text-muted-foreground truncate font-mono">
                           &lt;{selectedEmail.from.address}&gt;
                         </span>
                       </div>
-                      <p className="text-[10px] text-silver/45 truncate mt-0.5">
+                      <p className="text-[10px] text-muted-foreground truncate mt-0.5">
                         To: {selectedEmail.to.map((t: any) => t.address).join(', ')}
                       </p>
                     </div>
                   </div>
                   
-                  <span className="text-[10px] text-silver/50 font-mono text-right shrink-0">
+                  <span className="text-[10px] text-muted-foreground font-mono text-right shrink-0">
                     {new Date(selectedEmail.date).toLocaleString()}
                   </span>
                 </div>
               </div>
 
               {/* Neural/AI Assistant panel box */}
-              <div className="border border-purple-500/15 bg-purple-500/[0.02] rounded-[28px] p-5 space-y-4">
+              <div className="border border-border bg-muted rounded-[28px] p-5 space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Cpu className="w-4 h-4 text-purple-500 animate-pulse" />
-                    <h3 className="text-xs font-bold text-purple-500 dark:text-purple-400 uppercase tracking-widest">Neural AI Assistant</h3>
+                    <Cpu className="w-4 h-4 text-foreground animate-pulse" />
+                    <h3 className="text-xs font-bold text-foreground dark:text-foreground uppercase tracking-widest">Neural AI Assistant</h3>
                   </div>
-                  {aiLoading && <Loader2 className="w-3.5 h-3.5 text-purple-500 animate-spin" />}
+                  {aiLoading && <Loader2 className="w-3.5 h-3.5 text-foreground animate-spin" />}
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <button
                     onClick={() => runAiAction('summarize')}
                     disabled={aiLoading}
-                    className="py-1.5 px-2.5 border border-purple-500/20 rounded-xl text-[10px] font-bold text-purple-500 dark:text-purple-300 hover:bg-purple-500/10 transition-colors disabled:opacity-50 cursor-pointer"
+                    className="py-1.5 px-2.5 border border-border rounded-xl text-[10px] font-bold text-foreground dark:text-foreground hover:bg-muted transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     Summarize
                   </button>
                   <button
                     onClick={() => runAiAction('extract')}
                     disabled={aiLoading}
-                    className="py-1.5 px-2.5 border border-purple-500/20 rounded-xl text-[10px] font-bold text-purple-500 dark:text-purple-300 hover:bg-purple-500/10 transition-colors disabled:opacity-50 cursor-pointer"
+                    className="py-1.5 px-2.5 border border-border rounded-xl text-[10px] font-bold text-foreground dark:text-foreground hover:bg-muted transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     Extract Action Items
                   </button>
                   <button
                     onClick={() => runAiAction('categorize')}
                     disabled={aiLoading}
-                    className="py-1.5 px-2.5 border border-purple-500/20 rounded-xl text-[10px] font-bold text-purple-500 dark:text-purple-300 hover:bg-purple-500/10 transition-colors disabled:opacity-50 cursor-pointer"
+                    className="py-1.5 px-2.5 border border-border rounded-xl text-[10px] font-bold text-foreground dark:text-foreground hover:bg-muted transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     Auto-Categorize
                   </button>
                   <button
                     onClick={() => runAiAction('draft')}
                     disabled={aiLoading}
-                    className="py-1.5 px-2.5 bg-purple-500 text-white rounded-xl text-[10px] font-bold hover:opacity-90 transition-colors disabled:opacity-50 cursor-pointer"
+                    className="py-1.5 px-2.5 bg-foreground text-white rounded-xl text-[10px] font-bold hover:opacity-90 transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     Smart Draft Reply
                   </button>
@@ -912,9 +910,9 @@ export default function EmailWorkspacePage() {
                   <motion.div 
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 bg-background/50 border border-purple-500/10 rounded-xl space-y-2 text-xs"
+                    className="p-4 bg-background/50 border border-border rounded-xl space-y-2 text-xs"
                   >
-                    <p className="font-extrabold text-purple-500 dark:text-purple-400">Thread Summary:</p>
+                    <p className="font-extrabold text-foreground dark:text-foreground">Thread Summary:</p>
                     <div className="text-foreground/90 whitespace-pre-line leading-relaxed">{aiSummary}</div>
                   </motion.div>
                 )}
@@ -924,9 +922,9 @@ export default function EmailWorkspacePage() {
                   <motion.div 
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 bg-background/50 border border-purple-500/10 rounded-xl space-y-2 text-xs"
+                    className="p-4 bg-background/50 border border-border rounded-xl space-y-2 text-xs"
                   >
-                    <p className="font-extrabold text-purple-500 dark:text-purple-400">Extracted Action Items:</p>
+                    <p className="font-extrabold text-foreground dark:text-foreground">Extracted Action Items:</p>
                     <div className="text-foreground/90 whitespace-pre-line leading-relaxed">{aiTasks}</div>
                   </motion.div>
                 )}
@@ -938,12 +936,12 @@ export default function EmailWorkspacePage() {
                     placeholder="Instructions for Smart Draft Reply (e.g. 'schedule call on Friday professional')..."
                     value={aiPrompt}
                     onChange={(e) => setAiPrompt(e.target.value)}
-                    className="w-full bg-background border border-purple-500/15 rounded-xl pl-3 pr-12 py-2 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-purple-500"
+                    className="w-full bg-background border border-border rounded-xl pl-3 pr-12 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-border"
                   />
                   <button
                     onClick={() => runAiAction('draft')}
                     disabled={aiLoading}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-purple-500 hover:bg-purple-500/15 rounded-lg transition-colors cursor-pointer"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-foreground hover:bg-muted rounded-lg transition-colors cursor-pointer"
                   >
                     <Cpu className="w-3.5 h-3.5" />
                   </button>
@@ -983,7 +981,7 @@ export default function EmailWorkspacePage() {
                       >
                         <span className="font-medium truncate max-w-[150px]">{att.filename}</span>
                         <div className="flex gap-2">
-                          <span className="text-[10px] text-silver/50 font-mono">{(att.size / 1024).toFixed(0)} KB</span>
+                          <span className="text-[10px] text-muted-foreground font-mono">{(att.size / 1024).toFixed(0)} KB</span>
                           {att.dataUrl && (
                             <a 
                               href={att.dataUrl} 
@@ -1158,7 +1156,7 @@ export default function EmailWorkspacePage() {
                 )}
 
                 {detectedProviderName && (
-                  <div className="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-500 dark:text-purple-300 rounded-xl text-[10px] font-bold flex items-start gap-2.5">
+                  <div className="p-3 bg-muted border border-border text-foreground dark:text-foreground rounded-xl text-[10px] font-bold flex items-start gap-2.5">
                     <Cpu className="w-3.5 h-3.5 mt-0.5 shrink-0 animate-pulse" />
                     <div>
                       <p className="font-extrabold uppercase tracking-wider">Settings Detected ({detectedProviderName})</p>
@@ -1312,7 +1310,7 @@ export default function EmailWorkspacePage() {
                       >
                         <div className="min-w-0">
                           <p className="font-bold truncate text-foreground">{acc.label}</p>
-                          <p className="text-[10px] text-silver/60 truncate mt-0.5">{acc.email}</p>
+                          <p className="text-[10px] text-muted-foreground truncate mt-0.5">{acc.email}</p>
                         </div>
                         <button
                           onClick={async () => {

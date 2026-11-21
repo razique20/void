@@ -223,7 +223,7 @@ const departments: BlueprintDepartment[] = [
     label: 'Hotel Desk',
     icon: Hotel,
     desc: 'Hospitality',
-    color: 'text-indigo-500',
+    color: 'text-foreground',
     roles: [
       {
         id: 'concierge',
@@ -484,7 +484,7 @@ export default function CreateWorkerPage() {
     { id: 'professional', label: 'Professional', desc: 'Formal & Polished', icon: Shield, color: 'text-emerald-500' },
     { id: 'friendly', label: 'Friendly', desc: 'Warm & Accessible', icon: Zap, color: 'text-amber-500' },
     { id: 'witty', label: 'Witty', desc: 'Sharp & Engaging', icon: Zap, color: 'text-sky-500' },
-    { id: 'concise', label: 'Concise', desc: 'Fast & Direct', icon: Cpu, color: 'text-purple-500' },
+    { id: 'concise', label: 'Concise', desc: 'Fast & Direct', icon: Cpu, color: 'text-foreground' },
   ];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -529,9 +529,6 @@ export default function CreateWorkerPage() {
   return (
     <div className="flex pt-20 flex-1 overflow-hidden">
       {/* Dot grid & ambient glows (matching training/dashboard) */}
-      <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-[0.04] pointer-events-none" />
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
       <main className="flex-1 overflow-y-auto px-4 md:px-12 py-8 md:py-10 pb-24 md:pb-10 relative z-10 custom-scrollbar">
         <motion.div
@@ -590,7 +587,7 @@ export default function CreateWorkerPage() {
                   <span
                     className={cn(
                       'text-[10px] font-bold uppercase tracking-widest transition-colors',
-                      step.done ? 'text-foreground' : 'text-silver/60'
+                      step.done ? 'text-foreground' : 'text-muted-foreground'
                     )}
                   >
                     {step.label}
@@ -616,7 +613,7 @@ export default function CreateWorkerPage() {
                       <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-2">                         <Cpu className="w-3.5 h-3.5 text-apple-blue" />
                         Sector Framework
                       </h2>
-                      <p className="text-[10px] text-silver/60 font-medium mt-0.5">
+                      <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
                         Select your industry blueprint or build from scratch.
                       </p>
                     </div>
@@ -641,7 +638,7 @@ export default function CreateWorkerPage() {
                           <div
                             className={cn(
                               'text-[9px] font-medium mt-0.5 truncate',
-                              isSelected ? 'text-background/70' : 'text-silver/60'
+                              isSelected ? 'text-background/70' : 'text-muted-foreground'
                             )}
                           >
                             {dept.desc}
@@ -668,7 +665,7 @@ export default function CreateWorkerPage() {
                           <Bot className="w-3.5 h-3.5 text-apple-blue" />
                           Operator Role
                         </h2>
-                        <p className="text-[10px] text-silver/60 font-medium mt-0.5">
+                        <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
                           Select the specific role assignment for this agent.
                         </p>
                       </div>
@@ -694,7 +691,7 @@ export default function CreateWorkerPage() {
                                 <div
                                   className={cn(
                                     'text-[9px] font-medium leading-relaxed',
-                                    isSelected ? 'text-background/70' : 'text-silver/60'
+                                    isSelected ? 'text-background/70' : 'text-muted-foreground'
                                   )}
                                 >
                                   {role.desc}
@@ -723,7 +720,7 @@ export default function CreateWorkerPage() {
                           <Cpu className="w-3.5 h-3.5 text-apple-blue" />
                           Configure Parameters
                         </h2>
-                        <p className="text-[10px] text-silver/60 font-medium mt-0.5">
+                        <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
                           Custom parameters are compiled directly into behavioral directives.
                         </p>
                       </div>
@@ -743,7 +740,7 @@ export default function CreateWorkerPage() {
                                 placeholder={field.placeholder}
                                 value={blueprintInputs[field.key] || ''}
                                 onChange={(e) => handleInputChange(field.key, e.target.value)}
-                                className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40 focus:ring-1 focus:ring-apple-blue/40"
+                                className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-muted-foreground focus:ring-1 focus:ring-apple-blue/40"
                               />
                             </div>
                           ))}
@@ -752,7 +749,7 @@ export default function CreateWorkerPage() {
                       <div className="border-t border-border-subtle pt-4 space-y-3.5">
                         <div className="flex justify-between items-center px-1">
                           <h4 className="text-[9px] font-bold text-silver uppercase tracking-widest">Custom Parameters</h4>
-                          <span className="text-[9px] text-silver/40 font-mono">key-value overrides</span>
+                          <span className="text-[9px] text-muted-foreground font-mono">key-value overrides</span>
                         </div>
 
                         {customFields.map((field) => (
@@ -779,7 +776,7 @@ export default function CreateWorkerPage() {
                             placeholder="Field Label (e.g. WiFi Password)"
                             value={newFieldLabel}
                             onChange={(e) => setNewFieldLabel(e.target.value)}
-                            className="bg-bg-surface border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground placeholder:text-silver/40"
+                            className="bg-bg-surface border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground placeholder:text-muted-foreground"
                           />
                           <div className="flex gap-2">
                             <input
@@ -787,7 +784,7 @@ export default function CreateWorkerPage() {
                               placeholder="Value"
                               value={newFieldValue}
                               onChange={(e) => setNewFieldValue(e.target.value)}
-                              className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground placeholder:text-silver/40"
+                              className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground placeholder:text-muted-foreground"
                             />
                             <button
                               type="button"
@@ -811,7 +808,7 @@ export default function CreateWorkerPage() {
                       <UserCheck className="w-3.5 h-3.5 text-apple-blue" />
                       Identity Protocol
                     </h2>
-                    <p className="text-[10px] text-silver/60 font-medium mt-0.5">
+                    <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
                       Define public name and persona identifiers.
                     </p>
                   </div>
@@ -822,7 +819,7 @@ export default function CreateWorkerPage() {
                     placeholder="e.g. CareSync Support, Apex Sales Representative"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-3.5 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-silver/40 focus:ring-1 focus:ring-apple-blue/40"
+                    className="w-full bg-bg-surface border border-border-strong rounded-xl px-4 py-3.5 text-xs font-semibold focus:outline-none focus:border-apple-blue/40 text-foreground transition-all placeholder:text-muted-foreground focus:ring-1 focus:ring-apple-blue/40"
                   />
                 </div>
 
@@ -833,7 +830,7 @@ export default function CreateWorkerPage() {
                       <Sliders className="w-3.5 h-3.5 text-apple-blue" />
                       Neural Tone &amp; Language
                     </h2>
-                    <p className="text-[10px] text-silver/60 font-medium mt-0.5">
+                    <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
                       Select linguistic tone baseline and primary operational language.
                     </p>
                   </div>
@@ -857,7 +854,7 @@ export default function CreateWorkerPage() {
                           <div
                             className={cn(
                               'text-[9px] font-medium mt-0.5',
-                              isSelected ? 'text-background/70' : 'text-silver/60'
+                              isSelected ? 'text-background/70' : 'text-muted-foreground'
                             )}
                           >
                             {t.desc}
@@ -901,7 +898,7 @@ export default function CreateWorkerPage() {
                       <Shield className="w-3.5 h-3.5 text-apple-blue" />
                       Behavioral Directives
                     </h2>
-                    <p className="text-[10px] text-silver/60 font-medium mt-0.5">
+                    <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
                       Define exact system instructions, constraints, and operational goals.
                     </p>
                   </div>
@@ -912,7 +909,7 @@ export default function CreateWorkerPage() {
                     placeholder="e.g. You are a real estate assistant. Help users schedule property viewings..."
                     value={formData.personality}
                     onChange={(e) => setFormData({ ...formData, personality: e.target.value })}
-                    className="w-full bg-bg-surface border border-border-strong rounded-xl p-4 text-xs font-semibold leading-relaxed focus:outline-none focus:border-apple-blue/40 text-foreground resize-none placeholder:text-silver/40 focus:ring-1 focus:ring-apple-blue/40 h-36"
+                    className="w-full bg-bg-surface border border-border-strong rounded-xl p-4 text-xs font-semibold leading-relaxed focus:outline-none focus:border-apple-blue/40 text-foreground resize-none placeholder:text-muted-foreground focus:ring-1 focus:ring-apple-blue/40 h-36"
                   />
                 </div>
 
@@ -971,7 +968,7 @@ export default function CreateWorkerPage() {
                       <span className="text-foreground/20">·</span>
                       <span>{formData.language}</span>
                       <span className="text-foreground/20">·</span>
-                      <span className="uppercase tracking-wider text-silver/60">Neural</span>
+                      <span className="uppercase tracking-wider text-muted-foreground">Neural</span>
                     </div>
                   </div>
                 </div>

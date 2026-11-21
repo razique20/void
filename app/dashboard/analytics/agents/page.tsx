@@ -283,7 +283,7 @@ export default function AgentPerformancePage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <Users className="w-8 h-8 text-silver/30 mb-2" />
+                <Users className="w-8 h-8 text-muted-foreground mb-2" />
                 <p className="text-xs text-silver">No agents found</p>
               </div>
             )}
@@ -346,7 +346,7 @@ export default function AgentPerformancePage() {
                           />
                         </div>
                         <span className="text-[10px] font-bold text-silver w-8 text-right">{Math.round(metric.score)}</span>
-                        <span className="text-[8px] text-silver/50 w-8">{metric.weight}</span>
+                        <span className="text-[8px] text-muted-foreground w-8">{metric.weight}</span>
                       </div>
                     ))}
                   </div>
@@ -411,7 +411,7 @@ export default function AgentPerformancePage() {
                     </div>
                   ) : (
                     <div className="flex flex-col items-center justify-center py-6 text-center">
-                      <Heart className="w-6 h-6 text-silver/30 mb-2" />
+                      <Heart className="w-6 h-6 text-muted-foreground mb-2" />
                       <p className="text-[10px] text-silver">No leads captured yet</p>
                     </div>
                   )}
@@ -453,9 +453,9 @@ export default function AgentPerformancePage() {
               </>
             ) : (
               <div className="bg-bg-subtle border border-border-default rounded-2xl p-12 flex flex-col items-center justify-center text-center">
-                <Users className="w-10 h-10 text-silver/30 mb-3" />
+                <Users className="w-10 h-10 text-muted-foreground mb-3" />
                 <p className="text-sm font-bold text-silver">Select an agent to view details</p>
-                <p className="text-[10px] text-silver/60 mt-1">Click on any agent in the rankings list</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Click on any agent in the rankings list</p>
               </div>
             )}
           </motion.div>

@@ -266,8 +266,6 @@ export default function ChannelsPage() {
         <main className="flex-1 overflow-y-auto p-6 md:p-12 pb-12">
           
           {/* Background Ambience */}
-          <div className="absolute top-[-5%] left-[20%] w-[35%] h-[35%] bg-apple-blue/5 blur-[120px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-[10%] right-[5%] w-[30%] h-[30%] bg-purple-500/5 blur-[120px] rounded-full pointer-events-none" />
 
           <div className="max-w-7xl mx-auto space-y-8 relative z-10">
             
@@ -345,8 +343,8 @@ export default function ChannelsPage() {
                 </div>
               </div>
               <div className="bg-bg-subtle border border-border-default rounded-2xl p-4 flex items-center gap-3">
-                <div className="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center">
-                  <Zap className="w-4.5 h-4.5 text-purple-400" />
+                <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center">
+                  <Zap className="w-4.5 h-4.5 text-foreground" />
                 </div>
                 <div>
                   <div className="text-lg font-bold text-foreground">{activeToolCount}</div>
@@ -634,7 +632,7 @@ export default function ChannelsPage() {
                   )}>
                     <div className="p-5 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-purple-500/10 border border-purple-500/10 rounded-xl flex items-center justify-center text-purple-400 shrink-0">
+                        <div className="w-10 h-10 bg-muted border border-border rounded-xl flex items-center justify-center text-foreground shrink-0">
                           <Hash className="w-4.5 h-4.5" />
                         </div>
                         <div>
@@ -652,7 +650,7 @@ export default function ChannelsPage() {
                       <div className="flex items-center gap-2">
                         <Link
                           href={`/dashboard/credentials#slack`}
-                          className="inline-flex items-center gap-1 text-[9px] font-bold text-purple-600 dark:text-purple-400 bg-purple-500/8 border border-purple-500/15 hover:bg-purple-500/12 hover:border-purple-500/25 rounded-lg px-3 py-1.5 transition-all"
+                          className="inline-flex items-center gap-1 text-[9px] font-bold text-foreground dark:text-foreground bg-muted border border-border hover:bg-muted hover:border-border rounded-lg px-3 py-1.5 transition-all"
                         >
                           Guide
                           <ArrowUpRight className="w-3 h-3" />
@@ -665,7 +663,7 @@ export default function ChannelsPage() {
                             defaultChecked={hasSlack && operative.channels?.slack?.isActive}
                             className="sr-only peer"
                           />
-                          <div className="w-9 h-5 bg-bg-active rounded-full transition-all peer-checked:bg-purple-500" />
+                          <div className="w-9 h-5 bg-bg-active rounded-full transition-all peer-checked:bg-foreground" />
                           <div className="absolute left-[6px] top-[6px] h-4 w-4 bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-4" />
                         </label>
                       </div>
@@ -690,7 +688,7 @@ export default function ChannelsPage() {
                             defaultValue={operative.channels?.slack?.botToken}
                             type="password"
                             placeholder="xoxb-your-token"
-                            className="w-full bg-background border border-border-strong rounded-xl px-3 py-2.5 text-[11px] font-mono focus:border-purple-500 focus:outline-none text-foreground"
+                            className="w-full bg-background border border-border-strong rounded-xl px-3 py-2.5 text-[11px] font-mono focus:border-border focus:outline-none text-foreground"
                           />
                         </div>
                         <div className="space-y-1.5">
@@ -701,7 +699,7 @@ export default function ChannelsPage() {
                             defaultValue={operative.channels?.slack?.signingSecret}
                             type="password"
                             placeholder="Secret key"
-                            className="w-full bg-background border border-border-strong rounded-xl px-3 py-2.5 text-[11px] font-mono focus:border-purple-500 focus:outline-none text-foreground"
+                            className="w-full bg-background border border-border-strong rounded-xl px-3 py-2.5 text-[11px] font-mono focus:border-border focus:outline-none text-foreground"
                           />
                         </div>
                       </div>
@@ -889,7 +887,7 @@ export default function ChannelsPage() {
                         </div>
                       ) : actions.length === 0 ? (
                         <div className="text-center py-6">
-                          <Zap className="w-6 h-6 text-silver/30 mx-auto mb-2" />
+                          <Zap className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
                           <p className="text-[10px] text-silver font-medium">No webhooks bound yet.</p>
                         </div>
                       ) : (
@@ -905,7 +903,7 @@ export default function ChannelsPage() {
                                     value={action.name}
                                     onChange={(e) => updateAction(index, 'name', e.target.value)}
                                     placeholder="Trigger name"
-                                    className="bg-transparent border-none p-0 text-[11px] font-bold focus:ring-0 text-foreground placeholder:text-foreground/40 w-full truncate"
+                                    className="bg-transparent border-none p-0 text-[11px] font-bold focus:ring-0 text-foreground placeholder:text-muted-foreground w-full truncate"
                                   />
                                 </div>
                                 <button 
@@ -921,13 +919,13 @@ export default function ChannelsPage() {
                                   value={action.description}
                                   onChange={(e) => updateAction(index, 'description', e.target.value)}
                                   placeholder="Natural description (when to trigger)"
-                                  className="w-full bg-background border border-border-default rounded-lg px-3 py-2 text-[10px] focus:outline-none text-foreground placeholder:text-foreground/40" 
+                                  className="w-full bg-background border border-border-default rounded-lg px-3 py-2 text-[10px] focus:outline-none text-foreground placeholder:text-muted-foreground" 
                                 />
                                 <input 
                                   value={action.webhookUrl}
                                   onChange={(e) => updateAction(index, 'webhookUrl', e.target.value)}
                                   placeholder="https://api.domain.com/webhook"
-                                  className="w-full bg-background border border-border-default rounded-lg px-3 py-2 text-[10px] font-mono focus:outline-none text-foreground placeholder:text-foreground/40" 
+                                  className="w-full bg-background border border-border-default rounded-lg px-3 py-2 text-[10px] font-mono focus:outline-none text-foreground placeholder:text-muted-foreground" 
                                 />
                               </div>
                             </div>

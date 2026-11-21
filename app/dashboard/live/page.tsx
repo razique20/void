@@ -438,7 +438,7 @@ export default function LiveChatPage() {
                     placeholder="Search active sessions..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-bg-elevated border border-border-default rounded-xl pl-9 pr-3 py-2 text-xs text-foreground placeholder:text-silver/40 focus:outline-none font-medium"
+                    className="w-full bg-bg-elevated border border-border-default rounded-xl pl-9 pr-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none font-medium"
                   />
                 </div>
 
@@ -650,7 +650,7 @@ export default function LiveChatPage() {
                         className={cn(
                           "p-2 rounded-xl transition-all border shrink-0",
                           showDrawer
-                            ? 'bg-purple-500/10 border-purple-500/30 text-purple-500'
+                            ? 'bg-muted border-border text-foreground'
                             : 'bg-bg-elevated border-border-default text-silver hover:text-foreground'
                         )}
                         title="Toggle Cognitive Memory"
@@ -734,8 +734,8 @@ export default function LiveChatPage() {
                     {!selectedChat.isPaused && (
                       <div className="absolute inset-0 bg-background/60 dark:bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-30 transition-all">
                         <div className="p-4 bg-background border border-border-strong rounded-2xl shadow-xl flex flex-col sm:flex-row items-center gap-3.5 max-w-md text-center sm:text-left">
-                          <div className="w-10 h-10 bg-purple-500/10 border border-purple-500/20 rounded-xl flex items-center justify-center shrink-0">
-                            <Zap className="w-5 h-5 text-purple-500" />
+                          <div className="w-10 h-10 bg-muted border border-border rounded-xl flex items-center justify-center shrink-0">
+                            <Zap className="w-5 h-5 text-foreground" />
                           </div>
                           <div className="space-y-1">
                             <h4 className="font-bold text-xs text-foreground">AI Autopilot Running</h4>
@@ -760,7 +760,7 @@ export default function LiveChatPage() {
                           placeholder="Compose manual override message..."
                           value={reply}
                           onChange={(e) => setReply(e.target.value)}
-                          className="w-full bg-background border border-border-strong rounded-xl pl-4 pr-12 py-3.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all font-medium shadow-sm"
+                          className="w-full bg-background border border-border-strong rounded-xl pl-4 pr-12 py-3.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-apple-blue/40 transition-all font-medium shadow-sm"
                         />
                         <button
                           disabled={!reply.trim() || loading}
@@ -800,10 +800,10 @@ export default function LiveChatPage() {
                     <div className="p-5 border-b border-border-default flex justify-between items-center shrink-0">
                       <div>
                         <h3 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-2">
-                          <BookOpen className="w-3.5 h-3.5 text-purple-500" />
+                          <BookOpen className="w-3.5 h-3.5 text-foreground" />
                           Cognitive Memory
                         </h3>
-                        <p className="text-[10px] text-silver/60 font-medium mt-0.5">Session context and extracted intelligence</p>
+                        <p className="text-[10px] text-muted-foreground font-medium mt-0.5">Session context and extracted intelligence</p>
                       </div>
                       <button
                         onClick={() => setShowDrawer(false)}
@@ -818,7 +818,7 @@ export default function LiveChatPage() {
                       
                       {/* Contact Profile */}
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-500 font-bold shrink-0 text-sm animate-pulse">
+                        <div className="w-10 h-10 rounded-xl bg-muted border border-border flex items-center justify-center text-foreground font-bold shrink-0 text-sm animate-pulse">
                           {(selectedChat.displayName || selectedChat.externalId || '?')[0].toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
@@ -870,7 +870,7 @@ export default function LiveChatPage() {
                               {selectedChat.memorySummary}
                             </p>
                           ) : (
-                            <p className="text-xs text-silver/60 italic leading-relaxed">
+                            <p className="text-xs text-muted-foreground italic leading-relaxed">
                               Awaiting rolling summarization metrics. Memory compiles dynamically as dialogue progresses.
                             </p>
                           )}
@@ -915,7 +915,7 @@ export default function LiveChatPage() {
                           </div>
                         ) : (
                           <div className="p-4 bg-bg-surface border border-border-default border-dashed rounded-2xl text-center">
-                            <p className="text-[10px] text-silver/60 italic">
+                            <p className="text-[10px] text-muted-foreground italic">
                               {generatingSummary
                                 ? 'Analyzing conversation and generating summary...'
                                 : 'Generate a summary to hand off this conversation to another agent or human.'
@@ -937,7 +937,7 @@ export default function LiveChatPage() {
                             ))}
                           </div>
                         ) : (
-                          <p className="text-xs text-silver/60 italic">No static facts recorded in this session.</p>
+                          <p className="text-xs text-muted-foreground italic">No static facts recorded in this session.</p>
                         )}
                       </div>
 

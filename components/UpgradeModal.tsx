@@ -29,7 +29,7 @@ const FEATURE_details: Record<string, { icon: any; color: string; description: s
   },
   'AI Email Hub': {
     icon: Zap,
-    color: 'text-purple-500',
+    color: 'text-foreground',
     description: 'Connect email for autonomous agent sending.',
     requiredPlan: 'Enterprise',
   },

@@ -110,7 +110,7 @@ export default function WorkspaceSidebar() {
         <Link href="/" className="group flex items-center gap-2.5 min-w-0">
           <Logo iconOnly={mounted && collapsed} compact={mounted && collapsed} />
           {(!mounted || !collapsed) && (
-            <span className="text-[9px] font-black text-silver/40 uppercase tracking-widest">
+            <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
               Workspace
             </span>
           )}
@@ -141,7 +141,7 @@ export default function WorkspaceSidebar() {
           <div key={group.label}>
             {(!mounted || !collapsed) && (
               <div className="flex items-center gap-2 px-1 mb-2">
-                <span className="text-[9px] font-black text-silver/40 uppercase tracking-widest">
+                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
                   {group.label}
                 </span>
                 <div className="flex-1 h-[1px] bg-border-default" />
@@ -168,7 +168,7 @@ export default function WorkspaceSidebar() {
                       'flex items-center gap-3 rounded-xl text-xs font-bold transition-all relative group',
                       mounted && collapsed ? 'justify-center px-2 py-2.5' : 'px-3 py-2.5',
                       isLocked
-                        ? 'text-silver/30 cursor-not-allowed'
+                        ? 'text-muted-foreground cursor-not-allowed'
                         : isActive
                           ? 'bg-foreground text-background'
                           : 'text-silver hover:text-foreground hover:bg-bg-active'
@@ -177,13 +177,13 @@ export default function WorkspaceSidebar() {
                     <Icon
                       className={cn(
                         'w-4 h-4 shrink-0',
-                        isLocked ? 'text-silver/30' : isActive ? 'text-background' : 'text-silver'
+                        isLocked ? 'text-muted-foreground' : isActive ? 'text-background' : 'text-silver'
                       )}
                     />
                     {(!mounted || !collapsed) && (
                       <>
                         <span className="flex-1 truncate">{link.label}</span>
-                        {isLocked && <Lock className="w-3.5 h-3.5 text-silver/30" />}
+                        {isLocked && <Lock className="w-3.5 h-3.5 text-muted-foreground" />}
                       </>
                     )}
                     {isActive && (

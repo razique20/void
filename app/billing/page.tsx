@@ -88,8 +88,8 @@ const plans = [
     ],
     buttonText: 'Get Pro',
     popular: true,
-    color: 'text-purple-500',
-    bgColor: 'bg-purple-500/10 border-purple-500/20',
+    color: 'text-foreground',
+    bgColor: 'bg-muted border-border',
     icon: Shield,
     accentColor: 'purple',
   },
@@ -192,9 +192,6 @@ export default function BillingPage() {
     <div className="flex flex-1 overflow-hidden pt-20">
       <div className="flex flex-1 flex-col overflow-hidden relative">
         {/* Dot grid & ambient glows (matching training/dashboard) */}
-        <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-[0.04] pointer-events-none" />
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
         {Toast}
 
@@ -215,11 +212,11 @@ export default function BillingPage() {
                   <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
                     Billing & Plans
                   </h1>
-                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-purple-500/10 border border-purple-500/15 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-500 relative flex shrink-0">
-                      <span className="absolute inline-flex h-full w-full rounded-full bg-purple-500 opacity-75 animate-ping" />
+                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-muted border border-border rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-foreground relative flex shrink-0">
+                      <span className="absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75 animate-ping" />
                     </span>
-                    <span className="text-[9px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest">
+                    <span className="text-[9px] font-bold text-foreground dark:text-foreground uppercase tracking-widest">
                       {sub?.plan || 'Free Trial'}
                     </span>
                   </div>
@@ -248,10 +245,10 @@ export default function BillingPage() {
                 <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 md:p-6 space-y-4">
                   <div>
                     <h2 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-2">
-                      <CreditCard className="w-3.5 h-3.5 text-purple-500" />
+                      <CreditCard className="w-3.5 h-3.5 text-foreground" />
                       Select Plan
                     </h2>
-                    <p className="text-[10px] text-silver/60 font-medium mt-0.5">
+                    <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
                       Choose the subscription tier for your agent fleet.
                     </p>
                   </div>
@@ -313,7 +310,7 @@ export default function BillingPage() {
                         <Activity className="w-3.5 h-3.5 text-apple-blue" />
                         Fleet Capacity
                       </h3>
-                      <span className="text-[9px] font-bold text-purple-500 uppercase tracking-wider">{sub.plan}</span>
+                      <span className="text-[9px] font-bold text-foreground uppercase tracking-wider">{sub.plan}</span>
                     </div>
 
                     <div className="space-y-3">
@@ -359,7 +356,7 @@ export default function BillingPage() {
                   >
                     {/* Badges */}
                     {selectedPlan.popular && !isCurrentPlan && (
-                      <div className="absolute top-5 right-5 px-3 py-1 bg-purple-500/10 border border-purple-500/20 text-purple-500 text-[9px] font-bold uppercase tracking-widest rounded-full">
+                      <div className="absolute top-5 right-5 px-3 py-1 bg-muted border border-border text-foreground text-[9px] font-bold uppercase tracking-widest rounded-full">
                         Most Popular
                       </div>
                     )}

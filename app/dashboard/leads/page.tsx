@@ -737,7 +737,7 @@ export default function LeadsPage() {
                     placeholder="https://hooks.zapier.com/hooks/catch/..."
                     value={webhookUrl}
                     onChange={(e) => setWebhookUrl(e.target.value)}
-                    className="w-full bg-bg-elevated border border-border-strong rounded-xl px-4 py-2 text-xs font-mono text-foreground focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-silver/40"
+                    className="w-full bg-bg-elevated border border-border-strong rounded-xl px-4 py-2 text-xs font-mono text-foreground focus:outline-none focus:border-apple-blue/40 transition-all placeholder:text-muted-foreground"
                   />
                   <button
                     onClick={handleSaveWebhook}
@@ -791,7 +791,7 @@ export default function LeadsPage() {
                 placeholder="Search leads by name, email, phone, intent..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-transparent border-0 rounded-lg pl-9 pr-4 py-2 text-xs focus:outline-none focus:ring-0 text-foreground placeholder:text-silver/50 font-medium"
+                className="w-full bg-transparent border-0 rounded-lg pl-9 pr-4 py-2 text-xs focus:outline-none focus:ring-0 text-foreground placeholder:text-muted-foreground font-medium"
               />
               {search && (
                 <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-silver hover:text-foreground">
@@ -806,7 +806,7 @@ export default function LeadsPage() {
                 <div className="relative">
                   <button
                     onClick={() => setShowSavedFilters(!showSavedFilters)}
-                    className="flex items-center gap-1.5 px-2.5 py-1.5 bg-purple-500/10 border border-purple-500/20 text-purple-500 rounded-lg text-[10px] font-bold hover:bg-purple-500/20 transition-all"
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 bg-muted border border-border text-foreground rounded-lg text-[10px] font-bold hover:bg-muted transition-all"
                   >
                     <BookmarkCheck className="w-3 h-3" />
                     Saved
@@ -835,7 +835,7 @@ export default function LeadsPage() {
                               </button>
                               <button
                                 onClick={(e) => { e.stopPropagation(); handleDeleteFilter(f.id); }}
-                                className="p-1 text-silver/40 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                                className="p-1 text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
                               >
                                 <X className="w-3 h-3" />
                               </button>
@@ -1023,7 +1023,7 @@ export default function LeadsPage() {
                           {selectedLeads.has(lead._id) ? (
                             <CheckSquare className="w-4 h-4 text-apple-blue" />
                           ) : (
-                            <Square className="w-4 h-4 text-silver/40 group-hover:text-silver" />
+                            <Square className="w-4 h-4 text-muted-foreground group-hover:text-silver" />
                           )}
                         </button>
                       </div>
@@ -1053,14 +1053,14 @@ export default function LeadsPage() {
                             lead.data.segment === 'vip' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
                             lead.data.segment === 'at_risk' ? "bg-red-500/10 text-red-500 border-red-500/20" :
                             lead.data.segment === 'loyal' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
-                            lead.data.segment === 'champion' ? "bg-purple-500/10 text-purple-500 border-purple-500/20" :
+                            lead.data.segment === 'champion' ? "bg-muted text-foreground border-border" :
                             "bg-blue-500/10 text-blue-500 border-blue-500/20"
                           )}>
                             {lead.data.segment === 'at_risk' ? 'At-Risk' : lead.data.segment}
                           </span>
                         )}
 
-                        <span className="text-xs text-silver/70 truncate hidden sm:inline">
+                        <span className="text-xs text-muted-foreground truncate hidden sm:inline">
                           {(lead.interest || 'No intent captured').replace(/\{"note":"|"\}/g, '').substring(0, 40)}
                         </span>
                       </div>
@@ -1085,7 +1085,7 @@ export default function LeadsPage() {
                           <div className={cn(
                             "flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold border",
                             deal.stage === 'qualified' ? "bg-blue-500/10 text-blue-500 border-blue-500/20" :
-                            deal.stage === 'proposal_sent' ? "bg-purple-500/10 text-purple-500 border-purple-500/20" :
+                            deal.stage === 'proposal_sent' ? "bg-muted text-foreground border-border" :
                             deal.stage === 'negotiation' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
                             deal.stage === 'closed_won' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
                             "bg-red-500/10 text-red-500 border-red-500/20"
@@ -1245,7 +1245,7 @@ export default function LeadsPage() {
                   </div>
                   <div>
                     <h2 className="text-xs font-bold uppercase tracking-wider text-silver">Lead Telemetry</h2>
-                    <p className="text-[10px] text-silver/60 font-medium">Captured via {selectedLead.workerName}</p>
+                    <p className="text-[10px] text-muted-foreground font-medium">Captured via {selectedLead.workerName}</p>
                   </div>
                 </div>
                 <button
@@ -1330,14 +1330,14 @@ export default function LeadsPage() {
                       const actionColors: Record<string, string> = {
                         captured: 'bg-apple-blue/10 text-apple-blue border-apple-blue/20',
                         status_change: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-                        notes_updated: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
+                        notes_updated: 'bg-muted text-foreground border-border',
                         scored: 'bg-red-500/10 text-red-500 border-red-500/20',
-                        segmented: 'bg-violet-500/10 text-violet-500 border-violet-500/20',
+                        segmented: 'bg-muted text-foreground border-border',
                       };
 
                       if (events.length === 0) {
                         return (
-                          <p className="text-xs text-silver/60 italic p-4">No activity recorded yet.</p>
+                          <p className="text-xs text-muted-foreground italic p-4">No activity recorded yet.</p>
                         );
                       }
 
@@ -1374,7 +1374,7 @@ export default function LeadsPage() {
                 {selectedLead.data?.segment ? (
                   <div className="space-y-2">
                     <h4 className="text-[10px] font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
-                      <Filter className="w-3 h-3 text-purple-500" />
+                      <Filter className="w-3 h-3 text-foreground" />
                       Dynamic Segment
                     </h4>
                     <div className="bg-bg-surface border border-border-default rounded-xl p-4 space-y-3">
@@ -1385,7 +1385,7 @@ export default function LeadsPage() {
                           selectedLead.data.segment === 'at_risk' ? "text-red-500" :
                           selectedLead.data.segment === 'new' ? "text-blue-500" :
                           selectedLead.data.segment === 'loyal' ? "text-emerald-500" :
-                          selectedLead.data.segment === 'champion' ? "text-purple-500" :
+                          selectedLead.data.segment === 'champion' ? "text-foreground" :
                           "text-sky-500"
                         )}>
                           {selectedLead.data.segment === 'at_risk' ? 'At-Risk' : selectedLead.data.segment.charAt(0).toUpperCase() + selectedLead.data.segment.slice(1)}
@@ -1422,7 +1422,7 @@ export default function LeadsPage() {
                     <button
                       onClick={() => handleSegmentLead(selectedLead._id)}
                       disabled={segmentingLead === selectedLead._id}
-                      className="w-full py-3 bg-purple-500/10 border border-purple-500/20 text-purple-500 rounded-xl text-xs font-bold hover:bg-purple-500/20 transition-all flex items-center justify-center gap-2"
+                      className="w-full py-3 bg-muted border border-border text-foreground rounded-xl text-xs font-bold hover:bg-muted transition-all flex items-center justify-center gap-2"
                     >
                       {segmentingLead === selectedLead._id ? (
                         <>
@@ -1521,7 +1521,7 @@ export default function LeadsPage() {
                         {(['qualified', 'proposal_sent', 'negotiation', 'closed_won', 'closed_lost'] as const).map((s) => {
                           const stageColors: Record<string, string> = {
                             qualified: 'bg-blue-500/10 text-blue-500 border-blue-500/20 hover:bg-blue-500/20',
-                            proposal_sent: 'bg-purple-500/10 text-purple-500 border-purple-500/20 hover:bg-purple-500/20',
+                            proposal_sent: 'bg-muted text-foreground border-border hover:bg-muted',
                             negotiation: 'bg-amber-500/10 text-amber-500 border-amber-500/20 hover:bg-amber-500/20',
                             closed_won: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/20',
                             closed_lost: 'bg-red-500/10 text-red-500 border-red-500/20 hover:bg-red-500/20',
@@ -1562,7 +1562,7 @@ export default function LeadsPage() {
                                 "w-1.5 h-1.5 rounded-full mt-1.5 shrink-0",
                                 h.stage === 'closed_won' ? "bg-emerald-500" :
                                 h.stage === 'closed_lost' ? "bg-red-500" :
-                                h.triggeredBy === 'ai' ? "bg-apple-blue" : "bg-purple-500"
+                                h.triggeredBy === 'ai' ? "bg-apple-blue" : "bg-foreground"
                               )} />
                               <div className="flex-1 min-w-0">
                                 <p className="text-foreground font-semibold">
@@ -1574,7 +1574,7 @@ export default function LeadsPage() {
                                 {h.reason && <p className="text-silver truncate">{h.reason}</p>}
                               </div>
                               {h.timestamp && (
-                                <span className="text-silver/60 font-mono shrink-0">
+                                <span className="text-muted-foreground font-mono shrink-0">
                                   {new Date(h.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })}
                                 </span>
                               )}
@@ -1627,7 +1627,7 @@ export default function LeadsPage() {
                         </div>
                         <div className="bg-bg-elevated border border-border-default rounded-lg p-3">
                           <p className="text-[9px] font-bold text-silver uppercase mb-1">Time to Close</p>
-                          <p className="text-lg font-bold text-purple-500">
+                          <p className="text-lg font-bold text-foreground">
                             {selectedLead.data.timeToClose || 0} days
                           </p>
                         </div>
@@ -1705,7 +1705,7 @@ export default function LeadsPage() {
                     <button
                       onClick={() => handleScoreLead(selectedLead._id)}
                       disabled={scoringLead === selectedLead._id}
-                      className="w-full py-3 bg-purple-500/10 border border-purple-500/20 text-purple-500 rounded-xl text-xs font-bold hover:bg-purple-500/20 transition-all flex items-center justify-center gap-2"
+                      className="w-full py-3 bg-muted border border-border text-foreground rounded-xl text-xs font-bold hover:bg-muted transition-all flex items-center justify-center gap-2"
                     >
                       {scoringLead === selectedLead._id ? (
                         <>
@@ -1793,7 +1793,7 @@ export default function LeadsPage() {
                             value={followUpMessage}
                             onChange={(e) => setFollowUpMessage(e.target.value)}
                             placeholder="Follow-up message..."
-                            className="w-full bg-bg-elevated border border-border-strong rounded-lg p-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 resize-none"
+                            className="w-full bg-bg-elevated border border-border-strong rounded-lg p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-apple-blue/40 resize-none"
                           />
                         </div>
                         <button
@@ -1862,7 +1862,7 @@ export default function LeadsPage() {
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Add manual notes or call follow-up details..."
-                    className="w-full bg-bg-surface border border-border-default rounded-xl p-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all resize-none font-sans"
+                    className="w-full bg-bg-surface border border-border-default rounded-xl p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-apple-blue/40 transition-all resize-none font-sans"
                   />
                   <button
                     onClick={handleSaveNotes}

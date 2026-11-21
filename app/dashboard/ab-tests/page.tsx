@@ -72,7 +72,7 @@ const statusColors = {
   draft: 'bg-zinc-500/10 text-zinc-500 border-zinc-500/20',
   running: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
   paused: 'bg-amber-500/10 text-amber-500 border-amber-500/20',
-  completed: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
+  completed: 'bg-muted text-foreground border-border',
 };
 
 const statusIcons = {
@@ -148,8 +148,6 @@ export default function ABTestsPage() {
     <div className="flex flex-1 overflow-hidden pt-20">
       <div className="flex flex-1 flex-col overflow-hidden relative">
         {/* Background effects */}
-        <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
         {Toast}
 
@@ -162,9 +160,9 @@ export default function ABTestsPage() {
                   <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
                     Agent A/B Testing
                   </h1>
-                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-purple-500/10 border border-purple-500/15 rounded-full">
-                    <Beaker className="w-3 h-3 text-purple-500" />
-                    <span className="text-[9px] font-bold text-purple-600 uppercase tracking-widest">
+                  <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-muted border border-border rounded-full">
+                    <Beaker className="w-3 h-3 text-foreground" />
+                    <span className="text-[9px] font-bold text-foreground uppercase tracking-widest">
                       {tests.filter(t => t.config.status === 'running').length} Active
                     </span>
                   </div>
@@ -186,8 +184,8 @@ export default function ABTestsPage() {
             {/* Tests Grid */}
             {tests.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-4">
-                  <Beaker className="w-8 h-8 text-purple-500" />
+                <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
+                  <Beaker className="w-8 h-8 text-foreground" />
                 </div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">No A/B Tests Yet</h3>
                 <p className="text-silver text-sm max-w-md mb-6">
@@ -237,9 +235,9 @@ export default function ABTestsPage() {
                         </div>
                         
                         {test.metrics.winner && (
-                          <div className="flex items-center gap-1 px-2 py-1 bg-purple-500/10 rounded-lg">
-                            <Trophy className="w-3 h-3 text-purple-500" />
-                            <span className="text-[9px] font-bold text-purple-500">Winner Found</span>
+                          <div className="flex items-center gap-1 px-2 py-1 bg-muted rounded-lg">
+                            <Trophy className="w-3 h-3 text-foreground" />
+                            <span className="text-[9px] font-bold text-foreground">Winner Found</span>
                           </div>
                         )}
                       </div>
@@ -256,7 +254,7 @@ export default function ABTestsPage() {
                                 "w-2 h-2 rounded-full",
                                 variant.name.toLowerCase().includes('control') 
                                   ? "bg-zinc-400" 
-                                  : "bg-purple-500"
+                                  : "bg-foreground"
                               )} />
                               <span className="text-xs font-medium text-foreground">{variant.name}</span>
                               <span className="text-[9px] text-silver">
@@ -304,7 +302,7 @@ export default function ABTestsPage() {
                               width: `${Math.min(100, (test.metrics.totalConversations / test.config.targetConversations) * 100)}%` 
                             }}
                             transition={{ duration: 0.8, ease: 'easeOut' }}
-                            className="h-full bg-purple-500 rounded-full"
+                            className="h-full bg-foreground rounded-full"
                           />
                         </div>
                       </div>
@@ -340,7 +338,7 @@ export default function ABTestsPage() {
                                 e.stopPropagation();
                                 handleStatusChange(test._id, 'completed');
                               }}
-                              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-purple-500/10 text-purple-500 rounded-lg text-[10px] font-bold hover:bg-purple-500/20 transition-colors"
+                              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-muted text-foreground rounded-lg text-[10px] font-bold hover:bg-muted transition-colors"
                             >
                               <CheckCircle className="w-3 h-3" />
                               Complete

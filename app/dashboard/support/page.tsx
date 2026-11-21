@@ -116,9 +116,6 @@ export default function SupportPage() {
     <div className="flex flex-1 overflow-hidden pt-20">
       <div className="flex flex-1 flex-col overflow-hidden relative">
         {/* Dot grid & ambient glows (matching training/dashboard) */}
-        <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-[0.04] pointer-events-none" />
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
         {Toast}
 
@@ -152,7 +149,7 @@ export default function SupportPage() {
                   Raise requests and get technical assistance from the team.
                 </p>
                 {user && (
-                  <p className="text-[10px] text-silver/60 font-mono mt-1">
+                  <p className="text-[10px] text-muted-foreground font-mono mt-1">
                     User ID: {user.id}
                   </p>
                 )}
@@ -281,7 +278,7 @@ export default function SupportPage() {
                       <Layers className="w-3.5 h-3.5 text-apple-blue" />
                       Ticket History
                     </h2>
-                    <span className="text-[9px] font-bold text-silver/60 uppercase tracking-wider">
+                    <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
                       {tickets.length} total
                     </span>
                   </div>
@@ -372,7 +369,7 @@ export default function SupportPage() {
                 <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-4">
                   <div className="flex justify-between items-center">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Support Status</h3>
-                    <Shield className="w-3.5 h-3.5 text-silver/40" />
+                    <Shield className="w-3.5 h-3.5 text-muted-foreground" />
                   </div>
 
                   <div className="space-y-3">

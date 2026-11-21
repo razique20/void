@@ -37,16 +37,16 @@ export default function AnnouncementBanner() {
   if (visible.length === 0) return null;
 
   return (
-    <div className="space-y-2 mb-4">
+    <div className="space-y-2 mt-6 -mb-2">
       {visible.map(a => {
         const style = typeStyles[a.type] || typeStyles.info;
         const Icon = style.icon;
         return (
-          <div key={a._id} className={cn("flex items-start gap-3 px-4 py-3 rounded-xl border", style.bg, style.border)}>
+          <div key={a._id} className={cn("flex items-start gap-3 px-4 py-3 rounded-lg border", style.bg, style.border)}>
             <Icon className={cn("w-4 h-4 mt-0.5 shrink-0", style.iconColor)} />
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-foreground">{a.title}</p>
-              <p className="text-[11px] text-silver mt-0.5">{a.body}</p>
+              <p className="text-sm font-medium text-foreground">{a.title}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{a.body}</p>
             </div>
             <button onClick={() => setDismissed(prev => new Set([...prev, a._id]))} className="p-1 hover:bg-foreground/5 rounded-md shrink-0">
               <X className="w-3 h-3 text-silver" />

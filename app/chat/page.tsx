@@ -176,9 +176,6 @@ export default function ChatPage() {
         <div className="flex flex-1 flex-col overflow-hidden relative">
 
           {/* Dot grid & ambient glows */}
-          <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-[0.04] pointer-events-none" />
-          <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-purple-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
           {Toast}
 
@@ -267,7 +264,7 @@ export default function ChatPage() {
                         placeholder="Search fleet..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-bg-elevated border border-border-default rounded-xl pl-9 pr-3 py-1.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none"
+                        className="w-full bg-bg-elevated border border-border-default rounded-xl pl-9 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
                       />
                     </div>
                   </div>
@@ -533,7 +530,7 @@ export default function ChatPage() {
                           placeholder={selectedWorker ? `Message ${activeWorkerObj?.name}...` : 'Select an agent to begin...'}
                           value={input}
                           onChange={(e) => setInput(e.target.value)}
-                          className="w-full bg-bg-elevated border border-border-strong rounded-xl pl-4 pr-12 py-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all font-medium"
+                          className="w-full bg-bg-elevated border border-border-strong rounded-xl pl-4 pr-12 py-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-apple-blue/40 transition-all font-medium"
                         />
                         <button
                           disabled={!input.trim() || loading || !selectedWorker}
@@ -562,8 +559,8 @@ export default function ChatPage() {
                     {/* Persona Card */}
                     <div className="bg-bg-subtle border border-border-default rounded-2xl p-4 space-y-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-purple-500/10 border border-purple-500/20 rounded-lg flex items-center justify-center shrink-0">
-                          <BrainCircuit className="w-4 h-4 text-purple-500" />
+                        <div className="w-8 h-8 bg-muted border border-border rounded-lg flex items-center justify-center shrink-0">
+                          <BrainCircuit className="w-4 h-4 text-foreground" />
                         </div>
                         <div>
                           <h3 className="font-bold text-xs text-foreground">Persona Telemetry</h3>
@@ -641,25 +638,25 @@ export default function ChatPage() {
                     </div>
 
                     {/* Fast Navigation Card */}
-                    <div className="bg-purple-500/5 border border-purple-500/15 rounded-2xl p-4 space-y-2">
+                    <div className="bg-muted border border-border rounded-2xl p-4 space-y-2">
                       <div className="flex items-center gap-2">
-                        <Info className="w-3.5 h-3.5 text-purple-400" />
-                        <h4 className="font-bold text-xs text-purple-400 uppercase tracking-wider">Calibration</h4>
+                        <Info className="w-3.5 h-3.5 text-foreground" />
+                        <h4 className="font-bold text-xs text-foreground uppercase tracking-wider">Calibration</h4>
                       </div>
-                      <p className="text-[10px] text-purple-300/80 leading-relaxed">
+                      <p className="text-[10px] text-foreground/80 leading-relaxed">
                         To add knowledge documents or configure channel webhooks for this agent:
                       </p>
                       <div className="flex gap-2 pt-1">
                         <Link 
                           href="/training" 
-                          className="flex-1 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 text-center rounded-lg text-[10px] font-bold transition-colors border border-purple-500/20"
+                          className="flex-1 py-1.5 bg-muted hover:bg-muted text-foreground text-center rounded-lg text-[10px] font-bold transition-colors border border-border"
                         >
                           Knowledge Core
                         </Link>
                         {selectedWorker && (
                           <Link 
                             href={`/operatives/${selectedWorker}/channels`} 
-                            className="flex-1 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 text-center rounded-lg text-[10px] font-bold transition-colors border border-purple-500/20"
+                            className="flex-1 py-1.5 bg-muted hover:bg-muted text-foreground text-center rounded-lg text-[10px] font-bold transition-colors border border-border"
                           >
                             Channels
                           </Link>

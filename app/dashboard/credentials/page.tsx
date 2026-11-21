@@ -230,8 +230,8 @@ export default function CredentialsPage() {
     { id: 'whatsapp', label: 'WhatsApp', icon: MessageSquare, color: 'text-emerald-500', glow: 'bg-emerald-500/10', borderGlow: 'border-emerald-500/20' },
     { id: 'telegram', label: 'Telegram', icon: Send, color: 'text-sky-500', glow: 'bg-sky-500/10', borderGlow: 'border-sky-500/20' },
     { id: 'smtp', label: 'SMTP Mail', icon: Mail, color: 'text-amber-500', glow: 'bg-amber-500/10', borderGlow: 'border-amber-500/20' },
-    { id: 'crm', label: 'External CRM', icon: Database, color: 'text-indigo-500', glow: 'bg-indigo-500/10', borderGlow: 'border-indigo-500/20' },
-    { id: 'slack', label: 'Slack', icon: Hash, color: 'text-purple-500', glow: 'bg-purple-500/10', borderGlow: 'border-purple-500/20' },
+    { id: 'crm', label: 'External CRM', icon: Database, color: 'text-foreground', glow: 'bg-muted', borderGlow: 'border-border' },
+    { id: 'slack', label: 'Slack', icon: Hash, color: 'text-foreground', glow: 'bg-muted', borderGlow: 'border-border' },
   ];
 
   const activeTabData = tabs.find(t => t.id === activeTab);
@@ -264,9 +264,6 @@ export default function CredentialsPage() {
         />
 
         {/* Dot grid & ambient glows (matching training/dashboard) */}
-        <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] dark:opacity-[0.04] pointer-events-none" />
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
         {Toast}
 
@@ -349,7 +346,7 @@ export default function CredentialsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
                   <div className="space-y-5">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">Setup Steps</h3>
-                    <ol className="space-y-3.5 text-xs text-silver/80 list-decimal pl-4 leading-relaxed">
+                    <ol className="space-y-3.5 text-xs text-muted-foreground list-decimal pl-4 leading-relaxed">
                       <li>
                         Register or log in at <a href="https://cal.com" target="_blank" rel="noopener noreferrer" className="text-rose-400 hover:underline inline-flex items-center gap-1">Cal.com <ExternalLink className="w-3 h-3" /></a>
                       </li>
@@ -367,7 +364,7 @@ export default function CredentialsPage() {
 
                   <div className="bg-bg-surface border border-border-default rounded-2xl p-5 space-y-4">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">Agent Injection Guide</h3>
-                    <p className="text-xs text-silver/70 leading-relaxed font-medium">
+                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">
                       To activate this capability, visit the agent&apos;s **Neural Tools** tab, enable **Cal.com**, and configure:
                     </p>
                     <div className="space-y-2.5 font-mono text-xs">
@@ -406,7 +403,7 @@ export default function CredentialsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
                   <div className="space-y-5">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">Bot Father Registration</h3>
-                    <ol className="space-y-3.5 text-xs text-silver/80 list-decimal pl-4 leading-relaxed">
+                    <ol className="space-y-3.5 text-xs text-muted-foreground list-decimal pl-4 leading-relaxed">
                       <li>
                         Search for the official <a href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline">BotFather</a> bot on Telegram.
                       </li>
@@ -446,7 +443,7 @@ export default function CredentialsPage() {
                       <div className="p-4 bg-bg-surface border border-border-default rounded-xl space-y-1.5">
                         <span className="text-[9px] font-bold text-amber-500 uppercase tracking-wider block">Gmail / Google Workspace</span>
                         <p className="text-xs text-foreground/80 font-medium">Host: <span className="font-mono text-silver text-[10px]">smtp.gmail.com</span> · Port: <span className="font-mono text-silver text-[10px]">465 (SSL)</span> or <span className="font-mono text-silver text-[10px]">587 (TLS)</span></p>
-                        <p className="text-[10px] text-silver/50 italic font-medium leading-relaxed">Note: You must enable 2FA and generate an **App Password** for login.</p>
+                        <p className="text-[10px] text-muted-foreground italic font-medium leading-relaxed">Note: You must enable 2FA and generate an **App Password** for login.</p>
                       </div>
                       <div className="p-4 bg-bg-surface border border-border-default rounded-xl space-y-1.5">
                         <span className="text-[9px] font-bold text-amber-500 uppercase tracking-wider block">SendGrid</span>
@@ -460,7 +457,7 @@ export default function CredentialsPage() {
                       <HelpCircle className="w-3.5 h-3.5 text-amber-500" />
                       SMTP Security Best Practices
                     </h3>
-                    <ul className="text-xs text-silver/80 space-y-3 list-disc pl-4 leading-relaxed">
+                    <ul className="text-xs text-muted-foreground space-y-3 list-disc pl-4 leading-relaxed">
                       <li>Never save your primary password! Always generate dedicated app tokens or developer-scoped sub-user keys.</li>
                       <li>Ensure ports match security protocols (Port <code className="px-1 py-0.5 bg-bg-active rounded font-mono text-[10px]">465</code> is dedicated to implicit SSL, Port <code className="px-1 py-0.5 bg-bg-active rounded font-mono text-[10px]">587</code> maps to STARTTLS).</li>
                       <li>Test delivery using standard outbound configurations before activating tools.</li>
@@ -474,7 +471,7 @@ export default function CredentialsPage() {
               <div id="crm" className="space-y-6">
                 <div className="space-y-1.5">
                   <h2 className="text-lg font-bold flex items-center gap-2.5">
-                    <Database className="w-5 h-5 text-indigo-500" />
+                    <Database className="w-5 h-5 text-foreground" />
                     Live CRM Synchronization Webhook
                   </h2>
                   <p className="text-silver text-xs font-medium">
@@ -485,7 +482,7 @@ export default function CredentialsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
                   <div className="space-y-5">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">Webhook Controller</h3>
-                    <p className="text-xs text-silver/70 leading-relaxed font-medium">
+                    <p className="text-xs text-muted-foreground leading-relaxed font-medium">
                       Input a workflow webhook listener generated by Zapier or Make. All leads parsed by agents on any channel will automatically POST to this URL in real-time.
                     </p>
 
@@ -494,13 +491,13 @@ export default function CredentialsPage() {
                         <label className="text-[9px] font-bold text-silver uppercase tracking-widest block">Live Webhook URL</label>
                         <div className="flex gap-2">
                           <div className="relative flex-1">
-                            <Link2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-silver/50" />
+                            <Link2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <input
                               type="text"
                               value={webhookUrl}
                               onChange={(e) => setWebhookUrl(e.target.value)}
                               placeholder="https://hooks.zapier.com/hooks/catch/..."
-                              className="w-full bg-background border border-border-strong rounded-xl py-3 pl-10 pr-4 text-xs font-mono text-foreground focus:outline-none focus:border-indigo-500/40 transition-colors"
+                              className="w-full bg-background border border-border-strong rounded-xl py-3 pl-10 pr-4 text-xs font-mono text-foreground focus:outline-none focus:border-border transition-colors"
                             />
                           </div>
                           <button
@@ -546,7 +543,7 @@ export default function CredentialsPage() {
               <div id="slack" className="space-y-6">
                 <div className="space-y-1.5">
                   <h2 className="text-lg font-bold flex items-center gap-2.5">
-                    <Hash className="w-5 h-5 text-purple-500" />
+                    <Hash className="w-5 h-5 text-foreground" />
                     Slack Workspace Integration
                   </h2>
                   <p className="text-silver text-xs font-medium">
@@ -557,31 +554,31 @@ export default function CredentialsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
                   <div className="space-y-5">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver">Slack App Setup</h3>
-                    <ol className="space-y-3.5 text-xs text-silver/80 list-decimal pl-4 leading-relaxed">
+                    <ol className="space-y-3.5 text-xs text-muted-foreground list-decimal pl-4 leading-relaxed">
                       <li>
-                        Go to <a href="https://api.slack.com/apps" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline inline-flex items-center gap-1">Slack API <ExternalLink className="w-3 h-3" /></a> and click <strong>Create New App</strong>.
+                        Go to <a href="https://api.slack.com/apps" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline inline-flex items-center gap-1">Slack API <ExternalLink className="w-3 h-3" /></a> and click <strong>Create New App</strong>.
                       </li>
                       <li>Select <strong>From scratch</strong> and choose your Slack workspace.</li>
                       <li>Set a <strong>Display Name</strong> and <strong>Default Username</strong> for your app.</li>
                       <li>Under <strong className="text-foreground">OAuth & Permissions</strong>, add these Bot Token Scopes:
                         <ul className="list-disc pl-5 mt-2 space-y-1">
-                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-purple-400 font-mono text-[10px]">chat:write</code> — send messages</li>
-                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-purple-400 font-mono text-[10px]">channels:read</code> — list channels</li>
-                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-purple-400 font-mono text-[10px]">im:read</code> — access DMs</li>
-                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-purple-400 font-mono text-[10px]">app_mentions:read</code> — react to mentions</li>
+                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-foreground font-mono text-[10px]">chat:write</code> — send messages</li>
+                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-foreground font-mono text-[10px]">channels:read</code> — list channels</li>
+                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-foreground font-mono text-[10px]">im:read</code> — access DMs</li>
+                          <li><code className="px-1 py-0.5 bg-bg-active rounded text-foreground font-mono text-[10px]">app_mentions:read</code> — react to mentions</li>
                         </ul>
                       </li>
-                      <li>Click <strong className="text-foreground">Install to Workspace</strong> and copy the <strong className="text-foreground">Bot User OAuth Token</strong> (starts with <code className="px-1 py-0.5 bg-bg-active rounded text-purple-400 font-mono text-[10px]">xoxb-</code>).</li>
+                      <li>Click <strong className="text-foreground">Install to Workspace</strong> and copy the <strong className="text-foreground">Bot User OAuth Token</strong> (starts with <code className="px-1 py-0.5 bg-bg-active rounded text-foreground font-mono text-[10px]">xoxb-</code>).</li>
                       <li>Copy your <strong className="text-foreground">Signing Secret</strong> from the <strong className="text-foreground">Basic Information</strong> page.</li>
                     </ol>
                   </div>
 
                   <div className="bg-bg-surface border border-border-default rounded-2xl p-5 space-y-4">
                     <h3 className="text-[9px] font-bold uppercase tracking-widest text-silver flex items-center gap-1.5">
-                      <HelpCircle className="w-3.5 h-3.5 text-purple-500" />
+                      <HelpCircle className="w-3.5 h-3.5 text-foreground" />
                       Security Notes
                     </h3>
-                    <ul className="text-xs text-silver/80 space-y-3 list-disc pl-4 leading-relaxed">
+                    <ul className="text-xs text-muted-foreground space-y-3 list-disc pl-4 leading-relaxed">
                       <li>Never commit tokens or secrets to version control. Use environment variables or the credential vault.</li>
                       <li>The <strong className="text-foreground">Signing Secret</strong> verifies that incoming events are genuinely from Slack.</li>
                       <li>Restrict your app to specific channels using the <strong className="text-foreground">Channel ID</strong> whitelist in your agent config.</li>
@@ -799,7 +796,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
               </div>
               <div className="space-y-1.5">
                 <label className="text-[9px] font-bold text-silver uppercase tracking-widest">
-                  Access Token {editingId && <span className="text-silver/50 normal-case">(re-enter to update)</span>}
+                  Access Token {editingId && <span className="text-muted-foreground normal-case">(re-enter to update)</span>}
                 </label>
                 <input
                   type="password"
@@ -872,8 +869,8 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
                   <div className="font-semibold text-xs text-foreground truncate">{cred.label}</div>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-[10px] font-mono text-silver truncate">{cred.phoneNumberId}</span>
-                    <span className="text-[10px] text-silver/30">·</span>
-                    <span className="text-[10px] font-mono text-silver/50 truncate">{cred.accessToken}</span>
+                    <span className="text-[10px] text-muted-foreground">·</span>
+                    <span className="text-[10px] font-mono text-muted-foreground truncate">{cred.accessToken}</span>
                   </div>
                 </div>
               </div>
@@ -918,7 +915,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           <div className="space-y-4">
             <h4 className="text-[9px] font-bold uppercase tracking-widest text-silver">How to Register</h4>
-            <ol className="space-y-3 text-xs text-silver/80 list-decimal pl-4 leading-relaxed">
+            <ol className="space-y-3 text-xs text-muted-foreground list-decimal pl-4 leading-relaxed">
               <li>Go to <a href="https://developers.facebook.com" target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline inline-flex items-center gap-1">Meta for Developers <ExternalLink className="w-3 h-3" /></a> and open your App.</li>
               <li>Navigate to <strong className="text-foreground">WhatsApp → Configuration → Webhook</strong>.</li>
               <li>Paste the <strong className="text-foreground">Callback URL</strong> below into the <em>Callback URL</em> field.</li>
@@ -936,7 +933,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
                 onClick={() => copyToClipboard('https://void.aethyl.com/api/webhooks/whatsapp', 'wa_callback')}
                 className="p-1.5 hover:bg-bg-hover border border-border-default rounded-lg shrink-0 transition-colors cursor-pointer"
               >
-                {copiedText === 'wa_callback' ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-silver/60" />}
+                {copiedText === 'wa_callback' ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-muted-foreground" />}
               </button>
             </div>
             <div className="space-y-1.5">
@@ -947,7 +944,7 @@ function WhatsAppCredentialsTab({ showToast, copyToClipboard, copiedText }: {
                   onClick={() => copyToClipboard('void_secret_token', 'wa_token')}
                   className="p-1.5 hover:bg-bg-hover border border-border-default rounded-lg shrink-0 transition-colors cursor-pointer"
                 >
-                  {copiedText === 'wa_token' ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-silver/60" />}
+                  {copiedText === 'wa_token' ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3 text-muted-foreground" />}
                 </button>
               </div>
             </div>

@@ -395,7 +395,7 @@ export default function IntegrationsPage() {
                     <Link2 className="w-3.5 h-3.5 text-apple-blue" />
                     Connected Sheets
                   </h2>
-                  <p className="text-[10px] text-silver/60 font-medium mt-0.5">
+                  <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
                     Sheets syncing into this agent's knowledge base
                   </p>
                 </div>
@@ -465,7 +465,7 @@ export default function IntegrationsPage() {
                     <Link2 className="w-3.5 h-3.5 text-apple-blue" />
                     Connect New Sheet
                   </h2>
-                  <p className="text-[10px] text-silver/60 font-medium mt-0.5">
+                  <p className="text-[10px] text-muted-foreground font-medium mt-0.5">
                     Paste your service account key and spreadsheet ID
                   </p>
                 </div>
@@ -505,9 +505,9 @@ export default function IntegrationsPage() {
   "client_id": "...",
   ...
 }'
-                      className="w-full bg-bg-surface border border-border-strong rounded-xl p-3 text-[10px] font-mono text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all resize-none h-24"
+                      className="w-full bg-bg-surface border border-border-strong rounded-xl p-3 text-[10px] font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-apple-blue/40 transition-all resize-none h-24"
                     />
-                    <p className="text-[9px] text-silver/70 font-medium">
+                    <p className="text-[9px] text-muted-foreground font-medium">
                       Download from Google Cloud Console → Service Accounts → Keys
                     </p>
                   </div>
@@ -524,16 +524,16 @@ export default function IntegrationsPage() {
                         value={spreadsheetId}
                         onChange={(e) => setSpreadsheetId(e.target.value)}
                         placeholder="From the URL: docs.google.com/spreadsheets/d/THIS_PART/edit"
-                        className="w-full bg-bg-surface border border-border-strong rounded-xl pl-9 pr-4 py-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all font-medium font-mono"
+                        className="w-full bg-bg-surface border border-border-strong rounded-xl pl-9 pr-4 py-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-apple-blue/40 transition-all font-medium font-mono"
                       />
                     </div>
-                    <div className="flex items-center gap-2 text-[9px] text-silver/70">
+                    <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
                       <ExternalLink className="w-3 h-3" />
                       <span>Find it after <code className="text-apple-blue bg-apple-blue/10 px-1 rounded">/d/</code> in your browser URL</span>
                     </div>
 
                     {/* Range helper */}
-                    <div className="flex items-start gap-2 text-[9px] text-silver/70 mt-1">
+                    <div className="flex items-start gap-2 text-[9px] text-muted-foreground mt-1">
                       <Key className="w-3 h-3 mt-0.5 shrink-0" />
                       <div className="space-y-0.5">
                         <p className="font-medium">Range format</p>
@@ -554,7 +554,7 @@ export default function IntegrationsPage() {
                         value={sheetRange}
                         onChange={(e) => setSheetRange(e.target.value)}
                         placeholder="Sheet1 or Sheet1!A1:Z"
-                        className="w-full bg-bg-surface border border-border-strong rounded-xl px-3 py-2.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all font-mono"
+                        className="w-full bg-bg-surface border border-border-strong rounded-xl px-3 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-apple-blue/40 transition-all font-mono"
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -566,7 +566,7 @@ export default function IntegrationsPage() {
                         value={sheetName}
                         onChange={(e) => setSheetName(e.target.value)}
                         placeholder="Auto-detected"
-                        className="w-full bg-bg-surface border border-border-strong rounded-xl px-3 py-2.5 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-apple-blue/40 transition-all"
+                        className="w-full bg-bg-surface border border-border-strong rounded-xl px-3 py-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-apple-blue/40 transition-all"
                       />
                     </div>
                   </div>
@@ -668,7 +668,7 @@ export default function IntegrationsPage() {
                   <p className="text-xs text-silver font-medium">
                     No sheets connected yet
                   </p>
-                  <p className="text-[9px] text-silver/60 mt-0.5">
+                  <p className="text-[9px] text-muted-foreground mt-0.5">
                     Click "Add Sheet" to connect your first spreadsheet
                   </p>
                 </div>
@@ -831,7 +831,7 @@ export default function IntegrationsPage() {
                       Prefer training
                     </button>
                   </div>
-                  <p className="text-[9px] text-silver/70 font-medium mt-1 px-1">
+                  <p className="text-[9px] text-muted-foreground font-medium mt-1 px-1">
                     Balanced means the agent uses both and picks whichever is more relevant to the question.
                   </p>
                 </div>

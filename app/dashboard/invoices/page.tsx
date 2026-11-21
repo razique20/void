@@ -43,7 +43,7 @@ const itemVariants: Variants = {
 const STATUS_COLORS: Record<string, string> = {
   draft: 'text-silver bg-silver/10 border-silver/20',
   sent: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
-  viewed: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
+  viewed: 'text-foreground bg-muted border-border',
   paid: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
   overdue: 'text-red-500 bg-red-500/10 border-red-500/20',
   cancelled: 'text-silver bg-silver/10 border-silver/20',
@@ -376,7 +376,7 @@ export default function InvoicesPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowAIModal(true)}
-              className="flex items-center gap-2 px-4 py-2.5 bg-purple-500/10 border border-purple-500/20 text-purple-500 rounded-xl text-xs font-bold hover:bg-purple-500/20 transition-all"
+              className="flex items-center gap-2 px-4 py-2.5 bg-muted border border-border text-foreground rounded-xl text-xs font-bold hover:bg-muted transition-all"
             >
               <Sparkles className="w-3.5 h-3.5" />
               Generate with AI
@@ -397,7 +397,7 @@ export default function InvoicesPage() {
             { label: 'Total Invoices', value: totalInvoices, icon: FileText, color: 'text-blue-500' },
             { label: 'Revenue Collected', value: `$${totalRevenue.toLocaleString()}`, icon: CreditCard, color: 'text-emerald-500' },
             { label: 'Pending Amount', value: `$${pendingAmount.toLocaleString()}`, icon: Clock, color: 'text-amber-500' },
-            { label: 'Paid Rate', value: `${totalInvoices > 0 ? Math.round((invoices.filter(i => i.status === 'paid').length / totalInvoices) * 100) : 0}%`, icon: Check, color: 'text-purple-500' },
+            { label: 'Paid Rate', value: `${totalInvoices > 0 ? Math.round((invoices.filter(i => i.status === 'paid').length / totalInvoices) * 100) : 0}%`, icon: Check, color: 'text-foreground' },
           ].map((stat, i) => (
             <motion.div key={i} variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5">
               <div className="flex items-center gap-3">
@@ -460,7 +460,7 @@ export default function InvoicesPage() {
                       <div className="flex items-center gap-2">
                         <h3 className="font-semibold text-sm text-foreground">{invoice.title}</h3>
                         {invoice.generatedByAI && (
-                          <span className="text-[8px] px-1.5 py-0.5 bg-purple-500/10 text-purple-500 rounded font-bold">AI</span>
+                          <span className="text-[8px] px-1.5 py-0.5 bg-muted text-foreground rounded font-bold">AI</span>
                         )}
                       </div>
                       <p className="text-[10px] text-silver font-mono">{invoice.invoiceNumber} • {invoice.customer?.name || 'No customer'}</p>
@@ -517,7 +517,7 @@ export default function InvoicesPage() {
             >
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-purple-500" />
+                  <Sparkles className="w-4 h-4 text-foreground" />
                   Generate Invoice with AI
                 </h2>
                 <button onClick={() => setShowAIModal(false)} className="p-1 hover:bg-bg-elevated rounded-lg">
@@ -529,7 +529,7 @@ export default function InvoicesPage() {
                 value={aiPrompt}
                 onChange={(e) => setAiPrompt(e.target.value)}
                 placeholder="Describe the services or products to invoice for...&#10;&#10;Example: Website design and development for a restaurant, including logo design, 5 pages, and SEO optimization"
-                className="w-full h-32 bg-bg-elevated border border-border-default rounded-xl px-4 py-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none focus:border-purple-500/40 resize-none"
+                className="w-full h-32 bg-bg-elevated border border-border-default rounded-xl px-4 py-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-border resize-none"
               />
 
               <div className="flex gap-2 mt-4">
@@ -542,7 +542,7 @@ export default function InvoicesPage() {
                 <button
                   onClick={handleGenerateAI}
                   disabled={generatingAI || !aiPrompt.trim()}
-                  className="flex-1 px-4 py-2.5 bg-purple-500 text-white rounded-xl text-xs font-bold hover:bg-purple-600 disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2.5 bg-foreground text-white rounded-xl text-xs font-bold hover:bg-foreground disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {generatingAI ? (
                     <>
@@ -661,7 +661,7 @@ export default function InvoicesPage() {
                   ))}
                   <button
                     onClick={() => setNewInvoice({ ...newInvoice, items: [...newInvoice.items, { name: '', description: '', quantity: 1, unitPrice: 0 }] })}
-                    className="text-[10px] text-purple-500 hover:text-purple-600 font-bold"
+                    className="text-[10px] text-foreground hover:text-foreground font-bold"
                   >
                     + Add Item
                   </button>
@@ -703,7 +703,7 @@ export default function InvoicesPage() {
                     value={newInvoice.notes}
                     onChange={(e) => setNewInvoice({ ...newInvoice, notes: e.target.value })}
                     placeholder="Payment terms, thank you note, etc."
-                    className="w-full h-20 bg-bg-elevated border border-border-default rounded-xl px-4 py-3 text-xs text-foreground placeholder:text-silver/40 focus:outline-none resize-none"
+                    className="w-full h-20 bg-bg-elevated border border-border-default rounded-xl px-4 py-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none resize-none"
                   />
                 </div>
               </div>

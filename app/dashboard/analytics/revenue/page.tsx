@@ -262,7 +262,7 @@ export default function RevenueAnalyticsPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <Bot className="w-8 h-8 text-silver/30 mb-2" />
+                <Bot className="w-8 h-8 text-muted-foreground mb-2" />
                 <p className="text-xs text-silver">No revenue data by agent yet</p>
               </div>
             )}
@@ -271,7 +271,7 @@ export default function RevenueAnalyticsPage() {
           {/* Revenue by Channel */}
           <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-4">
-              <BarChart3 className="w-4 h-4 text-purple-500" />
+              <BarChart3 className="w-4 h-4 text-foreground" />
               <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Revenue by Channel</h3>
             </div>
             {loading ? (
@@ -309,7 +309,7 @@ export default function RevenueAnalyticsPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <BarChart3 className="w-8 h-8 text-silver/30 mb-2" />
+                <BarChart3 className="w-8 h-8 text-muted-foreground mb-2" />
                 <p className="text-xs text-silver">No revenue data by channel yet</p>
               </div>
             )}
@@ -347,7 +347,7 @@ export default function RevenueAnalyticsPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <Calendar className="w-8 h-8 text-silver/30 mb-2" />
+                <Calendar className="w-8 h-8 text-muted-foreground mb-2" />
                 <p className="text-xs text-silver">No revenue timeline data yet</p>
               </div>
             )}
@@ -417,9 +417,9 @@ export default function RevenueAnalyticsPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-center">
-                <TrendingUp className="w-8 h-8 text-silver/30 mb-2" />
+                <TrendingUp className="w-8 h-8 text-muted-foreground mb-2" />
                 <p className="text-xs text-silver">No conversions yet</p>
-                <p className="text-[10px] text-silver/60 mt-1">Revenue will appear here when leads convert to paid invoices</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Revenue will appear here when leads convert to paid invoices</p>
               </div>
             )}
           </motion.div>

@@ -116,7 +116,7 @@ export default function SheetCard({
           </p>
 
           {sheet.spreadsheetName && (
-            <p className="text-[10px] text-silver/70 mt-0.5 truncate max-w-[280px]">
+            <p className="text-[10px] text-muted-foreground mt-0.5 truncate max-w-[280px]">
               {sheet.spreadsheetName}
             </p>
           )}

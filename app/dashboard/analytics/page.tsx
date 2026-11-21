@@ -95,11 +95,11 @@ export default function AnalyticsPage() {
               <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
                 Analytics & Sentiment
               </h1>
-              <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-purple-500/10 border border-purple-500/15 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-500 relative flex shrink-0">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-purple-500 opacity-75 animate-ping" />
+              <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-muted border border-border rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-foreground relative flex shrink-0">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-foreground opacity-75 animate-ping" />
                 </span>
-                <span className="text-[9px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest">
+                <span className="text-[9px] font-bold text-foreground dark:text-foreground uppercase tracking-widest">
                   Neural Insights
                 </span>
               </div>
@@ -163,9 +163,9 @@ export default function AnalyticsPage() {
               label: 'Avg Messages/Chat', 
               value: analytics?.overview?.avgMessagesPerConversation || 0,
               icon: Activity,
-              color: 'text-purple-500',
-              bgColor: 'bg-purple-500/10',
-              borderColor: 'border-purple-500/20'
+              color: 'text-foreground',
+              bgColor: 'bg-muted',
+              borderColor: 'border-border'
             },
             { 
               label: 'Conversion Rate', 
@@ -271,7 +271,7 @@ export default function AnalyticsPage() {
           {/* Sentiment Distribution */}
           <motion.div variants={itemVariants} className="bg-bg-subtle border border-border-default rounded-2xl p-6">
             <h3 className="text-xs font-bold uppercase tracking-wider text-silver mb-4 flex items-center gap-2">
-              <BarChart3 className="w-3.5 h-3.5 text-purple-500" />
+              <BarChart3 className="w-3.5 h-3.5 text-foreground" />
               Lead Sentiment
             </h3>
             <div className="h-64">

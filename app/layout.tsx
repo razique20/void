@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkThemeProvider } from "@/components/clerk-theme-provider";
 import { DataProvider } from "@/lib/DataContext";
 import PageTransition from "@/components/PageTransition";
 import Navbar from "@/components/Navbar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -13,8 +14,13 @@ const plusJakarta = Plus_Jakarta_Sans({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -84,7 +90,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${plusJakarta.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${plusJakarta.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
@@ -93,9 +99,6 @@ export default function RootLayout({
             __html: `
               (function() {
                 try {
-                  var theme = localStorage.getItem('color-theme') || 'slate';
-                  document.documentElement.setAttribute('data-color-theme', theme);
-
                   var collapsed = localStorage.getItem('sidebar-collapsed') === 'true';
                   if (collapsed) {
                     document.documentElement.classList.add('sidebar-collapsed');
@@ -129,10 +132,12 @@ export default function RootLayout({
         >
           <ClerkThemeProvider>
             <DataProvider>
-              <Navbar />
-              <PageTransition>
-                {children}
-              </PageTransition>
+              <TooltipProvider delayDuration={200}>
+                <Navbar />
+                <PageTransition>
+                  {children}
+                </PageTransition>
+              </TooltipProvider>
             </DataProvider>
           </ClerkThemeProvider>
         </ThemeProvider>

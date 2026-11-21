@@ -38,7 +38,7 @@ const INDUSTRIES = [
   { id: 'warehouse', label: 'Warehouse & Logistics', icon: Boxes, desc: 'Inventory, stock & shipping', color: 'text-sky-500', defaultCompany: 'LogiTrack Hub' },
   { id: 'grocery', label: 'Grocery & Retail', icon: Store, desc: 'Deliveries, refunds & support', color: 'text-amber-500', defaultCompany: 'FreshCart Market' },
   { id: 'realestate', label: 'Real Estate', icon: Home, desc: 'Leasing, sales & property', color: 'text-emerald-500', defaultCompany: 'Apex Realty' },
-  { id: 'hotel', label: 'Hotel & Concierge', icon: Hotel, desc: 'Hospitality, bookings & guests', color: 'text-indigo-500', defaultCompany: 'Grand Plaza Hotel' },
+  { id: 'hotel', label: 'Hotel & Concierge', icon: Hotel, desc: 'Hospitality, bookings & guests', color: 'text-foreground', defaultCompany: 'Grand Plaza Hotel' },
 ];
 
 const TONES = [
@@ -228,7 +228,7 @@ export default function OnboardingPage() {
               <span
                 className={cn(
                   'text-[9px] font-bold uppercase tracking-widest transition-colors duration-300',
-                  isCurrent ? 'text-foreground' : isComplete ? 'text-apple-blue' : 'text-silver/50'
+                  isCurrent ? 'text-foreground' : isComplete ? 'text-apple-blue' : 'text-muted-foreground'
                 )}
               >
                 {step.label}
@@ -268,7 +268,6 @@ export default function OnboardingPage() {
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-6 overflow-hidden relative transition-colors duration-300">
       {/* Background Ambience */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-apple-blue/5 blur-[120px] rounded-full" />
       </div>
 
       <div className="max-w-lg w-full relative z-10">
@@ -315,7 +314,7 @@ export default function OnboardingPage() {
                     onChange={e => update({ companyName: e.target.value })}
                     onKeyDown={e => e.key === 'Enter' && handleNameSubmit()}
                     placeholder="e.g. CareSync Medical, Apex Realty"
-                    className="w-full bg-bg-elevated border border-border-strong rounded-2xl px-6 py-4 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-apple-blue/30 focus:border-apple-blue/40 transition-all text-foreground placeholder:text-silver/30"
+                    className="w-full bg-bg-elevated border border-border-strong rounded-2xl px-6 py-4 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-apple-blue/30 focus:border-apple-blue/40 transition-all text-foreground placeholder:text-muted-foreground"
                   />
                 </div>
 
@@ -381,7 +380,7 @@ export default function OnboardingPage() {
                           {ind.label}
                           {isSelected && <Check className="w-4 h-4 text-apple-blue shrink-0" />}
                         </div>
-                        <div className={cn('text-[11px] font-medium mt-0.5', isSelected ? 'text-background/60' : 'text-silver/60')}>
+                        <div className={cn('text-[11px] font-medium mt-0.5', isSelected ? 'text-background/60' : 'text-muted-foreground')}>
                           {ind.desc}
                         </div>
                       </div>
@@ -466,7 +465,7 @@ export default function OnboardingPage() {
                         value={state.agentName}
                         onChange={e => update({ agentName: e.target.value })}
                         placeholder="e.g. CareSync Support, LogiTrack Agent"
-                        className="w-full bg-bg-elevated border border-border-strong rounded-2xl px-6 py-4 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-apple-blue/30 focus:border-apple-blue/40 transition-all text-foreground placeholder:text-silver/30"
+                        className="w-full bg-bg-elevated border border-border-strong rounded-2xl px-6 py-4 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-apple-blue/30 focus:border-apple-blue/40 transition-all text-foreground placeholder:text-muted-foreground"
                       />
                     </div>
 

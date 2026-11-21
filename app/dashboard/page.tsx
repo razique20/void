@@ -1,583 +1,633 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import {
-  Plus,
-  Bot,
-  MessageSquare,
+  ArrowDownRight,
+  ArrowUpRight,
   BookOpen,
-  Share2,
+  Check,
   Copy,
-  X,
-  Settings,
-  TrendingUp,
-  ChevronRight,
-  Trash2,
-  Search,
+  MessageSquare,
+  MoreHorizontal,
+  Plus,
   RefreshCw,
-  Cpu,
-  Wifi,
-  Terminal,
-  Shield,
+  Search,
+  Settings2,
+  Share2,
+  Trash2,
 } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 import { useToast } from '@/lib/useToast';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+/* ---------- types ---------- */
+
+type Worker = {
+  _id: string;
+  name: string;
+  role?: string;
+  tone: string;
+  language: string;
+  personality: string;
+  status?: string;
+  channels?: {
+    whatsapp?: { isActive?: boolean };
+    telegram?: { isActive?: boolean };
+    slack?: { isActive?: boolean };
+  };
+};
+
+type Stats = {
+  totalMessages: number;
+  activeChats: number;
+  estimatedSavings: string;
+  estimatedTimeSaved: string;
+  interactionTrend: number;
+  dailyInteractions: { name: string; interactions: number }[];
+};
+
+type LogEntry = { _id: string; type: string; source: string; message: string; createdAt: string };
+
+type Filter = 'all' | 'online' | 'whatsapp' | 'telegram';
+
+const FILTERS: { id: Filter; label: string }[] = [
+  { id: 'all', label: 'All' },
+  { id: 'online', label: 'Online' },
+  { id: 'whatsapp', label: 'WhatsApp' },
+  { id: 'telegram', label: 'Telegram' },
+];
+
+const chartConfig = {
+  interactions: { label: 'Messages', color: 'var(--chart-1)' },
+} satisfies ChartConfig;
+
+const numberFormat = new Intl.NumberFormat('en-US');
+
+/* ---------- helpers ---------- */
+
+function relativeTime(iso: string) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.round(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return `${Math.round(h / 24)}d ago`;
+}
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase())
+    .join('');
+}
+
+function activeChannels(w: Worker) {
+  const list: string[] = [];
+  if (w.channels?.whatsapp?.isActive) list.push('WhatsApp');
+  if (w.channels?.telegram?.isActive) list.push('Telegram');
+  if (w.channels?.slack?.isActive) list.push('Slack');
+  return list.length ? list : ['Web'];
+}
+
+const LOG_DOT: Record<string, string> = {
+  error: 'bg-red-500',
+  warning: 'bg-amber-500',
+  handshake: 'bg-emerald-500',
+};
+
+/* ---------- page ---------- */
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [workers, setWorkers] = useState<any[]>([]);
-  const [stats, setStats] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [shareWorker, setShareWorker] = useState<any>(null);
-  const [chartData, setChartData] = useState<any[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState<'all' | 'online' | 'whatsapp' | 'telegram'>('all');
   const { showToast, Toast } = useToast();
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const fetchData = async (silent = false) => {
-    if (!silent) setLoading(true);
-    else setIsRefreshing(true);
-    try {
-      const [workersRes, statsRes] = await Promise.all([
-        fetch('/api/workers'),
-        fetch('/api/analytics')
-      ]);
+  const [workers, setWorkers] = useState<Worker[]>([]);
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-      const workersData = await workersRes.json();
-      const statsData = await statsRes.json();
+  const [query, setQuery] = useState('');
+  const [filter, setFilter] = useState<Filter>('all');
+  const [shareWorker, setShareWorker] = useState<Worker | null>(null);
+  const [deleteWorker, setDeleteWorker] = useState<Worker | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-      if (Array.isArray(workersData)) {
-        if (workersData.length === 0 && !silent) {
-          router.push('/onboarding');
-          return;
+  const fetchData = useCallback(
+    async (silent = false) => {
+      // Initial load starts with loading=true; refreshes keep content visible.
+      if (silent) setRefreshing(true);
+      try {
+        const [workersRes, statsRes, logsRes] = await Promise.all([
+          fetch('/api/workers'),
+          fetch('/api/analytics'),
+          fetch('/api/logs?limit=6'),
+        ]);
+        const [workersData, statsData, logsData] = await Promise.all([
+          workersRes.json().catch(() => null),
+          statsRes.json().catch(() => null),
+          logsRes.json().catch(() => null),
+        ]);
+
+        if (Array.isArray(workersData)) {
+          if (workersData.length === 0 && !silent) {
+            router.push('/onboarding');
+            return;
+          }
+          setWorkers(workersData);
         }
-        setWorkers(workersData);
-      } else {
-        setWorkers([]);
+        if (statsData && !statsData.error) setStats(statsData);
+        if (Array.isArray(logsData?.logs)) setLogs(logsData.logs);
+      } catch (err) {
+        console.error('Failed to fetch dashboard data', err);
+        showToast('Could not load the dashboard. Try refreshing.', 'error');
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
       }
-
-      if (statsData && !statsData.error) {
-        setStats(statsData);
-        if (statsData.dailyInteractions) {
-          setChartData(statsData.dailyInteractions);
-        }
-      }
-    } catch (err) {
-      console.error('Failed to fetch data', err);
-      showToast('Failed to load dashboard statistics', 'error');
-    } finally {
-      setLoading(false);
-      setIsRefreshing(false);
-    }
-  };
+    },
+    // showToast is recreated each render by the hook; router is stable
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [router]
+  );
 
   useEffect(() => {
+    // Data fetch on mount; state updates happen after the awaited responses.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
-  }, [router]);
+  }, [fetchData]);
 
-  const copyText = (text: string) => {
-    navigator.clipboard.writeText(text);
-    showToast('Copied deployment link to clipboard!');
-  };
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return workers.filter((w) => {
+      const matches =
+        !q ||
+        w.name.toLowerCase().includes(q) ||
+        w.tone?.toLowerCase().includes(q) ||
+        w.personality?.toLowerCase().includes(q);
+      if (!matches) return false;
+      if (filter === 'online') return w.status === 'online';
+      if (filter === 'whatsapp') return !!w.channels?.whatsapp?.isActive;
+      if (filter === 'telegram') return !!w.channels?.telegram?.isActive;
+      return true;
+    });
+  }, [workers, query, filter]);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to terminate ${name}? This action is irreversible.`)) return;
+  const onlineCount = workers.filter((w) => w.status === 'online').length;
 
+  const confirmDelete = async () => {
+    if (!deleteWorker) return;
+    setDeleting(true);
     try {
-      const res = await fetch(`/api/workers/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setWorkers(workers.filter(w => w._id !== id));
-        showToast(`${name} has been terminated.`);
-      } else {
-        showToast('Failed to terminate agent.', 'error');
-      }
+      const res = await fetch(`/api/workers/${deleteWorker._id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(String(res.status));
+      setWorkers((prev) => prev.filter((w) => w._id !== deleteWorker._id));
+      showToast(`${deleteWorker.name} was deleted.`);
+      setDeleteWorker(null);
     } catch (err) {
       console.error(err);
-      showToast('Error executing termination.', 'error');
+      showToast('Could not delete the agent.', 'error');
+    } finally {
+      setDeleting(false);
     }
   };
 
-  const filteredWorkers = workers.filter(worker => {
-    const matchesSearch =
-      worker.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      worker.tone.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      worker.personality.toLowerCase().includes(searchQuery.toLowerCase());
-
-    if (activeFilter === 'online') return matchesSearch && worker.status === 'online';
-    if (activeFilter === 'whatsapp') return matchesSearch && worker.channels?.whatsapp?.isActive;
-    if (activeFilter === 'telegram') return matchesSearch && worker.channels?.telegram?.isActive;
-    return matchesSearch;
-  });
-
-  const containerVariants: Variants = {
-    hidden: { opacity: 0, y: 12 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { staggerChildren: 0.05, delayChildren: 0.1 }
-    }
-  };
-
-  const rowVariants: Variants = {
-    hidden: { opacity: 0, y: 10 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { type: 'spring', stiffness: 350, damping: 35, delay: 0.05 }
-    }
-  };
-
-  const onlineCount = workers.filter(w => w.status === 'online').length;
-  const gatewayCount = workers.filter(w => w.channels?.whatsapp?.isActive || w.channels?.telegram?.isActive).length;
+  const trend = stats?.interactionTrend ?? 0;
 
   return (
-    <div className="font-sans antialiased page-wrapper">
-      <main className="page-content space-y-8 pt-20 overflow-x-hidden">
-
+    <div className="space-y-6">
       {Toast}
 
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="space-y-8"
-      >
-        
-        {/* Header Row */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-border-default pb-6">
-          <div className="space-y-1">
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">
-                Fleet Overview
-              </h1>
-              <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/15 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 relative flex shrink-0">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75 animate-ping" />
-                </span>
-                <span className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">{onlineCount} Online</span>
-              </div>
-            </div>
-            <p className="text-silver text-xs font-medium">
-              Monitor, calibrate, and manage your autonomous agent fleet.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 w-full md:w-auto">
-            <button
-              onClick={() => fetchData(true)}
-              disabled={isRefreshing}
-              className="p-2.5 bg-bg-elevated hover:bg-bg-border border border-border-default rounded-xl transition-all disabled:opacity-50 text-silver hover:text-foreground"
-              title="Refresh"
-            >
-              <RefreshCw className={cn("w-3.5 h-3.5", isRefreshing && "animate-spin text-foreground")} />
-            </button>
-            <Link
-              href="/create-worker"
-              className="flex-1 md:flex-initial bg-foreground text-background px-5 py-2.5 rounded-xl text-xs font-bold hover:opacity-90 transition-all flex items-center justify-center gap-1.5 shadow-sm"
-            >
-              <Plus className="w-3.5 h-3.5 stroke-[2.5px]" /> Deploy Agent
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Overview</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Your agents, conversations and recent activity.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => fetchData(true)}
+            disabled={refreshing}
+            aria-label="Refresh"
+          >
+            <RefreshCw className={cn(refreshing && 'animate-spin')} />
+          </Button>
+          <Button asChild>
+            <Link href="/create-worker">
+              <Plus /> New agent
             </Link>
-          </div>
+          </Button>
         </div>
+      </div>
 
-        {/* Stats Strip */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {[
-            { label: 'Total Messages', value: stats?.totalMessages || 0, trend: stats?.interactionTrend },
-            { label: 'Active Chats', value: stats?.activeChats || 0 },
-            { label: 'Estimated Savings', value: `$${stats?.estimatedSavings || '0.00'}` },
-            { label: 'Hours Reclaimed', value: stats?.estimatedTimeSaved || '0.0' },
-          ].map((stat, i) => (
-            <div key={i} className="bg-bg-subtle border border-border-default rounded-2xl p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-[10px] font-bold text-silver uppercase tracking-wider mb-1">{stat.label}</p>
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-2xl font-bold tabular-nums text-foreground">{loading ? '—' : stat.value}</span>
-                    {stat.trend !== undefined && !loading && (
-                      <span className="text-[9px] font-bold text-emerald-600 flex items-center gap-0.5">
-                        <TrendingUp className="w-2.5 h-2.5" />
-                        {Number(stat.trend) > 0 ? '+' : ''}{stat.trend}%
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+      {/* KPI strip: one surface, four cells */}
+      <Card className="gap-0 py-0">
+        <div className="grid grid-cols-2 lg:grid-cols-4 [&>*:nth-child(-n+2)]:border-b [&>*:nth-child(odd)]:border-r lg:[&>*]:border-b-0 lg:[&>*]:border-r-0 lg:[&>*:not(:first-child)]:border-l">
+          <Metric
+            label="Messages"
+            loading={loading}
+            value={numberFormat.format(stats?.totalMessages ?? 0)}
+            footnote={
+              <span className={cn('inline-flex items-center gap-0.5', trend >= 0 ? 'text-emerald-700' : 'text-red-600')}>
+                {trend >= 0 ? <ArrowUpRight className="size-3.5" /> : <ArrowDownRight className="size-3.5" />}
+                {Math.abs(trend)}%<span className="ml-1 text-muted-foreground">vs previous period</span>
+              </span>
+            }
+          />
+          <Metric
+            label="Conversations"
+            loading={loading}
+            value={numberFormat.format(stats?.activeChats ?? 0)}
+            footnote="Across all channels"
+          />
+          <Metric
+            label="Agents online"
+            loading={loading}
+            value={
+              <>
+                {onlineCount}
+                <span className="text-base font-normal text-muted-foreground"> / {workers.length}</span>
+              </>
+            }
+            footnote={`${workers.length - onlineCount} offline`}
+          />
+          <Metric
+            label="Estimated savings"
+            loading={loading}
+            value={`$${stats?.estimatedSavings ?? '0.00'}`}
+            footnote={`≈ ${stats?.estimatedTimeSaved ?? '0'} hours of agent time`}
+          />
         </div>
+      </Card>
 
-        {/* Two-Column Bento */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* LEFT: Agents Table (8/12) */}
-          <div className="lg:col-span-8 space-y-5">
-            
-            {/* Filter Bar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-bg-surface border border-border-default p-1.5 rounded-xl">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-silver" />
-                <input
-                  type="text"
-                  placeholder="Filter agents..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-transparent border-0 rounded-lg pl-9 pr-4 py-2 text-xs focus:outline-none focus:ring-0 text-foreground placeholder:text-silver/50 font-medium"
-                />
-                {searchQuery && (
-                  <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-silver hover:text-foreground">
-                    <X className="w-3 h-3" />
-                  </button>
-                )}
-              </div>
-              <div className="flex items-center gap-0.5">
-                {[
-                  { id: 'all', label: 'All' },
-                  { id: 'online', label: 'Online' },
-                  { id: 'whatsapp', label: 'WhatsApp' },
-                  { id: 'telegram', label: 'Telegram' }
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveFilter(tab.id as any)}
-                    className={cn(
-                      "px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all",
-                      activeFilter === tab.id
-                        ? "bg-foreground text-background"
-                        : "text-silver hover:text-foreground hover:bg-bg-active"
-                    )}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Agents List */}
+      <div className="grid gap-6 lg:grid-cols-3 [&>*]:min-w-0">
+        {/* Volume chart */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Message volume</CardTitle>
+            <CardDescription>Messages handled per day, last 7 days</CardDescription>
+          </CardHeader>
+          <CardContent>
             {loading ? (
-              <div className="space-y-3">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="h-[72px] bg-bg-surface border border-border-subtle rounded-xl animate-pulse" />
+              <Skeleton className="h-[220px] w-full" />
+            ) : (
+              <ChartContainer config={chartConfig} className="h-[220px] w-full">
+                <BarChart data={stats?.dailyInteractions ?? []} margin={{ left: 0, right: 4, top: 4 }}>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={8} />
+                  <YAxis tickLine={false} axisLine={false} width={40} allowDecimals={false} tickFormatter={(v: number) => (v >= 1000 ? `${(v / 1000).toFixed(v % 1000 ? 1 : 0)}k` : String(v))} />
+                  <ChartTooltip cursor={{ fill: 'var(--muted)' }} content={<ChartTooltipContent />} />
+                  <Bar dataKey="interactions" fill="var(--color-interactions)" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                </BarChart>
+              </ChartContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Activity */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent activity</CardTitle>
+            <CardDescription>System events from your agents</CardDescription>
+            <CardAction>
+              <Button variant="ghost" size="sm" asChild className="-my-1 h-7 text-muted-foreground">
+                <Link href="/dashboard/logs">View all</Link>
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="space-y-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="h-9 w-full" />
                 ))}
               </div>
-            ) : filteredWorkers.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20 bg-bg-subtle border border-border-default border-dashed rounded-2xl text-center">
-                <div className="w-12 h-12 bg-bg-elevated border border-border-strong rounded-xl flex items-center justify-center mb-3">
-                  <Bot className="w-5 h-5 text-silver" />
-                </div>
-                <h3 className="text-sm font-semibold text-foreground">No agents found</h3>
-                <p className="text-silver text-xs max-w-xs mt-1">
-                  Try adjusting your search or filter parameters.
-                </p>
-              </div>
+            ) : logs.length === 0 ? (
+              <p className="py-10 text-center text-sm text-muted-foreground">No events yet.</p>
             ) : (
-              <motion.div className="space-y-2" variants={containerVariants}>
-                <AnimatePresence mode="popLayout">
-                  {filteredWorkers.map((worker) => (
-                    <motion.div
-                      layout
-                      variants={rowVariants}
-                      key={worker._id}
-                      onClick={() => router.push(`/operatives/${worker._id}/channels`)}
-                      className="group bg-bg-subtle hover:bg-bg-elevated border border-border-default hover:border-border-hover rounded-xl px-5 py-4 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-3 cursor-pointer"
-                    >
-                      {/* Left: Identity */}
-                      <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                        <div className="w-9 h-9 bg-bg-elevated border border-border-strong rounded-lg flex items-center justify-center shrink-0 group-hover:border-border-hover transition-colors">
-                          <Bot className="w-4 h-4 text-silver group-hover:text-foreground transition-colors" />
-                        </div>
-
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-semibold text-[13px] text-foreground/90 group-hover:text-foreground transition-colors truncate">
-                              {worker.name}
-                            </h3>
-                            <span className={cn(
-                              "w-1.5 h-1.5 rounded-full shrink-0",
-                              worker.status === 'online' ? "bg-emerald-500" : "bg-silver/40"
-                            )} />
-                            
-                            {/* Channel Tags */}
-                            <div className="hidden sm:flex gap-1">
-                              {worker.channels?.whatsapp?.isActive && (
-                                <span className="text-[7px] font-extrabold bg-emerald-500/10 text-emerald-600 px-1.5 py-0.5 rounded border border-emerald-500/10 uppercase tracking-wider">WA</span>
-                              )}
-                              {worker.channels?.telegram?.isActive && (
-                                <span className="text-[7px] font-extrabold bg-sky-500/10 text-sky-600 px-1.5 py-0.5 rounded border border-sky-500/10 uppercase tracking-wider">TG</span>
-                              )}
-                              {!worker.channels?.whatsapp?.isActive && !worker.channels?.telegram?.isActive && (
-                                <span className="text-[7px] font-extrabold bg-bg-active text-silver px-1.5 py-0.5 rounded uppercase tracking-wider">WEB</span>
-                              )}
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-1.5 text-[10px] text-silver font-medium mt-0.5">
-                            <span className="text-foreground/70 font-semibold capitalize">{worker.tone}</span>
-                            <span className="text-foreground/20">·</span>
-                            <span>{worker.language}</span>
-                            <span className="text-foreground/20 hidden sm:inline">·</span>
-                            <span className="truncate max-w-[200px] hidden sm:inline italic text-silver/70">
-                              {worker.personality?.substring(0, 60)}...
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Right: Actions (stopPropagation so card click doesn't fire) */}
-                      <div
-                        onClick={(e) => e.stopPropagation()}
-                        className="flex items-center gap-1 shrink-0 self-end md:self-center opacity-70 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Link
-                          href="/chat"
-                          className="px-2.5 py-1.5 bg-bg-elevated border border-border-default hover:bg-bg-border hover:border-border-hover text-silver hover:text-foreground rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1"
-                        >
-                          <MessageSquare className="w-3 h-3" />
-                          <span className="hidden sm:inline">Chat</span>
-                        </Link>
-                        <Link
-                          href="/training"
-                          className="px-2.5 py-1.5 bg-bg-elevated border border-border-default hover:bg-bg-border hover:border-border-hover text-silver hover:text-foreground rounded-lg text-[11px] font-semibold transition-all flex items-center gap-1"
-                        >
-                          <BookOpen className="w-3 h-3" />
-                          <span className="hidden sm:inline">Brain</span>
-                        </Link>
-                        <Link
-                          href={`/operatives/${worker._id}/channels`}
-                          className="p-1.5 bg-bg-elevated border border-border-default hover:bg-bg-border text-silver hover:text-foreground rounded-lg transition-all"
-                        >
-                          <Settings className="w-3 h-3" />
-                        </Link>
-                        <button
-                          onClick={() => setShareWorker(worker)}
-                          className="p-1.5 bg-bg-elevated border border-border-default hover:bg-bg-border text-silver hover:text-foreground rounded-lg transition-all"
-                        >
-                          <Share2 className="w-3 h-3" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(worker._id, worker.name)}
-                          className="p-1.5 bg-bg-surface border border-border-subtle hover:bg-red-500/10 hover:border-red-500/20 text-silver/50 hover:text-red-500 rounded-lg transition-all"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              </motion.div>
-            )}
-          </div>
-
-          {/* RIGHT: Telemetry Console (4/12) */}
-          <div className="lg:col-span-4 space-y-5">
-            
-            {/* Activity Chart */}
-            <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-silver">Activity</h3>
-                  <p className="text-[10px] text-silver/60 font-medium mt-0.5">7-day interaction volume</p>
-                </div>
-                <Cpu className="w-3.5 h-3.5 text-silver/40" />
-              </div>
-
-              <div className="h-40 w-full">
-                {loading ? (
-                  <div className="w-full h-full bg-bg-surface rounded-xl animate-pulse" />
-                ) : (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="var(--apple-blue)" stopOpacity={0.12} />
-                          <stop offset="95%" stopColor="var(--apple-blue)" stopOpacity={0.0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="var(--silver)" strokeOpacity={0.1} vertical={false} />
-                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fill: 'var(--silver)' }} />
-                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 9, fill: 'var(--silver)' }} />
-                      <Tooltip
-                        contentStyle={{ backgroundColor: 'var(--background)', borderRadius: '10px', border: '1px solid var(--silver)', fontSize: '10px' }}
-                        labelStyle={{ fontWeight: 'bold', color: 'var(--foreground)' }}
-                        itemStyle={{ color: 'var(--apple-blue)', fontWeight: 'bold' }}
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="interactions"
-                        stroke="var(--apple-blue)"
-                        strokeWidth={1.5}
-                        fill="url(#chartGlow)"
-                        dot={{ r: 2.5, stroke: 'var(--background)', strokeWidth: 1.5, fill: 'var(--apple-blue)' }}
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                )}
-              </div>
-            </div>
-
-            {/* System Telemetry */}
-            <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-4">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-silver">System</h3>
-              
-              <div className="space-y-3">
-                {[
-                  { icon: Cpu, label: 'Autonomy Score', value: `${stats?.successRate || '100'}%`, color: '' },
-                  { icon: Wifi, label: 'Heartbeat', value: 'Active', color: 'text-emerald-600', href: '/dashboard/uptime' },
-                  { icon: Shield, label: 'Active Gateways', value: `${gatewayCount} / ${workers.length}`, color: '' },
-                ].map((row, i) => {
-                  const content = (
-                    <>
-                      <div className="flex items-center gap-2">
-                        <row.icon className="w-3.5 h-3.5 text-silver" />
-                        <span className="font-medium text-silver">{row.label}</span>
-                      </div>
-                      <span className={cn("font-bold text-foreground", row.color)}>{loading ? '—' : row.value}</span>
-                    </>
-                  );
-                  return (
-                    <div key={i} className={cn("flex justify-between items-center text-xs", i < 2 && "border-b border-border-subtle pb-2.5")}>
-                      {'href' in row && row.href ? (
-                        <Link href={row.href} className="flex-1 flex justify-between items-center group/heartbeat px-2 -mx-2 py-1.5 -my-1.5 rounded-lg hover:bg-emerald-500/5 transition-all cursor-pointer">
-                          <div className="flex items-center gap-2">
-                            <row.icon className="w-3.5 h-3.5 text-emerald-500" />
-                            <span className="font-medium text-silver group-hover/heartbeat:text-emerald-600 dark:group-hover/heartbeat:text-emerald-400 transition-colors">{row.label}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <span className={cn("font-bold text-emerald-600 dark:text-emerald-400", row.color)}>{loading ? '—' : row.value}</span>
-                            <ChevronRight className="w-3 h-3 text-silver/40 group-hover/heartbeat:text-emerald-500 group-hover/heartbeat:translate-x-0.5 transition-all" />
-                          </div>
-                        </Link>
-                      ) : content}
+              <ol className="relative space-y-4 before:absolute before:bottom-1 before:left-[3px] before:top-1 before:w-px before:bg-border">
+                {logs.map((log) => (
+                  <li key={log._id} className="relative flex gap-3 pl-0">
+                    <span
+                      className={cn(
+                        'relative z-10 mt-1.5 size-[7px] shrink-0 rounded-full ring-4 ring-card',
+                        LOG_DOT[log.type] ?? 'bg-zinc-400'
+                      )}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="line-clamp-2 text-sm leading-snug">{log.message}</p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        {log.source} · {relativeTime(log.createdAt)}
+                      </p>
                     </div>
-                  );
-                })}
-              </div>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Agents */}
+      <Card className="min-w-0 gap-0 pb-0">
+        <CardHeader className="gap-4 border-b pb-4 sm:flex sm:items-center sm:justify-between [.border-b]:pb-4">
+          <div>
+            <CardTitle>Agents</CardTitle>
+            <CardDescription className="mt-1">
+              {workers.length} {workers.length === 1 ? 'agent' : 'agents'} in this workspace
+            </CardDescription>
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <SegmentedControl value={filter} onChange={setFilter} />
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search agents"
+                className="h-8 w-full pl-8 sm:w-56"
+                aria-label="Search agents"
+              />
             </div>
+          </div>
+        </CardHeader>
 
-            {/* Terminal Log */}
-            <div className="bg-bg-subtle border border-border-default rounded-2xl p-5 space-y-3">
-              <div className="flex justify-between items-center">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-silver flex items-center gap-1.5">
-                  <Terminal className="w-3.5 h-3.5" />
-                  Events
-                </h3>
-                <Link 
-                  href="/dashboard/logs" 
-                  className="text-[9px] font-bold text-silver hover:text-foreground uppercase tracking-wider flex items-center gap-0.5 transition-colors"
-                >
-                  View all <ChevronRight className="w-2.5 h-2.5" />
-                </Link>
-              </div>
-
-              <div className="bg-bg-surface border border-border-subtle rounded-xl p-3 font-mono text-[10px] text-silver space-y-1.5 max-h-40 overflow-y-auto">
-                {stats?.systemLogs && stats.systemLogs.length > 0 ? (
-                  stats.systemLogs.map((log: any) => {
-                    const logTime = new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-                    let dotColor = "bg-apple-blue";
-                    if (log.type === 'error') dotColor = "bg-red-500 animate-pulse";
-                    else if (log.type === 'warning') dotColor = "bg-amber-500";
-                    else if (log.type === 'handshake') dotColor = "bg-emerald-500";
-
-                    return (
-                      <div key={log._id} className="flex items-start gap-1.5">
-                        <span className={cn("w-1 h-1 rounded-full mt-1.5 flex-shrink-0", dotColor)} />
-                        <span className="break-all leading-relaxed">
-                          <span className="text-silver/50">[{logTime}]</span>{' '}
-                          {log.source}: {log.message}
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="pl-6">Name</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="hidden md:table-cell">Channels</TableHead>
+              <TableHead className="hidden lg:table-cell">Tone</TableHead>
+              <TableHead className="hidden lg:table-cell">Language</TableHead>
+              <TableHead className="w-12 pr-6">
+                <span className="sr-only">Actions</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell colSpan={6} className="px-6 py-3">
+                    <Skeleton className="h-8 w-full" />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : filtered.length === 0 ? (
+              <TableRow className="hover:bg-transparent">
+                <TableCell colSpan={6} className="py-14 text-center">
+                  <p className="text-sm font-medium">No agents match</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Try a different search or filter.</p>
+                </TableCell>
+              </TableRow>
+            ) : (
+              <AnimatePresence initial={false}>
+                {filtered.map((w) => (
+                  <motion.tr
+                    key={w._id}
+                    layout="position"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    onClick={() => router.push(`/operatives/${w._id}/channels`)}
+                    className="cursor-pointer border-b transition-colors last:border-0 hover:bg-muted/50"
+                  >
+                    <TableCell className="py-3 pl-6">
+                      <div className="flex items-center gap-3">
+                        <span className="flex size-8 shrink-0 items-center justify-center rounded-md border bg-muted text-xs font-medium text-muted-foreground">
+                          {initials(w.name)}
                         </span>
+                        <div className="min-w-0">
+                          <p className="truncate font-medium">{w.name}</p>
+                          <p className="max-w-[260px] truncate text-xs text-muted-foreground">
+                            {w.role || w.personality}
+                          </p>
+                        </div>
                       </div>
-                    );
-                  })
-                ) : (
-                  <div className="text-center py-5 text-silver/60 italic text-[10px]">Awaiting fleet telemetry...</div>
-                )}
-              </div>
-            </div>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge online={w.status === 'online'} />
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">
+                      <div className="flex gap-1">
+                        {activeChannels(w).map((c) => (
+                          <Badge key={c} variant="outline" className="font-normal text-muted-foreground">
+                            {c}
+                          </Badge>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden capitalize text-muted-foreground lg:table-cell">{w.tone}</TableCell>
+                    <TableCell className="hidden text-muted-foreground lg:table-cell">{w.language}</TableCell>
+                    <TableCell className="pr-6 text-right" onClick={(e) => e.stopPropagation()}>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon-sm" aria-label={`Actions for ${w.name}`}>
+                            <MoreHorizontal />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-44">
+                          <DropdownMenuItem asChild>
+                            <Link href="/chat"><MessageSquare /> Open chat</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link href="/training"><BookOpen /> Training data</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link href={`/operatives/${w._id}/channels`}><Settings2 /> Settings</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onSelect={() => setShareWorker(w)}>
+                            <Share2 /> Share
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem variant="destructive" onSelect={() => setDeleteWorker(w)}>
+                            <Trash2 /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </motion.tr>
+                ))}
+              </AnimatePresence>
+            )}
+          </TableBody>
+        </Table>
+      </Card>
 
-          </div>
-        </div>
-      </motion.div>
-      </main>
+      <ShareDialog worker={shareWorker} onClose={() => setShareWorker(null)} />
 
-      {/* Share Modal */}
-      <AnimatePresence>
-        {shareWorker && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShareWorker(null)}
-              className="absolute inset-0"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 8 }}
-              className="bg-background border border-border-strong w-full max-w-md rounded-2xl p-6 shadow-2xl relative z-10 space-y-5"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-semibold text-sm text-foreground">Share Agent</h3>
-                  <p className="text-silver text-xs mt-0.5">Deployment links for &quot;{shareWorker.name}&quot;</p>
-                </div>
-                <button onClick={() => setShareWorker(null)} className="p-1 rounded-full hover:bg-foreground/5 text-silver hover:text-foreground transition-colors">
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Chat Link</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      readOnly
-                      value={`${typeof window !== 'undefined' ? window.location.origin : ''}/share/${shareWorker._id}`}
-                      className="w-full bg-bg-elevated border border-border-strong rounded-xl px-3 py-2.5 text-xs text-foreground font-mono focus:outline-none"
-                    />
-                    <button
-                      onClick={() => copyText(`${typeof window !== 'undefined' ? window.location.origin : ''}/share/${shareWorker._id}`)}
-                      className="p-2.5 bg-bg-elevated border border-border-strong hover:bg-bg-border rounded-xl text-silver hover:text-foreground transition-all shrink-0"
-                    >
-                      <Copy className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[9px] font-bold text-silver uppercase tracking-widest">Embed Script</label>
-                  <div className="flex items-start gap-2">
-                    <textarea
-                      readOnly
-                      rows={3}
-                      value={`<script src="${typeof window !== 'undefined' ? window.location.origin : ''}/proxy.ts" data-worker-id="${shareWorker._id}"></script>`}
-                      className="w-full bg-bg-elevated border border-border-strong rounded-xl px-3 py-2.5 text-[10px] text-foreground font-mono focus:outline-none resize-none"
-                    />
-                    <button
-                      onClick={() => copyText(`<script src="${typeof window !== 'undefined' ? window.location.origin : ''}/proxy.ts" data-worker-id="${shareWorker._id}"></script>`)}
-                      className="p-2.5 bg-bg-elevated border border-border-strong hover:bg-bg-border rounded-xl text-silver hover:text-foreground transition-all shrink-0"
-                    >
-                      <Copy className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-1 flex justify-end">
-                <button onClick={() => setShareWorker(null)} className="px-4 py-2 bg-bg-active hover:bg-bg-border text-foreground rounded-xl text-xs font-semibold transition-all border border-border-default">
-                  Done
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <Dialog open={!!deleteWorker} onOpenChange={(open) => !open && setDeleteWorker(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete {deleteWorker?.name}?</DialogTitle>
+            <DialogDescription>
+              The agent stops responding on every channel and its configuration is removed. This can&apos;t be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteWorker(null)} disabled={deleting}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete} disabled={deleting}>
+              {deleting ? 'Deleting…' : 'Delete agent'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
+  );
+}
+
+/* ---------- pieces ---------- */
+
+function Metric({
+  label,
+  value,
+  footnote,
+  loading,
+}: {
+  label: string;
+  value: React.ReactNode;
+  footnote?: React.ReactNode;
+  loading: boolean;
+}) {
+  return (
+    <div className="px-5 py-4 lg:px-6 lg:py-5">
+      <p className="text-sm text-muted-foreground">{label}</p>
+      {loading ? (
+        <Skeleton className="mt-2 h-8 w-24" />
+      ) : (
+        <p className="mt-1 text-2xl font-semibold tracking-tight tabular-nums">{value}</p>
+      )}
+      {footnote && <div className="mt-1 text-xs text-muted-foreground">{loading ? ' ' : footnote}</div>}
+    </div>
+  );
+}
+
+function StatusBadge({ online }: { online: boolean }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 text-sm">
+      <span className={cn('size-1.5 rounded-full', online ? 'bg-emerald-500' : 'bg-zinc-300')} />
+      <span className={online ? 'text-foreground' : 'text-muted-foreground'}>{online ? 'Online' : 'Offline'}</span>
+    </span>
+  );
+}
+
+function SegmentedControl({ value, onChange }: { value: Filter; onChange: (f: Filter) => void }) {
+  return (
+    <div role="tablist" aria-label="Filter agents" className="inline-flex h-8 items-center rounded-md bg-muted p-0.5">
+      {FILTERS.map((f) => {
+        const active = value === f.id;
+        return (
+          <button
+            key={f.id}
+            role="tab"
+            aria-selected={active}
+            onClick={() => onChange(f.id)}
+            className={cn(
+              'relative h-7 rounded-[5px] px-2.5 text-[13px] transition-colors',
+              active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            {active && (
+              <motion.span
+                layoutId="agent-filter-pill"
+                className="absolute inset-0 rounded-[5px] bg-background shadow-sm ring-1 ring-border"
+                transition={{ type: 'spring', bounce: 0, duration: 0.3 }}
+              />
+            )}
+            <span className="relative">{f.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function CopyField({ label, value, multiline = false }: { label: string; value: string; multiline?: boolean }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    await navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+  return (
+    <div className="space-y-1.5">
+      <p className="text-sm font-medium">{label}</p>
+      <div className="flex items-start gap-2">
+        {multiline ? (
+          <textarea
+            readOnly
+            rows={3}
+            value={value}
+            className="w-full resize-none rounded-md border bg-muted/40 px-3 py-2 font-mono text-xs outline-none"
+          />
+        ) : (
+          <Input readOnly value={value} className="font-mono text-xs" />
+        )}
+        <Button variant="outline" size="icon" onClick={copy} aria-label={`Copy ${label.toLowerCase()}`}>
+          {copied ? <Check /> : <Copy />}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function ShareDialog({ worker, onClose }: { worker: Worker | null; onClose: () => void }) {
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+  const link = worker ? `${origin}/share/${worker._id}` : '';
+  const embed = `<iframe src="${link}" width="400" height="600" style="border:0;border-radius:12px" title="${worker?.name ?? ''}"></iframe>`;
+
+  return (
+    <Dialog open={!!worker} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Share {worker?.name}</DialogTitle>
+          <DialogDescription>Anyone with the link can chat with this agent.</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <CopyField label="Public link" value={link} />
+          <CopyField label="Embed on your site" value={embed} multiline />
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Done</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

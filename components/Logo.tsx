@@ -6,9 +6,10 @@ interface LogoProps {
   /** Compact mode for sidebar collapsed state */
   compact?: boolean;
   className?: string;
+  textClassName?: string;
 }
 
-export default function Logo({ iconOnly = false, compact = false, className }: LogoProps) {
+export default function Logo({ iconOnly = false, compact = false, className, textClassName }: LogoProps) {
   return (
     <span className={cn('inline-flex items-center gap-2', className)}>
       {/* V Mark — inline SVG matching the favicon */}
@@ -33,7 +34,7 @@ export default function Logo({ iconOnly = false, compact = false, className }: L
 
       {/* Brand text */}
       {!iconOnly && (
-        <span className="font-black tracking-[-0.02em] text-white leading-none">
+        <span className={cn('font-black tracking-[-0.02em] text-white leading-none', textClassName)}>
           VOID
         </span>
       )}

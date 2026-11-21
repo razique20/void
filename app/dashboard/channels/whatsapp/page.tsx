@@ -95,9 +95,6 @@ export default function WhatsAppSetupPage() {
   return (
     <div className="relative">
       {/* Ambient background */}
-      <div className="absolute inset-0 bg-[radial-gradient(var(--foreground)_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
-      <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-emerald-500/[0.03] blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[45%] h-[45%] bg-apple-blue/[0.03] blur-[150px] rounded-full pointer-events-none" />
 
       <main className="relative z-10 max-w-5xl mx-auto px-4 md:px-12 py-8 md:py-10">
         {/* Back link */}
@@ -222,16 +219,16 @@ export default function WhatsAppSetupPage() {
                       <p
                         className={cn(
                           'text-[11px] leading-relaxed transition-colors',
-                          step.status === 'done' && 'text-silver/70',
+                          step.status === 'done' && 'text-muted-foreground',
                           step.status === 'active' && 'text-silver font-medium',
-                          step.status === 'pending' && 'text-silver/60'
+                          step.status === 'pending' && 'text-muted-foreground'
                         )}
                       >
                         {step.description}
                       </p>
 
                       {step.note && (
-                        <p className="text-[10px] text-silver/60 italic mt-0.5">
+                        <p className="text-[10px] text-muted-foreground italic mt-0.5">
                           {step.note}
                         </p>
                       )}
@@ -264,7 +261,7 @@ export default function WhatsAppSetupPage() {
                 </h3>
               </div>
 
-              <div className="space-y-3 text-xs text-silver/80 leading-relaxed">
+              <div className="space-y-3 text-xs text-muted-foreground leading-relaxed">
                 <p className="font-medium text-foreground/80">
                   Before linking WhatsApp to an agent, make sure you have:
                 </p>
@@ -284,7 +281,7 @@ export default function WhatsAppSetupPage() {
                   Next step
                 </h3>
               </div>
-              <p className="text-xs text-silver/70 leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 Once your token and phone number ID are ready, enable WhatsApp on the agent from its{' '}
                 <Link
                   href="/operatives"
@@ -315,7 +312,7 @@ export default function WhatsAppSetupPage() {
             <h2 className="text-[10px] font-bold text-silver uppercase tracking-widest">
               Sample Credentials Format
             </h2>
-            <span className="text-[9px] text-silver/60 font-medium">Reference only</span>
+            <span className="text-[9px] text-muted-foreground font-medium">Reference only</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -376,7 +373,7 @@ export default function WhatsAppSetupPage() {
             </div>
           </div>
 
-          <p className="text-[10px] text-silver/60 mt-3 italic">
+          <p className="text-[10px] text-muted-foreground mt-3 italic">
             These are examples only. Replace them with the values from your Meta app.
           </p>
         </div>
