@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { UserButton, Show } from '@clerk/nextjs';
+import { UserButton } from '@clerk/nextjs';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu,
@@ -37,6 +37,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
+import PublicNav from './PublicNav';
+import { isPublicPath } from '@/lib/routes';
 
 import SystemTourModal from './SystemTourModal';
 import UpgradeModal from './UpgradeModal';
@@ -59,7 +61,6 @@ let cachedMounted = false; // survives SPA remounts so transitions stay enabled
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   
   const { sub, config, hasFeature, isSmartBookingEnabled, isKnowledgeSharingEnabled, isNaturalLanguageAnalyticsEnabled, isLeadCaptureEnabled } = useData();
 
@@ -68,18 +69,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isFirstRender, setIsFirstRender] = useState(true);
 
-  // Track scroll position for transparent navbar effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const isAdmin = pathname.startsWith('/admin');
-  const publicPages = ['/', '/sign-in', '/sign-up', '/privacy', '/terms', '/dpa', '/docs', '/about', '/careers', '/contact', '/partners', '/changelog', '/pricing'];
-  const isWorkspace = !publicPages.some(p => p === pathname) && !isAdmin;
+  const isWorkspace = !isPublicPath(pathname) && !isAdmin;
 
   // Synchronously remove has-sidebars when leaving workspace — prevents
   // the view-transition snapshot from capturing sidebar padding on the
@@ -278,50 +269,11 @@ export default function Navbar() {
     { label: 'Support', href: '/dashboard/support', icon: LifeBuoy }
   ];
 
-  // RENDER OPTION A: Public Header (Landing Page or Auth flows)
+  // RENDER OPTION A: Public pages (landing, marketing, auth)
   if (!isWorkspace) {
-    return (
-      <nav style={{ viewTransitionName: 'site-public-nav' }} className={cn(
-        "fixed top-0 w-full z-[999] transition-all duration-300 px-4 md:px-6 py-3.5",
-        scrolled 
-          ? "bg-black/80 backdrop-blur-xl border-b border-white/[0.06] shadow-[0_1px_0_rgba(16,185,129,0.08)]"
-          : "bg-transparent border-b border-transparent"
-      )}>
-        <div className="flex justify-between items-center px-2 md:px-4 max-w-7xl mx-auto">
-          <Link href="/" className="group flex items-center">
-            <Logo className="text-lg md:text-xl" />
-          </Link>
-
-          <div className="flex items-center gap-2">
-            <Show when="signed-in">
-              <Link 
-                href="/dashboard" 
-                className="text-[10px] uppercase tracking-wider font-extrabold px-4 py-2 bg-white text-black rounded-xl hover:bg-white/90 transition-all shadow-sm"
-              >
-                Console
-              </Link>
-              <div className="scale-90">
-                <UserButton />
-              </div>
-            </Show>
-            <Show when="signed-out">
-              <Link 
-                href="/sign-in" 
-                className="text-[10px] uppercase tracking-wider font-extrabold text-white/50 hover:text-white px-3.5 py-2 rounded-xl transition-all"
-              >
-                Sign In
-              </Link>
-              <Link 
-                href="/sign-up" 
-                className="text-[10px] uppercase tracking-wider font-extrabold px-4 py-2 bg-white text-black rounded-xl hover:bg-white/90 transition-all shadow-sm"
-              >
-                Get Started
-              </Link>
-            </Show>
-          </div>
-        </div>
-      </nav>
-    );
+    // The public agent chat (/share/[id]) is customer-facing: no VOID chrome.
+    if (pathname.startsWith('/share')) return null;
+    return <PublicNav />;
   }
 
   // RENDER OPTION B: Authenticated workspace — single sidebar + top bar

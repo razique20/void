@@ -6,6 +6,7 @@ import { DataProvider } from "@/lib/DataContext";
 import PageTransition from "@/components/PageTransition";
 import Navbar from "@/components/Navbar";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { isPublicPathSource } from "@/lib/routes";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -108,9 +109,8 @@ export default function RootLayout({
                   // Without this, server-rendered content paints full-width under
                   // the fixed navbar/sidebar and snaps over on hydration (flash).
                   var p = location.pathname;
-                  var publicPages = ['/', '/sign-in', '/sign-up', '/privacy', '/terms', '/dpa', '/docs', '/about', '/careers', '/contact', '/partners', '/changelog', '/pricing'];
                   var isAdmin = p.indexOf('/admin') === 0;
-                  var isPublic = publicPages.indexOf(p) !== -1;
+                  var isPublic = (${isPublicPathSource})(p);
                   if (!isPublic && !isAdmin) {
                     document.documentElement.classList.add('has-sidebars');
                     if (collapsed) {
